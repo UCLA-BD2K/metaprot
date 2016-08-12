@@ -1,0 +1,13 @@
+# spring boot specific
+
+mvnw
+mvnw.cmd
+
+# app
+
+*.class
+*.iml
+*.properties
+target/**
+.mvn/**
+.idea/**
