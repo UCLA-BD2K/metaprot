@@ -4,13 +4,29 @@
 <head>
     <meta charset="UTF-8" />
     <title>Metabolite Analysis</title>
+
+    <link rel="stylesheet" type="text/css" href="css/lib/bootstrap.min.css" />
+
 </head>
 <body>
 
     <!-- header -->
     <div th:include="fragments/header :: header"></div>
 
-    <div>Woo!</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-offset-3 col-sm-6">
+                Select .csv file to analyze
+                <div class="well well-lg">
+                    Input a file
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
+
+<script type="text/javascript" src="js/lib/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
+
 </html>
