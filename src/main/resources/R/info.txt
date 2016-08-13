@@ -1,0 +1,2 @@
+This directory contains files, scripts, and the like that are either:
+written in R, or used by programs written in R.
