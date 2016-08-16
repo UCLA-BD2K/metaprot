@@ -30,6 +30,9 @@ analyze.file <- function(data_path, outputCSV, outputPNG, th_pvalue = 0.1, th_fc
     sigs = rep("insignificant", length(fdrs));
     sigs[(fdrs < th_pvalue) & (log2(fcs) >= log2(th_fc))] = "upregulated in HF";
     sigs[(fdrs < th_pvalue) & (log2(fcs) <= -log2(th_fc))] = "downregulated in HF";
+#    sigs = rep(0, length(fdrs));
+#    sigs[(fdrs < th_pvalue) & (log2(fcs) >= log2(th_fc))] = 1;
+#    sigs[(fdrs < th_pvalue) & (log2(fcs) <= -log2(th_fc))] = -1;
 
     # return result
     results = cbind(as.numeric(pvals), as.numeric(fdrs), as.numeric(fcs), sigs);

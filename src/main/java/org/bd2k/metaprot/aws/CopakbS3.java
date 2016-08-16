@@ -1,8 +1,9 @@
-package org.copakb.server.util;
+package org.bd2k.metaprot.aws;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 
@@ -18,8 +19,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 /**
- * Provides access to AWS S3 resources. Create an instance of this class, and
- * call initializeInstance().
+ * Provides access to AWS S3 resources. Configured as a component to allow
+ * autowiring.
  * Created by allengong on 8/8/16.
  */
 @Component
@@ -55,11 +56,23 @@ public class CopakbS3 {
     /**
      * Given a S3 object key and a destination write path, pull object from s3
      * and store locally. This is a blocking call (i.e. NOT ASYNCHRONOUS).
-     * @param objectKey s3 object key
-     * @param destinationPath destination of local file (without the filename as it is in objectKey)
+     * @param objectKey s3 object key, e.g. tokenValue/abc.txt
+     * @param destinationPath where to store the local file, NOT including the file name (which is
+     *                        inferred from the objectKey)
+     * @return integer status code, -1 means local error, 0 means success, and everything else is an
+     * AWS related error. For the latter, use getAWSStatusMessage() to return a human readable message.
      */
-    public void pullAndStoreObject(String objectKey, String destinationPath) {
-        S3Object object = s3Client.getObject(new GetObjectRequest(bucketName, objectKey));
+    public int pullAndStoreObject(String objectKey, String destinationPath) {
+        S3Object object;
+        int sc = 0;         // status code
+
+        try {
+            object = s3Client.getObject(new GetObjectRequest(bucketName, objectKey));
+        } catch (AmazonS3Exception ae) {
+            ae.printStackTrace();
+            return ae.getStatusCode();
+        }
+
 
         InputStream is = null;
         FileOutputStream fos = null;
@@ -91,6 +104,7 @@ public class CopakbS3 {
             System.out.println("Read " + totalBytesRead + " bytes from S3 for file: " + objectKey +".");
         } catch (Exception e) {
             e.printStackTrace();
+            sc = -1;
         } finally {
             try {
                 if (is != null) {
@@ -102,8 +116,33 @@ public class CopakbS3 {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                sc = -1;
             }
         }
+
+        return sc;
+    }
+
+    /**
+     * Given a httpStatus code, return a user friendly error message.
+     * @param httpStatusCode the status code
+     * @return a user friendly string detailing the error.
+     */
+    public String getAWSStatusMessage(int httpStatusCode) {
+        String message;
+
+        switch(httpStatusCode) {
+            case 403:       // access denied
+                message = "Access denied, please contact abc@xyz.com";
+                break;
+            case 404:
+                message = "Invalid file request, please try again at a later time.";
+                break;
+            default:
+                message = "Something went wrong with your request, please contact abc@xya.com";
+        }
+
+        return message;
     }
 
     @Bean

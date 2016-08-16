@@ -1,0 +1,19 @@
+body, html {
+    font-family: 'Arimo', sans-serif;
+}
+
+.results img {
+    width: 100%;
+}
+
+.transition {
+    -webkit-transition: all 700ms ease-in;
+    -moz-transition: all 700ms ease-in;
+    -ms-transition: all 700ms ease-in;
+    -o-transition: all 700ms ease-in;
+    transition: all 700ms ease-in;
+}
+
+.transparent {
+    opacity: 0;
+}

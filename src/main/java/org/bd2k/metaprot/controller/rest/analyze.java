@@ -1,9 +1,13 @@
 package org.bd2k.metaprot.controller.rest;
 
+import org.bd2k.metaprot.aws.CopakbS3;
 import org.bd2k.metaprot.exception.BadRequestException;
-import org.bd2k.metaprot.exception.ResourceNotFoundException;
+import org.bd2k.metaprot.exception.ServerException;
+import org.bd2k.metaprot.util.RManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.util.UUID;
 
 /**
@@ -16,34 +20,66 @@ import java.util.UUID;
 @RequestMapping("/analyze")
 public class analyze {
 
+    @Autowired
+    private CopakbS3 copakbS3;
+
+    private final String LOCAL_FILE_DOWNLOAD_PATH = "/ssd2/metaprot";
+    private final String METABOLITES_R_SCRIPT_LOC = "src/main/resources/R/scripts/r_sample_code.R";
+
+    private RManager manager = null;
+
+    /* Analyzes CSV files  */
     @RequestMapping(value = "/metabolites/{token}", method = RequestMethod.POST)
     public String analyzeMetabolites(@PathVariable("token") String token,
-                                     @RequestParam("s3Url") String s3Url,
+                                     @RequestParam("objectKey") String key,
                                      @RequestParam("pThreshold") double pThreshold,
                                      @RequestParam("fcThreshold") double fcThreshold) {
 
         // validation
-        if (!s3Url.startsWith("something...") && true) {
+        String[] keyArr = key.split("/");
+        if (!(key.startsWith("user-input/" + token)) ||
+                pThreshold < 0 ||
+                fcThreshold < 0 ||
+                !(keyArr[keyArr.length-2].equals(token)) ||
+                keyArr.length != 3) {
+
             // should return error message
-            throw new BadRequestException("S3 Url is invalid!");
+            throw new BadRequestException("Invalid request, please try again later.");
         }
 
-        if (pThreshold < 0 || fcThreshold < 0) {    // perhaps move to front end
+        int status = copakbS3.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + "/" + token);
 
+        // error
+        if (status == -1) {
+            throw new ServerException("There was an error with your request, please try again later.");
+        } else if (status > 0) {
+            throw new BadRequestException(copakbS3.getAWSStatusMessage(status));
         }
 
-        System.out.println("token " + token);
-        System.out.println(s3Url);
-        System.out.println(pThreshold);
-        System.out.println(fcThreshold);
+        // everything is OK on the server end, attempt to analyze the file
+        File rScript = null;
+        try {
+            manager = RManager.getInstance();
+            rScript = new File(METABOLITES_R_SCRIPT_LOC);
+            manager.runRScript(rScript.getAbsolutePath());        // (re) initializes R environment
+            manager.runRCommand("analyze.file('" + LOCAL_FILE_DOWNLOAD_PATH + "/" + token
+                    + "/" + keyArr[keyArr.length-1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + "/" +
+                    token + "/data.csv', '" + LOCAL_FILE_DOWNLOAD_PATH + "/" + token + "/volcano.png', " +
+                    pThreshold + ", " + fcThreshold + ")");
+        } catch (Exception e) {
+            // handle exception so that we can return appropriate error messages
+            e.printStackTrace();
+            throw new ServerException("There was an error with our R Engine. Please try again later.");
+        }
 
-        throw new ResourceNotFoundException();
+        String successMessage = "Your file has been successfully analyzed! Head over to the %s page" +
+                " to see the report.";
 
-        //return "OK";
+        return String.format(successMessage, "<a href='/metabolite-analysis/results/" + token + "'>results</a>");
 
     }
 
-    @RequestMapping(value = "/getToken", method = RequestMethod.GET)
+    @RequestMapping(value = "/token", method = RequestMethod.GET)
     public String getToken() {
         return UUID.randomUUID().toString();
     }

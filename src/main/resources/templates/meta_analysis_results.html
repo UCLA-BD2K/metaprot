@@ -1,10 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
+    <meta charset="UTF-8" />
+    <title th:text='${"Results for " + token + " | Metaprot"}'></title>
+    <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/css/site.css" />
 </head>
 <body>
-$END$
+    <div th:include="fragments/header :: header"></div>
+
+    <div class="container results">
+        <div class="row text-center">
+            <div class="col-sm-offset-1 col-sm-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Results for task: ${token}</h2>
+                    </div>
+                    <div class="panel-body">
+                        Volcano plot
+                        <img th:src='${"/metabolite-analysis/results/image/" + token + "/volcano.png"}' />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+
+    <div th:include="fragments/footer :: footer"></div>
+
 </body>
 </html>
