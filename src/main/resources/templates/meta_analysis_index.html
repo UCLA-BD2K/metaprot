@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <title>Metabolite Analysis</title>
 
-    <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.simplex.min.css" />
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="/css/site.css" />
@@ -21,21 +21,27 @@
             <div class="col-sm-offset-3 col-sm-6">
                 <h2>Select a .csv file to analyze:</h2>
                 <div class="well well-lg">
-                    <form class="form-group input-group" id="csv-upload-form">
-                        <label for="fileInput">Select file: </label>
-                        <input id="fileInput" type="file" class="form-control"/>
+                    <form id="csv-upload-form" class="form-horizontal">
+                        <fieldset>
 
-                        <br/>
+                            <label for="fileInput">Select file: </label>
+                            <input id="fileInput" type="file" class="form-control" />
 
-                        <label for="pThreshold">Enter a P value threhshold</label>
-                        <input type="text" class="form-control" placeholder="Default: 0.1" id="pThreshold" name="pThreshold" />
 
-                        <br/>
 
-                        <label for="fcThreshold">Enter a fold change threshold</label>
-                        <input type="text" class="form-control" placeholder="Default: 1.5" id="fcThreshold" name="fcThreshold" />
+                            <br/>
 
-                        <input type="submit" value="Submit" class="form-control"/>
+                            <div class="form-group"></div>
+                            <label for="pThreshold">Enter a P value threhshold</label>
+                            <input type="text" class="form-control" placeholder="Default: 0.1" id="pThreshold" name="pThreshold" />
+
+                            <br/>
+
+                            <label for="fcThreshold">Enter a fold change threshold</label>
+                            <input type="text" class="form-control" placeholder="Default: 1.5" id="fcThreshold" name="fcThreshold" />
+
+                            <input type="submit" value="Submit" class="form-control"/>
+                        </fieldset>
                     </form>
                 </div>
                 <div id="progress-bar-display" class="transition transparent">

@@ -47,8 +47,11 @@ public class FileAccess {
                         continue;   // something is wrong with this row, or it is the first row
                     }
 
-                    MetaboliteStat stat = new MetaboliteStat(Double.parseDouble(lineArr[1]),
-                            Double.parseDouble(lineArr[2]), Double.parseDouble(lineArr[3]), lineArr[4]);
+                    MetaboliteStat stat = new MetaboliteStat(Integer.parseInt(lineArr[0]),
+                            Double.parseDouble(lineArr[1]),
+                            Double.parseDouble(lineArr[2]),
+                            Double.parseDouble(lineArr[3]),
+                            lineArr[4]);
 
                     list.add(stat);
                 }
