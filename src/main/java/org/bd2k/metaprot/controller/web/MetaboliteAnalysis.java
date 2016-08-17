@@ -52,17 +52,6 @@ public class MetaboliteAnalysis {
     @RequestMapping(method = RequestMethod.GET)
     public String getMetaAnalysisIndex() {  // home page
 
-        manager = getRManager();
-        if (manager == null) {
-            System.out.println("null manager");
-            return "error";     // something is wrong with the R engine
-        }
-
-        REXP expression = manager.runRCommand("1+ 10");
-        System.out.println(expression.asDouble());
-        //manager.runRCommand("analyze.file('/Users/allengong/IdeaProjects/JavaTestProject/src/main/resources/R/MetaProt_Sample.csv', '/Users/allengong/IdeaProjects/JavaTestProject/src/main/resources/R/output/2.csv', '/Users/allengong/IdeaProjects/JavaTestProject/src/main/resources/R/output/2.png')");
-
-
         return "meta_analysis_index";
     }
 
@@ -82,7 +71,7 @@ public class MetaboliteAnalysis {
                                  @PathVariable("filename") String filename) {
 
         File file =  new File(LOCAL_DOWNLOAD_PATH + "/" + token + "/" + filename);
-        if (file.exists()) {
+        if (file.exists() && filename.endsWith(".png")) {
             try {
                 InputStream is = new FileInputStream(file);
                 return IOUtils.toByteArray(is);

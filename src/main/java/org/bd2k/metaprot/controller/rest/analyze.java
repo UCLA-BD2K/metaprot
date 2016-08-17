@@ -75,6 +75,12 @@ public class analyze {
         String successMessage = "Your file has been successfully analyzed! Head over to the %s page" +
                 " to see the report.";
 
+        // analysis complete, safe to delete the uploaded csv file locally
+        File uploadedFile = new File(LOCAL_FILE_DOWNLOAD_PATH + "/" + token + "/" + keyArr[keyArr.length-1]);
+        if (uploadedFile.exists()) {
+            uploadedFile.delete();      // attempt to delete the uploaded file
+        }
+
         return String.format(successMessage, "<a href='/metabolite-analysis/results/" + token + "'>results</a>");
 
     }

@@ -12,14 +12,14 @@ public class MetaboliteStat {
     private double pValue;
     private double fdr;
     private double foldChange;
-    private String result;      // insignificant, upregulated, downregulated
+    private String significance;      // insignificant, upregulated, downregulated
 
     public MetaboliteStat(int index, double pValue, double fdr, double foldChange, String result) {
         this.index = index;
         this.pValue = pValue;
         this.fdr = fdr;
         this.foldChange = foldChange;
-        this.result = result;
+        this.significance = result;
     }
 
     public int getIndex() {
@@ -54,12 +54,12 @@ public class MetaboliteStat {
         this.foldChange = foldChange;
     }
 
-    public String getResult() {
-        return result;
+    public String getSignificance() {
+        return significance;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setSignificance(String result) {
+        this.significance = result;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class MetaboliteStat {
                 "pValue=" + pValue +
                 ", fdr=" + fdr +
                 ", foldChange=" + foldChange +
-                ", result='" + result + '\'' +
+                ", significance='" + significance + '\'' +
                 '}';
     }
 }

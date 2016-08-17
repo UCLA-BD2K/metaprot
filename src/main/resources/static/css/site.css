@@ -10,6 +10,13 @@ a.navbar-brand:hover {
     color: #02a5de;
 }
 
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus,
 .navbar-header .navbar-brand:hover {
     color: #02a5de;
@@ -27,6 +34,10 @@ a.navbar-brand:hover {
 
 .results img {
     width: 100%;
+}
+
+svg:not(:root) {
+    overflow:visible;
 }
 
 .transition {

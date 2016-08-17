@@ -16,15 +16,16 @@
 
     <div class="container results">
         <div class="row text-center">
-            <div class="col-sm-offset-1 col-sm-10">
+            <div class="col-sm-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h2 class="panel-title" th:text='${"Results for task:" + token}'></h2>
+                        <h2 class="panel-title" th:text='${"Results for task: " + token}'></h2>
                     </div>
                     <div class="panel-body">
                         <div>
                             Volcano plot
-                            <img th:src='${"/metabolite-analysis/results/image/" + token + "/volcano.png"}' />
+                            <div id="d3-plot"></div>
+                            <!--<img th:src='${"/metabolite-analysis/results/image/" + token + "/volcano.png"}' />-->
                         </div>
                         <div th:switch="${results.size()}">
                             <div th:case="0">No results</div>
@@ -45,7 +46,7 @@
                                             <td th:text="${result.getpValue()}"></td>
                                             <td th:text="${result.getFdr()}"></td>
                                             <td th:text="${result.getFoldChange()}"></td>
-                                            <td th:text="${result.getResult()}"></td>
+                                            <td th:text="${result.getSignificance()}"></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -68,7 +69,9 @@
     <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>
     <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
 
-    <script type="text/javascript">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <script type="text/javascript" th:inline="javascript">
         $(function(){
             var $resultsTable = $('#results-table');
             $resultsTable.DataTable({
@@ -77,6 +80,78 @@
                 "bFilter": false,
                 "buttons":['csv', 'excel']
             });
+
+            // convert raw table data to matrix for d3
+            var results = [[${results}]];
+            var dataset = [];
+            for (var index in results) {
+                var result = results[index];
+                dataset.push([Math.log2(result.foldChange), -1*Math.log10(result.pValue)]);
+            }
+
+            // plot dimensions
+            var height = 400;
+            var width = 500;
+            var padding = 20;   // just to prevent colliding elements
+
+            // scale functions (for better visualization of small values)
+            var minX = d3.min(dataset, function(d) { return d[0]});
+            var maxX = d3.max(dataset, function(d) { return d[0]});
+            var minY = d3.min(dataset, function(d) { return d[1]});
+            var maxY = d3.max(dataset, function(d) { return d[1]});
+
+            console.log("minX " + minX)
+            console.log("maxX" + maxX)
+            console.log("minY " + minY)
+            console.log("maxY" + maxY);
+
+            var xScale = d3.scaleLinear()   // range of X values (preserve x values with width)
+                    .domain([minX, maxX])
+                    .range([0, width]);
+
+            var yScale = d3.scaleLinear()   // ^
+                    .domain([minY, maxY])
+                    .range([height-padding, padding]);  // flips the growth of y values from downward to upwards
+
+            // generate x and y axes
+            var xAxis = d3.axisBottom()
+                    .scale(xScale);
+
+            var yAxis = d3.axisLeft()
+                    .scale(yScale);
+
+            // zoom feature
+            //var zoom = d3.zoom().x(xScale).y(yScale).on("zoom", zoomed);
+
+            var svg = d3.select("#d3-plot").text("D3 Plot").append("svg")
+                    .attr("height", height)
+                    .attr("width", width);
+            svg.selectAll("circle")
+                    .data(dataset)
+                    .enter()
+                    .append("circle")           // tag name
+                    .attr("class", "d3-node")   // class name
+                    .attr("cx", function(d) {
+                        return xScale(d[0]);
+                    })
+                    .attr("cy", function(d) {
+                        return yScale(d[1]);
+                    })
+                    .attr("r", 2)
+                    .style("fill", function(d) {
+                        if (d[0] > 0.75) {
+                            return "red";
+                        } else {
+                            return "black";
+                        }
+                    });
+
+            // append axes
+            svg.append("g").attr("class", "axis").attr("transform", "translate(0, " + (height-padding) + ")").call(xAxis);
+            svg.append("g").attr("class", "axis").call(yAxis);
+
+            // enable zoom
+            //svg.call(zoom);
         });
     </script>
 
