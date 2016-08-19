@@ -14,7 +14,7 @@
 <body>
     <div th:include="fragments/header :: header"></div>
 
-    <div class="container results">
+    <div class="container-fluid results">
         <div class="row text-center">
             <div class="col-sm-12">
                 <div class="panel panel-default">
@@ -23,17 +23,103 @@
                     </div>
                     <div class="panel-body">
                         <div>
-                            Volcano plot
-                            <div id="d3-plot"></div>
+                            <h3>Plots</h3>
+                            <div class="row">
+
+                                <div class="col-sm-7">
+                                    <div class="plot-container">
+                                        <!-- content oaded by d3 -->
+                                        <div id="d3-plot" class="plot"></div>
+                                    </div>
+
+                                    <div class="well well-lg">
+                                        <form class="input-group margin-center" id="threshold-form">    <!-- allow re-selection of threshold values -->
+                                            <div class="">
+                                                <label for="pThreshold">P value threshold</label>
+                                                <input type="text" name="pThreshold" id="pThreshold" th:value="${pThreshold}" /> <br/>
+                                                <label for="fcThreshold">FC threshold</label>
+                                                <input type="text" name="fcThreshold" id="fcThreshold" th:value="${fcThreshold}" /> <br/>
+                                                <input type="submit" value="Submit" />
+                                                <input type="reset" value="Reset" />
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-5 result-panels" id="result-panels-1">
+                                    <div class="panel panel-default result-panel upregulated">
+                                        <div class="panel-heading">Upregulated</div>
+                                        <div class="panel-body">
+                                            <table class="text-left table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>P Value</th>
+                                                        <th>FDR</th>
+                                                        <th>Fold Change</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default result-panel downregulated">
+                                        <div class="panel-heading">Downregulated</div>
+                                        <div class="panel-body">
+                                            <table class="text-left table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>P Value</th>
+                                                    <th>FDR</th>
+                                                    <th>Fold Change</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default result-panel insignificant">
+                                        <div class="panel-heading">Insignificant</div>
+                                        <div class="panel-body">
+                                            <table class="text-left table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>P Value</th>
+                                                    <th>FDR</th>
+                                                    <th>Fold Change</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
                             <!--<img th:src='${"/metabolite-analysis/results/image/" + token + "/volcano.png"}' />-->
                         </div>
+                        <hr />
                         <div th:switch="${results.size()}">
                             <div th:case="0">No results</div>
                             <div th:case="*">
+                                <h3>Complete table</h3>
                                 <table class="table table-striped table-bordered table-hover" id="results-table">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
+                                            <th>Name</th>
                                             <th>P Value</th>
                                             <th>FDR</th>
                                             <th>Fold Change</th>
@@ -43,6 +129,7 @@
                                     <tbody>
                                         <tr th:each="result : ${results}">
                                             <td th:text="${result.getIndex()}"></td>
+                                            <td th:text="${result.getName()}"></td>
                                             <td th:text="${result.getpValue()}"></td>
                                             <td th:text="${result.getFdr()}"></td>
                                             <td th:text="${result.getFoldChange()}"></td>
@@ -69,10 +156,38 @@
     <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>
     <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
 
+    <script src="/js/DataSegregator.js"></script>
+
     <script src="https://d3js.org/d3.v4.min.js"></script>
 
     <script type="text/javascript" th:inline="javascript">
+
+        // sanitizes the input string for safe use as classNames, ids, etc.
+        // update as needed
+        function sanitizeForHtml(input) {
+            input = input.trim();
+            return input.replace(/\./g, "-").replace(/\s/g, "-");
+        }
+
+        // comparison function for sorting objects by their "name" field
+        function compareNames(a, b) {
+            if (!a.name || !b.name) {
+                alert("comparison impossible!");
+                return;
+            }
+
+            if (a.name > b.name) {
+                return 1;
+            } else if (b.name > a.name) {
+                return -1;
+            } else {
+                return 0;   // equal
+            }
+        }
+
         $(function(){
+
+            // Data table(s)
             var $resultsTable = $('#results-table');
             $resultsTable.DataTable({
                 "dom": 'Bfrtip',
@@ -81,15 +196,115 @@
                 "buttons":['csv', 'excel']
             });
 
-            // convert raw table data to matrix for d3
+            // will need code to update data table!!
+
+            // results as JS object
             var results = [[${results}]];
+
+            // threshold values
+            var pThreshold = [[${pThreshold}]];
+            var fcThreshold = [[${fcThreshold}]];
+
+            var norm_pThreshold = -1*Math.log10(pThreshold);    // normalized threshold for plot
+            var norm_fcThreshold = Math.log2(fcThreshold);      // positive variant
+
+            // -------------- Side panel tables ---------------
+
+            var dataSegregator = new DataSegregator(results);
+            var processed = dataSegregator.segregate();
+            console.log(processed)
+
+            // set of class names of metabolites, etc. that have been highlighted
+            // by clicking them in the side table (or on the d3 plot)
+            // its elements carry over redraws, so it is useful to keep track of user interaction
+            var highlightedItems = new Set();
+
+            // note: fixes values to 3 decimal places for better output
+            function redrawSidetables(data, $parent) {
+                var listUp = document.createElement("tbody");
+                var listDown = document.createElement("tbody");
+                var listInsig = document.createElement("tbody");
+
+                for (var significance in data) {  // significance = ["upregulated", "downregulated", "insignificant"]
+                    var list;
+
+                    switch (significance) {
+                        case "insignificant":
+                            list = listInsig;
+                            break;
+                        case "upregulated":
+                            list = listUp;
+                            break;
+                        case "downregulated":
+                            list = listDown;
+                            break;
+                        default:
+                            console.log("error in side table redraw");
+                            break;
+                    }
+
+                    // list now points to correct list, but let's order the array first
+                    data[significance].sort(compareNames);
+
+                    // add elements to tbody dom ele
+                    for (var index in data[significance]) {
+
+                        var tr = document.createElement("tr");
+                        tr.classList.add(sanitizeForHtml(data[significance][index].name));
+
+                        var name = document.createElement("td");            // name
+                        name.textContent = data[significance][index].name;
+                        var p = document.createElement("td");               // p
+                        p.textContent = data[significance][index].pValue.toFixed(4);
+                        var fdr = document.createElement("td");             // fdr
+                        fdr.textContent = data[significance][index].fdr.toFixed(4);
+                        var fc = document.createElement("td");              // fold change
+                        fc.textContent = data[significance][index].foldChange.toFixed(4);
+
+                        tr.appendChild(name);
+                        tr.appendChild(p);
+                        tr.appendChild(fdr);
+                        tr.appendChild(fc);
+
+                        list.appendChild(tr);   // add table row
+                    }
+
+                    // now we can redraw the current table
+                    var $table = $( '#' + $parent.attr('id') + " ." + significance + " table" );    // table
+                    $table.children("tbody").remove();
+                    $table.append(list);
+                }
+
+                // on click for side panels -> highlight appropriate UI elements
+                $('.result-panel table>tbody>tr').on("click", function() {
+                    $('.' + this.classList[0]).toggleClass("active");
+
+                    // add unique class name to the highlighted set
+                    if ($(this).hasClass('active')) {
+                        highlightedItems.add(this.classList[0]);
+                    } else {
+                        highlightedItems.delete(this.classList[0]);
+                    }
+                });
+
+                // re-highlight previously highlighted items, if any
+                highlightedItems.forEach(function(value) {  // full def = function(value, valueAgain, this)
+                    $('.' + value).addClass("active");
+                });
+            }
+
+            redrawSidetables(processed, $('#result-panels-1'));
+
+            // ------------------------------  D3  ----------------------------
+
+            // convert raw table data to matrix for d3
             var dataset = [];
             for (var index in results) {
                 var result = results[index];
-                dataset.push([Math.log2(result.foldChange), -1*Math.log10(result.pValue)]);
+                dataset.push([Math.log2(result.foldChange), -1*Math.log10(result.pValue), result.name]);
             }
 
-            // plot dimensions
+            // plot/graph dimensions
             var height = 400;
             var width = 500;
             var padding = 20;   // just to prevent colliding elements
@@ -100,14 +315,9 @@
             var minY = d3.min(dataset, function(d) { return d[1]});
             var maxY = d3.max(dataset, function(d) { return d[1]});
 
-            console.log("minX " + minX)
-            console.log("maxX" + maxX)
-            console.log("minY " + minY)
-            console.log("maxY" + maxY);
-
             var xScale = d3.scaleLinear()   // range of X values (preserve x values with width)
                     .domain([minX, maxX])
-                    .range([0, width]);
+                    .range([padding, width-padding]);
 
             var yScale = d3.scaleLinear()   // ^
                     .domain([minY, maxY])
@@ -121,16 +331,51 @@
                     .scale(yScale);
 
             // zoom feature
-            //var zoom = d3.zoom().x(xScale).y(yScale).on("zoom", zoomed);
+            var currentZoomTransform = d3.zoomIdentity;     // defaults to identity (no scaling, etc.)
+            var onZoom = function() {
+                //view.attr("transform", d3.event.transform);
+                gXAxis.call(xAxis.scale(d3.event.transform.rescaleX(xScale)));
+                gYAxis.call(yAxis.scale(d3.event.transform.rescaleY(yScale)));
+                svg.selectAll("line.threshold, circle.d3-node").attr("transform", d3.event.transform);
 
-            var svg = d3.select("#d3-plot").text("D3 Plot").append("svg")
+                currentZoomTransform = d3.event.transform;
+            };
+
+            var zoom = d3.zoom()
+                    .scaleExtent([1, 4])
+                    .translateExtent([[0,0], [width + padding, height+padding]])
+                    .on("zoom", onZoom);
+
+            var svg = d3.select("#d3-plot").append("svg")
                     .attr("height", height)
-                    .attr("width", width);
+                    .attr("width", width)
+                    .call(zoom);
+
+            var view = svg.append("g"); // houses all elements in plot
+
+            // render data points
+            var getCircleColor = function(d) {
+                /*<![CDATA[*/
+                if ( (d[1] < norm_pThreshold) ||
+                        ((d[0] > -1*norm_fcThreshold) && (d[0] < norm_fcThreshold)) ) { // insig
+                    return "gray";
+                } else if (d[0] < -1*norm_fcThreshold) {    // downregulated
+                    return "orange";
+                } else if (d[0] > norm_fcThreshold) {       // upregulated
+                    return "blue";
+                } else {
+                    return "black";   // directly on threshold line
+                }
+                /*]]>*/ /* because of XML parsing */
+            };
+
             svg.selectAll("circle")
                     .data(dataset)
                     .enter()
-                    .append("circle")           // tag name
-                    .attr("class", "d3-node")   // class name
+                    .append("circle")               // tag name
+                    .attr("class", function(d) {    // classname "d3-node {metabolite-name}"
+                        return sanitizeForHtml(d[2]) + " d3-node";
+                    })
                     .attr("cx", function(d) {
                         return xScale(d[0]);
                     })
@@ -138,21 +383,140 @@
                         return yScale(d[1]);
                     })
                     .attr("r", 2)
-                    .style("fill", function(d) {
-                        if (d[0] > 0.75) {
-                            return "red";
-                        } else {
-                            return "black";
-                        }
+                    .style("fill", function(d) {    // coloring
+                        return getCircleColor(d);
                     });
 
-            // append axes
-            svg.append("g").attr("class", "axis").attr("transform", "translate(0, " + (height-padding) + ")").call(xAxis);
-            svg.append("g").attr("class", "axis").call(yAxis);
+            // on click, highlight related UI elements
+            svg.selectAll("circle.d3-node").on("click", function(){
+                console.log(this.classList[0])
+                console.log(d3.select(this));
 
-            // enable zoom
-            //svg.call(zoom);
-        });
+                $('.' + this.classList[0]).toggleClass("active");
+
+                // add unique class name to the highlighted set -- copied from tr onclick above, refactorr
+                if ($(this).hasClass('active')) {
+                    highlightedItems.add(this.classList[0]);
+                } else {
+                    highlightedItems.delete(this.classList[0]);
+                }
+            });
+
+            // draw axes
+            svg.append("g");
+            var gXAxis = svg.append("g").attr("class", "x axis").attr("transform", "translate(0, " + (height-padding) + ")").call(xAxis);
+            var gYAxis = svg.append("g").attr("class", "y axis").call(yAxis);
+
+            // threshold lines
+            function redrawThresholdLines(norm_pThreshold, norm_fcThreshold) {
+
+                // delete current lines
+                $("svg line.threshold").remove();
+
+                // append new lines
+                svg.append("line")
+                        .attr("class", "positive-fc-thresh threshold")
+                        .attr("x1", xScale(norm_fcThreshold))
+                        .attr("y1", yScale(maxY))
+                        .attr("x2", xScale(norm_fcThreshold))
+                        .attr("y2", yScale(minY))
+                        .attr("transform", currentZoomTransform)    // ensures when zoomed that loc is correct
+                        .style("stroke", "gray")
+                        .style("stroke-width", 1)
+                        .style("stroke-dasharray", "15,15");
+
+                svg.append("line")
+                        .attr("class", "negative-fc-thresh threshold")
+                        .attr("x1", xScale(-1*norm_fcThreshold))
+                        .attr("y1", yScale(maxY))
+                        .attr("x2", xScale(-1*norm_fcThreshold))
+                        .attr("y2", yScale(minY))
+                        .attr("transform", currentZoomTransform)    // ensures when zoomed that loc is correct
+                        .style("stroke", "gray")
+                        .style("stroke-width", 1)
+                        .style("stroke-dasharray", "15,15");
+
+                svg.append("line")
+                        .attr("class", "p-thresh threshold")
+                        .attr("x1", xScale(minX))
+                        .attr("y1", yScale(norm_pThreshold))
+                        .attr("x2", xScale(maxX))
+                        .attr("y2", yScale(norm_pThreshold))
+                        .attr("transform", currentZoomTransform)    // ensures when zoomed that loc is correct
+                        .style("stroke", "gray")
+                        .style("stroke-width", 1)
+                        .style("stroke-dasharray", "15,15");
+            }
+
+            // draw initial threshold lines
+            redrawThresholdLines(norm_pThreshold, norm_fcThreshold);
+
+            // updating threshold form
+            $("#threshold-form").on("submit", function(e) {
+                e.preventDefault();
+
+                // redraw threshold lines based on input
+                var inputPThreshold = $('#pThreshold').val();
+                var inputFcThreshold = $('#fcThreshold').val();
+                norm_pThreshold = -1*Math.log10(inputPThreshold);
+                norm_fcThreshold = Math.log2(inputFcThreshold);
+
+                // recolor data points
+                svg.selectAll("circle")
+                        .style("fill", function(d) {
+                            return getCircleColor(d);
+                        })
+                        .classed("active", false);  // remove active coloring
+
+                // update side tables
+                var resegregated = dataSegregator.resegregate(inputPThreshold, inputFcThreshold);
+                redrawSidetables(resegregated, $('#result-panels-1'));
+                redrawThresholdLines(norm_pThreshold, norm_fcThreshold);
+
+                // reconstruct data table?
+
+            });
+
+            $('#threshold-form').on("reset", function(e) {
+                e.preventDefault();
+
+                // reset values
+                $('#pThreshold').val(pThreshold);
+                $('#fcThreshold').val(fcThreshold);
+
+                resetUI();
+            });
+
+            // resets all user graphical elements to the original state
+            function resetUI() {
+                // remove highlights
+                highlightedItems.clear();
+
+                // reset the "semi-global" threshold values
+                norm_pThreshold = -1*Math.log10(pThreshold);
+                norm_fcThreshold = Math.log2(fcThreshold);
+
+                // reset zoom value
+                //currentZoomTransform = d3.zoomIdentity;
+
+                // recolor data points
+                svg.selectAll("circle")
+                        .style("fill", function(d) {
+                            return getCircleColor(d);
+                        })
+                        .classed("active", false);  // remove active coloring
+
+                // redraw the side panels and threshold lines
+                redrawSidetables(dataSegregator.resegregate(pThreshold, fcThreshold), $('#result-panels-1'));
+                redrawThresholdLines(norm_pThreshold, norm_fcThreshold);
+
+                // reset zoom -- needs debugging
+//                svg.selectAll('circle.d3-node, line.threshold').attr("transform", d3.zoomIdentity);
+//                gXAxis.call(xAxis.scale(d3.zoomIdentity.rescaleX(xScale)));
+//                gYAxis.call(yAxis.scale(d3.zoomIdentity.rescaleY(yScale)));
+            }
+
+        }); // end docready
     </script>
 
     <div th:include="fragments/footer :: footer"></div>

@@ -12,7 +12,7 @@ analyze.file <- function(data_path, outputCSV, outputPNG, th_pvalue = 0.1, th_fc
     # remove missing values
     complete_idx = (colSums((raw_dta == "no peak") | (raw_dta == "<LOD") | (raw_dta == "< LOD") | is.na(raw_dta) | (raw_dta == 0) | raw_dta == 5e-05) == 0);
     dta = data.matrix(raw_dta[,complete_idx]);
-    print(dta)
+
     # get p values
     pvals = apply(dta, 2, function(x) {t.test(x[c(1:6)], x[c(7:12)], paired = TRUE, alternative = "two.sided")$p.value});
 
@@ -28,7 +28,8 @@ analyze.file <- function(data_path, outputCSV, outputPNG, th_pvalue = 0.1, th_fc
     sigs[(fdrs < th_pvalue) & (log2(fcs) <= -log2(th_fc))] = "downregulated in HF";
 
     # return result
-    results = cbind(as.numeric(pvals), as.numeric(fdrs), as.numeric(fcs), sigs);
+    results = cbind(colnames(dta), as.numeric(pvals), as.numeric(fdrs), as.numeric(fcs), sigs);
+
     # write csv file
     write.csv(results, outputCSV);
 

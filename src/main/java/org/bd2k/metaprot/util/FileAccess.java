@@ -43,15 +43,16 @@ public class FileAccess {
                 while((line = br.readLine()) != null) {
                     line = line.replace("\"", "");
                     lineArr = line.split(",");
-                    if (lineArr.length != 5 || lineArr[0].equals("")) {
+                    if (lineArr.length != 6 || lineArr[0].equals("")) {
                         continue;   // something is wrong with this row, or it is the first row
                     }
 
                     MetaboliteStat stat = new MetaboliteStat(Integer.parseInt(lineArr[0]),
-                            Double.parseDouble(lineArr[1]),
+                            lineArr[1],
                             Double.parseDouble(lineArr[2]),
                             Double.parseDouble(lineArr[3]),
-                            lineArr[4]);
+                            Double.parseDouble(lineArr[4]),
+                            lineArr[5]);
 
                     list.add(stat);
                 }

@@ -10,11 +10,21 @@ a.navbar-brand:hover {
     color: #02a5de;
 }
 
+.d3-node.active {
+    fill: #fcf8e3 !important;
+    fill: red !important;
+}
+
 .axis path,
 .axis line {
     fill: none;
     stroke: black;
     shape-rendering: crispEdges;
+}
+
+.margin-center {
+    margin-left:auto;
+    margin-right:auto;
 }
 
 .navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus,
@@ -28,12 +38,34 @@ a.navbar-brand:hover {
     border-color: #02749c;
 }
 
+.plot-container {
+    min-width: 500px;
+    min-height: 400px;
+}
+
+.plot {
+    max-height: 400px;
+    overflow: hidden;
+}
+
 .progress-bar {
     background-color: #02a5de;
 }
 
 .results img {
     width: 100%;
+}
+
+.result-panel .panel-body {
+    max-height: 150px;
+    overflow: scroll;
+}
+
+.result-panel .table>tbody>tr.active,
+.result-panel .table>tbody>tr:hover {
+    background-color: #fcf8e3;
+    color: red;
+    cursor: pointer;
 }
 
 svg:not(:root) {

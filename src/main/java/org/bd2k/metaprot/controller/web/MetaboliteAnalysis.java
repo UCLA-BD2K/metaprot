@@ -5,13 +5,11 @@ import org.bd2k.metaprot.exception.ResourceNotFoundException;
 import org.bd2k.metaprot.util.FileAccess;
 import org.bd2k.metaprot.util.RManager;
 import org.rosuda.JRI.REXP;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,7 +28,8 @@ public class MetaboliteAnalysis {
 
     private RManager manager = null;
 
-    private final String LOCAL_DOWNLOAD_PATH = "/ssd2/metaprot";
+    @Value("${local.path.downloadPath}")
+    private String LOCAL_DOWNLOAD_PATH;
 
     // returns a RManager that can be used to execute R scripts and commands
     private RManager getRManager() {
@@ -56,7 +55,22 @@ public class MetaboliteAnalysis {
     }
 
     @RequestMapping(value = "/results/{token}", method = RequestMethod.GET)
-    public String getMetaAnalysisResults(Model model, @PathVariable("token") String token) {
+    public String getMetaAnalysisResults(Model model,
+                                         @PathVariable("token") String token,
+                                         @RequestParam(value = "pthresh", required = false) Double pThreshold,
+                                         @RequestParam(value = "fcthresh", required = false) Double fcThreshold) {
+
+        // defaults
+        model.addAttribute("pThreshold", 0.1);
+        model.addAttribute("fcThreshold", 1.5);
+
+        if (pThreshold != null) {
+            model.addAttribute("pThreshold", pThreshold);
+        }
+
+        if (fcThreshold != null) {
+            model.addAttribute("fcThreshold", fcThreshold);
+        }
 
         model.addAttribute("results", new FileAccess().getMetaboliteAnalysisResults(token));
         model.addAttribute("token", token);
