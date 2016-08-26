@@ -2,6 +2,7 @@ package org.bd2k.metaprot.controller.web;
 
 import com.amazonaws.util.IOUtils;
 import org.bd2k.metaprot.exception.ResourceNotFoundException;
+import org.bd2k.metaprot.model.MetaboliteStat;
 import org.bd2k.metaprot.util.FileAccess;
 import org.bd2k.metaprot.util.RManager;
 import org.rosuda.JRI.REXP;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -72,8 +75,16 @@ public class MetaboliteAnalysis {
             model.addAttribute("fcThreshold", fcThreshold);
         }
 
+        // no longer  needed, but here for demo table
         model.addAttribute("results", new FileAccess().getMetaboliteAnalysisResults(token));
+
         model.addAttribute("token", token);
+
+        List<MetaboliteStat> temp = new FileAccess().getMetaboliteAnalysisResults(token);
+        List<List<MetaboliteStat>> multipleResults = new ArrayList<>();
+        multipleResults.add(temp);
+
+        model.addAttribute("multipleResults", multipleResults); // test with multiple results
 
         return "meta_analysis_results";
     }

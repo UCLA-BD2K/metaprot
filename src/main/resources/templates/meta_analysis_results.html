@@ -24,44 +24,51 @@
                     <div class="panel-body">
                         <div>
                             <h3>Plots</h3>
-                            <div class="row">
-
+                            <!-- start thymeleaf templating -->
+                            <div class="row plot-wrapper" th:each="result, i : ${multipleResults}">
+                                <hr/>
                                 <div class="col-sm-7">
-                                    <div class="plot-container">
-                                        <!-- content oaded by d3 -->
-                                        <div id="d3-plot" class="plot"></div>
+                                    <div class="plot-container margin-center">
+                                        <div class="plot-switches input-group">
+                                            <label>Enable Zoom and Pan &nbsp;<input type="checkbox" class="enable-zoom" /></label>
+                                        </div>
+                                        <!-- content loaded by d3 -->
+                                        <div class="plot" th:id='${"d3-plot-" + i.count}'></div>
                                     </div>
 
                                     <div class="well well-lg">
-                                        <form class="input-group margin-center" id="threshold-form">    <!-- allow re-selection of threshold values -->
+                                        <form class="input-group margin-center threshold-form" th:attr="data-plot-index=${i.count}">    <!-- allow re-selection of threshold values -->
                                             <div class="">
-                                                <label for="pThreshold">P value threshold</label>
-                                                <input type="text" name="pThreshold" id="pThreshold" th:value="${pThreshold}" /> <br/>
-                                                <label for="fcThreshold">FC threshold</label>
-                                                <input type="text" name="fcThreshold" id="fcThreshold" th:value="${fcThreshold}" /> <br/>
+                                                <label th:for="${'pThreshold-' + i.count}">P value threshold</label>
+                                                <input type="text" name="pThreshold" th:id="${'pThreshold-' + i.count}" th:value="${pThreshold}" /> <br/>
+                                                <label th:for="${'fcThreshold-' + i.count}">FC threshold</label>
+                                                <input type="text" name="fcThreshold" th:id="${'fcThreshold-' + i.count}" th:value="${fcThreshold}" /> <br/>
                                                 <input type="submit" value="Submit" />
-                                                <input type="reset" value="Reset" />
+                                                <input type="reset" value="Reset" disabled="disabled" />
                                             </div>
                                         </form>
+                                        <button class="generate-plot-btn btn btn-default" type="button" th:attr="data-plot-index=${i.count}">
+                                            Generate PNG for plot
+                                        </button>
                                     </div>
                                 </div>
 
-                                <div class="col-sm-5 result-panels" id="result-panels-1">
+                                <div class="col-sm-5 result-panels" th:id="${'result-panels-' + i.count}">
                                     <div class="panel panel-default result-panel upregulated">
                                         <div class="panel-heading">Upregulated</div>
                                         <div class="panel-body">
                                             <table class="text-left table table-hover">
                                                 <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>P Value</th>
-                                                        <th>FDR</th>
-                                                        <th>Fold Change</th>
-                                                    </tr>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>P Value</th>
+                                                    <th>FDR</th>
+                                                    <th>Fold Change</th>
+                                                </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                    </tr>
+                                                <tr>
+                                                </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -107,10 +114,10 @@
                                 </div>
 
                             </div>
-
-                            <!--<img th:src='${"/metabolite-analysis/results/image/" + token + "/volcano.png"}' />-->
                         </div>
                         <hr />
+
+                        <!-- not really needed -->
                         <div th:switch="${results.size()}">
                             <div th:case="0">No results</div>
                             <div th:case="*">
@@ -159,6 +166,9 @@
     <script src="/js/DataSegregator.js"></script>
 
     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="/js/SVGPlot.js"></script>
+
+    <script src="/js/lib/dom-to-image.min.js"></script>
 
     <script type="text/javascript" th:inline="javascript">
 
@@ -199,7 +209,9 @@
             // will need code to update data table!!
 
             // results as JS object
-            var results = [[${results}]];
+            var multipleResults = [[${multipleResults}]]
+            console.log(multipleResults)
+            console.log(multipleResults[0])
 
             // threshold values
             var pThreshold = [[${pThreshold}]];
@@ -210,14 +222,13 @@
 
             // -------------- Side panel tables ---------------
 
-            var dataSegregator = new DataSegregator(results);
-            var processed = dataSegregator.segregate();
-            console.log(processed)
-
             // set of class names of metabolites, etc. that have been highlighted
             // by clicking them in the side table (or on the d3 plot)
             // its elements carry over redraws, so it is useful to keep track of user interaction
-            var highlightedItems = new Set();
+            window.metaprot = {};
+            window.metaprot.plot = {};
+            window.metaprot.plot.highlightedItems = new Set();
+            var highlightedItems = window.metaprot.plot.highlightedItems;
 
             // note: fixes values to 3 decimal places for better output
             function redrawSidetables(data, $parent) {
@@ -276,202 +287,92 @@
                 }
 
                 // on click for side panels -> highlight appropriate UI elements
-                $('.result-panel table>tbody>tr').on("click", function() {
+                $('#' + $parent.attr("id") + ' table>tbody>tr').on("click", function() {
                     $('.' + this.classList[0]).toggleClass("active");
+
+                    var plotContainerId = $(this).parents(".result-panels").attr("id");
+                    plotContainerId = "d3-plot-" + plotContainerId[plotContainerId.length-1];
 
                     // add unique class name to the highlighted set
                     if ($(this).hasClass('active')) {
                         highlightedItems.add(this.classList[0]);
+                        $('.d3-node.' + this.classList[0]).css("fill", "red");
                     } else {
                         highlightedItems.delete(this.classList[0]);
+                        d3.selectAll('.d3-node.' + this.classList[0]).style("fill", plots[plotContainerId]['plot'].getCircleColor);   // needs to be for all
                     }
                 });
 
                 // re-highlight previously highlighted items, if any
                 highlightedItems.forEach(function(value) {  // full def = function(value, valueAgain, this)
                     $('.' + value).addClass("active");
+                    $('.d3-node.' + value).css('fill', 'red');  // included here for performance
                 });
             }
 
-            redrawSidetables(processed, $('#result-panels-1'));
+            var plots = {}; // index of plots on page, { "plotContainerId": {"plot":SVGPlot, "segregator":DataSegregator}, ... }
+
+            /*<![CDATA[*/
+            for (var i = 0; i < multipleResults.length; i++) {
+
+                // create entry for this plot
+                var plotContainerId = "d3-plot-" + (i+1);
+
+                plots[plotContainerId] = {};
+
+                var inputData = multipleResults[i];
+                var seg = new DataSegregator(inputData);
+                plots[plotContainerId]['segregator'] = seg;
+
+                redrawSidetables(seg.segregate(), $('#result-panels-' + (i+1)));  // i+1 as i.count above is 1-based
+
+                var dataset = [];
+                for (var index in multipleResults[i]) {
+                    var result = multipleResults[i][index];
+                    dataset.push([Math.log2(result.foldChange), -1*Math.log10(result.pValue), result.name]);
+                }
+
+                var plot = new SVGPlot(dataset, plotContainerId, norm_pThreshold, norm_fcThreshold);
+                plot.plot();    // render plot
+
+                // log
+                plots[plotContainerId]['plot'] = plot;
+
+                //plots[plotContainerId]['plot'].enableDragSelect();  // enable drag by default
+            }
+            /*]]>*/ /* because of XML parsing */
+
 
             // ------------------------------  D3  ----------------------------
 
-            // convert raw table data to matrix for d3
-            var dataset = [];
-            for (var index in results) {
-                var result = results[index];
-                dataset.push([Math.log2(result.foldChange), -1*Math.log10(result.pValue), result.name]);
-            }
-
-            // plot/graph dimensions
-            var height = 400;
-            var width = 500;
-            var padding = 20;   // just to prevent colliding elements
-
-            // scale functions (for better visualization of small values)
-            var minX = d3.min(dataset, function(d) { return d[0]});
-            var maxX = d3.max(dataset, function(d) { return d[0]});
-            var minY = d3.min(dataset, function(d) { return d[1]});
-            var maxY = d3.max(dataset, function(d) { return d[1]});
-
-            var xScale = d3.scaleLinear()   // range of X values (preserve x values with width)
-                    .domain([minX, maxX])
-                    .range([padding, width-padding]);
-
-            var yScale = d3.scaleLinear()   // ^
-                    .domain([minY, maxY])
-                    .range([height-padding, padding]);  // flips the growth of y values from downward to upwards
-
-            // generate x and y axes
-            var xAxis = d3.axisBottom()
-                    .scale(xScale);
-
-            var yAxis = d3.axisLeft()
-                    .scale(yScale);
-
-            // zoom feature
-            var currentZoomTransform = d3.zoomIdentity;     // defaults to identity (no scaling, etc.)
-            var onZoom = function() {
-                //view.attr("transform", d3.event.transform);
-                gXAxis.call(xAxis.scale(d3.event.transform.rescaleX(xScale)));
-                gYAxis.call(yAxis.scale(d3.event.transform.rescaleY(yScale)));
-                svg.selectAll("line.threshold, circle.d3-node").attr("transform", d3.event.transform);
-
-                currentZoomTransform = d3.event.transform;
-            };
-
-            var zoom = d3.zoom()
-                    .scaleExtent([1, 4])
-                    .translateExtent([[0,0], [width + padding, height+padding]])
-                    .on("zoom", onZoom);
-
-            var svg = d3.select("#d3-plot").append("svg")
-                    .attr("height", height)
-                    .attr("width", width)
-                    .call(zoom);
-
-            var view = svg.append("g"); // houses all elements in plot
-
-            // render data points
-            var getCircleColor = function(d) {
-                /*<![CDATA[*/
-                if ( (d[1] < norm_pThreshold) ||
-                        ((d[0] > -1*norm_fcThreshold) && (d[0] < norm_fcThreshold)) ) { // insig
-                    return "gray";
-                } else if (d[0] < -1*norm_fcThreshold) {    // downregulated
-                    return "orange";
-                } else if (d[0] > norm_fcThreshold) {       // upregulated
-                    return "blue";
-                } else {
-                    return "black";   // directly on threshold line
-                }
-                /*]]>*/ /* because of XML parsing */
-            };
-
-            svg.selectAll("circle")
-                    .data(dataset)
-                    .enter()
-                    .append("circle")               // tag name
-                    .attr("class", function(d) {    // classname "d3-node {metabolite-name}"
-                        return sanitizeForHtml(d[2]) + " d3-node";
-                    })
-                    .attr("cx", function(d) {
-                        return xScale(d[0]);
-                    })
-                    .attr("cy", function(d) {
-                        return yScale(d[1]);
-                    })
-                    .attr("r", 2)
-                    .style("fill", function(d) {    // coloring
-                        return getCircleColor(d);
-                    });
-
-            // on click, highlight related UI elements
-            svg.selectAll("circle.d3-node").on("click", function(){
-                console.log(this.classList[0])
-                console.log(d3.select(this));
-
-                $('.' + this.classList[0]).toggleClass("active");
-
-                // add unique class name to the highlighted set -- copied from tr onclick above, refactorr
-                if ($(this).hasClass('active')) {
-                    highlightedItems.add(this.classList[0]);
-                } else {
-                    highlightedItems.delete(this.classList[0]);
-                }
-            });
-
-            // draw axes
-            svg.append("g");
-            var gXAxis = svg.append("g").attr("class", "x axis").attr("transform", "translate(0, " + (height-padding) + ")").call(xAxis);
-            var gYAxis = svg.append("g").attr("class", "y axis").call(yAxis);
-
-            // threshold lines
-            function redrawThresholdLines(norm_pThreshold, norm_fcThreshold) {
-
-                // delete current lines
-                $("svg line.threshold").remove();
-
-                // append new lines
-                svg.append("line")
-                        .attr("class", "positive-fc-thresh threshold")
-                        .attr("x1", xScale(norm_fcThreshold))
-                        .attr("y1", yScale(maxY))
-                        .attr("x2", xScale(norm_fcThreshold))
-                        .attr("y2", yScale(minY))
-                        .attr("transform", currentZoomTransform)    // ensures when zoomed that loc is correct
-                        .style("stroke", "gray")
-                        .style("stroke-width", 1)
-                        .style("stroke-dasharray", "15,15");
-
-                svg.append("line")
-                        .attr("class", "negative-fc-thresh threshold")
-                        .attr("x1", xScale(-1*norm_fcThreshold))
-                        .attr("y1", yScale(maxY))
-                        .attr("x2", xScale(-1*norm_fcThreshold))
-                        .attr("y2", yScale(minY))
-                        .attr("transform", currentZoomTransform)    // ensures when zoomed that loc is correct
-                        .style("stroke", "gray")
-                        .style("stroke-width", 1)
-                        .style("stroke-dasharray", "15,15");
-
-                svg.append("line")
-                        .attr("class", "p-thresh threshold")
-                        .attr("x1", xScale(minX))
-                        .attr("y1", yScale(norm_pThreshold))
-                        .attr("x2", xScale(maxX))
-                        .attr("y2", yScale(norm_pThreshold))
-                        .attr("transform", currentZoomTransform)    // ensures when zoomed that loc is correct
-                        .style("stroke", "gray")
-                        .style("stroke-width", 1)
-                        .style("stroke-dasharray", "15,15");
-            }
-
-            // draw initial threshold lines
-            redrawThresholdLines(norm_pThreshold, norm_fcThreshold);
 
             // updating threshold form
-            $("#threshold-form").on("submit", function(e) {
+            $(".threshold-form").on("submit", function(e) {
                 e.preventDefault();
 
                 // redraw threshold lines based on input
-                var inputPThreshold = $('#pThreshold').val();
-                var inputFcThreshold = $('#fcThreshold').val();
+                var plotContainerId = "d3-plot-" + $(this).attr("data-plot-index");
+
+                var inputPThreshold = $(this).find("input[name='pThreshold']").val();
+
+                var inputFcThreshold = $(this).parent().find("input[name='fcThreshold']").val();
                 norm_pThreshold = -1*Math.log10(inputPThreshold);
                 norm_fcThreshold = Math.log2(inputFcThreshold);
 
-                // recolor data points
-                svg.selectAll("circle")
+                // update SVGPlot instance's internal threshold value
+                plots[plotContainerId]['plot'].setThresholds(norm_pThreshold, norm_fcThreshold);
+
+                // recolor data points, back to original state
+                plots[plotContainerId]['plot'].getSvg().selectAll("circle")
                         .style("fill", function(d) {
-                            return getCircleColor(d);
+                            return plots[plotContainerId]['plot'].getCircleColor(d);
                         })
                         .classed("active", false);  // remove active coloring
 
                 // update side tables
-                var resegregated = dataSegregator.resegregate(inputPThreshold, inputFcThreshold);
-                redrawSidetables(resegregated, $('#result-panels-1'));
-                redrawThresholdLines(norm_pThreshold, norm_fcThreshold);
+                var resegregated = plots[plotContainerId]['segregator'].resegregate(inputPThreshold, inputFcThreshold);
+                redrawSidetables(resegregated, $('#result-panels-' + plotContainerId[plotContainerId.length-1]));
+                plots[plotContainerId]['plot'].redrawThresholdLines(norm_pThreshold, norm_fcThreshold);
 
                 // reconstruct data table?
 
@@ -480,15 +381,17 @@
             $('#threshold-form').on("reset", function(e) {
                 e.preventDefault();
 
+                var plotContainerId = "d3-plot-" + $(this).attr("data-plot-index");
+
                 // reset values
                 $('#pThreshold').val(pThreshold);
                 $('#fcThreshold').val(fcThreshold);
 
-                resetUI();
+                resetUI(plotContainerId);   //TODO
             });
 
             // resets all user graphical elements to the original state
-            function resetUI() {
+            function resetUI(plotContainerId) {//TODO
                 // remove highlights
                 highlightedItems.clear();
 
@@ -507,7 +410,7 @@
                         .classed("active", false);  // remove active coloring
 
                 // redraw the side panels and threshold lines
-                redrawSidetables(dataSegregator.resegregate(pThreshold, fcThreshold), $('#result-panels-1'));
+                redrawSidetables(dataSegregator.resegregate(pThreshold, fcThreshold), $('#result-panels-'));
                 redrawThresholdLines(norm_pThreshold, norm_fcThreshold);
 
                 // reset zoom -- needs debugging
@@ -516,6 +419,47 @@
 //                gYAxis.call(yAxis.scale(d3.zoomIdentity.rescaleY(yScale)));
             }
 
+            /* ------------------------ MISC ---------------------------- */
+
+            $('.generate-plot-btn').on("click", function(e) {
+                e.preventDefault();
+
+                var plotContainerId = "d3-plot-" + $(this).attr("data-plot-index");
+                var formParent = $(this).parent()[0];
+                var i = document.createElement("i");
+                i.classList.add("fa", "fa-spin", "fa-cog");
+
+                var self = $(this)[0];
+                self.innerText = "";
+                self.appendChild(i);
+
+                domtoimage.toPng($('#' + plotContainerId)[0])    // gets the div holding svg
+                        .then(function(dataUrl) {
+                            var anchor = document.createElement("a");
+                            anchor.setAttribute("href", dataUrl);
+                            anchor.setAttribute("download", plotContainerId + ".png");
+                            anchor.innerText = "Download";
+                            formParent.appendChild(anchor);
+
+                            self.innerText = "Complete!";
+                        })
+                        .catch(function(err) {
+                            console.log("Something went wrong with dom-to-image: " + err);
+                        });
+            });
+
+
+            $('input.enable-zoom').on("change", function() {
+
+                var plotContainerId = $(this).parents(".plot-container").children(".plot").attr("id");
+                console.log("er...")
+                if (this.checked) {
+                    //enableDragSelect();
+                    plots[plotContainerId]['plot'].disableDragSelect();
+                } else {
+                    plots[plotContainerId]['plot'].enableDragSelect();
+                }
+            });
         }); // end docready
     </script>
 
