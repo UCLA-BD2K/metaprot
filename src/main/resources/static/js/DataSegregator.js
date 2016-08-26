@@ -43,17 +43,22 @@ var DataSegregator =  (function(data) {
     };
 
     // given specified pThreshold and fcThreshold, re-segregate the data
+    // TODO refactor to either use or not use the result variable
     var resegregate = function(pThreshold, fcThreshold) {
         if (!result) {
             console.log("Cannot re-segregate uninitialized data!");
             return;
         }
 
+        // compute normalized values of the input pThreshold and fcThreshold
+        var norm_pThreshold = -1*Math.log10(pThreshold);
+        var norm_fcThreshold = Math.log2(fcThreshold);
+
         var newResult = {};
 
         for (var significance in result) {
             for (var index in result[significance]) {
-                var sig = computeSignificance(result[significance][index], pThreshold, fcThreshold);
+                var sig = computeSignificance(result[significance][index], norm_pThreshold, norm_fcThreshold);
 
                 if (newResult[sig]) {
                     newResult[sig].push(result[significance][index]);
@@ -68,15 +73,13 @@ var DataSegregator =  (function(data) {
     };
 
     // given pThreshold and fc threshold, return significance value --somewhat hardcoded, but will do for now
-    var computeSignificance = function(object, pThreshold, fcThreshold) {
+    var computeSignificance = function(object, norm_pThreshold, norm_fcThreshold) {
 
         var normP = -1*Math.log10(object.pValue);
         var normFc = Math.log2(object.foldChange);
 
-        var norm_pThreshold = -1*Math.log10(pThreshold);
-        var norm_fcThreshold = Math.log2(fcThreshold);
         var lowerFcThreshold = -1*norm_fcThreshold;
-        // ERROR
+
         if ((normP < norm_pThreshold)  ||
             (normFc > lowerFcThreshold) && (normFc < norm_fcThreshold)) {
             return "insignificant";

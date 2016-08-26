@@ -55,7 +55,6 @@ var SVGPlot = (function(dataset, plotContainerId, norm_pThreshold, norm_fcThresh
     // zoom feature
     var currentZoomTransform = d3.zoomIdentity;     // defaults to identity (no scaling, etc.)
     var onZoom = function() {
-        //view.attr("transform", d3.event.transform);
         gXAxis.call(xAxis.scale(d3.event.transform.rescaleX(xScale)));
         gYAxis.call(yAxis.scale(d3.event.transform.rescaleY(yScale)));
         svg.selectAll("line.threshold, circle.d3-node").attr("transform", d3.event.transform);
@@ -165,7 +164,7 @@ var SVGPlot = (function(dataset, plotContainerId, norm_pThreshold, norm_fcThresh
     var drag = d3.drag().on("start", onDragStart).on("drag", onDragMove).on("end", onDragEnd);
 
     function enableDragSelect() {  // in future take svg as input
-        svg.call(d3.zoom().on("zoom", null)).on("mousedown.zoom", null); // removes zoom
+        svg.call(d3.zoom().on("zoom", null)).on("mousedown.zoom", null).on("wheel.zoom", null); // removes zoom
         svg.call(drag);
     }
     function disableDragSelect() {

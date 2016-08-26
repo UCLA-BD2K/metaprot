@@ -45,14 +45,13 @@ a.navbar-brand:hover {
 
 .plot-container {
     width: 615px;
-    min-height: 460px;
-    overflow:hidden;
-    background-color: white;
 }
 
 .plot {
     min-height: 430px;
     position: relative;
+    background-color: #ffffff;  /* better contrast with data points, as well as for downloading */
+    overflow:hidden;
 }
 
 .progress-bar {
