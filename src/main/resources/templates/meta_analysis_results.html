@@ -37,15 +37,25 @@
                                     </div>
 
                                     <div class="well well-lg">
-                                        <form class="input-group margin-center threshold-form" th:attr="data-plot-index=${i.count}">    <!-- allow re-selection of threshold values -->
-                                            <div class="">
-                                                <label th:for="${'pThreshold-' + i.count}">P value threshold</label>
-                                                <input type="text" name="pThreshold" th:id="${'pThreshold-' + i.count}" th:value="${pThreshold}" /> <br/>
-                                                <label th:for="${'fcThreshold-' + i.count}">FC threshold</label>
-                                                <input type="text" name="fcThreshold" th:id="${'fcThreshold-' + i.count}" th:value="${fcThreshold}" /> <br/>
-                                                <input type="submit" value="Submit" />
-                                                <input type="reset" value="Reset" disabled="disabled" />
-                                            </div>
+                                        <form class="form-horizontal threshold-form" th:attr="data-plot-index=${i.count}">    <!-- allow re-selection of threshold values -->
+                                                <div class="form-group"><!-- .form-horizontal .form-group applies row styling, see bstrap docs -->
+                                                    <label th:for="${'pThreshold-' + i.count}" class="col-sm-4 control-label">P value threshold</label>
+                                                    <div class="col-sm-8">
+                                                        <input class="form-control" type="text" name="pThreshold" th:id="${'pThreshold-' + i.count}" th:value="${pThreshold}" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label th:for="${'fcThreshold-' + i.count}" class="col-sm-4 control-label">FC threshold</label>
+                                                    <div class="col-sm-8">
+                                                        <input class="form-control" type="text" name="fcThreshold" th:id="${'fcThreshold-' + i.count}" th:value="${fcThreshold}" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-12">
+                                                        <input class="btn btn-default" type="submit" value="Submit" />
+                                                        <input class="btn btn-default" type="reset" value="Reset" disabled="disabled" />
+                                                    </div>
+                                                </div>
                                         </form>
                                         <button class="generate-plot-btn btn btn-default" type="button" th:attr="data-plot-index=${i.count}">
                                             Generate PNG for plot
@@ -211,7 +221,6 @@
             // results as JS object
             var multipleResults = [[${multipleResults}]]
             console.log(multipleResults)
-            console.log(multipleResults[0])
 
             // threshold values
             var pThreshold = [[${pThreshold}]];
@@ -317,14 +326,16 @@
 
                 // create entry for this plot
                 var plotContainerId = "d3-plot-" + (i+1);
-
                 plots[plotContainerId] = {};
 
                 var inputData = multipleResults[i];
                 var seg = new DataSegregator(inputData);
                 plots[plotContainerId]['segregator'] = seg;
+                seg.segregate();    // segregator requires that data be segregated first
 
-                redrawSidetables(seg.segregate(), $('#result-panels-' + (i+1)));  // i+1 as i.count above is 1-based
+                // resegregate with higher precision - output from R can be a little off
+                redrawSidetables(seg.resegregate(pThreshold, fcThreshold),
+                        $('#result-panels-' + (i+1)));  // i+1 as i.count above is 1-based
 
                 var dataset = [];
                 for (var index in multipleResults[i]) {
@@ -335,10 +346,8 @@
                 var plot = new SVGPlot(dataset, plotContainerId, norm_pThreshold, norm_fcThreshold);
                 plot.plot();    // render plot
 
-                // log
+                // track the SVGPlot instance
                 plots[plotContainerId]['plot'] = plot;
-
-                //plots[plotContainerId]['plot'].enableDragSelect();  // enable drag by default
             }
             /*]]>*/ /* because of XML parsing */
 
@@ -439,7 +448,12 @@
                             anchor.setAttribute("href", dataUrl);
                             anchor.setAttribute("download", plotContainerId + ".png");
                             anchor.innerText = "Download";
-                            formParent.appendChild(anchor);
+
+                            var div = document.createElement("div");
+                            div.appendChild(anchor);
+                            div.style.marginTop = "10px";
+
+                            formParent.appendChild(div);
 
                             self.innerText = "Complete!";
                         })
@@ -452,7 +466,6 @@
             $('input.enable-zoom').on("change", function() {
 
                 var plotContainerId = $(this).parents(".plot-container").children(".plot").attr("id");
-                console.log("er...")
                 if (this.checked) {
                     //enableDragSelect();
                     plots[plotContainerId]['plot'].disableDragSelect();
