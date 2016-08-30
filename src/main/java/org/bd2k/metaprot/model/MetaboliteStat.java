@@ -15,13 +15,13 @@ public class MetaboliteStat {
     private double foldChange;
     private String significance;      // insignificant, upregulated, downregulated
 
-    public MetaboliteStat(int index, String name, double pValue, double fdr, double foldChange, String result) {
+    public MetaboliteStat(int index, String name, double pValue, double fdr, double foldChange, String significance) {
         this.index = index;
         this.name = name;
         this.pValue = pValue;
         this.fdr = fdr;
         this.foldChange = foldChange;
-        this.significance = result;
+        this.significance = significance;
     }
 
     public int getIndex() {

@@ -1,23 +1,22 @@
 package org.bd2k.metaprot.controller.web;
 
 import com.amazonaws.util.IOUtils;
+import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.ResourceNotFoundException;
-import org.bd2k.metaprot.model.MetaboliteStat;
+import org.bd2k.metaprot.model.Task;
 import org.bd2k.metaprot.util.FileAccess;
-import org.bd2k.metaprot.util.Globals;
-import org.bd2k.metaprot.util.RManager;
-import org.rosuda.JRI.REXP;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -30,62 +29,31 @@ import java.util.List;
 @RequestMapping("/metabolite-analysis")
 public class MetaboliteAnalysis {
 
-    private RManager manager = null;
+    @Autowired
+    private DAOImpl dao;
 
-    @Value("${local.path.downloadPath}")    // no longer used
-    private String LOCAL_DOWNLOAD_PATH;
-
-    // returns a RManager that can be used to execute R scripts and commands
-    private RManager getRManager() {
-        if (manager != null) {
-            return manager;
-        } else {
-            try {
-                manager = RManager.getInstance();
-                return manager;
-            } catch (Exception e) {
-                System.out.println("Exception!");
-                e.printStackTrace();
-            }
-        }
-
-        return null;
-    }
+    @Deprecated
+    private String LOCAL_DOWNLOAD_PATH = "";
 
     @RequestMapping(method = RequestMethod.GET)
     public String getMetaAnalysisIndex() {  // home page
-
         return "meta_analysis_index";
     }
 
     @RequestMapping(value = "/results/{token}", method = RequestMethod.GET)
-    public String getMetaAnalysisResults(Model model,
-                                         @PathVariable("token") String token,
-                                         @RequestParam(value = "pthresh", required = false) Double pThreshold,
-                                         @RequestParam(value = "fcthresh", required = false) Double fcThreshold) {
+    public String getMetaAnalysisResults(Model model, @PathVariable("token") String token) {
 
-        // defaults
-        model.addAttribute("pThreshold", 0.1);
-        model.addAttribute("fcThreshold", 1.5);
-
-        if (pThreshold != null) {
-            model.addAttribute("pThreshold", pThreshold);
-        }
-
-        if (fcThreshold != null) {
-            model.addAttribute("fcThreshold", fcThreshold);
-        }
+        // get task information from database
+        Task currentTask = dao.getTask(token);
 
         // no longer  needed, but here for demo table
         model.addAttribute("results", new FileAccess().getMetaboliteAnalysisResults(token));
 
+        // data to pass back
+        model.addAttribute("multipleResults", currentTask.getResults());
         model.addAttribute("token", token);
-
-        List<MetaboliteStat> temp = new FileAccess().getMetaboliteAnalysisResults(token);
-        List<List<MetaboliteStat>> multipleResults = new ArrayList<>();
-        multipleResults.add(temp);
-
-        model.addAttribute("multipleResults", multipleResults); // test with multiple results
+        model.addAttribute("pThreshold", currentTask.getpValueThreshold());
+        model.addAttribute("fcThreshold", currentTask.getFcThreshold());
 
         return "meta_analysis_results";
     }

@@ -88,6 +88,13 @@
 			<version>4.5.2</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+			<version>1.4.0.RELEASE</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
