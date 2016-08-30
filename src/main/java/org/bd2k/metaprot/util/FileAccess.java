@@ -16,7 +16,12 @@ import java.util.List;
 public class FileAccess {
 
     /* default location for the analysis csv results is /ssd2/metaprot/{token}/data.csv */
-    private final String LOCAL_DOWNLOAD_LOC = "/ssd2/metaprot";
+
+    private String root = Globals.getPathRoot();
+    private String sep = Globals.getPathSeparator();
+
+    // "/ssd2/metaprot"
+    private final String LOCAL_FILE_DOWNLOAD_PATH = root + "ssd2" + sep + "metaprot";
 
     /**
      * Returns a list of stats that represent each row in the resultant data.csv file
@@ -27,7 +32,7 @@ public class FileAccess {
      */
     public List<MetaboliteStat> getMetaboliteAnalysisResults(String token) {
 
-        File file = new File(String.format("%s/%s/data.csv", LOCAL_DOWNLOAD_LOC, token));
+        File file = new File(String.format("%s%s%s%sdata.csv", LOCAL_FILE_DOWNLOAD_PATH, sep, token, sep));
         List<MetaboliteStat> list = new ArrayList<>();
 
         if (file.exists()) {

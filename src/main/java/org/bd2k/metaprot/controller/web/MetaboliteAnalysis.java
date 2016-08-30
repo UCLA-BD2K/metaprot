@@ -4,6 +4,7 @@ import com.amazonaws.util.IOUtils;
 import org.bd2k.metaprot.exception.ResourceNotFoundException;
 import org.bd2k.metaprot.model.MetaboliteStat;
 import org.bd2k.metaprot.util.FileAccess;
+import org.bd2k.metaprot.util.Globals;
 import org.bd2k.metaprot.util.RManager;
 import org.rosuda.JRI.REXP;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +32,7 @@ public class MetaboliteAnalysis {
 
     private RManager manager = null;
 
-    @Value("${local.path.downloadPath}")
+    @Value("${local.path.downloadPath}")    // no longer used
     private String LOCAL_DOWNLOAD_PATH;
 
     // returns a RManager that can be used to execute R scripts and commands
@@ -89,6 +90,7 @@ public class MetaboliteAnalysis {
         return "meta_analysis_results";
     }
 
+    @Deprecated
     @ResponseBody
     @RequestMapping(value="/results/image/{token}/{filename:.+}", method = RequestMethod.GET,
         produces = MediaType.IMAGE_PNG_VALUE)

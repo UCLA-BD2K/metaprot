@@ -7,8 +7,10 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 
+import org.bd2k.metaprot.util.Globals;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.stereotype.Component;
@@ -25,9 +27,14 @@ import java.io.InputStream;
  */
 @Component
 @PropertySource("classpath:application.properties")
+@DependsOn({"Globals"})
 public class CopakbS3 {
 
     private final int BUFFER_SIZE = 1024 * 16;   // 16 bytes
+
+    // for path construction
+    //private String root = Globals.getPathRoot();
+    private String sep = Globals.getPathSeparator();
 
     // .properties
     @Value("${aws.access.key}")
@@ -86,7 +93,7 @@ public class CopakbS3 {
 
             // initialize streams
             is = object.getObjectContent();
-            fos = new FileOutputStream(destinationPath + "/" + fileName);
+            fos = new FileOutputStream(destinationPath + sep + fileName);
 
             int bytesRead;
             long totalBytesRead = 0;

@@ -3,8 +3,11 @@ package org.bd2k.metaprot.controller.rest;
 import org.bd2k.metaprot.aws.CopakbS3;
 import org.bd2k.metaprot.exception.BadRequestException;
 import org.bd2k.metaprot.exception.ServerException;
+import org.bd2k.metaprot.util.Globals;
 import org.bd2k.metaprot.util.RManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -18,13 +21,22 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/analyze")
+@DependsOn({"Globals"})
 public class analyze {
 
     @Autowired
     private CopakbS3 copakbS3;
 
-    private final String LOCAL_FILE_DOWNLOAD_PATH = "/ssd2/metaprot";
-    private final String METABOLITES_R_SCRIPT_LOC = "src/main/resources/R/scripts/r_sample_code.R";
+    // for path construction
+    private String root = Globals.getPathRoot();
+    private String sep = Globals.getPathSeparator();
+
+    // "/ssd2/metaprot"
+    private final String LOCAL_FILE_DOWNLOAD_PATH = root + "ssd2" + sep + "metaprot";
+
+    // "src/main/resources/R/scripts/r_sample_code.R"
+    private final String METABOLITES_R_SCRIPT_LOC = "src" + sep + "main" + sep + "resources" + sep + "R" +
+            sep + "scripts" + sep + "r_sample_code.R";
 
     private RManager manager = null;
 
@@ -47,7 +59,7 @@ public class analyze {
             throw new BadRequestException("Invalid request, please try again later.");
         }
 
-        int status = copakbS3.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + "/" + token);
+        int status = copakbS3.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
 
         // error
         if (status == -1) {
@@ -62,9 +74,9 @@ public class analyze {
             manager = RManager.getInstance();
             rScript = new File(METABOLITES_R_SCRIPT_LOC);
             manager.runRScript(rScript.getAbsolutePath());        // (re) initializes R environment
-            manager.runRCommand("analyze.file('" + LOCAL_FILE_DOWNLOAD_PATH + "/" + token
-                    + "/" + keyArr[keyArr.length-1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + "/" +
-                    token + "/data.csv', '" + LOCAL_FILE_DOWNLOAD_PATH + "/" + token + "/volcano.png', " +
+            manager.runRCommand("analyze.file('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token
+                    + sep + keyArr[keyArr.length-1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep +
+                    token + sep + "data.csv', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "volcano.png', " +
                     pThreshold + ", " + fcThreshold + ")");
         } catch (Exception e) {
             // handle exception so that we can return appropriate error messages
@@ -76,7 +88,7 @@ public class analyze {
                 " to see the report.";
 
         // analysis complete, safe to delete the uploaded csv file locally
-        File uploadedFile = new File(LOCAL_FILE_DOWNLOAD_PATH + "/" + token + "/" + keyArr[keyArr.length-1]);
+        File uploadedFile = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + keyArr[keyArr.length-1]);
         if (uploadedFile.exists()) {
             uploadedFile.delete();      // attempt to delete the uploaded file
         }
