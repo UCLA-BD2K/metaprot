@@ -23,6 +23,7 @@ import java.io.InputStream;
 /**
  * Provides access to AWS S3 resources. Configured as a component to allow
  * autowiring.
+ *
  * Created by allengong on 8/8/16.
  */
 @Component
@@ -132,6 +133,7 @@ public class CopakbS3 {
 
     /**
      * Given a httpStatus code, return a user friendly error message.
+     *
      * @param httpStatusCode the status code
      * @return a user friendly string detailing the error.
      */
