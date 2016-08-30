@@ -86,11 +86,11 @@
             var fcThreshold = 1.5;
 
             if ($('#pThreshold').val()) {
-                pThreshold = Number.parseInt($('#pThreshold').val());
+                pThreshold = Number.parseFloat($('#pThreshold').val());
             }
 
             if ($('#fcThreshold').val()) {
-                fcThreshold = Number.parseInt($('#fcThreshold').val());
+                fcThreshold = Number.parseFloat($('#fcThreshold').val());
             }
 
             var formData = new FormData();
@@ -117,8 +117,6 @@
                 }
             });
         }
-
-        window.temp = notifyAllFilesUploaded;
 
         $uploadForm.on("submit", function(e) {
             e.preventDefault();

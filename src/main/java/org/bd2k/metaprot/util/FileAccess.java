@@ -82,4 +82,31 @@ public class FileAccess {
 
         return list;
     }
+
+    /**
+     * Given a task's token, delete the temporary directory and files used.
+     * This is a relatively safe function, as it will only look for directories present
+     * in LOCAL_DOWNLOAD_PATH (e.g. /ssd2/metaprot).
+     *
+     * UUIDs by definition are difficult to guess, so we can be relatively assured
+     * that no user can delete another user's task information before it gets stored
+     * to some data store.
+     *
+     * @param token
+     */
+    public void deleteTemporaryAnalysisFiles(String token) {
+
+        File directoryToDelete = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+
+        // if the dir is invalid, skip
+        if (!directoryToDelete.exists()) {
+            return;
+        }
+
+        // iteratively delete all files -- this assumes that no sub directories exist
+        for (File file : directoryToDelete.listFiles()) {
+            file.delete();
+        }
+        directoryToDelete.delete();
+    }
 }
