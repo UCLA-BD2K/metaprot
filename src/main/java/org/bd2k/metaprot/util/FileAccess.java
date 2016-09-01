@@ -1,10 +1,9 @@
 package org.bd2k.metaprot.util;
 
 import org.bd2k.metaprot.model.MetaboliteStat;
+import org.bd2k.metaprot.model.PatternRecogStat;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,6 +79,64 @@ public class FileAccess {
 
         }
 
+        return list;
+    }
+
+    /**
+     *
+     * @param token
+     * @return
+     */
+    public List<List<PatternRecogStat>> getPatternRecogResults(String token){
+
+        File file = new File(String.format("%s%s%s%sclustered_result.csv", LOCAL_FILE_DOWNLOAD_PATH, sep, token, sep));
+
+        List<List<PatternRecogStat>> list = new ArrayList<List<PatternRecogStat>>();
+
+        ArrayList<Integer> timePoints = new ArrayList<>();
+
+        if(file.exists()) {
+            FileReader fr = null;
+            BufferedReader br = null;
+
+            try {
+                fr = new FileReader(file);
+                br = new BufferedReader(fr);
+
+                String line = br.readLine();
+                line = line.replaceAll("\"", "");
+                String[] tokens = line.split(",");
+
+                for (int i = 1; i < tokens.length; i++) {
+                    timePoints.add(Integer.parseInt(tokens[i]));
+                }
+
+                ArrayList<PatternRecogStat> cluster = new ArrayList<>();
+                while ((line = br.readLine()) != null) {
+                    line = line.replaceAll("\"", "");
+                    tokens = line.split(",");
+                    if (tokens[tokens.length - 1].equals("NA")) {
+                        list.add(cluster);
+                        cluster = new ArrayList<>();
+                        continue;
+                    }
+                    PatternRecogStat temp = new PatternRecogStat(tokens[0]);
+                    ArrayList<Double> abundanceRatios = new ArrayList<>();
+
+                    for (int i = 1; i < tokens.length; i++) {
+                        abundanceRatios.add(Double.parseDouble(tokens[i]));
+                    }
+
+                    temp.setData(timePoints, abundanceRatios);
+                    cluster.add(temp);
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return list;
     }
 

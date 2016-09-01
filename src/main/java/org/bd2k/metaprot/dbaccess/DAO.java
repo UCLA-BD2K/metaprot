@@ -1,5 +1,6 @@
 package org.bd2k.metaprot.dbaccess;
 
+import org.bd2k.metaprot.model.PatternRecogTask;
 import org.bd2k.metaprot.model.Task;
 
 /**
@@ -29,4 +30,14 @@ public interface DAO {
      * @return true if the task was added to the database, false otherwise
      */
     boolean saveTask(Task task);
+
+    /**
+     *
+     * @param token
+     * @return
+     */
+    PatternRecogTask getPatternRecogTask(String token);
+
+    boolean saveTask(PatternRecogTask task);
+
 }

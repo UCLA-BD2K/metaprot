@@ -6,9 +6,7 @@ import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.BadRequestException;
 import org.bd2k.metaprot.exception.ServerException;
-import org.bd2k.metaprot.model.MetaboliteStat;
-import org.bd2k.metaprot.model.Task;
-import org.bd2k.metaprot.model.TaskInfo;
+import org.bd2k.metaprot.model.*;
 import org.bd2k.metaprot.util.FileAccess;
 import org.bd2k.metaprot.util.Globals;
 import org.bd2k.metaprot.util.RManager;
@@ -131,6 +129,36 @@ public class analyze {
         new FileAccess().deleteTemporaryAnalysisFiles(token);
 
         return String.format(successMessage, "<a href='/metabolite-analysis/results/" + token + "'>results</a>");
+
+    }
+
+    @RequestMapping(value = "/pattern/{token}", method = RequestMethod.POST)
+    public String analyzePatterns(@PathVariable("token") String token,
+                                  @RequestParam("objectKey") String key){
+        //R Analysis logic here
+
+
+        S3Status s3Status = copakbS3.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+        int status = s3Status.getStatusCode();
+        System.out.println("new status s3: " + s3Status.toString());
+
+        String[] toks = key.split("/");
+
+        List<List<PatternRecogStat>> list = new FileAccess().getPatternRecogResults(token);
+        PatternRecogTask task = new PatternRecogTask(token, new Date(), toks[toks.length-1], list);
+
+        boolean taskSaved = dao.saveTask(task);
+
+        if (!taskSaved) {
+            throw new BadRequestException("There was an issue with your task token. Please try again at a later time.");
+        }
+
+
+        // everything went well, success message
+        String successMessage = "Your file has been successfully analyzed! Head over to the %s page" +
+                " to see the report.";
+
+        return String.format(successMessage, "<a href='/temporal-pattern-recognition/results/" + token + "'>results</a>");
 
     }
 

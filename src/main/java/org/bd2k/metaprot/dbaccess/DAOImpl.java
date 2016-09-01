@@ -1,6 +1,8 @@
 package org.bd2k.metaprot.dbaccess;
 
+import org.bd2k.metaprot.dbaccess.repository.PatternRecogTaskRepository;
 import org.bd2k.metaprot.dbaccess.repository.TaskRepository;
+import org.bd2k.metaprot.model.PatternRecogTask;
 import org.bd2k.metaprot.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,9 @@ public class DAOImpl implements DAO {
     @Autowired
     TaskRepository taskRepository;
 
+    @Autowired
+    PatternRecogTaskRepository PRTaskRepository;
+
     public DAOImpl() {}
 
     public Task getTask(String token) {
@@ -30,6 +35,20 @@ public class DAOImpl implements DAO {
         }
 
         taskRepository.save(task);
+        return true;
+    }
+
+    public PatternRecogTask getPatternRecogTask(String token){
+        return PRTaskRepository.findByToken(token);
+    }
+
+    public boolean saveTask(PatternRecogTask task){
+
+        if(getPatternRecogTask(task.getToken()) != null){
+            return false;
+        }
+
+        PRTaskRepository.save(task);
         return true;
     }
 
