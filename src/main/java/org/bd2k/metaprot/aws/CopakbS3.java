@@ -67,18 +67,23 @@ public class CopakbS3 {
      * @param objectKey s3 object key, e.g. tokenValue/abc.txt
      * @param destinationPath where to store the local file, NOT including the file name (which is
      *                        inferred from the objectKey)
-     * @return integer status code, -1 means local error, 0 means success, and everything else is an
+     * @return S3Status instance with status code, -1 means local error, 0 means success, and everything else is an
      * AWS related error. For the latter, use getAWSStatusMessage() to return a human readable message.
      */
-    public int pullAndStoreObject(String objectKey, String destinationPath) {
+    public S3Status pullAndStoreObject(String objectKey, String destinationPath) {
         S3Object object;
         int sc = 0;         // status code
+        long totalBytesRead = 0;
+
+        // get filename from objectKey
+        String[] arr = objectKey.split("/");
+        String fileName = arr[arr.length-1];
 
         try {
             object = s3Client.getObject(new GetObjectRequest(bucketName, objectKey));
         } catch (AmazonS3Exception ae) {
             ae.printStackTrace();
-            return ae.getStatusCode();
+            return new S3Status(fileName, -1, ae.getStatusCode());
         }
 
 
@@ -89,15 +94,12 @@ public class CopakbS3 {
             // file creation
             File file = new File(destinationPath);
             file.mkdirs();  // create any intermediate directories if they do not exist
-            String[] arr = objectKey.split("/");
-            String fileName = arr[arr.length-1];
 
             // initialize streams
             is = object.getObjectContent();
             fos = new FileOutputStream(destinationPath + sep + fileName);
 
             int bytesRead;
-            long totalBytesRead = 0;
             byte[] buff = new byte[BUFFER_SIZE];
             while ((bytesRead = is.read(buff)) != -1) {
                 totalBytesRead+=bytesRead;
@@ -128,7 +130,7 @@ public class CopakbS3 {
             }
         }
 
-        return sc;
+        return new S3Status(fileName, totalBytesRead, sc);
     }
 
     /**

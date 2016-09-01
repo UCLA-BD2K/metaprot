@@ -1,6 +1,7 @@
 package org.bd2k.metaprot.controller.rest;
 
 import org.bd2k.metaprot.aws.CopakbS3;
+import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.BadRequestException;
 import org.bd2k.metaprot.exception.ServerException;
@@ -69,7 +70,9 @@ public class analyze {
             throw new BadRequestException("Invalid request, please try again later.");
         }
 
-        int status = copakbS3.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+        S3Status s3Status = copakbS3.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+        int status = s3Status.getStatusCode();
+        System.out.println("new status s3: " + s3Status.toString());
 
         // error
         if (status == -1) {
@@ -79,7 +82,7 @@ public class analyze {
         }
 
         // everything is OK on the server end, attempt to analyze the file
-        File rScript = null;
+        File rScript;
         try {
             manager = RManager.getInstance();
             rScript = new File(METABOLITES_R_SCRIPT_LOC);
