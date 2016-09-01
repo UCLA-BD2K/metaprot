@@ -60,7 +60,15 @@ public class TaskScheduler {
         selectedQueue.currSize += task.getFileSize();
         int portToReturn = selectedQueue.port;
 
-        //Sort the arraylist on basis of which which has least total size of tasks currently scheduled.
+        sortQueues();
+
+        return portToReturn;
+    }
+
+    /**
+     * Sort the arraylist on basis of which which has least total size of tasks currently scheduled.
+     */
+    private void sortQueues(){
         Collections.sort(queues, new Comparator<QueueManager>() {
             @Override
             public int compare(QueueManager o1, QueueManager o2) {
@@ -72,8 +80,6 @@ public class TaskScheduler {
                     return 0;
             }
         });
-
-        return portToReturn;
     }
 
     /**
@@ -91,5 +97,6 @@ public class TaskScheduler {
                 break;
             }
         }
+        sortQueues();
     }
 }
