@@ -1,5 +1,7 @@
 package org.bd2k.metaprot.util;
 
+import org.bd2k.metaprot.Scheduler.TaskScheduler;
+import org.bd2k.metaprot.model.TaskInfo;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
@@ -36,10 +38,16 @@ public class RManager {
         connection = new RConnection(HOST, port);       // attempt to connect to localhost:(6311)
     }
 
-    public static RManager getInstance() throws RserveException {
-
-        // getPort(taskInfo) = 9001, pass in below
-        return new RManager(9001);
+    /**
+     * Returns a RManager instance bound to the input port. Be sure that an instance
+     * of Rserve is running on the specified port.
+     *
+     * @param port the port to use
+     * @return a RManager instance
+     * @throws RserveException if there was an issue with connecting to the Rserve process
+     */
+    public static RManager getInstance(int port) throws RserveException {
+        return new RManager(port);
     }
 
     // internal initialization method to ensure that scriptsReadInByPort

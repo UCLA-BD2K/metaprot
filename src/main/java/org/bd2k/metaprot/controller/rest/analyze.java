@@ -1,5 +1,6 @@
 package org.bd2k.metaprot.controller.rest;
 
+import org.bd2k.metaprot.Scheduler.TaskScheduler;
 import org.bd2k.metaprot.aws.CopakbS3;
 import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
@@ -7,6 +8,7 @@ import org.bd2k.metaprot.exception.BadRequestException;
 import org.bd2k.metaprot.exception.ServerException;
 import org.bd2k.metaprot.model.MetaboliteStat;
 import org.bd2k.metaprot.model.Task;
+import org.bd2k.metaprot.model.TaskInfo;
 import org.bd2k.metaprot.util.FileAccess;
 import org.bd2k.metaprot.util.Globals;
 import org.bd2k.metaprot.util.RManager;
@@ -84,7 +86,13 @@ public class analyze {
         // everything is OK on the server end, attempt to analyze the file
         File rScript;
         try {
-            manager = RManager.getInstance();
+            // generate TaskInfo and queue task for scheduler
+            TaskInfo taskInfo = new TaskInfo(token, keyArr[keyArr.length-1], s3Status.getFileSize());
+            TaskScheduler scheduler = TaskScheduler.getInstance();
+            int portUsed = scheduler.scheduleTask(taskInfo);
+
+            // run the R commands
+            manager = RManager.getInstance(portUsed);
             rScript = new File(METABOLITES_R_SCRIPT_LOC);
             String str = rScript.getAbsolutePath().replace("\\","\\\\");
             manager.runRScript(str);        // (re) initializes R environment
@@ -92,6 +100,10 @@ public class analyze {
                     + sep + keyArr[keyArr.length-1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep +
                     token + sep + "data.csv', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "volcano.png', " +
                     pThreshold + ", " + fcThreshold + ")");
+
+            // tell scheduler that all R commands have completed
+            scheduler.endTask(portUsed);
+
         } catch (Exception e) {
             // handle exception so that we can return appropriate error messages
             e.printStackTrace();

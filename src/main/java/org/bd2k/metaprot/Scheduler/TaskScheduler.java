@@ -40,7 +40,7 @@ public class TaskScheduler {
      *
      * @return
      */
-    public TaskScheduler getInstance(){
+    public static TaskScheduler getInstance(){
         if(taskScheduler == null){
             taskScheduler = new TaskScheduler();
         }
