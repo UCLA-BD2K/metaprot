@@ -83,7 +83,8 @@ public class analyze {
         try {
             manager = RManager.getInstance();
             rScript = new File(METABOLITES_R_SCRIPT_LOC);
-            manager.runRScript(rScript.getAbsolutePath());        // (re) initializes R environment
+            String str = rScript.getAbsolutePath().replace("\\","\\\\");
+            manager.runRScript(str);        // (re) initializes R environment
             manager.runRCommand("analyze.file('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token
                     + sep + keyArr[keyArr.length-1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep +
                     token + sep + "data.csv', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "volcano.png', " +

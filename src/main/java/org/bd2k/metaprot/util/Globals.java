@@ -24,6 +24,8 @@ public class Globals {
     private static String pathRoot;         // C:\ in windows, and / for everything else
     private static String pathSeparator;    // \ in windows, and / for everything else
 
+    private static Integer[] ports = {9001, 9002, 9003};
+
     private Globals() {}                    // no instantiation
 
     /**
@@ -36,8 +38,8 @@ public class Globals {
 
         // set values
         if (osName.contains("windows")) {
-            pathRoot = "C:\\";
-            pathSeparator = "\\";
+            pathRoot = "C:\\\\";
+            pathSeparator = "\\\\";
         } else {
             pathRoot = "/";
             pathSeparator = "/";
@@ -53,5 +55,7 @@ public class Globals {
     public static String getPathSeparator() {
         return pathSeparator;
     }
+
+    public static Integer[] getPorts(){ return ports; }
 
 }
