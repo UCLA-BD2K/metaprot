@@ -1,8 +1,13 @@
 package org.bd2k.metaprot.util;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Properties;
 
 /**
  * This class contains definitions of global values that
@@ -24,7 +29,8 @@ public class Globals {
     private static String pathRoot;         // C:\ in windows, and / for everything else
     private static String pathSeparator;    // \ in windows, and / for everything else
 
-    private static Integer[] ports = {9001, 9002, 9003};
+    @Value("${task.scheduler.rserve.ports}")
+    private static Integer[] ports;
 
     private Globals() {}                    // no instantiation
 
@@ -44,6 +50,24 @@ public class Globals {
             pathRoot = "/";
             pathSeparator = "/";
         }
+
+        // load any resources that cannot be autowired (if the variables are static, etc.)
+        Resource resource = new ClassPathResource("application.properties");
+        try {
+            Properties props = PropertiesLoaderUtils.loadProperties(resource);
+
+            // load port numbers to use for scheduling R tasks
+            String portsAsString = (String) props.get("task.scheduler.rserve.ports");
+            String[] portsStringArr = portsAsString.split(",");
+            ports = new Integer[portsStringArr.length];
+            for(int i = 0; i < ports.length; i++) {
+                ports[i] = Integer.parseInt(portsStringArr[i]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     // getters

@@ -90,6 +90,7 @@ public class analyze {
             TaskInfo taskInfo = new TaskInfo(token, keyArr[keyArr.length-1], s3Status.getFileSize());
             TaskScheduler scheduler = TaskScheduler.getInstance();
             int portUsed = scheduler.scheduleTask(taskInfo);
+            System.out.println("Port used for Rserve: " + portUsed);
 
             // run the R commands
             manager = RManager.getInstance(portUsed);
