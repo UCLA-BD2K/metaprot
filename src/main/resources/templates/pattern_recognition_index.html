@@ -16,7 +16,8 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-offset-3 col-sm-6">
-                <h2>Select a .csv file to analyze:</h2>
+                <h2>Temporal Pattern Recognition Analysis</h2>
+                <h3>Select a .csv file to analyze:</h3>
                 <div class="well well-lg">
                     <form id="csv-upload-form" class="form-horizontal">
                         <fieldset>
@@ -66,26 +67,26 @@
             var $progressText = $('#progressText');
             $progressText.html('<h5>Analyzing...</h5><i class="fa fa-refresh fa-spin fa-3x"></i>');
 
-            var pThreshold = 0.1;
-            var fcThreshold = 1.5;
-
-            if ($('#pThreshold').val()) {
-                pThreshold = Number.parseFloat($('#pThreshold').val());
-            }
-
-            if ($('#fcThreshold').val()) {
-                fcThreshold = Number.parseFloat($('#fcThreshold').val());
-            }
+//            var pThreshold = 0.1;
+//            var fcThreshold = 1.5;
+//
+//            if ($('#pThreshold').val()) {
+//                pThreshold = Number.parseFloat($('#pThreshold').val());
+//            }
+//
+//            if ($('#fcThreshold').val()) {
+//                fcThreshold = Number.parseFloat($('#fcThreshold').val());
+//            }
 
             var formData = new FormData();
-            formData.append("pThreshold", pThreshold);
-            formData.append("fcThreshold", fcThreshold);
+//            formData.append("pThreshold", pThreshold);
+//            formData.append("fcThreshold", fcThreshold);
             formData.append("objectKey", s3Key);
             formData.append("token", token);
 
             // notify server of file upload and updates UI to reflect status
             $.ajax({
-                url: '/analyze/metabolites/' + token,
+                url: '/analyze/patterns/' + token,
                 method: "POST",
                 data: formData,
                 processData: false,

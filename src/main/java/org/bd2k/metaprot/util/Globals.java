@@ -28,8 +28,6 @@ public class Globals {
 
     private static String pathRoot;         // C:\ in windows, and / for everything else
     private static String pathSeparator;    // \ in windows, and / for everything else
-
-    @Value("${task.scheduler.rserve.ports}")
     private static Integer[] ports;
 
     private Globals() {}                    // no instantiation
