@@ -18,10 +18,13 @@
                 <div class="panel-heading" th:text="'Pattern Recognition Results for task:' + ${token}"></div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-sm-8">
+                        <div class="col-sm-7">
                             <div class="plot">a plot</div>
                         </div>
-                        <div class="col-sm-4">sidepanel</div>
+                        <div class="col-sm-5">
+                            <h4>Clusters</h4>
+                            <div id="sidePanel" class="pattern-recognition"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="panel-footer">footer</div>
@@ -33,30 +36,136 @@
 
     <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
     <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <script type="text/javascript">
-        var a  = "b";
 
+        function sanitizeForHtml(input) {
+            input = input.trim();
+            return input.replace(/\./g, "-").replace(/\s/g, "-");
+        }
+
+        /*<![CDATA[*/
         /**
          * Module for rendering SidePanel tables for pattern recognition analysis.
-         * Takes as input
          *
-         * @type {Function}
+         * @param data the input dataset in form : [ [ {metaboliteName:"", dataPoints:[ {'abundanceRatio':__, 'timePoint':__} ]}, ... ] ]
+         * @param $sideTableContainer the containing JQ element that holds side tables (direct parent)
+         * @type {Function}/Module
          */
-        var SidePanel = (function(data) {
+        var SidePanel = (function(dataset, $sideTableContainer) {
+
+            var formattedDataset = [];
+
+            /**
+             * Using the input dataset, format as necessary.
+             */
+            function formatData() {
+
+                for (var i = 0; i < dataset.length; i++) {
+                    for (var j = 0; j < dataset[i].length; j++) {
+
+                        // TODO if needed, perhaps in Abi's code, will sort the dataset by key
+
+                    }
+                }
+            }
+
+            /**
+             * Renders the side tables with the input data
+             */
+            var drawSideTables = function() {
+
+                if ( !dataset || !(dataset.length > 0) || !(dataset[0].length > 0)) {
+                    console.log("No data to draw sidetable.");
+                    return;
+                }
+
+                // get the headings for the table by iterating through one of the dataPoints
+                var headings = [];
+                for (var i = 0; i < dataset[0][0]['dataPoints'].length; i++) {
+                    headings.push(dataset[0][0]['dataPoints'][i].timePoint);
+                }
+
+                var tableWrapper = document.createElement("div");   // will hold all tables
+
+                // for each cluster
+                for (var i = 0; i < dataset.length; i++) {
+
+                    // create a table for this cluster
+                    var table = document.createElement("table");
+                    table.classList.add("table", "table-hover");
+                    table.setAttribute("data-cluster-id", i);
+
+                    var tableHead = document.createElement("thead");
+                    var tableBody = document.createElement("tbody");
+
+                    // populate thead with headings
+                    var tableRow = document.createElement("tr");
+                    var thName = document.createElement("th");
+                    thName.innerHTML = "Name";
+
+                    tableRow.appendChild(thName);
+
+                    // create rest of the headings
+                    for (var j = 0; j < headings.length; j++) {
+                        var thCurrent = document.createElement("th");
+                        thCurrent.innerHTML = headings[j];
+
+                        tableRow.appendChild(thCurrent);
+                    }
+
+                    // append the row of headings to thead
+                    tableHead.appendChild(tableRow);
+
+                    // for each metabolite in cluster
+                    for (var j = 0; j < dataset[i].length; j++) {
+
+                        // create a new row; append a td element with the metabolite name
+                        var rowCurr = document.createElement("tr");
+                        rowCurr.setAttribute("data-cluster-position", j);
+                        var tDataName = document.createElement("td");
+                        tDataName.innerHTML = dataset[i][j]['metaboliteName'];
+
+                        rowCurr.appendChild(tDataName);
+
+                        // for each temporal datapoint of this metabolite
+                        for (var k = 0; k < dataset[i][j]['dataPoints'].length; k++) {
+                            var tData = document.createElement("td");
+                            tData.innerHTML = dataset[i][j]['dataPoints'][k]['abundanceRatio'].toFixed(3);
+
+                            rowCurr.appendChild(tData);
+                        }
+
+                        tableBody.appendChild(rowCurr);
+                    }
+
+                    // add table to wrapper
+                    table.appendChild(tableHead);
+                    table.appendChild(tableBody);
+                    tableWrapper.appendChild(table);
+                }
+
+                // finally, add all tables to the sideTableContainer
+                $sideTableContainer[0].appendChild(tableWrapper);
+
+            };
 
             return {
-
-            }
+                drawSideTables : drawSideTables
+            };
         });
 
+        /*]]>*/ /* because of XML parsing */
     </script>
     <script th:inline="javascript" type="text/javascript">
 
         // results of the task
         var results = [[${results}]];
 
+        var sidePanel = new SidePanel(results, $('#sidePanel'));
+        sidePanel.drawSideTables();
 
-        console.log("heyyy " + a);
+
     </script>
 
 </body>

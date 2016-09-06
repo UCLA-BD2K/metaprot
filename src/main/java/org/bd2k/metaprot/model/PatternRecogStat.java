@@ -1,7 +1,6 @@
 package org.bd2k.metaprot.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
