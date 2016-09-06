@@ -1,4 +1,4 @@
-package org.bd2k.metaprot.Scheduler;
+package org.bd2k.metaprot.scheduler;
 
 import org.bd2k.metaprot.model.TaskInfo;
 import org.bd2k.metaprot.util.Globals;

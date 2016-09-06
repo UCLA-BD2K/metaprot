@@ -36,6 +36,7 @@ public class PatternRecognition {
         // retrieve the task information from the database; pass back to view
         PatternRecogTask task = dao.getPatternRecogTask(token);
         model.addAttribute("results", task.getResults());
+        model.addAttribute("token", token);
         
         return "pattern_recognition_results";
     }

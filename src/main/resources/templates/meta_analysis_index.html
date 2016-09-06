@@ -59,124 +59,124 @@
     <!-- footer -->
     <div th:include="fragments/footer :: footer"></div>
 
-</body>
+    <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.4.12.min.js"></script>
+    <script type="text/javascript" src="/js/aws/S3Uploader.js"></script>
+    <script type="text/javascript">
+        $(function() {
 
-<script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
-<script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
-<script src="https://sdk.amazonaws.com/js/aws-sdk-2.4.12.min.js"></script>
-<script type="text/javascript" src="/js/aws/S3Uploader.js"></script>
-<script type="text/javascript">
-    $(function() {
+            var $progressBar = $('.progress-bar');
+            var $uploadForm = $('#csv-upload-form');
+            var $fileInput = $('#fileInput');
 
-        var $progressBar = $('.progress-bar');
-        var $uploadForm = $('#csv-upload-form');
-        var $fileInput = $('#fileInput');
-
-        function updateProgressBar(progress) {
-            $progressBar.html(progress + "% complete");
-            $progressBar.css("width", progress+"%");
-        }
-
-        function notifyAllFilesUploaded(token, s3Key) {
-            var $progressText = $('#progressText');
-            $progressText.html('<h5>Analyzing...</h5><i class="fa fa-refresh fa-spin fa-3x"></i>');
-
-            var pThreshold = 0.1;
-            var fcThreshold = 1.5;
-
-            if ($('#pThreshold').val()) {
-                pThreshold = Number.parseFloat($('#pThreshold').val());
+            function updateProgressBar(progress) {
+                $progressBar.html(progress + "% complete");
+                $progressBar.css("width", progress+"%");
             }
 
-            if ($('#fcThreshold').val()) {
-                fcThreshold = Number.parseFloat($('#fcThreshold').val());
-            }
+            function notifyAllFilesUploaded(token, s3Key) {
+                var $progressText = $('#progressText');
+                $progressText.html('<h5>Analyzing...</h5><i class="fa fa-refresh fa-spin fa-3x"></i>');
 
-            var formData = new FormData();
-            formData.append("pThreshold", pThreshold);
-            formData.append("fcThreshold", fcThreshold);
-            formData.append("objectKey", s3Key);
-            formData.append("token", token);
+                var pThreshold = 0.1;
+                var fcThreshold = 1.5;
 
-            // notify server of file upload and updates UI to reflect status
-            $.ajax({
-                url: '/analyze/metabolites/' + token,
-                method: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success:function(data) {
-                    $progressText.html('<div class="alert alert-success">' + data + '</div>');
-                },
-                error:function(jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR)
-                    console.log(textStatus)
-                    console.log(errorThrown)
-                    $progressText.html('<div class="alert alert-danger">' + jqXHR.responseJSON.message + '</div>');
+                if ($('#pThreshold').val()) {
+                    pThreshold = Number.parseFloat($('#pThreshold').val());
                 }
-            });
-        }
 
-        $uploadForm.on("submit", function(e) {
-            e.preventDefault();
+                if ($('#fcThreshold').val()) {
+                    fcThreshold = Number.parseFloat($('#fcThreshold').val());
+                }
 
-            // number of files to upload, for now, just handle 1
-            var numFiles = $fileInput[0].files.length;
-            var numFilesUploaded = 0;
+                var formData = new FormData();
+                formData.append("pThreshold", pThreshold);
+                formData.append("fcThreshold", fcThreshold);
+                formData.append("objectKey", s3Key);
+                formData.append("token", token);
 
-            if (!numFiles) {
-                return;
-            }
-
-            $('#progress-bar-display').css("opacity", 1);
-
-            var afterEachFileRead = function(options) {
-                console.log("A file is ready to upload.");
-                var delayCounter = 0;
-
-                var moreParams = {
-                    ContentLength : options.size,
-                    ContentType : options.type
-                };
-
-                // get token for s3 upload
+                // notify server of file upload and updates UI to reflect status
                 $.ajax({
-                    url: "/analyze/token",
-                    method: "GET",
-                    success:function(token) {
-                        // after retrieving a token, can upload to s3
-                        S3Uploader.upload(options.data, "user-input/" + token + "/" + options.name, moreParams,
-                            function(data) {
-                                numFilesUploaded++;
-                                if (numFilesUploaded == numFiles) {
-                                    // we are done uploading!
-                                    console.log("all files have been uploaded to s3");
-                                    updateProgressBar(100);
-                                    notifyAllFilesUploaded(token, data.Key);
-                                }
-                            },
-                            function(key, bytesUploaded, bytesTotal) {
-                                // called whenever bytes transferred to s3, with performance delay
-                                delayCounter++;
-                                if (delayCounter == 10) {
-                                    updateProgressBar(bytesUploaded/bytesTotal*100);
-                                }
-                            });
+                    url: '/analyze/metabolites/' + token,
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success:function(data) {
+                        $progressText.html('<div class="alert alert-success">' + data + '</div>');
                     },
-                    error:function() {
-                        console.log("Error in retrieving upload token.");
+                    error:function(jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR)
+                        console.log(textStatus)
+                        console.log(errorThrown)
+                        $progressText.html('<div class="alert alert-danger">' + jqXHR.responseJSON.message + '</div>');
                     }
                 });
+            }
 
-            };
+            $uploadForm.on("submit", function(e) {
+                e.preventDefault();
 
-            // set up FC and read in files
-            FileController.setOnFileRead(afterEachFileRead);
-            FileController.setInputElement($fileInput);
-            FileController.readFiles();
+                // number of files to upload, for now, just handle 1
+                var numFiles = $fileInput[0].files.length;
+                var numFilesUploaded = 0;
 
+                if (!numFiles) {
+                    return;
+                }
+
+                $('#progress-bar-display').css("opacity", 1);
+
+                var afterEachFileRead = function(options) {
+                    console.log("A file is ready to upload.");
+                    var delayCounter = 0;
+
+                    var moreParams = {
+                        ContentLength : options.size,
+                        ContentType : options.type
+                    };
+
+                    // get token for s3 upload
+                    $.ajax({
+                        url: "/analyze/token",
+                        method: "GET",
+                        success:function(token) {
+                            // after retrieving a token, can upload to s3
+                            S3Uploader.upload(options.data, "user-input/" + token + "/" + options.name, moreParams,
+                                    function(data) {
+                                        numFilesUploaded++;
+                                        if (numFilesUploaded == numFiles) {
+                                            // we are done uploading!
+                                            console.log("all files have been uploaded to s3");
+                                            updateProgressBar(100);
+                                            notifyAllFilesUploaded(token, data.Key);
+                                        }
+                                    },
+                                    function(key, bytesUploaded, bytesTotal) {
+                                        // called whenever bytes transferred to s3, with performance delay
+                                        delayCounter++;
+                                        if (delayCounter == 10) {
+                                            updateProgressBar(bytesUploaded/bytesTotal*100);
+                                        }
+                                    });
+                        },
+                        error:function() {
+                            console.log("Error in retrieving upload token.");
+                        }
+                    });
+
+                };
+
+                // set up FC and read in files
+                FileController.setOnFileRead(afterEachFileRead);
+                FileController.setInputElement($fileInput);
+                FileController.readFiles();
+
+            });
         });
-    });
-</script>
+    </script>
+
+</body>
 
 </html>

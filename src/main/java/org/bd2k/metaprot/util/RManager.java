@@ -1,15 +1,8 @@
 package org.bd2k.metaprot.util;
 
-import org.bd2k.metaprot.Scheduler.TaskScheduler;
-import org.bd2k.metaprot.model.TaskInfo;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Factory class for interacting with R via Rserve (client/server architecture).

@@ -1,6 +1,6 @@
 package org.bd2k.metaprot.controller.rest;
 
-import org.bd2k.metaprot.Scheduler.TaskScheduler;
+import org.bd2k.metaprot.scheduler.TaskScheduler;
 import org.bd2k.metaprot.aws.CopakbS3;
 import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
@@ -11,7 +11,6 @@ import org.bd2k.metaprot.util.FileAccess;
 import org.bd2k.metaprot.util.Globals;
 import org.bd2k.metaprot.util.RManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.bind.annotation.*;
 

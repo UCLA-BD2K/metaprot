@@ -1,10 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>Title</title>
+    <title th:text="${'TPR Results for task: ' + token + '| Metaprot'}"></title>
+    <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.simplex.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/css/site.css" />
 </head>
 <body>
-    BOOM BOOM
+    <div th:include="fragments/header :: header"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading" th:text="'Pattern Recognition Results for task:' + ${token}"></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="plot">a plot</div>
+                        </div>
+                        <div class="col-sm-4">sidepanel</div>
+                    </div>
+                </div>
+                <div class="panel-footer">footer</div>
+            </div>
+        </div>
+    </div>
+
+    <div th:include="fragments/footer :: footer"></div>
+
+    <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        var a  = "b";
+
+        /**
+         * Module for rendering SidePanel tables for pattern recognition analysis.
+         * Takes as input
+         *
+         * @type {Function}
+         */
+        var SidePanel = (function(data) {
+
+            return {
+
+            }
+        });
+
+    </script>
+    <script th:inline="javascript" type="text/javascript">
+
+        // results of the task
+        var results = [[${results}]];
+
+
+        console.log("heyyy " + a);
+    </script>
+
 </body>
+
 </html>
