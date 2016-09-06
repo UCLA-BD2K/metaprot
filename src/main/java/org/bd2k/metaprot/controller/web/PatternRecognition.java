@@ -27,21 +27,16 @@ public class PatternRecognition {
 
     @RequestMapping(method = RequestMethod.GET)
     public String getPatternRecognitionIndex(){
-        List<List<PatternRecogStat>> list = new FileAccess().getPatternRecogResults("ohgodpleasework");
-        System.out.println(list.get(0));
         return "pattern_recognition_index";
     }
 
     @RequestMapping(value = "/results/{token}", method = RequestMethod.GET)
     public String getPatternRecognitionResults(Model model, @PathVariable("token") String token){
 
+        // retrieve the task information from the database; pass back to view
         PatternRecogTask task = dao.getPatternRecogTask(token);
         model.addAttribute("results", task.getResults());
-
-        System.out.println(task.getResults().size());
-
-        for(PatternRecogStat i : task.getResults().get(0))
-        System.out.println(i.toString());
+        
         return "pattern_recognition_results";
     }
 

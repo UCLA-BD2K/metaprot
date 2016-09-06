@@ -48,6 +48,8 @@ public class analyze {
     // "src/main/resources/R/scripts/r_sample_code.R"
     private final String METABOLITES_R_SCRIPT_LOC = "src" + sep + "main" + sep + "resources" + sep + "R" +
             sep + "scripts" + sep + "r_sample_code.R";
+    private final String TEMPORAL_PATTERNS_R_SCRIPT_LOC = "src" + sep + "main" + sep + "resources" + sep +
+            "R" + sep + "scripts" + sep + "scatter_plot_cluster.R";
 
     private RManager manager = null;
 
@@ -93,7 +95,7 @@ public class analyze {
             // run the R commands
             manager = RManager.getInstance(portUsed);
             rScript = new File(METABOLITES_R_SCRIPT_LOC);
-            String str = rScript.getAbsolutePath().replace("\\","\\\\");
+            String str = rScript.getAbsolutePath().replace("\\","\\\\");        // affects window env only
             manager.runRScript(str);        // (re) initializes R environment
             manager.runRCommand("analyze.file('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token
                     + sep + keyArr[keyArr.length-1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep +
@@ -121,12 +123,12 @@ public class analyze {
             throw new BadRequestException("There was an issue with your task token. Please try again at a later time.");
         }
 
+        // analysis complete and results recorded, safe to delete all temporary files
+        new FileAccess().deleteTemporaryAnalysisFiles(token);
+
         // everything went well, success message
         String successMessage = "Your file has been successfully analyzed! Head over to the %s page" +
                 " to see the report.";
-
-        // analysis complete and results recorded, safe to delete all temporary files
-        new FileAccess().deleteTemporaryAnalysisFiles(token);
 
         return String.format(successMessage, "<a href='/metabolite-analysis/results/" + token + "'>results</a>");
 
@@ -135,17 +137,55 @@ public class analyze {
     @RequestMapping(value = "/pattern/{token}", method = RequestMethod.POST)
     public String analyzePatterns(@PathVariable("token") String token,
                                   @RequestParam("objectKey") String key){
-        //R Analysis logic here
 
+        // validation
+        String[] keyArr = key.split("/");
+        if (!(key.startsWith("user-input/" + token)) ||
+                !(keyArr[keyArr.length-2].equals(token)) ||
+                keyArr.length != 3) {
 
+            // should return error message
+            throw new BadRequestException("Invalid request, please try again later.");
+        }
+
+        // grab uploaded file from S3
         S3Status s3Status = copakbS3.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
         int status = s3Status.getStatusCode();
         System.out.println("new status s3: " + s3Status.toString());
 
-        String[] toks = key.split("/");
+        // check for errors in s3 pull/store
+        if (status == -1) {
+            throw new ServerException("There was an error with your request, please try again later.");
+        } else if (status > 0) {
+            throw new BadRequestException(copakbS3.getAWSStatusMessage(status));
+        }
 
-        List<List<PatternRecogStat>> list = new FileAccess().getPatternRecogResults(token);
-        PatternRecogTask task = new PatternRecogTask(token, new Date(), toks[toks.length-1], list);
+        // try to analyze the file with R
+        File rScript;
+        try {
+            TaskInfo taskInfo = new TaskInfo(token, keyArr[keyArr.length-1], s3Status.getFileSize());
+            TaskScheduler scheduler = TaskScheduler.getInstance();
+            int portToUse = scheduler.scheduleTask(taskInfo);
+            System.out.println("Port to use for Rserve: " + portToUse);
+
+            // get manager instance and run R commands
+            RManager manager = RManager.getInstance(portToUse);
+            rScript = new File(TEMPORAL_PATTERNS_R_SCRIPT_LOC);
+            String absScriptPath = rScript.getAbsolutePath().replace("\\","\\\\");        // affects window env only
+
+            manager.runRScript(absScriptPath);          // source the R script
+            manager.runRCommand("analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep +
+            keyArr[keyArr.length - 1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv')");
+
+            scheduler.endTask(portToUse);   // notify scheduler that task is complete (all R commands done)
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServerException("There was an error with our R Engine. Please try again at a later time.");
+        }
+
+
+        List<List<PatternRecogStat>> results = new FileAccess().getPatternRecogResults(token);
+        PatternRecogTask task = new PatternRecogTask(token, new Date(), keyArr[keyArr.length-1], results);
 
         boolean taskSaved = dao.saveTask(task);
 
@@ -153,6 +193,8 @@ public class analyze {
             throw new BadRequestException("There was an issue with your task token. Please try again at a later time.");
         }
 
+        // analysis complete and results recorded, safe to delete all temporary files
+        new FileAccess().deleteTemporaryAnalysisFiles(token);
 
         // everything went well, success message
         String successMessage = "Your file has been successfully analyzed! Head over to the %s page" +
