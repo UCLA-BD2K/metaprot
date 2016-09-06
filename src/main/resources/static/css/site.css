@@ -81,6 +81,12 @@ rect.selection {
     cursor: pointer;
 }
 
+#sidePanel.pattern-recognition table {
+    display: block;
+    max-height: 200px;
+    overflow: scroll;
+}
+
 svg:not(:root) {
     overflow:visible;
 }

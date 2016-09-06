@@ -39,9 +39,16 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script type="text/javascript">
 
+        // sanitizes the input string for safe use as classNames, ids, etc.
+        // update as needed
+        // replaces: . " " , ; : with "-"
         function sanitizeForHtml(input) {
             input = input.trim();
-            return input.replace(/\./g, "-").replace(/\s/g, "-");
+            return input.replace(/\./g, "-")
+                    .replace(/\s/g, "-")
+                    .replace(/\:/g, "-")
+                    .replace(/\;/g, "-")
+                    .replace(/\,/g, "-");
         }
 
         /*<![CDATA[*/
@@ -123,6 +130,8 @@
                         // create a new row; append a td element with the metabolite name
                         var rowCurr = document.createElement("tr");
                         rowCurr.setAttribute("data-cluster-position", j);
+                        rowCurr.classList.add(sanitizeForHtml(dataset[i][j]['metaboliteName']));
+
                         var tDataName = document.createElement("td");
                         tDataName.innerHTML = dataset[i][j]['metaboliteName'];
 
