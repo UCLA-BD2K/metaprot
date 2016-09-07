@@ -15,14 +15,12 @@
     <div class="container">
         <div class="row">
             <div class="panel panel-default">
-                <div class="panel-heading" th:text="'Pattern Recognition Results for task:' + ${token}"></div>
+                <div class="panel-heading" th:text="'Pattern Recognition Results for task: ' + ${token}"></div>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-sm-7">
                             <div class="plot">
-                                <svg id="visualisation">
-
-                                </svg>
+                                <svg id="visualisation"></svg>  <!-- rendered in JS -->
                             </div>
                         </div>
                         <div class="col-sm-5">
@@ -183,22 +181,29 @@
         /*]]>*/ /* because of XML parsing */
     </script>
     <script th:inline="javascript" type="text/javascript">
-
-
         // results of the task
         var results = [[${results}]];
 
         //Initialize plot
         var plot = new PatternRecogPlot(results);
-
         plot.InitChart();
 
         // render side panels using results, and bind necessary events
         var sidePanel = new SidePanel(results, $('#sidePanel'));
         sidePanel.drawSideTables();
         sidePanel.displayTable(0);
+
+        // index for checkbox logic - keeps track of checkbox state for each cluster
+        /*<![CDATA[*/
+        var checkboxStatus = {};
+        for (var i = 0; i < results.length; i++) {
+            checkboxStatus[i] = 0;                      // 0 = unchecked, 1 = checked
+        }
+        /*]]>*/ /* because of XML parsing */
+
         $('#cluster-select').on("change", function() {
             sidePanel.displayTable(+$(this).val());
+            $('#cluster-checkbox').prop("checked", checkboxStatus[+$(this).val()]);
         });
         $('#sidePanel table tr').on("click", function() {
             $(this).toggleClass("active");
@@ -210,8 +215,7 @@
             input.j = +$(this).attr('data-cluster-position');
             input.update = $(this).hasClass("active");
 
-            // some function([input])
-            console.log(input)
+            // update the plot
             plot.updateChart([input]);
         });
         $('#cluster-checkbox').on("change", function(e) {
@@ -232,24 +236,24 @@
                 elementsToChange.push(obj);
             };
 
+            // check if checkbox is checked
             if (e.target.checked) {
                 update = true;  // means to draw the lines
                 $clusterRows.each(addToArray);
                 $clusterRows.addClass("active");
+                checkboxStatus[activeClusterId] = 1;
             } else {
-                update = false;
+                update = false; // means to remove lines
                 $clusterRows.each(addToArray);
                 $clusterRows.removeClass("active");
+                checkboxStatus[activeClusterId] = 0;
             }
 
-            // call some function to draw selected elements
-            console.log(elementsToChange);
+            // draw selected elements
             plot.updateChart(elementsToChange);
-
         });
 
     </script>
-
 </body>
 
 </html>
