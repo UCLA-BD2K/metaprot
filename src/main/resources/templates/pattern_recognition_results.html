@@ -31,6 +31,10 @@
                                             <option th:each="result, i : ${results}" th:text="${i.count}" th:value="${i.count - 1}"></option>
                                         </select>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="cluster-checkbox">Select all</label>
+                                        <input type="checkbox" id="cluster-checkbox" />
+                                    </div>
                                 </form>
                             </div>
                             <div id="sidePanel" class="pattern-recognition"></div> <!-- rendered by SidePanel module -->
@@ -70,7 +74,7 @@
          * @type {Function}/Module
          */
         var SidePanel = (function(dataset, $sideTableContainer) {
-            
+
             /**
              * Renders the side tables with the input data
              */
@@ -125,7 +129,7 @@
                         // create a new row; append a td element with the metabolite name
                         var rowCurr = document.createElement("tr");
                         rowCurr.setAttribute("data-cluster-position", j);
-                        rowCurr.classList.add(sanitizeForHtml(dataset[i][j]['metaboliteName']));
+                        rowCurr.classList.add(sanitizeForHtml(dataset[i][j]['metaboliteName']), "data-row");
 
                         var tDataName = document.createElement("td");
                         tDataName.innerHTML = dataset[i][j]['metaboliteName'];
@@ -184,9 +188,52 @@
         sidePanel.drawSideTables();
         sidePanel.displayTable(0);
         $('#cluster-select').on("change", function() {
-            sidePanel.displayTable(parseInt($(this).val()));
+            sidePanel.displayTable(+$(this).val());
         });
+        $('#sidePanel table tr').on("click", function() {
+            $(this).toggleClass("active");
 
+            var clusterId = +$(this).parents('table').attr('data-cluster-id');
+            var input = {};
+
+            input.i = clusterId;
+            input.j = +$(this).attr('data-cluster-position');
+            input.update = $(this).hasClass("active");
+
+            // some function([input])
+            console.log(input)
+        });
+        $('#cluster-checkbox').on("change", function(e) {
+
+            // get the cluster Id of the currently active cluster and the associated rows
+            var activeClusterId = +$('#cluster-select').val();
+            var $clusterRows = $('table[data-cluster-id="'+ activeClusterId + '"] tr.data-row');
+
+            // array of updates to pass into drawing function
+            var elementsToChange = [];
+            var update = null;
+            var addToArray = function() {
+                var obj = {};
+                obj.i = activeClusterId;
+                obj.j = +$(this).attr('data-cluster-position');
+                obj.update = update;
+
+                elementsToChange.push(obj);
+            };
+
+            if (e.target.checked) {
+                update = true;  // means to draw the lines
+                $clusterRows.each(addToArray);
+                $clusterRows.addClass("active");
+            } else {
+                update = false;
+                $clusterRows.each(addToArray);
+                $clusterRows.removeClass("active");
+            }
+
+            // call some function to draw selected elements
+            console.log(elementsToChange);
+        });
 
     </script>
 

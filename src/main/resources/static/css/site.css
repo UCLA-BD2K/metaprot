@@ -23,10 +23,6 @@ a.navbar-brand:hover {
     shape-rendering: crispEdges;
 }
 
-/*.d3-node.active {
-    fill: red;
-}*/
-
 .margin-center {
     margin-left:auto;
     margin-right:auto;
@@ -75,7 +71,9 @@ rect.selection {
 }
 
 .result-panel .table>tbody>tr.active,
-.result-panel .table>tbody>tr:hover {
+.result-panel .table>tbody>tr:hover,
+#sidePanel .table>tbody>tr.data-row.active,
+#sidePanel .table>tbody>tr.data-row.active:hover {
     background-color: #fcf8e3;
     color: red;
     cursor: pointer;
