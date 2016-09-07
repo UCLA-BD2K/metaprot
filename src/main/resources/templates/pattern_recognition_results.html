@@ -19,7 +19,11 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-sm-7">
-                            <div class="plot">a plot</div>
+                            <div class="plot">
+                                <svg id="visualisation">
+
+                                </svg>
+                            </div>
                         </div>
                         <div class="col-sm-5">
                             <h4>Clusters</h4>
@@ -50,7 +54,8 @@
 
     <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
     <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="/js/PatternRecogPlot.js"></script>
     <script type="text/javascript">
 
         // sanitizes the input string for safe use as classNames, ids, etc.
@@ -183,6 +188,11 @@
         // results of the task
         var results = [[${results}]];
 
+        //Initialize plot
+        var plot = new PatternRecogPlot(results);
+
+        plot.InitChart();
+
         // render side panels using results, and bind necessary events
         var sidePanel = new SidePanel(results, $('#sidePanel'));
         sidePanel.drawSideTables();
@@ -202,6 +212,7 @@
 
             // some function([input])
             console.log(input)
+            plot.updateChart([input]);
         });
         $('#cluster-checkbox').on("change", function(e) {
 
@@ -233,6 +244,8 @@
 
             // call some function to draw selected elements
             console.log(elementsToChange);
+            plot.updateChart(elementsToChange);
+
         });
 
     </script>
