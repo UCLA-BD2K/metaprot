@@ -22,8 +22,8 @@ var PatternRecogPlot = (function(resultData) {
         console.log("initruns");
 
         vis = d3.select("#visualisation"),
-            WIDTH = 1000,
-            HEIGHT = 500,
+            WIDTH = 500,
+            HEIGHT = 400,
             MARGINS = {
                 top: 20,
                 right: 20,
