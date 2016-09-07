@@ -23,7 +23,17 @@
                         </div>
                         <div class="col-sm-5">
                             <h4>Clusters</h4>
-                            <div id="sidePanel" class="pattern-recognition"></div>
+                            <div class="well well-lg">
+                                <form id="cluster-selection-form" class="form-horizontal">
+                                    <div class="form-group">
+                                        <label for="cluster-select" class="control-label">Select a cluster:</label>
+                                        <select id="cluster-select" class="form-control">
+                                            <option th:each="result, i : ${results}" th:text="${i.count}" th:value="${i.count - 1}"></option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="sidePanel" class="pattern-recognition"></div> <!-- rendered by SidePanel module -->
                         </div>
                     </div>
                 </div>
@@ -60,23 +70,7 @@
          * @type {Function}/Module
          */
         var SidePanel = (function(dataset, $sideTableContainer) {
-
-            var formattedDataset = [];
-
-            /**
-             * Using the input dataset, format as necessary.
-             */
-            function formatData() {
-
-                for (var i = 0; i < dataset.length; i++) {
-                    for (var j = 0; j < dataset[i].length; j++) {
-
-                        // TODO if needed, perhaps in Abi's code, will sort the dataset by key
-
-                    }
-                }
-            }
-
+            
             /**
              * Renders the side tables with the input data
              */
@@ -102,6 +96,7 @@
                     var table = document.createElement("table");
                     table.classList.add("table", "table-hover");
                     table.setAttribute("data-cluster-id", i);
+                    table.style.display = "none";
 
                     var tableHead = document.createElement("thead");
                     var tableBody = document.createElement("tbody");
@@ -159,8 +154,20 @@
 
             };
 
+            /**
+             * Given a cluster id, displays the table for that cluster (while hiding
+             * all other tables).
+             *
+             * @param clusterId the numeric, zero-based cluster id
+             */
+            var displayTable = function(clusterId) {
+                $("#" + $sideTableContainer.attr("id") + " table").css("display", "none");
+                $('table[data-cluster-id="' + clusterId +'"]').css("display", "block");
+            };
+
             return {
-                drawSideTables : drawSideTables
+                drawSideTables : drawSideTables,
+                displayTable : displayTable
             };
         });
 
@@ -168,11 +175,17 @@
     </script>
     <script th:inline="javascript" type="text/javascript">
 
+
         // results of the task
         var results = [[${results}]];
 
+        // render side panels using results, and bind necessary events
         var sidePanel = new SidePanel(results, $('#sidePanel'));
         sidePanel.drawSideTables();
+        sidePanel.displayTable(0);
+        $('#cluster-select').on("change", function() {
+            sidePanel.displayTable(parseInt($(this).val()));
+        });
 
 
     </script>
