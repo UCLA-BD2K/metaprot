@@ -230,19 +230,24 @@
                 sidePanel.displayTable(+$(this).val());
                 $('#cluster-checkbox').prop("checked", checkboxStatus[+$(this).val()]);
             });
-            $('#sidePanel table tr').on("click", function() {
-                $(this).toggleClass("active");
 
-                var clusterId = +$(this).parents('table').attr('data-cluster-id');
-                var input = {};
+            function bindSideTableEvents() {
+                $('#sidePanel table tr').on("click", function() {
+                    $(this).toggleClass("active");
 
-                input.i = clusterId;
-                input.j = +$(this).attr('data-cluster-position');
-                input.update = $(this).hasClass("active");
+                    var clusterId = +$(this).parents('table').attr('data-cluster-id');
+                    var input = {};
 
-                // update the plot
-                plot.updateChart([input]);
-            });
+                    input.i = clusterId;
+                    input.j = +$(this).attr('data-cluster-position');
+                    input.update = $(this).hasClass("active");
+
+                    // update the plot
+                    plot.updateChart([input]);
+                });
+            }
+            bindSideTableEvents();
+
             $('#cluster-checkbox').on("change", function(e) {
 
                 // get the cluster Id of the currently active cluster and the associated rows
@@ -284,9 +289,11 @@
             function redrawUI(data) {   // redraws necessary components, say, on new user input
 
                 // for side panel
+                sidePanel.clearSideTables();
                 sidePanel.updateDataSet(data);
                 sidePanel.drawSideTables();
                 sidePanel.displayTable(0);
+                bindSideTableEvents();
 
                 // TODO for plot(?)
             }
