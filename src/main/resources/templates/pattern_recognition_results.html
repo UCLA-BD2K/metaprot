@@ -28,6 +28,13 @@
                             <div class="well well-lg">
                                 <form id="cluster-selection-form" class="form-horizontal">
                                     <div class="form-group">
+                                        <label for="input-num-clusters" class="control-label">Number of clusters:</label>
+                                        <input type="text" th:value="${numInitialClusters}" id="input-num-clusters" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="btn btn-default" type="submit" value="Submit" />
+                                    </div>
+                                    <div class="form-group">
                                         <label for="cluster-select" class="control-label">Select a cluster:</label>
                                         <select id="cluster-select" class="form-control">
                                             <option th:each="result, i : ${results}" th:text="${i.count}" th:value="${i.count - 1}"></option>
@@ -162,6 +169,20 @@
             };
 
             /**
+             * Clears all entries in side table, leaving the container in pristine state.
+             */
+            var clearSideTables = function() {
+                $sideTableContainer.empty();
+            };
+
+            /**
+             * Updates the internal dataset used by the SidePanel instance.
+             */
+            var updateDataSet = function(data) {
+                dataset = data;
+            };
+
+            /**
              * Given a cluster id, displays the table for that cluster (while hiding
              * all other tables).
              *
@@ -174,85 +195,129 @@
 
             return {
                 drawSideTables : drawSideTables,
-                displayTable : displayTable
+                displayTable : displayTable,
+                clearSideTables:clearSideTables,
+                updateDataSet:updateDataSet
             };
         });
 
         /*]]>*/ /* because of XML parsing */
     </script>
     <script th:inline="javascript" type="text/javascript">
-        // results of the task
-        var results = [[${results}]];
+        $(function() {
 
-        //Initialize plot
-        var plot = new PatternRecogPlot(results);
-        plot.InitChart();
+            // results of the task
+            var results = [[${results}]];
 
-        // render side panels using results, and bind necessary events
-        var sidePanel = new SidePanel(results, $('#sidePanel'));
-        sidePanel.drawSideTables();
-        sidePanel.displayTable(0);
+            //Initialize plot
+            var plot = new PatternRecogPlot(results);
+            plot.InitChart();
 
-        // index for checkbox logic - keeps track of checkbox state for each cluster
-        /*<![CDATA[*/
-        var checkboxStatus = {};
-        for (var i = 0; i < results.length; i++) {
-            checkboxStatus[i] = 0;                      // 0 = unchecked, 1 = checked
-        }
-        /*]]>*/ /* because of XML parsing */
+            // render side panels using results, and bind necessary events
+            var sidePanel = new SidePanel(results, $('#sidePanel'));
+            sidePanel.drawSideTables();
+            sidePanel.displayTable(0);
 
-        $('#cluster-select').on("change", function() {
-            sidePanel.displayTable(+$(this).val());
-            $('#cluster-checkbox').prop("checked", checkboxStatus[+$(this).val()]);
-        });
-        $('#sidePanel table tr').on("click", function() {
-            $(this).toggleClass("active");
-
-            var clusterId = +$(this).parents('table').attr('data-cluster-id');
-            var input = {};
-
-            input.i = clusterId;
-            input.j = +$(this).attr('data-cluster-position');
-            input.update = $(this).hasClass("active");
-
-            // update the plot
-            plot.updateChart([input]);
-        });
-        $('#cluster-checkbox').on("change", function(e) {
-
-            // get the cluster Id of the currently active cluster and the associated rows
-            var activeClusterId = +$('#cluster-select').val();
-            var $clusterRows = $('table[data-cluster-id="'+ activeClusterId + '"] tr.data-row');
-
-            // array of updates to pass into drawing function
-            var elementsToChange = [];
-            var update = null;
-            var addToArray = function() {
-                var obj = {};
-                obj.i = activeClusterId;
-                obj.j = +$(this).attr('data-cluster-position');
-                obj.update = update;
-
-                elementsToChange.push(obj);
-            };
-
-            // check if checkbox is checked
-            if (e.target.checked) {
-                update = true;  // means to draw the lines
-                $clusterRows.each(addToArray);
-                $clusterRows.addClass("active");
-                checkboxStatus[activeClusterId] = 1;
-            } else {
-                update = false; // means to remove lines
-                $clusterRows.each(addToArray);
-                $clusterRows.removeClass("active");
-                checkboxStatus[activeClusterId] = 0;
+            // index for checkbox logic - keeps track of checkbox state for each cluster
+            /*<![CDATA[*/
+            var checkboxStatus = {};
+            for (var i = 0; i < results.length; i++) {
+                checkboxStatus[i] = 0;                      // 0 = unchecked, 1 = checked
             }
+            /*]]>*/ /* because of XML parsing */
 
-            // draw selected elements
-            plot.updateChart(elementsToChange);
-        });
+            $('#cluster-select').on("change", function() {
+                sidePanel.displayTable(+$(this).val());
+                $('#cluster-checkbox').prop("checked", checkboxStatus[+$(this).val()]);
+            });
+            $('#sidePanel table tr').on("click", function() {
+                $(this).toggleClass("active");
 
+                var clusterId = +$(this).parents('table').attr('data-cluster-id');
+                var input = {};
+
+                input.i = clusterId;
+                input.j = +$(this).attr('data-cluster-position');
+                input.update = $(this).hasClass("active");
+
+                // update the plot
+                plot.updateChart([input]);
+            });
+            $('#cluster-checkbox').on("change", function(e) {
+
+                // get the cluster Id of the currently active cluster and the associated rows
+                var activeClusterId = +$('#cluster-select').val();
+                var $clusterRows = $('table[data-cluster-id="'+ activeClusterId + '"] tr.data-row');
+
+                // array of updates to pass into drawing function
+                var elementsToChange = [];
+                var update = null;
+                var addToArray = function() {
+                    var obj = {};
+                    obj.i = activeClusterId;
+                    obj.j = +$(this).attr('data-cluster-position');
+                    obj.update = update;
+
+                    elementsToChange.push(obj);
+                };
+
+                // check if checkbox is checked
+                if (e.target.checked) {
+                    update = true;  // means to draw the lines
+                    $clusterRows.each(addToArray);
+                    $clusterRows.addClass("active");
+                    checkboxStatus[activeClusterId] = 1;
+                } else {
+                    update = false; // means to remove lines
+                    $clusterRows.each(addToArray);
+                    $clusterRows.removeClass("active");
+                    checkboxStatus[activeClusterId] = 0;
+                }
+
+                // draw selected elements
+                plot.updateChart(elementsToChange);
+            });
+
+
+            // misc
+
+            function redrawUI(data) {   // redraws necessary components, say, on new user input
+
+                // for side panel
+                sidePanel.updateDataSet(data);
+                sidePanel.drawSideTables();
+                sidePanel.displayTable(0);
+
+                // TODO for plot(?)
+            }
+            $('#cluster-selection-form').on("submit", function(e) {
+                e.preventDefault();
+                var self = this;
+                // make an ajax call
+                $.ajax({
+                    url: "/analyze/pattern/re-analyze/" + [[${token}]] + "?numClusters=" + +$('#input-num-clusters').val(),
+                    success:function(data) {
+                        console.log(data)
+
+                        // update results variable and redraw necessary UI components
+                        results = data;
+                        redrawUI(data);
+                    },
+                    error:function(jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR)
+                        console.log(textStatus)
+                        console.log(errorThrown)
+
+                        var alert = document.createElement("div");
+                        alert.innerText = jqXHR.responseJSON.message;
+                        alert.classList.add("alert alert-danger");
+
+                        $(self).parent()[0].appendChild(alert);
+                    }
+                });
+            });
+
+        }); // end docready
     </script>
 </body>
 
