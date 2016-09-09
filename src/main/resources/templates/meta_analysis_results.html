@@ -27,7 +27,7 @@
                             <!-- start thymeleaf templating -->
                             <div class="row plot-wrapper" th:each="result, i : ${multipleResults}">
                                 <hr/>
-                                <div class="col-sm-7">
+                                <div class="col-md-7">
                                     <div class="plot-container margin-center">
                                         <div class="plot-switches input-group">
                                             <label>Enable Zoom and Pan &nbsp;<input type="checkbox" class="enable-zoom" /></label>
@@ -58,12 +58,12 @@
                                                 </div>
                                         </form>
                                         <button class="generate-plot-btn btn btn-default" type="button" th:attr="data-plot-index=${i.count}">
-                                            Generate PNG for plot
+                                            Generate SVG for plot
                                         </button>
                                     </div>
                                 </div>
 
-                                <div class="col-sm-5 result-panels" th:id="${'result-panels-' + i.count}">
+                                <div class="col-md-5 result-panels" th:id="${'result-panels-' + i.count}">
                                     <div class="panel panel-default result-panel upregulated">
                                         <div class="panel-heading">Upregulated</div>
                                         <div class="panel-body">
@@ -180,8 +180,6 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="/js/SVGPlot.js"></script>
 
-    <script src="/js/lib/dom-to-image.min.js"></script>
-
     <script type="text/javascript" th:inline="javascript">
 
         // sanitizes the input string for safe use as classNames, ids, etc.
@@ -239,7 +237,7 @@
 
             // set of class names of metabolites, etc. that have been highlighted
             // by clicking them in the side table (or on the d3 plot)
-            // its elements carry over redraws, so it is useful to keep track of user interaction
+            // these elements carry over redraws, so it is useful to keep track of user interaction
             window.metaprot = {};
             window.metaprot.plot = {};
             window.metaprot.plot.highlightedItems = new Set();
@@ -439,33 +437,32 @@
             $('.generate-plot-btn').on("click", function(e) {
                 e.preventDefault();
 
+                // remove any previously generated download links
+                $('#plot-download-link-' + $(this).attr("data-plot-index")).remove();
+
+                // get the plot, set ui animations
                 var plotContainerId = "d3-plot-" + $(this).attr("data-plot-index");
                 var formParent = $(this).parent()[0];
                 var i = document.createElement("i");
                 i.classList.add("fa", "fa-spin", "fa-cog");
 
+                // update UI, generate dataURL + elements
                 var self = $(this)[0];
                 self.innerText = "";
                 self.appendChild(i);
 
-                domtoimage.toPng($('#' + plotContainerId)[0])    // gets the div holding svg
-                        .then(function(dataUrl) {
-                            var anchor = document.createElement("a");
-                            anchor.setAttribute("href", dataUrl);
-                            anchor.setAttribute("download", plotContainerId + ".png");
-                            anchor.innerText = "Download";
+                var anchor = document.createElement("a");
+                anchor.id = "plot-download-link-" + $(this).attr("data-plot-index");
+                anchor.setAttribute("href", plots[plotContainerId]['plot'].getDataUrl());
+                anchor.setAttribute("download", "metaprot-plot-"+ $(this).attr("data-plot-index") + ".svg");
+                anchor.innerText = "Download";
 
-                            var div = document.createElement("div");
-                            div.appendChild(anchor);
-                            div.style.marginTop = "10px";
+                var div = document.createElement("div");
+                div.appendChild(anchor);
+                div.style.marginTop = "10px";
+                formParent.appendChild(div);
 
-                            formParent.appendChild(div);
-
-                            self.innerText = "Complete!";
-                        })
-                        .catch(function(err) {
-                            console.log("Something went wrong with dom-to-image: " + err);
-                        });
+                self.innerText = "Complete!";
             });
 
 

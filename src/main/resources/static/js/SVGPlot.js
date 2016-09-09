@@ -16,8 +16,9 @@
  */
 var SVGPlot = (function(dataset, plotContainerId, norm_pThreshold, norm_fcThreshold) {
 
-    // the d3 intialized svg element
+    // the d3 intialized svg element (innerSvg holds the data points + thresholds)
     var svg;
+    var innerSvg;
 
     // track normalized thresholds
     var norm_pThreshold = norm_pThreshold;
@@ -64,7 +65,7 @@ var SVGPlot = (function(dataset, plotContainerId, norm_pThreshold, norm_fcThresh
 
     var zoom = d3.zoom()
         .scaleExtent([1, 4])
-        .translateExtent([[0,0], [width + padding, height+padding]])
+        .translateExtent([[0,0], [width + 4*padding, height+3*padding]])  // see width in plot()
         .on("zoom", onZoom);
 
     // drag select
@@ -193,7 +194,7 @@ var SVGPlot = (function(dataset, plotContainerId, norm_pThreshold, norm_fcThresh
         $( "#" + plotContainerId + " line.threshold").remove();
 
         // append new lines
-        var line = svg.append("line")
+        var line = innerSvg.append("line")
             .attr("class", "positive-fc-thresh threshold")
             .attr("x1", xScale(norm_fcThreshold))
             .attr("y1", yScale(maxY))
@@ -204,7 +205,7 @@ var SVGPlot = (function(dataset, plotContainerId, norm_pThreshold, norm_fcThresh
             .style("stroke-width", .5)
             .style("stroke-dasharray", "15,15");
 
-        svg.append("line")
+        innerSvg.append("line")
             .attr("class", "negative-fc-thresh threshold")
             .attr("x1", xScale(-1*norm_fcThreshold))
             .attr("y1", yScale(maxY))
@@ -215,7 +216,7 @@ var SVGPlot = (function(dataset, plotContainerId, norm_pThreshold, norm_fcThresh
             .style("stroke-width", .5)
             .style("stroke-dasharray", "15,15");
 
-        svg.append("line")
+        innerSvg.append("line")
             .attr("class", "p-thresh threshold")
             .attr("x1", xScale(minX))
             .attr("y1", yScale(norm_pThreshold))
@@ -232,14 +233,20 @@ var SVGPlot = (function(dataset, plotContainerId, norm_pThreshold, norm_fcThresh
     var plot = function() {
         /** SVG **/
         svg = d3.select("#" + plotContainerId).append("svg")
-            .attr("height", height)
-            .attr("width", width)
+            .attr("height", height + 2*padding)
+            .attr("width", width + 4*padding)
             .attr("id", plotContainerId + "-svg")
             //.call(zoom);
             .call(drag);
 
+        innerSvg = svg.append("g").attr("transform", "translate(" + 2*padding  + ", 0)")
+            .append("svg")
+            .style("overflow", "hidden")
+            .attr("width", width)
+            .attr("height", height-padding);
+
         // for each circle datapoint in dataset
-        svg.selectAll("circle")
+        innerSvg.selectAll("circle")
             .data(dataset)
             .enter()
             .append("circle")               // tag name
@@ -270,8 +277,8 @@ var SVGPlot = (function(dataset, plotContainerId, norm_pThreshold, norm_fcThresh
             });
 
         // draw and label axes
-        gXAxis = svg.append("g").attr("class", "x axis").attr("transform", "translate(0, " + (height-padding) + ")").call(xAxis);
-        gYAxis = svg.append("g").attr("class", "y axis").call(yAxis);
+        gXAxis = svg.append("g").attr("class", "x axis").attr("transform", "translate(" + 2*padding + ", " + (height-padding) + ")").call(xAxis);
+        gYAxis = svg.append("g").attr("class", "y axis").attr("transform", "translate(" + 3*padding + ", 0)").call(yAxis);
         svg.append("text")
             .text("log2(fc threshold)")
             .attr("text-anchor", "middle")
@@ -283,7 +290,7 @@ var SVGPlot = (function(dataset, plotContainerId, norm_pThreshold, norm_fcThresh
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(-90)")  //  x-y coordinate system is also rotated
             .attr("x", -1*height/2)
-            .attr("y", -2*padding)
+            .attr("y", padding)
             .attr("class", "axis-label");
 
         // threshold lines
@@ -299,6 +306,27 @@ var SVGPlot = (function(dataset, plotContainerId, norm_pThreshold, norm_fcThresh
         norm_fcThreshold = norm_fcThreshold_new;
     }
 
+    // misc
+
+    /**
+     * Returns the dataUrl for the current plot, as a download-ready string
+     * to place in an anchor tag.
+     */
+    var getDataUrl = function() {
+        // get svg DOM element
+        var currSvg = $("#" + plotContainerId + "-svg")[0];
+        if (!currSvg) {
+            console.log("Error in finding DOM element to generate the dataUrl");
+            return null;
+        }
+
+        // get the XML source of the svg using XMLSerializer
+        var serializer = new XMLSerializer();
+        var source = serializer.serializeToString(currSvg);
+
+        return "data:image/svg+xml;utf8," + source;
+    };
+
     return {
         redrawThresholdLines:redrawThresholdLines,
         enableDragSelect:enableDragSelect,
@@ -306,6 +334,7 @@ var SVGPlot = (function(dataset, plotContainerId, norm_pThreshold, norm_fcThresh
         plot:plot,
         getCircleColor:getCircleColor,
         getSvg:getSvg,  // should be temporary
-        setThresholds:setThresholds
+        setThresholds:setThresholds,
+        getDataUrl:getDataUrl
     };
 });
