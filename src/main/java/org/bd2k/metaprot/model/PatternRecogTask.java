@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * Represents a Pattern Recognition task result in the Task collection
+ *
  * Created by Abineet on 9/1/2016.
  */
 @Document(collection = "Task")
@@ -17,13 +19,17 @@ public class PatternRecogTask {
 
     private Date timeStamp;
     private String fileName;
+    private long fileSize;
+    private int numClusters;
 
     private List<List<PatternRecogStat>> results;
 
-    public PatternRecogTask(String token, Date timeStamp, String fileName, List<List<PatternRecogStat>> results) {
+    public PatternRecogTask(String token, Date timeStamp, String fileName, long fileSize, int numClusters, List<List<PatternRecogStat>> results) {
         this.token = token;
         this.timeStamp = timeStamp;
         this.fileName = fileName;
+        this.fileSize = fileSize;
+        this.numClusters = numClusters;
         this.results = results;
     }
 
@@ -51,6 +57,22 @@ public class PatternRecogTask {
         this.fileName = fileName;
     }
 
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public int getNumClusters() {
+        return numClusters;
+    }
+
+    public void setNumClusters(int numClusters) {
+        this.numClusters = numClusters;
+    }
+
     public List<List<PatternRecogStat>> getResults() {
         return results;
     }
@@ -65,6 +87,8 @@ public class PatternRecogTask {
                 "token='" + token + '\'' +
                 ", timeStamp=" + timeStamp +
                 ", fileName='" + fileName + '\'' +
+                ", fileSize=" + fileSize +
+                ", numClusters=" + numClusters +
                 ", results=" + results +
                 '}';
     }

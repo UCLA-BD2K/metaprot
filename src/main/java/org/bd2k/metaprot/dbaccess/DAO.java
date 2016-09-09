@@ -24,20 +24,42 @@ public interface DAO {
     Task getTask(String token);
 
     /**
-     * Saves the given task to the database.
+     * Saves the given task to the database as a new entry.
      *
-     * @param task
+     * @param task the task to save
      * @return true if the task was added to the database, false otherwise
      */
     boolean saveTask(Task task);
 
     /**
+     * Saves the given task to the database if it does not exist, or updates it.
      *
-     * @param token
-     * @return
+     * @param task the task to save
+     */
+    void saveOrUpdateTask(Task task);
+
+    /**
+     * Retrieves a pattern recognition task given the associated token.
+     *
+     * @param token the uuid
+     * @return an initialized PatternRecogTask, or null if the token is invalid
      */
     PatternRecogTask getPatternRecogTask(String token);
 
+
+    /**
+     * Saces the given task to the database as a new entry.
+     *
+     * @param task the task to save
+     * @return true if the task was added to the database, false otherwise
+     */
     boolean saveTask(PatternRecogTask task);
+
+    /**
+     * Saves the given task to the database if it does not exist, or updates it.
+     *
+     * @param task the task to save
+     */
+    void saveOrUpdateTask(PatternRecogTask task);
 
 }

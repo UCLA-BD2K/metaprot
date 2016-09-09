@@ -24,6 +24,9 @@ public class DAOImpl implements DAO {
 
     public DAOImpl() {}
 
+
+    /* Metabolite Analysis */
+
     public Task getTask(String token) {
         return taskRepository.findByToken(token);
     }
@@ -38,6 +41,13 @@ public class DAOImpl implements DAO {
         return true;
     }
 
+    public void saveOrUpdateTask(Task task) {
+        taskRepository.save(task);
+    }
+
+
+    /* Pattern Recognition */
+
     public PatternRecogTask getPatternRecogTask(String token){
         return PRTaskRepository.findByToken(token);
     }
@@ -50,6 +60,10 @@ public class DAOImpl implements DAO {
 
         PRTaskRepository.save(task);
         return true;
+    }
+
+    public void saveOrUpdateTask(PatternRecogTask task) {
+        PRTaskRepository.save(task);
     }
 
 }
