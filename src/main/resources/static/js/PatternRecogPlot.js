@@ -85,9 +85,7 @@ var PatternRecogPlot = (function(resultData) {
         var paths = vis.selectAll(".d3-path")
             .attr('d', function (d) {
                 return lineGen(d);
-            })
-
-
+            });
     }
 
     // Y value to scale
@@ -116,7 +114,7 @@ var PatternRecogPlot = (function(resultData) {
         for (var k = 0; k < metaToUpdate.length; k++) {
             var data = results[metaToUpdate[k].i][metaToUpdate[k].j].dataPoints;
             var metaName = results[metaToUpdate[k].i][metaToUpdate[k].j].metaboliteName;
-            if(metaToUpdate[k].update) {
+            if (metaToUpdate[k].update) {
                 vis.append("path")
                     .data([data])
                     .attr('d', lineGen(data))
@@ -142,7 +140,7 @@ var PatternRecogPlot = (function(resultData) {
                     })
                     .attr("r", 2)
             }
-            else{
+            else {
                 vis.selectAll(sanitizeForHtml('#'+ metaName)).remove();
             }
         }
