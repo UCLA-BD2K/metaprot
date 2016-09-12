@@ -5,7 +5,7 @@
  *
  * Construct by "new SVGPlot(dataset, plotId, pThresh, fcThresh)"
  *
- * @para dataset an appropriately formed array of values.
+ * @param dataset an appropriately formed array of values.
  * @param plotContainerId id that the SVG plot will be appended to.
  * @param norm_pThreshold normalized (-log10(...)) p value threshold.
  * @param norm_fcThreshold normalized (log2(...)) fold change threshold.

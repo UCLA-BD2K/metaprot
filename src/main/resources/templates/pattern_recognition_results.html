@@ -22,10 +22,21 @@
                             <div class="plot">
                                 <svg id="visualisation"></svg>  <!-- rendered in JS -->
                             </div>
+                            <div class="well well-lg">
+                                <h4>Tools</h4>
+                                <div class="form-group">
+                                    <button class="btn btn-default" id="exportCsvBtn">Export results as CSV</button>
+                                    <span class="invisible" id="exportCsvLink"><a download="metaprot_pattern_recog.csv"></a></span>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-default disabled" id="exportPlotBtn">Export plot as SVG</button>
+                                    <span class="invisible" id="exportPlotLink"><a download="metaprot_pattern_recog_plot.svg"></a></span>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-sm-5">
-                            <h4>Clusters</h4>
                             <div class="well well-lg">
+                                <h4>Clusters</h4>
                                 <form id="cluster-selection-form" class="form-horizontal">
                                     <div class="form-group">
                                         <label for="input-num-clusters" class="control-label">Number of clusters:</label>
@@ -193,11 +204,63 @@
                 $('table[data-cluster-id="' + clusterId +'"]').css("display", "block");
             };
 
+            /**
+             * Returns a string of comma separated values in form:
+             *
+             * cluster <#>\n
+             * x,x,x,x,x,x,... \n
+             * ...
+             * cluster <#>\n
+             * y,y,y,y,y,y,... \n
+             *
+             * @return a comma separated, with newline delimited rows, string. Note
+             * that no prefix is prepended to allow the user to modify the usage accordingly.
+             */
+            var exportDataAsCSV = function() {
+                if ( !dataset || !(dataset.length > 0) || !(dataset[0].length > 0)) {
+                    console.log("Cannot export null dataset.");
+                    return;
+                }
+
+                // the string to return
+                var csvString = "";
+
+                // headings
+                var heading = "name";
+                for (var i = 0; i < dataset[0][0]['dataPoints'].length; i++) {
+                    heading += ("," + dataset[0][0]['dataPoints'][i].timePoint);
+                }
+                csvString += (heading + "\n");
+
+                // content, for each cluster
+                for (var i = 0; i < dataset.length; i++) {
+
+                    // add the cluster header, 1-based
+                    csvString += ("cluster " + (i+1) + "\n");
+
+                    // add the cluster data points, in form "name,time1Ratio,time2Ratio,time3Ratio,..."
+                    // for each metabolite in cluster
+                    for ( var j = 0; j < dataset[i].length; j++) {
+                        var row = dataset[i][j].metaboliteName;
+
+                        // for each timepoint for metabolite
+                        for (var k = 0; k < dataset[i][j].dataPoints.length; k++) {
+                            row += ("," + dataset[i][j].dataPoints[k].abundanceRatio);
+                        }
+                        row += "\n";
+                        csvString += row;
+                    }
+                }
+
+                return csvString;
+            };
+
             return {
                 drawSideTables : drawSideTables,
                 displayTable : displayTable,
-                clearSideTables:clearSideTables,
-                updateDataSet:updateDataSet
+                clearSideTables : clearSideTables,
+                updateDataSet : updateDataSet,
+                exportDataAsCSV : exportDataAsCSV
             };
         });
 
@@ -286,7 +349,7 @@
 
             // misc
 
-            function redrawUI(data) {   // redraws necessary components, say, on new user input
+            function redrawUI(data) {   // redraws necessary components, say, on cluster number change
 
                 // for side panel
                 sidePanel.clearSideTables();
@@ -296,6 +359,8 @@
                 bindSideTableEvents();
 
                 // TODO for plot(?)
+                $('plot .d3-path').remove();
+
             }
             $('#cluster-selection-form').on("submit", function(e) {
                 e.preventDefault();
@@ -322,6 +387,20 @@
                         $(self).parent()[0].appendChild(alert);
                     }
                 });
+            });
+
+            // export current side tables as a CSV
+            function getUriForCsvDownload() {
+                var csvString = "data:text/csv;charset=utf-8,";
+                csvString += sidePanel.exportDataAsCSV();
+
+                var encodedUri = encodeURI(csvString);
+                return encodedUri;
+            }
+            $('#exportCsvBtn').on("click", function() {
+                var $link = $('#exportCsvLink a');
+                $link.attr("href", getUriForCsvDownload()).text("Download");
+                $link[0].click();   // start download
             });
 
         }); // end docready
