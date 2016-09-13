@@ -1,7 +1,7 @@
 package org.bd2k.metaprot.controller.rest;
 
 import org.bd2k.metaprot.scheduler.TaskScheduler;
-import org.bd2k.metaprot.aws.CopakbS3;
+import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.BadRequestException;
@@ -32,7 +32,7 @@ import java.util.UUID;
 public class analyze {
 
     @Autowired
-    private CopakbS3 copakbS3;
+    private S3Client copakbS3;
 
     @Autowired
     private DAOImpl dao;

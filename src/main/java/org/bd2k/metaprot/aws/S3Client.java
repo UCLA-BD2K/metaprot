@@ -29,7 +29,7 @@ import java.io.InputStream;
 @Component
 @PropertySource("classpath:application.properties")
 @DependsOn({"Globals"})
-public class CopakbS3 {
+public class S3Client {
 
     private final int BUFFER_SIZE = 1024 * 16;   // 16 bytes
 
@@ -50,7 +50,7 @@ public class CopakbS3 {
     AWSCredentials credentials;
     AmazonS3Client s3Client;
 
-    public CopakbS3() {
+    public S3Client() {
         // intentionally empty, allowing for bean instantiation
     }
 
