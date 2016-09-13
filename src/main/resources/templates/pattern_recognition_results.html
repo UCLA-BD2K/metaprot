@@ -365,6 +365,7 @@
             $('#cluster-selection-form').on("submit", function(e) {
                 e.preventDefault();
                 var self = this;
+
                 // make an ajax call
                 $.ajax({
                     url: "/analyze/pattern/re-analyze/" + [[${token}]] + "?numClusters=" + +$('#input-num-clusters').val(),
@@ -382,7 +383,7 @@
 
                         var alert = document.createElement("div");
                         alert.innerText = jqXHR.responseJSON.message;
-                        alert.classList.add("alert alert-danger");
+                        alert.classList.add("alert", "alert-danger");
 
                         $(self).parent()[0].appendChild(alert);
                     }
