@@ -145,16 +145,37 @@ var PatternRecogPlot = (function(resultData) {
         }
     }
 
+    // updates internal dataset
     var updateDataSet =  function(data) {
         results = data;
         len = results[0][0].dataPoints.length - 1;
         xMax = results[0][0].dataPoints[len].timePoint; // ?
     };
+
+    /**
+     * Returns the dataUrl for the current plot, as a download-ready string
+     * to place in an anchor tag.
+     */
+    var getDataUrl = function() {
+        // get svg DOM element
+        var currSvg = document.getElementById("visualisation");
+        if (!currSvg) {
+            console.log("Error in finding DOM element to generate the dataUrl");
+            return null;
+        }
+
+        // get the XML source of the svg using XMLSerializer
+        var serializer = new XMLSerializer();
+        var source = serializer.serializeToString(currSvg);
+
+        return "data:image/svg+xml;utf8," + source;
+    };
     
     return {
         updateChart : updateChart,
         InitChart : InitChart,
-        updateDataSet:updateDataSet
+        updateDataSet:updateDataSet,
+        getDataUrl:getDataUrl
     };
     
     InitChart();

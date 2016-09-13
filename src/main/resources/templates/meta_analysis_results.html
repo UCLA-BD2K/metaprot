@@ -58,7 +58,7 @@
                                                 </div>
                                         </form>
                                         <button class="generate-plot-btn btn btn-default" type="button" th:attr="data-plot-index=${i.count}">
-                                            Generate SVG for plot
+                                            Download SVG for plot
                                         </button>
                                     </div>
                                 </div>
@@ -443,18 +443,13 @@
                 // get the plot, set ui animations
                 var plotContainerId = "d3-plot-" + $(this).attr("data-plot-index");
                 var formParent = $(this).parent()[0];
-                var i = document.createElement("i");
-                i.classList.add("fa", "fa-spin", "fa-cog");
 
-                // update UI, generate dataURL + elements
-                var self = $(this)[0];
-                self.innerText = "";
-                self.appendChild(i);
-
+                // create anchor element for download
                 var anchor = document.createElement("a");
                 anchor.id = "plot-download-link-" + $(this).attr("data-plot-index");
                 anchor.setAttribute("href", plots[plotContainerId]['plot'].getDataUrl());
                 anchor.setAttribute("download", "metaprot-plot-"+ $(this).attr("data-plot-index") + ".svg");
+                anchor.style.display = "none";
                 anchor.innerText = "Download";
 
                 var div = document.createElement("div");
@@ -462,7 +457,7 @@
                 div.style.marginTop = "10px";
                 formParent.appendChild(div);
 
-                self.innerText = "Complete!";
+                anchor.click();
             });
 
 

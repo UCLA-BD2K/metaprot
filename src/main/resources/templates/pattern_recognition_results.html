@@ -29,7 +29,7 @@
                                     <span class="invisible" id="exportCsvLink"><a download="metaprot_pattern_recog.csv"></a></span>
                                 </div>
                                 <div class="form-group">
-                                    <button class="btn btn-default disabled" id="exportPlotBtn">Export plot as SVG</button>
+                                    <button class="btn btn-default" id="exportPlotBtn">Export plot as SVG</button>
                                     <span class="invisible" id="exportPlotLink"><a download="metaprot_pattern_recog_plot.svg"></a></span>
                                 </div>
                             </div>
@@ -403,6 +403,12 @@
                 var $link = $('#exportCsvLink a');
                 $link.attr("href", getUriForCsvDownload()).text("Download");
                 $link[0].click();   // start download
+            });
+
+            $('#exportPlotBtn').on("click", function() {
+                var $link = $('#exportPlotLink a');
+                $link.attr("href", plot.getDataUrl());
+                $link[0].click();
             });
 
         }); // end docready
