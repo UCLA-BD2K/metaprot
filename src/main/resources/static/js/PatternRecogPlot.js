@@ -5,9 +5,8 @@
 var PatternRecogPlot = (function(resultData) {
 
     var results = resultData;
-    var plottedData =[];
-    len = results[0][0].dataPoints.length - 1;
-    xMax = results[0][0].dataPoints[len].timePoint;
+    var len = results[0][0].dataPoints.length - 1;
+    var xMax = results[0][0].dataPoints[len].timePoint;
 
     var vis;
 
@@ -145,10 +144,17 @@ var PatternRecogPlot = (function(resultData) {
             }
         }
     }
+
+    var updateDataSet =  function(data) {
+        results = data;
+        len = results[0][0].dataPoints.length - 1;
+        xMax = results[0][0].dataPoints[len].timePoint; // ?
+    };
     
     return {
         updateChart : updateChart,
-        InitChart : InitChart
+        InitChart : InitChart,
+        updateDataSet:updateDataSet
     };
     
     InitChart();

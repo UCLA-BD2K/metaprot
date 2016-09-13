@@ -358,8 +358,9 @@
                 sidePanel.displayTable(0);
                 bindSideTableEvents();
 
-                // TODO for plot(?)
-                $('plot .d3-path').remove();
+                // remove any drawn .d3-paths and nodes
+                $('.plot .d3-path, .plot .d3-node').remove();
+                plot.updateDataSet(data);
 
             }
             $('#cluster-selection-form').on("submit", function(e) {
