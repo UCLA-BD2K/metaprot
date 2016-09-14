@@ -1,15 +1,43 @@
-Met(a)prot
+#Metaprot
 
-Setting up metaprot
+###Dependencies
 
-1. Intall R (mac via homebrew, windows via official website)
-2. Install ggplot2 and gplots (optional for now)
-3. Set R_HOME environment variable
-4. Install Rserve via "install.packages(Rserve)"
-5. Run a local instance of Rserve by entering R shell and entering:
-    library(Rserve)
-    Rserve(args="--no-args --RS-port <port>")
+####R
+Install a local version of R (can be from homebrew if on OSX) 
 
-where <port> refers the port you want to bind the Rserve instance to.
-6. Install MongoDB, and run a local instance with defaults (localhost, default port)
-7. Run application
+####Rserve
+Head over to https://rforge.net/Rserve/doc.html#inst to install Rserve,
+note that you may need to build/install from source depending on your
+OS. Otherwise, running:
+
+```bash
+install.packages("Rserve")
+library(Rserve)
+Rserve(args="RS-port <port>")
+```
+
+in the R shell where ```<port>``` refers to the desired port you would like to run Rserve on should suffice. This will install and run Rserve on your desired port(s).
+
+####Mongo
+This will change in the near future, as there is a high chance that
+we will migrate to AWS DynamoDB in the future. For now, grab an installation
+of mongo and start a mongod process at the default port (27017).
+
+###Running Metaprot
+If you have not done so already, double check that the home directory
+for your R installation is in your PATH. Running:
+
+```bash
+R.home()
+```
+
+in the R shell should point you to where R is installed. If using an IDE
+like IntelliJ, you may need to edit run configurations to set the R_HOME
+environment variable.
+
+You will need a .properties file (application.properties) with the correct
+information to connect to AWS, etc. Ask one of the developers for this file/information
+as needed.
+
+With the above steps, you should be able to run Metaprot locally via
+embedded Tomcat (IntelliJ, etc.).
