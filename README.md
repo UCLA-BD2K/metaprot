@@ -39,5 +39,21 @@ You will need a .properties file (application.properties) with the correct
 information to connect to AWS, etc. Ask one of the developers for this file/information
 as needed.
 
+You will also need a profile (Maven) that complements the .properties file. Specifically,
+you will need a local and production profile for setting variables such as the path
+to the R scripts directory. Again, ask one of the developers for this information.
+
 With the above steps, you should be able to run Metaprot locally via
 embedded Tomcat (IntelliJ, etc.).
+
+###Deploying Metaprot
+Deployment is still under standardization, but Metaprot is live at: 
+http://metaprot-env.us-west-2.elasticbeanstalk.com/metabolite-analysis.
+
+Ensure to specify the appropriate Maven profile when packaging, and 
+use the Elastic Beanstalk console to upload a new application version.
+
+In the future it would be nice to either: create a standard deploy
+command in Maven, or have a bash script that handles uploading and
+re-deploying new versions of the application. We want this so that we
+can avoid re-running all of the setup scripts we configure in .ebextensions.
