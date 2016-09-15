@@ -21,15 +21,18 @@ public class PatternRecogTask {
     private String fileName;
     private long fileSize;
     private int numClusters;
+    private int minMembersPerCluster;
 
     private List<List<PatternRecogStat>> results;
 
-    public PatternRecogTask(String token, Date timeStamp, String fileName, long fileSize, int numClusters, List<List<PatternRecogStat>> results) {
+    public PatternRecogTask(String token, Date timeStamp, String fileName, long fileSize, int numClusters,
+                            int minMembersPerCluster, List<List<PatternRecogStat>> results) {
         this.token = token;
         this.timeStamp = timeStamp;
         this.fileName = fileName;
         this.fileSize = fileSize;
         this.numClusters = numClusters;
+        this.minMembersPerCluster = minMembersPerCluster;
         this.results = results;
     }
 
@@ -73,6 +76,14 @@ public class PatternRecogTask {
         this.numClusters = numClusters;
     }
 
+    public int getMinMembersPerCluster() {
+        return minMembersPerCluster;
+    }
+
+    public void setMinMembersPerCluster(int minMembersPerCluster) {
+        this.minMembersPerCluster = minMembersPerCluster;
+    }
+
     public List<List<PatternRecogStat>> getResults() {
         return results;
     }
@@ -89,6 +100,7 @@ public class PatternRecogTask {
                 ", fileName='" + fileName + '\'' +
                 ", fileSize=" + fileSize +
                 ", numClusters=" + numClusters +
+                ", minMembersPerCluster=" + minMembersPerCluster +
                 ", results=" + results +
                 '}';
     }

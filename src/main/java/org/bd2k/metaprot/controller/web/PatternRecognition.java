@@ -37,7 +37,8 @@ public class PatternRecognition {
         PatternRecogTask task = dao.getPatternRecogTask(token);
         model.addAttribute("results", task.getResults());
         model.addAttribute("token", token);
-        model.addAttribute("numInitialClusters", task.getNumClusters());
+        model.addAttribute("numClusters", task.getNumClusters());
+        model.addAttribute("minMembersPerCluster", task.getMinMembersPerCluster());
         
         return "pattern_recognition_results";
     }

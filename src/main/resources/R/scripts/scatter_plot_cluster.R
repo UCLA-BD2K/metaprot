@@ -1,4 +1,4 @@
-analyze.temporal.patterns <- function(dataPath, outputCSV, numDesiredClusters) {
+analyze.temporal.patterns <- function(dataPath, outputCSV, numDesiredClusters, minMembersPerCluster) {
 
   # read sample data
   #dta_0 = read.csv("/Users/howardchoi/Desktop/MetaProt/Abineet/test_scatter_plot.csv", header = TRUE);
@@ -28,7 +28,7 @@ analyze.temporal.patterns <- function(dataPath, outputCSV, numDesiredClusters) {
   memb = cutree(hc, k = numDesiredClusters);                   # k = number of desired clusters
   memb_t = sort(table(memb), decreasing = TRUE);
 
-  groups = names(memb_t)[memb_t>5]; # limit clusters to those with > 5 members
+  groups = names(memb_t)[memb_t > (minMembersPerCluster-1)]; # limit clusters to those with > e.g. 5 members, subtract one to mean AT LEAST
 
   tmp = c();
     empty_line = rep(NA, 6); names(empty_line) = time_points;

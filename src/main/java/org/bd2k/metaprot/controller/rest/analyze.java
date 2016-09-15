@@ -163,17 +163,19 @@ public class analyze {
     @RequestMapping(value = "/pattern/{token}", method = RequestMethod.POST)
     public String analyzePatterns(@PathVariable("token") String token,
                                   @RequestParam("objectKey") String key,
-                                  @RequestParam("numClusters") int numClusters) {
+                                  @RequestParam("numClusters") int numClusters,
+                                  @RequestParam("minMembersPerCluster") int minMembersPerCluster) {
 
         // validation
         String[] keyArr = key.split("/");
         if (!(key.startsWith("user-input/" + token)) ||
                 !(keyArr[keyArr.length-2].equals(token)) ||
                 keyArr.length != 3 ||
-                numClusters < 1) {
+                numClusters < 1 ||
+                minMembersPerCluster < 1) {
 
             // should return error message
-            throw new BadRequestException("Invalid request, please try again later.");
+            throw new BadRequestException("Invalid request, please try again.");
         }
 
         // grab uploaded file from S3
@@ -204,7 +206,7 @@ public class analyze {
             manager.runRScript(absScriptPath);          // source the R script
             manager.runRCommand("analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep +
             keyArr[keyArr.length - 1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv', " +
-                    numClusters + ")");
+                    numClusters + ", " + minMembersPerCluster + ")");
 
             scheduler.endTask(portToUse);   // notify scheduler that task is complete (all R commands done)
             manager.closeConnection();
@@ -216,7 +218,7 @@ public class analyze {
 
         List<List<PatternRecogStat>> results = new FileAccess().getPatternRecogResults(token);
         PatternRecogTask task = new PatternRecogTask(token, new Date(), keyArr[keyArr.length-1], s3Status.getFileSize(),
-                numClusters, results);
+                numClusters, minMembersPerCluster, results);
 
         boolean taskSaved = dao.saveTask(task);
 
@@ -250,14 +252,14 @@ public class analyze {
      */
     @RequestMapping(value="/pattern/re-analyze/{token}", method = RequestMethod.GET)
     public List<List<PatternRecogStat>> reanalyzePatternRecognition(@PathVariable(value="token") String token,
-                                                                    @RequestParam("numClusters") int numClusters) {
-
+                                                                    @RequestParam("numClusters") int numClusters,
+                                                                    @RequestParam("minMembersPerCluster") int minMembersPerCluster) {
         // validation
         PatternRecogTask task = dao.getPatternRecogTask(token);
         File targetDir = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token);
         File targetFile = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + task.getFileName());
         if (!targetDir.exists() || !targetFile.exists() || task==null || numClusters < 1) {
-            throw new BadRequestException("Bad request");
+            throw new BadRequestException("The task no longer exists, please re-upload your data and try again.");
         }
 
         // target file, directory, and db record exist, proceed with reanalyzing the file
@@ -275,7 +277,7 @@ public class analyze {
             manager.runRScript(absScriptPath);          // source the R script
             manager.runRCommand("analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep +
                     task.getFileName() + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv', "
-                    + numClusters +  ")");
+                    + numClusters + ", " + minMembersPerCluster + ")");
 
             // notify scheduler that all R commands complete
             scheduler.endTask(portToUse);
@@ -290,6 +292,7 @@ public class analyze {
         task.setTimeStamp(new Date());
         task.setResults(results);
         task.setNumClusters(numClusters);
+        task.setMinMembersPerCluster(minMembersPerCluster);
 
         dao.saveOrUpdateTask(task); // always succeeds
 

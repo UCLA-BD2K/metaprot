@@ -23,14 +23,19 @@
                         <fieldset>
 
                             <label for="fileInput">Select file: </label>
-                            <input id="fileInput" type="file" class="form-control" />
+                            <input id="fileInput" type="file" class="form-control" required="required" />
 
                             <br/>
 
-                            <label class="control-label" for="numClusters">Number of clusters (can be updated later):</label>
-                            <input class="form-control" id="numClusters" type="text"/>
+                            <label class="control-label" for="numClusters">Number of desired clusters:</label>
+                            <input class="form-control" id="numClusters" type="text" required="required" />
 
                             <br/>
+
+                            <label class="control-label" for="memPerCluster">Minimum number of metabolites per cluster:</label>
+                            <input class="form-control" id="memPerCluster" type="text" required="required" />
+
+                            <br />
 
                             <input type="submit" value="Submit" class="form-control"/>
                             <input type="reset" value="Reset" class="form-control"/>
@@ -75,11 +80,13 @@
                 $progressText.html('<h5>Analyzing...</h5><i class="fa fa-refresh fa-spin fa-3x"></i>');
 
                 var numClusters = +$('#numClusters').val();
+                var minMembersPerCluster = +$('#memPerCluster').val();
 
                 var formData = new FormData();
                 formData.append("objectKey", s3Key);
                 formData.append("token", token);
-                formData.append("numClusters", numClusters)
+                formData.append("numClusters", numClusters);
+                formData.append("minMembersPerCluster", minMembersPerCluster);
 
                 // notify server of file upload and updates UI to reflect status
                 $.ajax({
