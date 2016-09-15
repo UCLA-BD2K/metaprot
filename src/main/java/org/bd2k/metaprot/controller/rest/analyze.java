@@ -11,6 +11,7 @@ import org.bd2k.metaprot.util.FileAccess;
 import org.bd2k.metaprot.util.Globals;
 import org.bd2k.metaprot.util.RManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,15 +41,14 @@ public class analyze {
     // for path construction
     private String root = Globals.getPathRoot();
     private String sep = Globals.getPathSeparator();
+    private String rScriptLoc = Globals.getrScriptLocation();
 
     // "/ssd2/metaprot"
     private final String LOCAL_FILE_DOWNLOAD_PATH = root + "ssd2" + sep + "metaprot";
 
     // "src/main/resources/R/scripts/r_sample_code.R"
-    private final String METABOLITES_R_SCRIPT_LOC = "src" + sep + "main" + sep + "resources" + sep + "R" +
-            sep + "scripts" + sep + "r_sample_code.R";
-    private final String TEMPORAL_PATTERNS_R_SCRIPT_LOC = "src" + sep + "main" + sep + "resources" + sep +
-            "R" + sep + "scripts" + sep + "scatter_plot_cluster.R";
+    private final String METABOLITES_R_SCRIPT_LOC = rScriptLoc + "r_sample_code.R";
+    private final String TEMPORAL_PATTERNS_R_SCRIPT_LOC = rScriptLoc + "scatter_plot_cluster.R";
 
     // handle to perform R related logic
     private RManager manager = null;
@@ -109,6 +109,7 @@ public class analyze {
             manager = RManager.getInstance(portUsed);
             rScript = new File(METABOLITES_R_SCRIPT_LOC);
             String str = rScript.getAbsolutePath().replace("\\","\\\\");        // affects window env only
+
             manager.runRScript(str);        // (re) initializes R environment
             manager.runRCommand("analyze.file('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token
                     + sep + keyArr[keyArr.length-1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep +
@@ -117,7 +118,7 @@ public class analyze {
 
             // tell scheduler that all R commands have completed
             scheduler.endTask(portUsed);
-
+            manager.closeConnection();
         } catch (Exception e) {
             // handle exception so that we can return appropriate error messages
             e.printStackTrace();
@@ -205,6 +206,7 @@ public class analyze {
             keyArr[keyArr.length - 1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv')");
 
             scheduler.endTask(portToUse);   // notify scheduler that task is complete (all R commands done)
+            manager.closeConnection();
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServerException("There was an error with our R Engine. Please try again at a later time.");
@@ -275,6 +277,7 @@ public class analyze {
 
             // notify scheduler that all R commands complete
             scheduler.endTask(portToUse);
+            manager.closeConnection();
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServerException("There was an issue with our R Engine. Please try again later.");

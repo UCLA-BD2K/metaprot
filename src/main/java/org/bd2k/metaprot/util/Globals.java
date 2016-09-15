@@ -28,6 +28,7 @@ public class Globals {
 
     private static String pathRoot;         // C:\ in windows, and / for everything else
     private static String pathSeparator;    // \ in windows, and / for everything else
+    private static String rScriptLocation;
     private static Integer[] ports;
 
     private Globals() {}                    // no instantiation
@@ -61,6 +62,10 @@ public class Globals {
             for(int i = 0; i < ports.length; i++) {
                 ports[i] = Integer.parseInt(portsStringArr[i]);
             }
+
+            // get the location of R scripts
+            rScriptLocation = (String) props.get("app.r.script.location");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,6 +82,8 @@ public class Globals {
     public static String getPathSeparator() {
         return pathSeparator;
     }
+
+    public static String getrScriptLocation() { return rScriptLocation; }
 
     public static Integer[] getPorts(){ return ports; }
 

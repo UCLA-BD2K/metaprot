@@ -21,7 +21,7 @@ public class RManager {
     //private static Map<Integer, Set<String>> scriptsReadInByPort = new HashMap<Integer, Set<String>>();
 
     // member variables
-    private RConnection connection;
+    private RConnection connection = null;
     private int port;
 
     // private cstr only for internal factory use
@@ -84,5 +84,15 @@ public class RManager {
         }
 
         return exp;
+    }
+
+    /**
+     * Closes the connection to the Rserve instance.
+     */
+    public void closeConnection() {
+        if (connection != null) {
+            connection.close();
+            connection = null;
+        }
     }
 }
