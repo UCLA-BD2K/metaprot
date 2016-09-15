@@ -58,7 +58,7 @@ public class RManager {
       *
       * @param sourceFilePath absolute path of the R file to execute (e.g. "/drive/script.R")
       */
-    public void runRScript(String sourceFilePath) {
+    public void runRScript(String sourceFilePath) throws RserveException {
         //if (!scriptsReadInByPort.get(this.port).contains(sourceFilePath)) {
             runRCommand("source('" + sourceFilePath + "')");
         //    scriptsReadInByPort.get(this.port).add(sourceFilePath);
@@ -67,23 +67,15 @@ public class RManager {
 
     /**
      * Run arbitrary R statement(s). Make sure to sanitize input before
-     * calling this function.
+     * calling this function. Throws exception if an error occurred during
+     * evaluation of the R statement.
      *
      * @param statement the statement to run (e.g. "1+2")
-     * @return an REXP instance with the result of the specified statement,
-     * or null if an error occurred
+     * @return an REXP instance with the result of the specified statement.
      */
-    public REXP runRCommand(String statement) {
+    public REXP runRCommand(String statement) throws RserveException {
         System.out.println("running R command: " + statement);
-        REXP exp;
-        try {
-            exp = connection.eval(statement);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return exp;
+        return connection.eval(statement);
     }
 
     /**
