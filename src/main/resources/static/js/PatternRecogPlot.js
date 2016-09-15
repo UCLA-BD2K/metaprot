@@ -81,6 +81,17 @@ var PatternRecogPlot = (function(resultData) {
             .attr("pointer-events", "all")
             .call(yzoom);
 
+        // now add titles to the axes
+        vis.append("text")
+            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+            .attr("transform", "translate("+ (MARGINS.left/3) +","+(HEIGHT/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+            .text("Abundance Ratio");
+
+        vis.append("text")
+            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+            .attr("transform", "translate("+ (WIDTH/2) +","+(HEIGHT + MARGINS.bottom/2)+")")  // centre below axis
+            .text("Time Points");
+
     }
 
     var yzoom = d3.behavior.zoom()
