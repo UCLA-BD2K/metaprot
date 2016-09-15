@@ -1,11 +1,19 @@
 /**
- * Created by Abineet on 9/6/2016.
+ * Creates and edits line chart for Pattern Recognition
+ *
+ * Construct by "new PatternRecogPlot(data)"
+ *
+ * @param resultData an appropriately formed array of values.
+ * @type {Function}
+ *
+ * resultData currently expected in [[{'dataPoints':[{'abundanceRatio':1.0,'timePoint':0},{'abundanceRatio':1.25714285714286,'timePoint':1} ... 'metaboliteName':'C14:1_p180'}, format
  */
 
 var PatternRecogPlot = (function(resultData) {
 
     var results = resultData;
     var len = results[0][0].dataPoints.length - 1;
+    var xVals = [0];
     var xMax = results[0][0].dataPoints[len].timePoint;
 
     var vis;
@@ -22,8 +30,7 @@ var PatternRecogPlot = (function(resultData) {
     var xScale = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([0, xMax]);
     var yScale = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, 1.5]);
 
-    var xAxis = d3.svg.axis()
-        .scale(xScale);
+    var xAxis;
 
     var yAxis = d3.svg.axis()
         .scale(yScale)
@@ -36,6 +43,13 @@ var PatternRecogPlot = (function(resultData) {
         // results of the task
         //results = [[{'dataPoints':[{'abundanceRatio':1.0,'timePoint':0},{'abundanceRatio':1.25714285714286,'timePoint':1},{'abundanceRatio':0.785714285714286,'timePoint':3},{'abundanceRatio':0.814285714285714,'timePoint':5},{'abundanceRatio':1.1,'timePoint':7},{'abundanceRatio':1.24285714285714,'timePoint':14}],'metaboliteName':'C14:1_p180'},{'dataPoints':[{'abundanceRatio':1.0,'timePoint':0},{'abundanceRatio':1.21452894438138,'timePoint':1},{'abundanceRatio':0.922814982973893,'timePoint':3},{'abundanceRatio':1.03972758229285,'timePoint':5},{'abundanceRatio':1.30533484676504,'timePoint':7},{'abundanceRatio':1.44154370034052,'timePoint':14}],'metaboliteName':'PC aa C32:0_p180'}], [{'dataPoints':[{'abundanceRatio':1.0,'timePoint':0},{'abundanceRatio':1.34718646561236,'timePoint':1},{'abundanceRatio':1.04817947774917,'timePoint':3},{'abundanceRatio':1.03788157410813,'timePoint':5},{'abundanceRatio':1.10481794777492,'timePoint':7},{'abundanceRatio':1.0728208900331,'timePoint':14}],'metaboliteName':'PC ae C36:3_Lipid'},{'dataPoints':[{'abundanceRatio':1.0,'timePoint':0},{'abundanceRatio':1.34267330842673,'timePoint':1},{'abundanceRatio':0.964508094645081,'timePoint':3},{'abundanceRatio':0.92071398920714,'timePoint':5},{'abundanceRatio':1.10751349107513,'timePoint':7},{'abundanceRatio':1.32710668327107,'timePoint':14}],'metaboliteName':'PC ae C38:6_Lipid'}]];
 
+        for(var i = 1; i <= len; i++){
+            xVals.push(results[0][0].dataPoints[i].timePoint);
+        }
+        xAxis = d3.svg.axis()
+            .scale(xScale)
+            .tickValues(xVals);
+
 
         console.log("initruns");
 
@@ -46,8 +60,8 @@ var PatternRecogPlot = (function(resultData) {
             xScale,
             yScale,
             xAxis,
-
             yAxis;
+
         vis.append("svg:g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
