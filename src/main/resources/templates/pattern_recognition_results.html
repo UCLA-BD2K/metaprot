@@ -349,7 +349,9 @@
 
             // misc
 
-            function redrawUI(data) {   // redraws necessary components, say, on cluster number change
+            // redraws necessary components, say, on cluster number change
+            // data is in the same format as the results variable above
+            function redrawUI(data) {
 
                 // for side panel
                 sidePanel.clearSideTables();
@@ -357,6 +359,18 @@
                 sidePanel.drawSideTables();
                 sidePanel.displayTable(0);
                 bindSideTableEvents();
+
+                /*<![CDATA[*/
+                // for cluster select dropdown, redraw the options
+                var $clusterSelect = $('#cluster-select');
+                $clusterSelect.empty();
+                for (var i = 0; i < data.length; i++) {
+                    var option = document.createElement("option");
+                    option.value = i;
+                    option.innerText = i+1;
+                    $clusterSelect[0].appendChild(option);
+                }
+                /*]]>*/ /* because of XML parsing */
 
                 // remove any drawn .d3-paths and nodes
                 $('.plot .d3-path, .plot .d3-node').remove();
