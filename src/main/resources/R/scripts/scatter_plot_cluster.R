@@ -1,4 +1,4 @@
-analyze.temporal.patterns <- function(dataPath, outputCSV) {
+analyze.temporal.patterns <- function(dataPath, outputCSV, numDesiredClusters) {
 
   # read sample data
   #dta_0 = read.csv("/Users/howardchoi/Desktop/MetaProt/Abineet/test_scatter_plot.csv", header = TRUE);
@@ -25,10 +25,10 @@ analyze.temporal.patterns <- function(dataPath, outputCSV) {
 
   #plot(hc, labels = observedLabels, main = "");
   #plot(hc, main = "");
-  memb = cutree(hc, k = 100);
+  memb = cutree(hc, k = numDesiredClusters);                   # k = number of desired clusters
   memb_t = sort(table(memb), decreasing = TRUE);
 
-  groups = names(memb_t)[memb_t>5];
+  groups = names(memb_t)[memb_t>5]; # limit clusters to those with > 5 members
 
   tmp = c();
     empty_line = rep(NA, 6); names(empty_line) = time_points;
@@ -42,15 +42,15 @@ analyze.temporal.patterns <- function(dataPath, outputCSV) {
   ### script logic ends here, below is concerned with drawing plots
 
   # ex) I want to plot patterns of first three metabolites
-#  first_three_metabolites = dta[(memb == groups[1]),];
-#  # plot the first metabolite
+  first_three_metabolites = dta[(memb == groups[1]),];
+  # plot the first metabolite
 #  # get color
 #  a_color = "blue";
 #  # set range of y axis
 #  aylim = c(0.2, 1.8)
 #  # set range of x axis
 #  axlim = c(min(time_points),max(time_points))
-#
+
 #  # plot!
 #  plot(time_points, first_three_metabolites[1,], type="o", col=a_color, axes=FALSE, ann=FALSE, ylim=aylim, xlim=axlim);
 #  # draw x axis
@@ -66,15 +66,17 @@ analyze.temporal.patterns <- function(dataPath, outputCSV) {
 #  for (i in c(2:nrow(first_three_metabolites))){
 #    lines(time_points, first_three_metabolites[i,], type = "o", col = a_color);
 #  };
-#
-#  # plot trend in red line
-#  in_x = rep(time_points, nrow(first_three_metabolites)); in_y = as.vector(t(first_three_metabolites));
-#  in_data = data.frame(in_x, in_y); # data frame
-#  # fit a loess line
-#  loess_fit = loess(in_y ~ in_x, in_data);
-#  lines(time_points, predict(loess_fit)[1:length(time_points)], col = "red", lwd=7, lty=2);
-#
-#  # add threshold + - 25%
+
+#              # plot trend in red line
+#              in_x = rep(time_points, nrow(first_three_metabolites)); in_y = as.vector(t(first_three_metabolites));
+#              in_data = data.frame(in_x, in_y); # data frame
+#              # fit a loess line
+#              loess_fit = loess(in_y ~ in_x, in_data);
+#              lines(time_points, predict(loess_fit)[1:length(time_points)], col = "red", lwd=7, lty=2);
+
+#              #loess_fit contains data for regression line
+
+# add threshold + - 25%
 #  abline(h = c(0.75, 1.25), col = "red");
 
 }

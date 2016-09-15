@@ -203,7 +203,8 @@ public class analyze {
 
             manager.runRScript(absScriptPath);          // source the R script
             manager.runRCommand("analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep +
-            keyArr[keyArr.length - 1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv')");
+            keyArr[keyArr.length - 1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv', " +
+                    numClusters + ")");
 
             scheduler.endTask(portToUse);   // notify scheduler that task is complete (all R commands done)
             manager.closeConnection();
@@ -273,7 +274,8 @@ public class analyze {
 
             manager.runRScript(absScriptPath);          // source the R script
             manager.runRCommand("analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep +
-                    task.getFileName() + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv')");
+                    task.getFileName() + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv', "
+                    + numClusters +  ")");
 
             // notify scheduler that all R commands complete
             scheduler.endTask(portToUse);
