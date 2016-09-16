@@ -39,7 +39,6 @@ analyze.file <- function(data_path, outputCSV, outputPNG, th_pvalue = 0.1, th_fc
     # return result
     results = cbind(colnames(dta), as.numeric(pvals), as.numeric(fdrs), as.numeric(fcs), sigs);
 
-    print("BLAALDNANDLSAJDNKASJDN:ASOJDNKASJn");
     # write csv file
     write.csv(results, outputCSV);
 

@@ -288,9 +288,14 @@
             // index for checkbox logic - keeps track of checkbox state for each cluster
             /*<![CDATA[*/
             var checkboxStatus = {};
-            for (var i = 0; i < results.length; i++) {
-                checkboxStatus[i] = 0;                      // 0 = unchecked, 1 = checked
+            function resetCheckBoxStatus() {
+                for (var i = 0; i < results.length; i++) {
+                    checkboxStatus[i] = 0;                      // 0 = unchecked, 1 = checked
+                }
+
+                document.getElementById("cluster-checkbox").checked = false;
             }
+            resetCheckBoxStatus();
             /*]]>*/ /* because of XML parsing */
 
             $('#cluster-select').on("change", function() {
@@ -380,6 +385,8 @@
                 $('.plot .d3-path, .plot .d3-node').remove();
                 plot.updateDataSet(data);
 
+                // reset state of checkbox
+                resetCheckBoxStatus();
             }
             $('#cluster-selection-form').on("submit", function(e) {
                 e.preventDefault();
