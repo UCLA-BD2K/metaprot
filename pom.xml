@@ -6,7 +6,7 @@
 	<groupId>org.bd2k.metaprot</groupId>
 	<artifactId>metaprot</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>Metaprot</name>
 	<description>Metaprot v1</description>
