@@ -11,7 +11,6 @@ import org.bd2k.metaprot.util.FileAccess;
 import org.bd2k.metaprot.util.Globals;
 import org.bd2k.metaprot.util.RManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.bind.annotation.*;
 
@@ -289,7 +288,7 @@ public class analyze {
 
         // update mongo and return results to user
         List<List<PatternRecogStat>> results = new FileAccess().getPatternRecogResults(token);
-        task.setTimeStamp(new Date());
+        task.setTimestamp(new Date());
         task.setResults(results);
         task.setNumClusters(numClusters);
         task.setMinMembersPerCluster(minMembersPerCluster);

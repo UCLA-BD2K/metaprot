@@ -19,7 +19,7 @@ public class PatternRecogTask {
 
     private String token;
 
-    private Date timeStamp;
+    private Date timestamp;
     private String fileName;
     private long fileSize;
     private int numClusters;
@@ -32,7 +32,7 @@ public class PatternRecogTask {
     public PatternRecogTask(String token, Date timeStamp, String fileName, long fileSize, int numClusters,
                             int minMembersPerCluster, List<List<PatternRecogStat>> results) {
         this.token = token;
-        this.timeStamp = timeStamp;
+        this.timestamp = timeStamp;
         this.fileName = fileName;
         this.fileSize = fileSize;
         this.numClusters = numClusters;
@@ -50,12 +50,12 @@ public class PatternRecogTask {
     }
 
     @DynamoDBAttribute
-    public Date getTimeStamp() {
-        return timeStamp;
+    public Date getTimestamp() {
+        return timestamp;
     }
 
-    public void setTimeStamp(Date timeStamp) {
-        this.timeStamp = timeStamp;
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
     @DynamoDBAttribute
@@ -108,7 +108,7 @@ public class PatternRecogTask {
     public String toString() {
         return "PatternRecogTask{" +
                 "token='" + token + '\'' +
-                ", timeStamp=" + timeStamp +
+                ", timestamp=" + timestamp +
                 ", fileName='" + fileName + '\'' +
                 ", fileSize=" + fileSize +
                 ", numClusters=" + numClusters +
