@@ -1,7 +1,10 @@
 package org.bd2k.metaprot.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMarshalling;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import org.bd2k.metaprot.dbaccess.marshaller.MAResultsMarshaller;
 
 import java.util.Date;
 import java.util.List;
@@ -13,10 +16,9 @@ import java.util.List;
  *
  * Created by allengong on 8/30/16.
  */
-@Document(collection = "Task")
+@DynamoDBTable(tableName = "Metaprot-Task")
 public class Task {
 
-    @Id
     private String token;
 
     private Date timestamp;
@@ -25,7 +27,7 @@ public class Task {
     private double pValueThreshold;
     private double fcThreshold;
 
-    /* each task can have multiple results depending on # comparison groups, hence list of lists */
+    /* each task can have multiple results depending on # comparison groups (time points), hence list of lists */
     private List<List<MetaboliteStat>> results;
 
     public Task() {}
@@ -41,6 +43,7 @@ public class Task {
 
     // getters and setters
 
+    @DynamoDBHashKey(attributeName = "token")
     public String getToken() {
         return token;
     }
@@ -49,6 +52,7 @@ public class Task {
         this.token = token;
     }
 
+    @DynamoDBAttribute
     public Date getTimestamp() {
         return timestamp;
     }
@@ -57,6 +61,7 @@ public class Task {
         this.timestamp = timestamp;
     }
 
+    @DynamoDBAttribute
     public String getFilename() {
         return filename;
     }
@@ -65,6 +70,8 @@ public class Task {
         this.filename = filename;
     }
 
+    @DynamoDBAttribute
+    @DynamoDBMarshalling(marshallerClass = MAResultsMarshaller.class)
     public List<List<MetaboliteStat>> getResults() {
         return results;
     }
@@ -73,6 +80,7 @@ public class Task {
         this.results = results;
     }
 
+    @DynamoDBAttribute
     public double getpValueThreshold() {
         return pValueThreshold;
     }
@@ -81,6 +89,7 @@ public class Task {
         this.pValueThreshold = pValueThreshold;
     }
 
+    @DynamoDBAttribute
     public double getFcThreshold() {
         return fcThreshold;
     }
@@ -99,5 +108,11 @@ public class Task {
                 ", fcThreshold=" + fcThreshold +
                 ", results=" + results +
                 '}';
+    }
+
+    // per example on git
+    @Override
+    public int hashCode() {
+        return token.hashCode();
     }
 }

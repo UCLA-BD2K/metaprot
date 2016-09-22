@@ -1,6 +1,7 @@
 package org.bd2k.metaprot.dbaccess.repository;
 
 import org.bd2k.metaprot.model.Task;
+import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Repository;
  *
  * Created by allengong on 8/30/16.
  */
-@Repository
+@EnableScan
 public interface TaskRepository extends CrudRepository<Task, String> {
 
     /**

@@ -1,7 +1,10 @@
 package org.bd2k.metaprot.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMarshalling;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import org.bd2k.metaprot.dbaccess.marshaller.PRResultsMarshaller;
 
 import java.util.Date;
 import java.util.List;
@@ -11,10 +14,9 @@ import java.util.List;
  *
  * Created by Abineet on 9/1/2016.
  */
-@Document(collection = "Task")
+@DynamoDBTable(tableName = "Metaprot-Task")
 public class PatternRecogTask {
 
-    @Id
     private String token;
 
     private Date timeStamp;
@@ -24,6 +26,8 @@ public class PatternRecogTask {
     private int minMembersPerCluster;
 
     private List<List<PatternRecogStat>> results;
+
+    public PatternRecogTask() {}
 
     public PatternRecogTask(String token, Date timeStamp, String fileName, long fileSize, int numClusters,
                             int minMembersPerCluster, List<List<PatternRecogStat>> results) {
@@ -36,6 +40,7 @@ public class PatternRecogTask {
         this.results = results;
     }
 
+    @DynamoDBHashKey(attributeName = "token")
     public String getToken() {
         return token;
     }
@@ -44,6 +49,7 @@ public class PatternRecogTask {
         this.token = token;
     }
 
+    @DynamoDBAttribute
     public Date getTimeStamp() {
         return timeStamp;
     }
@@ -52,6 +58,7 @@ public class PatternRecogTask {
         this.timeStamp = timeStamp;
     }
 
+    @DynamoDBAttribute
     public String getFileName() {
         return fileName;
     }
@@ -60,6 +67,7 @@ public class PatternRecogTask {
         this.fileName = fileName;
     }
 
+    @DynamoDBAttribute
     public long getFileSize() {
         return fileSize;
     }
@@ -68,6 +76,7 @@ public class PatternRecogTask {
         this.fileSize = fileSize;
     }
 
+    @DynamoDBAttribute
     public int getNumClusters() {
         return numClusters;
     }
@@ -76,6 +85,7 @@ public class PatternRecogTask {
         this.numClusters = numClusters;
     }
 
+    @DynamoDBAttribute
     public int getMinMembersPerCluster() {
         return minMembersPerCluster;
     }
@@ -84,6 +94,8 @@ public class PatternRecogTask {
         this.minMembersPerCluster = minMembersPerCluster;
     }
 
+    @DynamoDBAttribute
+    @DynamoDBMarshalling(marshallerClass = PRResultsMarshaller.class)
     public List<List<PatternRecogStat>> getResults() {
         return results;
     }
@@ -103,5 +115,11 @@ public class PatternRecogTask {
                 ", minMembersPerCluster=" + minMembersPerCluster +
                 ", results=" + results +
                 '}';
+    }
+
+    // per example on git
+    @Override
+    public int hashCode() {
+        return token.hashCode();
     }
 }
