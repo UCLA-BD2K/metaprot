@@ -15,6 +15,8 @@ public class MetaboliteStat {
     private double foldChange;
     private String significance;      // insignificant, upregulated, downregulated
 
+    public MetaboliteStat() {}  // required for Jackson databind methods
+
     public MetaboliteStat(int index, String name, double pValue, double fdr, double foldChange, String significance) {
         this.index = index;
         this.name = name;
@@ -75,7 +77,8 @@ public class MetaboliteStat {
     @Override
     public String toString() {
         return "MetaboliteStat{" +
-                "name='" + name + '\'' +
+                "index=" + index +
+                ", name='" + name + '\'' +
                 ", pValue=" + pValue +
                 ", fdr=" + fdr +
                 ", foldChange=" + foldChange +

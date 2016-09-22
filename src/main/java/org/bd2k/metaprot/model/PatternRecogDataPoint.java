@@ -7,6 +7,8 @@ public class PatternRecogDataPoint {
     private int timePoint;
     private double abundanceRatio;
 
+    public PatternRecogDataPoint() {}
+
     public PatternRecogDataPoint(int timePoint, double abundanceRatio) {
         this.timePoint = timePoint;
         this.abundanceRatio = abundanceRatio;

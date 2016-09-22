@@ -11,6 +11,8 @@ public class PatternRecogStat {
 
     private List<PatternRecogDataPoint> dataPoints = new ArrayList<PatternRecogDataPoint>();
 
+    public PatternRecogStat() {}
+
     public PatternRecogStat(String metaboliteName) {
         this.metaboliteName = metaboliteName;
     }
