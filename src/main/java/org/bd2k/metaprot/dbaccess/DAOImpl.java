@@ -64,12 +64,28 @@ public class DAOImpl implements DAO {
     }
 
     @Override
-    public List<MetaboliteStat> getTaskResults(Task task) {
-        return null;
+    public List<List<MetaboliteStat>> getTaskResults(Task task) {
+
+        if (task.getToken() == null) {
+            return null;
+        }
+
+        List<List<MetaboliteStat>> results = null;
+
+        try {
+            String resultsAsString = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
+                    task.getNumChunks());
+
+            results = mapper.readValue(resultsAsString, new TypeReference<List<List<MetaboliteStat>>>(){});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return results;
     }
 
     @Override
-    public int saveTaskResults(Task task, List<MetaboliteStat> results) {
+    public int saveTaskResults(Task task, List<List<MetaboliteStat>> results) {
 
         // quick validation
         if (task.getToken() == null) {
@@ -114,6 +130,11 @@ public class DAOImpl implements DAO {
 
     @Override
     public List<List<PatternRecogStat>> getPRTaskResults(PatternRecogTask task) {
+
+        if (task.getToken() == null) {
+            return null;
+        }
+
         List<List<PatternRecogStat>> results = null;
 
         try {

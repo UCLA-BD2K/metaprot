@@ -49,7 +49,7 @@ public interface DAO {
      * @param task the task that the results are for
      * @return the results in the same form as they were inputted in saveTaskResults()
      */
-    List<MetaboliteStat> getTaskResults(Task task);
+    List<List<MetaboliteStat>> getTaskResults(Task task);
 
     /**
      * Saves the results of the task to the database. Internally,
@@ -60,7 +60,7 @@ public interface DAO {
      * @param results the results of the task
      * @return number of chunks used to store the results, or -1 if error; use as needed
      */
-    int saveTaskResults(Task task, List<MetaboliteStat> results);
+    int saveTaskResults(Task task, List<List<MetaboliteStat>> results);
 
 
 
