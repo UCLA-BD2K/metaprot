@@ -30,6 +30,7 @@ public class Globals {
     private static String pathSeparator;    // \ in windows, and / for everything else
     private static String rScriptLocation;
     private static Integer[] ports;
+    private static int maxDynamoDBItemSize;
 
     private Globals() {}                    // no instantiation
 
@@ -70,7 +71,8 @@ public class Globals {
             e.printStackTrace();
         }
 
-
+        // for AWS
+        maxDynamoDBItemSize = 400000;       // 400KB
     }
 
     // getters
@@ -86,5 +88,7 @@ public class Globals {
     public static String getrScriptLocation() { return rScriptLocation; }
 
     public static Integer[] getPorts(){ return ports; }
+
+    public static int getMaxDynamoDBItemSize() { return maxDynamoDBItemSize; }
 
 }
