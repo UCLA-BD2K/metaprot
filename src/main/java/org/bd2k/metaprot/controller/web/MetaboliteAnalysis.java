@@ -50,7 +50,7 @@ public class MetaboliteAnalysis {
         model.addAttribute("results", new FileAccess().getMetaboliteAnalysisResults(token));
 
         // data to pass back
-        model.addAttribute("multipleResults", currentTask.getResults());
+        model.addAttribute("multipleResults", dao.getTaskResults(currentTask));
         model.addAttribute("token", token);
         model.addAttribute("pThreshold", currentTask.getpValueThreshold());
         model.addAttribute("fcThreshold", currentTask.getFcThreshold());

@@ -1,12 +1,13 @@
 package org.bd2k.metaprot.controller.rest;
 
-import org.bd2k.metaprot.scheduler.TaskScheduler;
+import org.apache.catalina.Server;
 import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.BadRequestException;
 import org.bd2k.metaprot.exception.ServerException;
 import org.bd2k.metaprot.model.*;
+import org.bd2k.metaprot.scheduler.TaskScheduler;
 import org.bd2k.metaprot.util.FileAccess;
 import org.bd2k.metaprot.util.Globals;
 import org.bd2k.metaprot.util.RManager;
@@ -129,7 +130,17 @@ public class analyze {
         List<MetaboliteStat> results = new FileAccess().getMetaboliteAnalysisResults(token);
         totalResults.add(results);
 
-        Task currentTask = new Task(token, new Date(), keyArr[keyArr.length-1], pThreshold, fcThreshold, totalResults);
+        Task currentTask = new Task(token, new Date(), keyArr[keyArr.length-1], pThreshold, fcThreshold, 0);
+
+        // save the chunks
+        int numChunks = dao.saveTaskResults(currentTask, totalResults);
+
+        if (numChunks < 0) {
+            throw new ServerException("There was an issue with uploading your file, please try again at a later time.");
+        }
+
+        // save the task
+        currentTask.setNumChunks(numChunks);
         boolean taskSaved = dao.saveTask(currentTask);
 
         if (!taskSaved) {
@@ -144,7 +155,6 @@ public class analyze {
                 " to see the report.";
 
         return String.format(successMessage, "<a href='/metabolite-analysis/results/" + token + "'>results</a>");
-
     }
 
     /**
@@ -214,16 +224,27 @@ public class analyze {
             throw new ServerException("There was an error with our R Engine. Please try again at a later time.");
         }
 
-
+        // open result file and obtain results of R script analysis
         List<List<PatternRecogStat>> results = new FileAccess().getPatternRecogResults(token);
-        PatternRecogTask task = new PatternRecogTask(token, new Date(), keyArr[keyArr.length-1], s3Status.getFileSize(),
-                numClusters, minMembersPerCluster, results);
 
+        // upload task results to DB (as DynamoDB chunks)
+        PatternRecogTask task = new PatternRecogTask(token, new Date(), keyArr[keyArr.length-1], s3Status.getFileSize(),
+                numClusters, minMembersPerCluster, 0);
+
+        int numChunks = dao.saveTaskResults(task, results);
+
+        if (numChunks <= 0) {
+            throw new ServerException("There was an issue with uploading your file, please try again at a later time.");
+        }
+
+        // now save task information to DB
+        task.setNumChunks(numChunks);
         boolean taskSaved = dao.saveTask(task);
 
         if (!taskSaved) {
             throw new BadRequestException("There was an issue with your task token. Please try again at a later time.");
         }
+
 
         // analysis complete and results recorded, safe to delete all temporary files
         //new FileAccess().deleteTemporaryAnalysisFiles(token);
@@ -233,7 +254,6 @@ public class analyze {
                 " to see the report.";
 
         return String.format(successMessage, "<a href='/temporal-pattern-recognition/results/" + token + "'>results</a>");
-
     }
 
     /**
@@ -256,13 +276,13 @@ public class analyze {
         // validation
         PatternRecogTask task = dao.getPatternRecogTask(token);
         File targetDir = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token);
-        File targetFile = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + task.getFileName());
+        File targetFile = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + task.getFilename());
         if (!targetDir.exists() || !targetFile.exists() || task==null || numClusters < 1) {
             throw new BadRequestException("The task no longer exists, please re-upload your data and try again.");
         }
 
         // target file, directory, and db record exist, proceed with reanalyzing the file
-        TaskInfo taskInfo = new TaskInfo(token, task.getFileName(), task.getFileSize());
+        TaskInfo taskInfo = new TaskInfo(token, task.getFilename(), task.getFileSize());
         TaskScheduler scheduler = TaskScheduler.getInstance();
         int portToUse = scheduler.scheduleTask(taskInfo);
 
@@ -275,7 +295,7 @@ public class analyze {
 
             manager.runRScript(absScriptPath);          // source the R script
             manager.runRCommand("analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep +
-                    task.getFileName() + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv', "
+                    task.getFilename() + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv', "
                     + numClusters + ", " + minMembersPerCluster + ")");
 
             // notify scheduler that all R commands complete
@@ -286,13 +306,19 @@ public class analyze {
             throw new ServerException("There was an issue with our R Engine. Please try again later.");
         }
 
-        // update mongo and return results to user
+        // update chunks of results in Database
         List<List<PatternRecogStat>> results = new FileAccess().getPatternRecogResults(token);
+        int numChunks = dao.saveTaskResults(task, results);
+
+        if (numChunks < 0) {
+            throw new ServerException("There was an issue with uploading your file, please try again at a later time.");
+        }
+
+        // update task in Database
         task.setTimestamp(new Date());
-        task.setResults(results);
         task.setNumClusters(numClusters);
         task.setMinMembersPerCluster(minMembersPerCluster);
-
+        task.setNumChunks(numChunks);
         dao.saveOrUpdateTask(task); // always succeeds
 
         return results;
