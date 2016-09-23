@@ -2,12 +2,9 @@ package org.bd2k.metaprot.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMarshalling;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-import org.bd2k.metaprot.dbaccess.marshaller.PRResultsMarshaller;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Represents a Pattern Recognition task result in the Task collection
@@ -19,7 +16,7 @@ public class PatternRecogTask {
 
     private String token;
     private Date timestamp;
-    private String fileName;
+    private String filename;
     private long fileSize;
     private int numClusters;
     private int minMembersPerCluster;
@@ -27,12 +24,12 @@ public class PatternRecogTask {
 
     public PatternRecogTask() {}
 
-    public PatternRecogTask(String token, Date timeStamp, String fileName, long fileSize, int numClusters,
+    public PatternRecogTask(String token, Date timeStamp, String filename, long fileSize, int numClusters,
                             int minMembersPerCluster,
                             int numChunks) {
         this.token = token;
         this.timestamp = timeStamp;
-        this.fileName = fileName;
+        this.filename = filename;
         this.fileSize = fileSize;
         this.numClusters = numClusters;
         this.minMembersPerCluster = minMembersPerCluster;
@@ -58,12 +55,12 @@ public class PatternRecogTask {
     }
 
     @DynamoDBAttribute
-    public String getFileName() {
-        return fileName;
+    public String getFilename() {
+        return filename;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     @DynamoDBAttribute
@@ -107,7 +104,7 @@ public class PatternRecogTask {
         return "PatternRecogTask{" +
                 "token='" + token + '\'' +
                 ", timestamp=" + timestamp +
-                ", fileName='" + fileName + '\'' +
+                ", filename='" + filename + '\'' +
                 ", fileSize=" + fileSize +
                 ", numClusters=" + numClusters +
                 ", minMembersPerCluster=" + minMembersPerCluster +
