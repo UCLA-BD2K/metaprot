@@ -28,17 +28,19 @@ public class Task {
     private double fcThreshold;
 
     /* each task can have multiple results depending on # comparison groups (time points), hence list of lists */
-    private List<List<MetaboliteStat>> results;
+    //private List<List<MetaboliteStat>> results;
+
+    private int numChunks;
 
     public Task() {}
 
-    public Task(String token, Date timestamp, String filename, double pValueThreshold, double fcThreshold, List<List<MetaboliteStat>> results) {
+    public Task(String token, Date timestamp, String filename, double pValueThreshold, double fcThreshold, int numChunks) {
         this.token = token;
         this.timestamp = timestamp;
         this.filename = filename;
         this.pValueThreshold = pValueThreshold;
         this.fcThreshold = fcThreshold;
-        this.results = results;
+        this.numChunks = numChunks;
     }
 
     // getters and setters
@@ -70,14 +72,24 @@ public class Task {
         this.filename = filename;
     }
 
+    // left here as a reference on how to use the Marshaller
+//    @DynamoDBAttribute
+//    @DynamoDBMarshalling(marshallerClass = MAResultsMarshaller.class)
+//    public List<List<MetaboliteStat>> getResults() {
+//        return results;
+//    }
+//
+//    public void setResults(List<List<MetaboliteStat>> results) {
+//        this.results = results;
+//    }
+
     @DynamoDBAttribute
-    @DynamoDBMarshalling(marshallerClass = MAResultsMarshaller.class)
-    public List<List<MetaboliteStat>> getResults() {
-        return results;
+    public int getNumChunks() {
+        return numChunks;
     }
 
-    public void setResults(List<List<MetaboliteStat>> results) {
-        this.results = results;
+    public void setNumChunks(int numChunks) {
+        this.numChunks = numChunks;
     }
 
     @DynamoDBAttribute
@@ -106,7 +118,7 @@ public class Task {
                 ", filename='" + filename + '\'' +
                 ", pValueThreshold=" + pValueThreshold +
                 ", fcThreshold=" + fcThreshold +
-                ", results=" + results +
+                ", numChunks=" + numChunks +
                 '}';
     }
 

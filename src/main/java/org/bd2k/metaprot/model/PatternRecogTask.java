@@ -18,26 +18,25 @@ import java.util.List;
 public class PatternRecogTask {
 
     private String token;
-
     private Date timestamp;
     private String fileName;
     private long fileSize;
     private int numClusters;
     private int minMembersPerCluster;
-
-    private List<List<PatternRecogStat>> results;
+    private int numChunks;              // number of chunks used to store file in DB
 
     public PatternRecogTask() {}
 
     public PatternRecogTask(String token, Date timeStamp, String fileName, long fileSize, int numClusters,
-                            int minMembersPerCluster, List<List<PatternRecogStat>> results) {
+                            int minMembersPerCluster,
+                            int numChunks) {
         this.token = token;
         this.timestamp = timeStamp;
         this.fileName = fileName;
         this.fileSize = fileSize;
         this.numClusters = numClusters;
         this.minMembersPerCluster = minMembersPerCluster;
-        this.results = results;
+        this.numChunks = numChunks;
     }
 
     @DynamoDBHashKey(attributeName = "token")
@@ -95,13 +94,12 @@ public class PatternRecogTask {
     }
 
     @DynamoDBAttribute
-    @DynamoDBMarshalling(marshallerClass = PRResultsMarshaller.class)
-    public List<List<PatternRecogStat>> getResults() {
-        return results;
+    public int getNumChunks() {
+        return numChunks;
     }
 
-    public void setResults(List<List<PatternRecogStat>> results) {
-        this.results = results;
+    public void setNumChunks(int numChunks) {
+        this.numChunks = numChunks;
     }
 
     @Override
@@ -113,7 +111,7 @@ public class PatternRecogTask {
                 ", fileSize=" + fileSize +
                 ", numClusters=" + numClusters +
                 ", minMembersPerCluster=" + minMembersPerCluster +
-                ", results=" + results +
+                ", numChunks=" + numChunks +
                 '}';
     }
 
