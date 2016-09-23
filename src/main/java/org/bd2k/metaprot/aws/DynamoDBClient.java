@@ -47,7 +47,8 @@ public class DynamoDBClient {
 
     // non-autowired members
     private final int MAX_DYNAMODB_ITEM_SIZE = Globals.getMaxDynamoDBItemSize();
-    private final int ATTRIBUTE_LENGTH = 16 + 11;    // length of attribute names, 16 for chunkKeycontentchunkNumber
+    private final int ATTRIBUTE_LENGTH = 16 + 11;           // length of attribute names, 16 for chunkKeycontentchunkNumber
+    private final int MAX_WAIT_TIME_MILLISECONDS = 10000;   // 10 seconds
 
     @PostConstruct
     private void initializeInstance() {
@@ -167,6 +168,9 @@ public class DynamoDBClient {
                 }
 
                 exponentialBackoffFactor *= 2;  // wait 2^(x+1) more time, exponential back off
+                if (exponentialBackoffFactor > MAX_WAIT_TIME_MILLISECONDS) {
+                    throw new Exception("Errpr in writing chunks in a timely manner.");
+                }
             } while (outcome.getUnprocessedItems().size() > 0);
 
         } catch (Exception e) {
@@ -231,6 +235,9 @@ public class DynamoDBClient {
                 }
 
                 exponentialBackoffFactor *= 2;
+                if (exponentialBackoffFactor > MAX_WAIT_TIME_MILLISECONDS) {
+                    throw new Exception("Errpr in retrieving chunks in a timely manner.");
+                }
 
             } while (!unprocessed.isEmpty());
 
