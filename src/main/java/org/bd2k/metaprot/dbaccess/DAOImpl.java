@@ -1,11 +1,18 @@
 package org.bd2k.metaprot.dbaccess;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.bd2k.metaprot.aws.DynamoDBClient;
 import org.bd2k.metaprot.dbaccess.repository.PatternRecogTaskRepository;
 import org.bd2k.metaprot.dbaccess.repository.TaskRepository;
+import org.bd2k.metaprot.model.MetaboliteStat;
+import org.bd2k.metaprot.model.PatternRecogStat;
 import org.bd2k.metaprot.model.PatternRecogTask;
 import org.bd2k.metaprot.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Implementation of DAO interface.
@@ -17,20 +24,30 @@ public class DAOImpl implements DAO {
 
     // repositories
     @Autowired
-    TaskRepository taskRepository;
+    private TaskRepository taskRepository;
 
     @Autowired
-    PatternRecogTaskRepository PRTaskRepository;
+    private PatternRecogTaskRepository PRTaskRepository;
+
+    @Autowired
+    private DynamoDBClient dynamoDBClient;
+
+    private final String TASK_TABLENAME = "Metaprot-Task";
+    private final String TASK_CHUNK_TABLENAME = "Metaprot-Task-Chunk";
+
+    private ObjectMapper mapper = new ObjectMapper();
 
     public DAOImpl() {}
 
 
     /* Metabolite Analysis */
 
+    @Override
     public Task getTask(String token) {
         return taskRepository.findByToken(token);
     }
 
+    @Override
     public boolean saveTask(Task task) {
 
         if (getTask(task.getToken()) != null) {
@@ -41,17 +58,45 @@ public class DAOImpl implements DAO {
         return true;
     }
 
+    @Override
     public void saveOrUpdateTask(Task task) {
         taskRepository.save(task);
+    }
+
+    @Override
+    public List<MetaboliteStat> getTaskResults(Task task) {
+        return null;
+    }
+
+    @Override
+    public int saveTaskResults(Task task, List<MetaboliteStat> results) {
+
+        // quick validation
+        if (task.getToken() == null) {
+            return -1;
+        }
+
+        int numChunks;
+        try {
+            numChunks = dynamoDBClient.uploadAsChunks(TASK_CHUNK_TABLENAME,
+                    task.getToken(), mapper.writeValueAsString(results));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;              // return -1, let caller handle error
+        }
+
+        return numChunks;
     }
 
 
     /* Pattern Recognition */
 
+    @Override
     public PatternRecogTask getPatternRecogTask(String token){
         return PRTaskRepository.findByToken(token);
     }
 
+    @Override
     public boolean saveTask(PatternRecogTask task){
 
         if(getPatternRecogTask(task.getToken()) != null){
@@ -62,8 +107,45 @@ public class DAOImpl implements DAO {
         return true;
     }
 
+    @Override
     public void saveOrUpdateTask(PatternRecogTask task) {
         PRTaskRepository.save(task);
+    }
+
+    @Override
+    public List<List<PatternRecogStat>> getPRTaskResults(PatternRecogTask task) {
+        List<List<PatternRecogStat>> results = null;
+
+        try {
+            String resultsAsString = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
+                    task.getNumChunks());
+
+            results = mapper.readValue(resultsAsString, new TypeReference<List<List<PatternRecogStat>>>(){});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
+    @Override
+    public int saveTaskResults(PatternRecogTask task, List<List<PatternRecogStat>> results) {
+
+        // quick validation
+        if (task.getToken() == null) {
+            return -1;
+        }
+
+        int numChunks;
+        try {
+            numChunks = dynamoDBClient.uploadAsChunks(TASK_CHUNK_TABLENAME,
+                    task.getToken(), mapper.writeValueAsString(results));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;              // return -1, let caller handle error
+        }
+
+        return numChunks;
     }
 
 }
