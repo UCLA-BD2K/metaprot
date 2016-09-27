@@ -38,6 +38,7 @@ var PatternRecogPlot = (function(resultData) {
 
     var zoomable = true;
 
+    //Initialize Chart axes and labels.
     function InitChart() {
 
         // results of the task
@@ -62,17 +63,17 @@ var PatternRecogPlot = (function(resultData) {
             xAxis,
             yAxis;
 
-        vis.append("svg:g")
+        vis.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
             .call(xAxis);
 
-        vis.append("svg:g")
+        vis.append("g")
             .attr("class", "y axis")
             .attr("transform", "translate(" + (MARGINS.left) + ",0)")
             .call(yAxis);
 
-        vis.append("svg:rect")
+        vis.append("rect")
             .attr("class", "zoom y box")
             .attr("width", MARGINS.left)
             .attr("height", HEIGHT - MARGINS.top - MARGINS.bottom)
@@ -165,7 +166,7 @@ var PatternRecogPlot = (function(resultData) {
                     .attr("r", 2)
             }
             else {
-                vis.selectAll(sanitizeForHtml('#'+ metaName)).remove();
+                vis.selectAll('#' + sanitizeForHtml(metaName)).remove();
             }
         }
     }
