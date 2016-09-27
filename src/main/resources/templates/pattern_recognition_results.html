@@ -9,6 +9,24 @@
     <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="/css/site.css" />
 </head>
+<style>
+    .axis {
+        shape-rendering: crispEdges;
+    }
+
+    .x.axis line {
+        stroke: #000;
+    }
+
+    .x.axis .minor {
+        stroke-opacity: .5;
+    }
+
+    .y.axis line,
+    .y.axis path {
+        stroke: #000;
+    }
+</style>
 <body>
     <div th:include="fragments/header :: header"></div>
 
