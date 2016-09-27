@@ -82,6 +82,22 @@
                             <div id="sidePanel" class="pattern-recognition"></div> <!-- rendered by SidePanel module -->
                         </div>
                     </div>
+
+                    <hr />
+
+                    <div class="row">
+                        <h3>Strain visualization</h3>
+                        <div class="col-sm-7">
+                            7
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="well well-lg">
+                                <h4>Metabolites</h4>
+                            </div>
+                            <div id="metabolite-table-container"></div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="panel-footer">footer</div>
             </div>
@@ -456,6 +472,94 @@
                 $link.attr("href", plot.getDataUrl());
                 $link[0].click();
             });
+
+
+
+
+
+
+
+
+
+            /*<![CDATA[*/
+
+            /**
+             *  Renders the demo sidepanel of metabolite names.
+             *
+             **/
+            var demo;
+            var strainIndex = {};   // {"strainName":[dataObj1, ...]}
+            (demo = function(data) {
+                var metaboliteIndex = {};       // {"generalMetaboliteName":[metadata, ...]}
+
+                // define HTML elements
+                var table = document.createElement("table");
+                table.classList.add("table", "table-hover");
+                table.id = "metabolite-table";
+
+                var thead = document.createElement("thead");
+                var theadRow = document.createElement("tr");
+                var theadRowData = document.createElement("td");
+                theadRowData.innerText = "Name";
+                theadRow.appendChild(theadRowData);
+                thead.appendChild(theadRow);
+
+                table.appendChild(thead);
+
+                var tbody = document.createElement("tbody");
+
+                // for all data points, add them to respective indexes
+                for (var i = 0; i < data.length; i++) {
+                    for (var j = 0; j < data[i].length; j++) {
+                        var nameArr = data[i][j].metaboliteName.split("_");    // last ele=replica_counter, 2nd to last ele=strainName
+                        var strainName = nameArr[nameArr.length - 2];
+
+                        // add to index
+                        if (strainIndex[strainName]) {
+                            strainIndex[strainName].push(data[i][j]);
+                        } else {
+                            strainIndex[strainName] = [data[i][j]];
+                        }
+
+                        var generalMetaboliteName = nameArr[0] + "_" + nameArr[1];
+
+                        if (!metaboliteIndex[generalMetaboliteName]) {
+                            metaboliteIndex[generalMetaboliteName] = [];
+                        }
+
+                        metaboliteIndex[generalMetaboliteName].push(strainName + "-" + (strainIndex[strainName].length - 1)); // always strainName-#
+                    }
+                }
+
+                // generate the table data elements
+                for (var generalMetaboliteName in metaboliteIndex) {
+                    var tdata = document.createElement("td");
+                    tdata.innerText = generalMetaboliteName;
+                    tdata.classList.add(sanitizeForHtml(generalMetaboliteName));
+                    tdata.setAttribute("data-indices", metaboliteIndex[generalMetaboliteName]);
+
+                    var trow = document.createElement("tr");
+                    trow.appendChild(tdata);
+                    tbody.appendChild(trow);
+                }
+
+                table.appendChild(tbody);
+                document.getElementById("metabolite-table-container").appendChild(table);
+            } )(results);
+
+            /*]]>*/ /* because of XML parsing */
+
+
+
+
+
+
+
+            // TODO abineet
+
+
+
+
 
         }); // end docready
     </script>

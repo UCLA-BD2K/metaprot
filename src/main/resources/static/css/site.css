@@ -83,7 +83,8 @@ rect.selection {
     cursor: pointer;
 }
 
-#sidePanel.pattern-recognition table {
+#sidePanel.pattern-recognition table,
+#metabolite-table-container table{
     display: block;
     max-height: 250px;
     overflow: scroll;
