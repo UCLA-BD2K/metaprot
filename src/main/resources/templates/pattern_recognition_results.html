@@ -488,9 +488,9 @@
              *
              **/
             var demo;
-            var strainIndex = {};   // {"strainName":[dataObj1, ...]}
+            var strainIndex = {};               // { strainName:patternRecogPlotInstance, ... }
             (demo = function(data) {
-                var metaboliteIndex = {};       // {"generalMetaboliteName":[metadata, ...]}
+                var metaboliteIndex = {};       // { generalMetaboliteName:[metadata1, ...] }
 
                 // define HTML elements
                 var table = document.createElement("table");
@@ -515,10 +515,8 @@
                         var strainName = nameArr[nameArr.length - 2];
 
                         // add to index
-                        if (strainIndex[strainName]) {
-                            strainIndex[strainName].push(data[i][j]);
-                        } else {
-                            strainIndex[strainName] = [data[i][j]];
+                        if (!strainIndex[strainName]) {
+                            strainIndex[strainName] = 0;
                         }
 
                         var generalMetaboliteName = nameArr[0] + "_" + nameArr[1];
@@ -527,24 +525,62 @@
                             metaboliteIndex[generalMetaboliteName] = [];
                         }
 
-                        metaboliteIndex[generalMetaboliteName].push(strainName + "-" + (strainIndex[strainName].length - 1)); // always strainName-#
+                        metaboliteIndex[generalMetaboliteName].push(strainName + "-" + i + "-" + j); // always strainName-#
                     }
                 }
-
+                console.log(strainIndex)
                 // generate the table data elements
                 for (var generalMetaboliteName in metaboliteIndex) {
                     var tdata = document.createElement("td");
                     tdata.innerText = generalMetaboliteName;
                     tdata.classList.add(sanitizeForHtml(generalMetaboliteName));
-                    tdata.setAttribute("data-indices", metaboliteIndex[generalMetaboliteName]);
+                    tdata.setAttribute("data-meta", metaboliteIndex[generalMetaboliteName]);
 
                     var trow = document.createElement("tr");
+                    trow.classList.add("data-row")
                     trow.appendChild(tdata);
                     tbody.appendChild(trow);
                 }
 
                 table.appendChild(tbody);
                 document.getElementById("metabolite-table-container").appendChild(table);
+
+                // bind click event
+                $('#metabolite-table tbody td').on("click", function() {
+                    var meta = $(this).attr("data-meta").split(",");
+
+                    // get update status (whether to delete or draw)
+                    var $parent = $(this).parent()
+                    $parent.toggleClass("active");
+                    var update = $parent.hasClass("active");
+
+                    // for each strain-i-j, generate list of updates
+                    var updates = {};
+                    for (var index = 0; index < meta.length; index++) {
+                        var strainIndexArr = meta[index].split("-");
+                        var strainName = strainIndexArr[0];
+                        var i = strainIndexArr[1];
+                        var j = strainIndexArr[2];
+
+                        if (!updates[strainName]) {
+                            updates[strainName] = [];
+                        }
+
+                        updates[strainName].push({
+                            "i": +i,
+                            "j": +j,
+                            "update": update
+                        });
+                    }
+                    
+                    // for each plot, make the updates
+                    for (strainName in updates) {
+
+                        // TODO abineet: below is probably what you want if we are using strainIndex
+                        //strainIndex[strainName].updateChart(updates[strainName]);
+                    }
+                });
+
             } )(results);
 
             /*]]>*/ /* because of XML parsing */
