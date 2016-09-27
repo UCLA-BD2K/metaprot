@@ -13,7 +13,7 @@ OS. Otherwise, running:
 ```bash
 install.packages("Rserve")
 library(Rserve)
-Rserve(args="RS-port <port>")
+Rserve(args="--RS-port <port>")
 ```
 
 in the R shell where ```<port>``` refers to the desired port you would like to run Rserve on should suffice. This will install and run Rserve on your desired port(s).
