@@ -77,7 +77,7 @@ rect.selection {
 .result-panel .table>tbody>tr.active,
 .result-panel .table>tbody>tr:hover,
 #sidePanel .table>tbody>tr.data-row.active,
-#sidePanel .table>tbody>tr.data-row.active:hover
+#sidePanel .table>tbody>tr.data-row.active:hover,
 #metabolite-table-container .table>tbody>tr.data-row.active,
 #metabolite-table-container .table>tbody>tr.data-row.active:hover{
     background-color: #fcf8e3;
