@@ -88,7 +88,15 @@
                     <div class="row">
                         <h3>Strain visualization</h3>
                         <div class="col-sm-7">
-                            7
+                            <div class="plot">
+                                <svg id="strain-plot-1"></svg>  <!-- rendered in JS -->
+                            </div>
+                            <div class="plot">
+                                <svg id="strain-plot-2"></svg>  <!-- rendered in JS -->
+                            </div>
+                            <div class="plot">
+                                <svg id="strain-plot-3"></svg>  <!-- rendered in JS -->
+                            </div>
                         </div>
                         <div class="col-sm-5">
                             <div class="well well-lg">
@@ -310,7 +318,7 @@
 
             //Initialize plot
             var plot = new PatternRecogPlot(results);
-            plot.InitChart();
+            plot.InitChart("visualisation");
 
             // render side panels using results, and bind necessary events
             var sidePanel = new SidePanel(results, $('#sidePanel'));
@@ -577,7 +585,7 @@
                     for (strainName in updates) {
 
                         // TODO abineet: below is probably what you want if we are using strainIndex
-                        //strainIndex[strainName].updateChart(updates[strainName]);
+                        strainIndex[strainName].updateChart(updates[strainName]);
                     }
                 });
 
@@ -585,17 +593,16 @@
 
             /*]]>*/ /* because of XML parsing */
 
-
-
-
-
-
-
             // TODO abineet
-
-
-
-
+            var htmlBindings = ["strain-plot-1", "strain-plot-2", "strain-plot-3"];
+            var counter = 0;
+            for(var strainID in strainIndex) {
+                if(strainIndex.hasOwnProperty(strainID)){
+                    strainIndex[strainID] = new PatternRecogPlot(results);
+                    strainIndex[strainID].InitChart(htmlBindings[counter]);
+                    counter++;
+                }
+            }
 
         }); // end docready
     </script>
