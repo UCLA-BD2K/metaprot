@@ -30,6 +30,7 @@ var PatternRecogPlot = (function(resultData) {
     var xScale = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([0, xMax]);
     var yScale = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0, 1.5]);
 
+    var yRef = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]);
     var xAxis;
 
     var yAxis = d3.svg.axis()
@@ -73,6 +74,26 @@ var PatternRecogPlot = (function(resultData) {
             .attr("transform", "translate(" + (MARGINS.left) + ",0)")
             .call(yAxis);
 
+        vis.append("line")
+            .attr("class", "refLine1")
+            .attr("x1", xScale(0))
+            .attr("x2", xScale(xMax))
+            .attr("y1", yScale(0.75))
+            .attr("y2", yScale(0.75))
+            .attr("stroke", "red")
+            .style("stroke-dasharray", ("3, 3"))
+            .call(yRef);
+
+        vis.append("line")
+            .attr("class", "refLine2")
+            .attr("x1", xScale(0))
+            .attr("x2", xScale(xMax))
+            .attr("y1", yScale(1.25))
+            .attr("y2", yScale(1.25))
+            .attr("stroke", "red")
+            .style("stroke-dasharray", ("3, 3"))
+            .call(yRef);
+
         vis.append("rect")
             .attr("class", "zoom y box")
             .attr("width", MARGINS.left)
@@ -111,6 +132,14 @@ var PatternRecogPlot = (function(resultData) {
             .attr('d', function (d) {
                 return lineGen(d);
             });
+
+        vis.selectAll(".refLine1")
+            .attr("y1", yScale(0.75))
+            .attr("y2", yScale(0.75));
+
+        vis.selectAll(".refLine2")
+            .attr("y1", yScale(1.25))
+            .attr("y2", yScale(1.25));
     }
 
     // Y value to scale
@@ -140,35 +169,59 @@ var PatternRecogPlot = (function(resultData) {
             var data = results[metaToUpdate[k].i][metaToUpdate[k].j].dataPoints;
             var metaName = results[metaToUpdate[k].i][metaToUpdate[k].j].metaboliteName;
             if (metaToUpdate[k].update) {
-                vis.append("path")
-                    .data([data])
-                    .attr('d', lineGen(data))
-                    .attr('stroke', CSS_COLOR_NAMES[metaToUpdate[k].i])
-                    .attr('stroke-width', 2)
-                    .attr('fill', 'none')
-                    .attr('id', sanitizeForHtml(metaName))
-                    .attr('class', 'd3-path');
-
-                vis.selectAll("d3-node")
-                    .data(data)
-                    .enter()
-                    .append("circle")               // tag name
-                    .attr("class", function(d) {    // classname "d3-node {metabolite-name}"
-                        return sanitizeForHtml(metaName) + " d3-node";
-                    })
-                    .attr('id', sanitizeForHtml(metaName))
-                    .attr("cx", function(d) {
-                        return xScale(d.timePoint);
-                    })
-                    .attr("cy", function(d) {
-                        return yScale(d.abundanceRatio);
-                    })
-                    .attr("r", 2)
+                addLine(data, metaName, CSS_COLOR_NAMES[metaToUpdate[k].i]);
             }
             else {
                 vis.selectAll('#' + sanitizeForHtml(metaName)).remove();
             }
         }
+    }
+
+    var colorTracker = 0;
+
+    function updateChartStrain(metaToUpdate) {
+        for (var k = 0; k < metaToUpdate.length; k++) {
+            var data = results[metaToUpdate[k].i][metaToUpdate[k].j].dataPoints;
+            var metaName = results[metaToUpdate[k].i][metaToUpdate[k].j].metaboliteName;
+            if (metaToUpdate[k].update) {
+                addLine(data, metaName, CSS_COLOR_NAMES[colorTracker]);
+            }
+            else {
+                vis.selectAll('#' + sanitizeForHtml(metaName)).remove();
+            }
+        }
+
+        if(colorTracker != CSS_COLOR_NAMES.length - 1)
+            colorTracker++;
+        else
+            colorTracker = 0;
+    }
+
+    function addLine(data, metaName, color) {
+        vis.append("path")
+            .data([data])
+            .attr('d', lineGen(data))
+            .attr('stroke', color)
+            .attr('stroke-width', 2)
+            .attr('fill', 'none')
+            .attr('id', sanitizeForHtml(metaName))
+            .attr('class', 'd3-path');
+
+        vis.selectAll("d3-node")
+            .data(data)
+            .enter()
+            .append("circle")               // tag name
+            .attr("class", function(d) {    // classname "d3-node {metabolite-name}"
+                return sanitizeForHtml(metaName) + " d3-node";
+            })
+            .attr('id', sanitizeForHtml(metaName))
+            .attr("cx", function(d) {
+                return xScale(d.timePoint);
+            })
+            .attr("cy", function(d) {
+                return yScale(d.abundanceRatio);
+            })
+            .attr("r", 2)
     }
 
     // updates internal dataset
@@ -199,6 +252,7 @@ var PatternRecogPlot = (function(resultData) {
     
     return {
         updateChart : updateChart,
+        updateChartStrain : updateChartStrain,
         InitChart : InitChart,
         updateDataSet:updateDataSet,
         getDataUrl:getDataUrl
