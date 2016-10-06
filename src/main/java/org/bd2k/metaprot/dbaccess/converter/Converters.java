@@ -15,7 +15,7 @@ public interface Converters {
     /**
      * Converts an array of doubles to some String representation and back.
      */
-    public static class DoubleArrayConverter implements DynamoDBTypeConverter<String, double[]> {
+    class DoubleArrayConverter implements DynamoDBTypeConverter<String, double[]> {
 
         @Override
         public String convert(double[] doubles) {
@@ -41,4 +41,15 @@ public interface Converters {
             return result;
         }
     }
+
+    /**
+     * Future note: if we need to marshall a collection of OBJECTS, you can add a constructor:
+     *
+     *  public Converter(final Class<Currency> targetType) {
+            this.separator = annotation.separator();
+        }
+     * to get the object type (targetType.getClass.getComponentType()) and go from there.
+     *
+     * See: http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/services/dynamodbv2/datamodeling/DynamoDBTypeConverted.html
+     */
 }
