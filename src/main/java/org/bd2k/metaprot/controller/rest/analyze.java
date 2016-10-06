@@ -274,7 +274,7 @@ public class analyze {
      * @return a list
      */
     @RequestMapping(value="/pattern/re-analyze/{token}", method = RequestMethod.GET)
-    public List<List<PatternRecogStat>> reanalyzePatternRecognition(@PathVariable(value="token") String token,
+    public ReAnalyzeResult reanalyzePatternRecognition(@PathVariable(value="token") String token,
                                                                     @RequestParam("numClusters") int numClusters,
                                                                     @RequestParam("minMembersPerCluster") int minMembersPerCluster) {
         // validation
@@ -329,7 +329,16 @@ public class analyze {
         task.setRegressionLine(regressionLine);
         dao.saveOrUpdateTask(task); // always succeeds
 
-        return results;
+        ReAnalyzeResult result = new ReAnalyzeResult();
+        result.results = results;
+        result.regressionLine = regressionLine;
+        return result;
+    }
+
+    // local class for returning the results of a re-analyzed pattern recognition task
+    class ReAnalyzeResult {
+        public List<List<PatternRecogStat>> results;
+        public double[] regressionLine;
     }
 
     @RequestMapping(value = "/token", method = RequestMethod.GET)

@@ -41,13 +41,10 @@ var PatternRecogPlot = (function(resultData) {
 
     //Initialize Chart axes and labels.
     function InitChart(svgID) {
-
-        // results of the task
-        //results = [[{'dataPoints':[{'abundanceRatio':1.0,'timePoint':0},{'abundanceRatio':1.25714285714286,'timePoint':1},{'abundanceRatio':0.785714285714286,'timePoint':3},{'abundanceRatio':0.814285714285714,'timePoint':5},{'abundanceRatio':1.1,'timePoint':7},{'abundanceRatio':1.24285714285714,'timePoint':14}],'metaboliteName':'C14:1_p180'},{'dataPoints':[{'abundanceRatio':1.0,'timePoint':0},{'abundanceRatio':1.21452894438138,'timePoint':1},{'abundanceRatio':0.922814982973893,'timePoint':3},{'abundanceRatio':1.03972758229285,'timePoint':5},{'abundanceRatio':1.30533484676504,'timePoint':7},{'abundanceRatio':1.44154370034052,'timePoint':14}],'metaboliteName':'PC aa C32:0_p180'}], [{'dataPoints':[{'abundanceRatio':1.0,'timePoint':0},{'abundanceRatio':1.34718646561236,'timePoint':1},{'abundanceRatio':1.04817947774917,'timePoint':3},{'abundanceRatio':1.03788157410813,'timePoint':5},{'abundanceRatio':1.10481794777492,'timePoint':7},{'abundanceRatio':1.0728208900331,'timePoint':14}],'metaboliteName':'PC ae C36:3_Lipid'},{'dataPoints':[{'abundanceRatio':1.0,'timePoint':0},{'abundanceRatio':1.34267330842673,'timePoint':1},{'abundanceRatio':0.964508094645081,'timePoint':3},{'abundanceRatio':0.92071398920714,'timePoint':5},{'abundanceRatio':1.10751349107513,'timePoint':7},{'abundanceRatio':1.32710668327107,'timePoint':14}],'metaboliteName':'PC ae C38:6_Lipid'}]];
-
         for(var i = 1; i <= len; i++){
             xVals.push(results[0][0].dataPoints[i].timePoint);
         }
+
         xAxis = d3.svg.axis()
             .scale(xScale)
             .tickValues(xVals);
@@ -162,7 +159,8 @@ var PatternRecogPlot = (function(resultData) {
             return yScale(d.abundanceRatio);
         });
 
-    var CSS_COLOR_NAMES = ["Aqua","Aquamarine","Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","CornflowerBlue","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGrey","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","ForestGreen","Fuchsia","Gainsboro","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","Red","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Yellow","YellowGreen"];
+    var CSS_COLOR_NAMES = ["Aqua","Aquamarine","Blue","BlueViolet","Brown","BurlyWood","CadetBlue","Chartreuse","Chocolate","Coral","CornflowerBlue","Crimson","Cyan","DarkBlue","DarkCyan","DarkGoldenRod","DarkGray","DarkGrey","DarkGreen","DarkKhaki","DarkMagenta","DarkOliveGreen","Darkorange","DarkOrchid","DarkRed","DarkSalmon","DarkSeaGreen","DarkSlateBlue","DarkSlateGray","DarkSlateGrey","DarkTurquoise","DarkViolet","DeepPink","DeepSkyBlue","DimGray","DimGrey","DodgerBlue","FireBrick","ForestGreen","Fuchsia","Gainsboro","Gold","GoldenRod","Gray","Grey","Green","GreenYellow","HoneyDew","HotPink","IndianRed","Indigo","Ivory","Khaki","Lavender","LavenderBlush","LawnGreen","LemonChiffon","LightBlue","LightCoral","LightCyan","LightGoldenRodYellow","LightGray","LightGrey","LightGreen","LightPink","LightSalmon","LightSeaGreen","LightSkyBlue","LightSlateGray","LightSlateGrey","LightSteelBlue","LightYellow","Lime","LimeGreen","Linen","Magenta","Maroon","MediumAquaMarine","MediumBlue","MediumOrchid","MediumPurple","MediumSeaGreen","MediumSlateBlue","MediumSpringGreen","MediumTurquoise","MediumVioletRed","MidnightBlue","MintCream","MistyRose","Moccasin","Navy","OldLace","Olive","OliveDrab","Orange","OrangeRed","Orchid","PaleGoldenRod","PaleGreen","PaleTurquoise","PaleVioletRed","PapayaWhip","PeachPuff","Peru","Pink","Plum","PowderBlue","Purple","RosyBrown","RoyalBlue","SaddleBrown","Salmon","SandyBrown","SeaGreen","SeaShell","Sienna","Silver","SkyBlue","SlateBlue","SlateGray","SlateGrey","Snow","SpringGreen","SteelBlue","Tan","Teal","Thistle","Tomato","Turquoise","Violet","Yellow","YellowGreen"];
+    var CSS_COLOR_RESERVED_REGRESSION_LINE = "Red";
 
     function updateChart(metaToUpdate) {
         for (var k = 0; k < metaToUpdate.length; k++) {
@@ -221,7 +219,7 @@ var PatternRecogPlot = (function(resultData) {
             .attr("cy", function(d) {
                 return yScale(d.abundanceRatio);
             })
-            .attr("r", 2)
+            .attr("r", 2);
     }
 
     // updates internal dataset
@@ -229,6 +227,25 @@ var PatternRecogPlot = (function(resultData) {
         results = data;
         len = results[0][0].dataPoints.length - 1;
         xMax = results[0][0].dataPoints[len].timePoint; // ?
+    };
+
+    // draws a regression line, removing any existing one if they exist
+    // data is an array of abundance ratio values (as the time points can be inferred
+    // thus, this function must be called after the plot is initialized already (InitChart)
+    var drawRegressionLine = function(data) {
+
+        if (data.length != xVals.length) {
+            console.err("There was a problem with drawing the regression line");
+            return;
+        }
+
+        var formattedData = [];
+        for (var i = 0; i < xVals.length; i++) {
+            formattedData.push({"timePoint": xVals[i], "abundanceRatio": data[i]});
+        }
+
+        vis.select(".regression-line").remove();
+        addLine(formattedData, "regression-line", CSS_COLOR_RESERVED_REGRESSION_LINE);
     };
 
     /**
@@ -251,13 +268,11 @@ var PatternRecogPlot = (function(resultData) {
     };
     
     return {
-        updateChart : updateChart,
-        updateChartStrain : updateChartStrain,
-        InitChart : InitChart,
+        updateChart:updateChart,
+        updateChartStrain:updateChartStrain,
+        InitChart:InitChart,
         updateDataSet:updateDataSet,
+        drawRegressionLine:drawRegressionLine,
         getDataUrl:getDataUrl
     };
-    
-    InitChart();
-
 });

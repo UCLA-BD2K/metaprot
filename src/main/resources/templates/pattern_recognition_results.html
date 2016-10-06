@@ -320,6 +320,9 @@
             var plot = new PatternRecogPlot(results);
             plot.InitChart("visualisation");
 
+            // draw the regression line
+            plot.drawRegressionLine([[${regressionLine}]])
+
             // render side panels using results, and bind necessary events
             var sidePanel = new SidePanel(results, $('#sidePanel'));
             sidePanel.drawSideTables();
@@ -400,7 +403,7 @@
 
             // redraws necessary components, say, on cluster number change
             // data is in the same format as the results variable above
-            function redrawUI(data) {
+            function redrawUI(data, regressionLine) {
 
                 // for side panel
                 sidePanel.clearSideTables();
@@ -427,6 +430,11 @@
 
                 // reset state of checkbox
                 resetCheckBoxStatus();
+
+                // redraw regressionLine
+                if (regressionLine) {
+                    plot.drawRegressionLine(regressionLine);
+                }
             }
             $('#cluster-selection-form').on("submit", function(e) {
                 e.preventDefault();
@@ -444,19 +452,25 @@
                         console.log(data)
 
                         // update results variable and redraw necessary UI components
-                        results = data;
-                        redrawUI(data);
+                        results = data.results;
+                        redrawUI(data.results, data.regressionLine);
                     },
                     error:function(jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR)
                         console.log(textStatus)
                         console.log(errorThrown)
 
-                        var alert = document.createElement("div");
-                        alert.innerText = jqXHR.responseJSON.message;
-                        alert.classList.add("alert", "alert-danger");
+                        var alertEle = document.getElementById("cluster-form-alert");
+                        if (alertEle) {
+                            alertEle.innerText = jqXHR.responseJSON.message;
+                        } else {
+                            var alert = document.createElement("div");
+                            alert.innerText = jqXHR.responseJSON.message;
+                            alert.classList.add("alert", "alert-danger");
+                            alert.id = "cluster-form-select";
 
-                        $(self).parent()[0].appendChild(alert);
+                            $(self).parent()[0].appendChild(alert);
+                        }
                     }
                 });
             });

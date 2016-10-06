@@ -39,6 +39,7 @@ public class PatternRecognition {
         model.addAttribute("token", token);
         model.addAttribute("numClusters", task.getNumClusters());
         model.addAttribute("minMembersPerCluster", task.getMinMembersPerCluster());
+        model.addAttribute("regressionLine", task.getRegressionLine());
         
         return "pattern_recognition_results";
     }
