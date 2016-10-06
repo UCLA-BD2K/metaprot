@@ -11,6 +11,7 @@ import org.bd2k.metaprot.scheduler.TaskScheduler;
 import org.bd2k.metaprot.util.FileAccess;
 import org.bd2k.metaprot.util.Globals;
 import org.bd2k.metaprot.util.RManager;
+import org.rosuda.REngine.REXP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +51,7 @@ public class analyze {
     private final String METABOLITES_R_SCRIPT_LOC = rScriptLoc + "r_sample_code.R";
     private final String TEMPORAL_PATTERNS_R_SCRIPT_LOC = rScriptLoc + "scatter_plot_cluster.R";
 
-    // handle to perform R related logic
+    // handler to perform R related logic
     private RManager manager = null;
 
     /**
@@ -201,6 +202,7 @@ public class analyze {
 
         // try to analyze the file with R
         File rScript;
+        double[] regressionLine = null;
         try {
             TaskInfo taskInfo = new TaskInfo(token, keyArr[keyArr.length-1], s3Status.getFileSize());
             TaskScheduler scheduler = TaskScheduler.getInstance();
@@ -213,9 +215,11 @@ public class analyze {
             String absScriptPath = rScript.getAbsolutePath().replace("\\","\\\\");        // affects window env only
 
             manager.runRScript(absScriptPath);          // source the R script
-            manager.runRCommand("analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep +
+            REXP rexp = manager.runRCommand("analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep +
             keyArr[keyArr.length - 1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv', " +
                     numClusters + ", " + minMembersPerCluster + ")");
+
+            regressionLine = rexp.asDoubles();
 
             scheduler.endTask(portToUse);   // notify scheduler that task is complete (all R commands done)
             manager.closeConnection();
@@ -227,9 +231,9 @@ public class analyze {
         // open result file and obtain results of R script analysis
         List<List<PatternRecogStat>> results = new FileAccess().getPatternRecogResults(token);
 
-        // upload task results to DB (as DynamoDB chunks)
+        // create task object and upload task results to DB (as DynamoDB chunks)
         PatternRecogTask task = new PatternRecogTask(token, new Date(), keyArr[keyArr.length-1], s3Status.getFileSize(),
-                numClusters, minMembersPerCluster, 0);
+                numClusters, minMembersPerCluster, 0, regressionLine);
 
         int numChunks = dao.saveTaskResults(task, results);
 
@@ -286,6 +290,7 @@ public class analyze {
         TaskScheduler scheduler = TaskScheduler.getInstance();
         int portToUse = scheduler.scheduleTask(taskInfo);
 
+        double[] regressionLine = null;
         try {
             // analyze the file again
             manager =  RManager.getInstance(portToUse);
@@ -294,9 +299,11 @@ public class analyze {
             String absScriptPath = rScript.getAbsolutePath().replace("\\","\\\\");        // affects window env only
 
             manager.runRScript(absScriptPath);          // source the R script
-            manager.runRCommand("analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep +
+            REXP rexp = manager.runRCommand("analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep +
                     task.getFilename() + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv', "
                     + numClusters + ", " + minMembersPerCluster + ")");
+
+            regressionLine = rexp.asDoubles();
 
             // notify scheduler that all R commands complete
             scheduler.endTask(portToUse);
@@ -319,6 +326,7 @@ public class analyze {
         task.setNumClusters(numClusters);
         task.setMinMembersPerCluster(minMembersPerCluster);
         task.setNumChunks(numChunks);
+        task.setRegressionLine(regressionLine);
         dao.saveOrUpdateTask(task); // always succeeds
 
         return results;

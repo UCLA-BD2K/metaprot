@@ -1,9 +1,9 @@
 package org.bd2k.metaprot.model;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import org.bd2k.metaprot.dbaccess.converter.Converters;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -21,12 +21,13 @@ public class PatternRecogTask {
     private int numClusters;
     private int minMembersPerCluster;
     private int numChunks;              // number of chunks used to store file in DB
+    private double[] regressionLine;
 
     public PatternRecogTask() {}
 
     public PatternRecogTask(String token, Date timeStamp, String filename, long fileSize, int numClusters,
                             int minMembersPerCluster,
-                            int numChunks) {
+                            int numChunks, double[] regressionLine) {
         this.token = token;
         this.timestamp = timeStamp;
         this.filename = filename;
@@ -34,6 +35,7 @@ public class PatternRecogTask {
         this.numClusters = numClusters;
         this.minMembersPerCluster = minMembersPerCluster;
         this.numChunks = numChunks;
+        this.regressionLine = regressionLine;
     }
 
     @DynamoDBHashKey(attributeName = "token")
@@ -99,6 +101,16 @@ public class PatternRecogTask {
         this.numChunks = numChunks;
     }
 
+    @DynamoDBAttribute
+    @DynamoDBTypeConverted(converter = Converters.DoubleArrayConverter.class)
+    public double[] getRegressionLine() {
+        return regressionLine;
+    }
+
+    public void setRegressionLine(double[] regressionLine) {
+        this.regressionLine = regressionLine;
+    }
+
     @Override
     public String toString() {
         return "PatternRecogTask{" +
@@ -109,6 +121,7 @@ public class PatternRecogTask {
                 ", numClusters=" + numClusters +
                 ", minMembersPerCluster=" + minMembersPerCluster +
                 ", numChunks=" + numChunks +
+                ", regressionLine=" + Arrays.toString(regressionLine) +
                 '}';
     }
 

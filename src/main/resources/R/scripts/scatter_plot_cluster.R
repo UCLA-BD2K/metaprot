@@ -67,16 +67,17 @@ analyze.temporal.patterns <- function(dataPath, outputCSV, numDesiredClusters, m
 #    lines(time_points, first_three_metabolites[i,], type = "o", col = a_color);
 #  };
 
-#              # plot trend in red line
-#              in_x = rep(time_points, nrow(first_three_metabolites)); in_y = as.vector(t(first_three_metabolites));
-#              in_data = data.frame(in_x, in_y); # data frame
-#              # fit a loess line
-#              loess_fit = loess(in_y ~ in_x, in_data);
-#              lines(time_points, predict(loess_fit)[1:length(time_points)], col = "red", lwd=7, lty=2);
+  # plot trend in red line
+  in_x = rep(time_points, nrow(first_three_metabolites)); in_y = as.vector(t(first_three_metabolites));
+  in_data = data.frame(in_x, in_y); # data frame
 
-#              #loess_fit contains data for regression line
+  # fit a loess line
+  loess_fit = loess(in_y ~ in_x, in_data);
 
-# add threshold + - 25%
-#  abline(h = c(0.75, 1.25), col = "red");
+  # return regression line
+  predict(loess_fit)[1:length(time_points)]
 
+  #lines(time_points, predict(loess_fit)[1:length(time_points)], col = "red", lwd=7, lty=2);
+
+  #loess_fit contains data for regression line
 }

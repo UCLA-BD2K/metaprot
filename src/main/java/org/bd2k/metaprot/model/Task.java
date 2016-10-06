@@ -2,12 +2,9 @@ package org.bd2k.metaprot.model;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMarshalling;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-import org.bd2k.metaprot.dbaccess.marshaller.MAResultsMarshaller;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Poorly named model class representing a document in the
@@ -71,17 +68,6 @@ public class Task {
     public void setFilename(String filename) {
         this.filename = filename;
     }
-
-    // left here as a reference on how to use the Marshaller
-//    @DynamoDBAttribute
-//    @DynamoDBMarshalling(marshallerClass = MAResultsMarshaller.class)
-//    public List<List<MetaboliteStat>> getResults() {
-//        return results;
-//    }
-//
-//    public void setResults(List<List<MetaboliteStat>> results) {
-//        this.results = results;
-//    }
 
     @DynamoDBAttribute
     public int getNumChunks() {
