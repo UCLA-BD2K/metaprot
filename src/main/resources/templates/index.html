@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Metaprot</title>
-</head>
-<body>
-    Placeholder home page for metaprot
-</body>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Metaprot</title>
+
+        <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.simplex.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+        <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" type="text/css" href="/css/site.css" />
+    </head>
+    <body>
+        <div th:include="fragments/header :: header"></div>
+
+        <div class="container" style="min-heigh:400px">
+            <div class="row">
+                <div class="col-sm-6">
+                    <a href="/metabolite-analysis" class="card-link">
+                        <div class="card card-block">
+                            <h4 class="card-title">Metabolite-analysis</h4>
+                            <img class="card-img-top" src="/img/graph-1.jpeg" alt="Metabolite analysis" />
+                            <p class="card-text">Analyze time-series metabolite data and generate high quality volcano plots to visualize inherent trends.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-sm-6">
+                    <a href="/metabolite-analysis" class="card-link">
+                        <div class="card card-block">
+                            <h4 class="card-title">Temporal Pattern Recognition</h4>
+                            <img class="card-img-top" src="/img/data-vis.jpeg" alt="Pattern recognition" />
+                            <p class="card-text">Analyze temporal patterns and visualize clusters based on these trends.</p>
+                            <a href="/temporal-pattern-recognition" class="card-link">Start</a>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <div th:include="fragments/footer :: footer"></div>
+        <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+        <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+    </body>
 </html>

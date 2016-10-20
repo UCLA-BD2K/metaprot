@@ -10,6 +10,22 @@ a.navbar-brand:hover {
     color: #02a5de;
 }
 
+.animate-delay-1x {/* default is 1 second */
+    -webkit-transition-duration: 1.5s;
+    -moz-transition-duration: 1.5s;
+    -ms-transition-duration: 1.5s;
+    -o-transition-duration:1.5s;
+    animation-duration: 1.5s;
+}
+
+.animate-delay-2x {
+    -webkit-transition-duration: 2s;
+    -moz-transition-duration: 2s;
+    -ms-transition-duration: 2s;
+    -o-transition-duration: 2s;
+    animation-duration: 2s;
+}
+
 .axis-label {
     background-color: rgba(211, 211, 211, .4);
     border: 1px solid transparent;
@@ -106,4 +122,36 @@ svg:not(:root) {
 
 .transparent {
     opacity: 0;
+}
+
+footer {
+    border-top: 1px solid rgba(0,0,0,.125);
+}
+
+
+
+/* in bootstrap v4-alpha */
+.card {
+    position: relative;
+    display: block;
+    margin-bottom: .75rem;
+    background-color: #fff;
+    border-radius: .25rem;
+    border: 1px solid rgba(0,0,0,.125);
+}
+.card-block {
+    padding: 1.25rem;
+}
+a.card-link, a.card-link:visited, a.card-link:hover
+a.card-link:active {
+    text-decoration: none;
+    color: #777777;
+}
+.card-img-top {
+    border-top-right-radius: .25rem;
+    border-top-left-radius: .25rem;
+    width: 100%;
+}
+.card-text {
+    margin: 15px 5px;
 }
