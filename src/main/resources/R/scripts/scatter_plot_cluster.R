@@ -42,7 +42,37 @@ analyze.temporal.patterns <- function(dataPath, outputCSV, numDesiredClusters, m
   ### script logic ends here, below is concerned with drawing plots
 
   # ex) I want to plot patterns of first three metabolites
-  first_three_metabolites = dta[(memb == groups[1]),];
+
+  # create an array of double arrays (each subarray is a regression line)
+  numGroups = length(groups);
+  regressionLines = vector("list", numGroups);
+  counter <- 1;
+  while (counter <= numGroups) {
+    first_three_metabolites = dta[(memb == groups[counter]),];    # get first three metabolites of a group?
+
+    in_x = rep(time_points, nrow(first_three_metabolites));
+    in_y = as.vector(t(first_three_metabolites));
+    in_data = data.frame(in_x, in_y); # data frame
+
+    # fit a loess line
+    loess_fit = loess(in_y ~ in_x, in_data);
+
+    # return regression line
+    regressionLine = predict(loess_fit)[1:length(time_points)];
+
+    regressionLines[[counter]] <- regressionLine;
+
+    counter <- counter + 1
+  }
+
+  return(do.call(rbind, regressionLines));    # converts list of lists to a matrix format
+
+
+  ### everything below is no longer needed ###
+
+
+  #first_three_metabolites = dta[(memb == groups[1]),];
+
   # plot the first metabolite
 #  # get color
 #  a_color = "blue";
@@ -68,14 +98,14 @@ analyze.temporal.patterns <- function(dataPath, outputCSV, numDesiredClusters, m
 #  };
 
   # plot trend in red line
-  in_x = rep(time_points, nrow(first_three_metabolites)); in_y = as.vector(t(first_three_metabolites));
-  in_data = data.frame(in_x, in_y); # data frame
-
-  # fit a loess line
-  loess_fit = loess(in_y ~ in_x, in_data);
-
-  # return regression line
-  predict(loess_fit)[1:length(time_points)]
+#  in_x = rep(time_points, nrow(first_three_metabolites)); in_y = as.vector(t(first_three_metabolites));
+#  in_data = data.frame(in_x, in_y); # data frame
+#
+#  # fit a loess line
+#  loess_fit = loess(in_y ~ in_x, in_data);
+#
+#  # return regression line
+#  predict(loess_fit)[1:length(time_points)]
 
   #lines(time_points, predict(loess_fit)[1:length(time_points)], col = "red", lwd=7, lty=2);
 

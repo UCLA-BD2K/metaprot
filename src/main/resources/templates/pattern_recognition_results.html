@@ -317,11 +317,11 @@
             var results = [[${results}]];
 
             //Initialize plot
-            var plot = new PatternRecogPlot(results);
+            var plot = new PatternRecogPlot(results, [[${regressionLines}]]);
             plot.InitChart("visualisation");
 
             // draw the regression line
-            plot.drawRegressionLine([[${regressionLine}]])
+            plot.drawRegressionLine(0); // by default, draw the first cluster's regression line
 
             // render side panels using results, and bind necessary events
             var sidePanel = new SidePanel(results, $('#sidePanel'));
@@ -344,6 +344,7 @@
             $('#cluster-select').on("change", function() {
                 sidePanel.displayTable(+$(this).val());
                 $('#cluster-checkbox').prop("checked", checkboxStatus[+$(this).val()]);
+                plot.drawRegressionLine(+$(this).val());
             });
 
             function bindSideTableEvents() {
@@ -403,7 +404,7 @@
 
             // redraws necessary components, say, on cluster number change
             // data is in the same format as the results variable above
-            function redrawUI(data, regressionLine) {
+            function redrawUI(data, regressionLines) {
 
                 // for side panel
                 sidePanel.clearSideTables();
@@ -432,8 +433,12 @@
                 resetCheckBoxStatus();
 
                 // redraw regressionLine
-                if (regressionLine) {
-                    plot.drawRegressionLine(regressionLine);
+                if (regressionLines) {
+                    plot.updateRegressionLines(regressionLines);
+
+                    if (regressionLines.length > 0) {
+                        plot.drawRegressionLine(0);        // default show first cluster
+                    }
                 }
             }
             $('#cluster-selection-form').on("submit", function(e) {
@@ -453,7 +458,7 @@
 
                         // update results variable and redraw necessary UI components
                         results = data.results;
-                        redrawUI(data.results, data.regressionLine);
+                        redrawUI(data.results, data.regressionLines);
                     },
                     error:function(jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR)

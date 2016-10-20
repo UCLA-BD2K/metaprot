@@ -1,6 +1,7 @@
 package org.bd2k.metaprot.dbaccess.converter;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.tools.classfile.TypeAnnotation;
 import com.sun.tools.javac.code.TargetType;
 
@@ -36,6 +37,39 @@ public interface Converters {
 
             for (int i = 0; i < result.length; i++) {
                 result[i] = Double.parseDouble(arr[i]);
+            }
+
+            return result;
+        }
+    }
+
+    class DoubleArrayArrayConverter implements DynamoDBTypeConverter<String, double[][]> {
+
+        @Override
+        public String convert(double[][] doubles) {
+            ObjectMapper mapper = new ObjectMapper();
+            String result = null;
+
+            try {
+                result = mapper.writeValueAsString(doubles);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.err.println("issue with mapping array of arrays of doubles...");
+            }
+
+            return result;
+        }
+
+        @Override
+        public double[][] unconvert(String s) {
+            ObjectMapper mapper = new ObjectMapper();
+            double[][] result = null;
+
+            try {
+                result = mapper.readValue(s, double[][].class);
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.err.println("issue with unmapping array of arrays of doubles string");
             }
 
             return result;

@@ -9,7 +9,7 @@
  * resultData currently expected in [[{'dataPoints':[{'abundanceRatio':1.0,'timePoint':0},{'abundanceRatio':1.25714285714286,'timePoint':1} ... 'metaboliteName':'C14:1_p180'}, format
  */
 
-var PatternRecogPlot = (function(resultData) {
+var PatternRecogPlot = (function(resultData, regressionLines) {
 
     var results = resultData;
     var len = results[0][0].dataPoints.length - 1;
@@ -229,22 +229,31 @@ var PatternRecogPlot = (function(resultData) {
         xMax = results[0][0].dataPoints[len].timePoint; // ?
     };
 
+    var updateRegressionLines = function(regressionLines) {
+        regressionLines = regressionLines;
+    };
+
     // draws a regression line, removing any existing one if they exist
     // data is an array of abundance ratio values (as the time points can be inferred
     // thus, this function must be called after the plot is initialized already (InitChart)
-    var drawRegressionLine = function(data) {
+    var drawRegressionLine = function(clusterNumber) {
 
-        if (data.length != xVals.length) {
-            console.err("There was a problem with drawing the regression line");
+        if (clusterNumber < 0 || !regressionLines ||
+                clusterNumber >= regressionLines.length) {
+
+            console.log("There was a problem with drawing the regression line");
             return;
         }
 
+        // get correct regression line for this cluster
+        var regressionLine = regressionLines[clusterNumber];
+
         var formattedData = [];
         for (var i = 0; i < xVals.length; i++) {
-            formattedData.push({"timePoint": xVals[i], "abundanceRatio": data[i]});
+            formattedData.push({"timePoint": xVals[i], "abundanceRatio": regressionLine[i]});
         }
 
-        vis.select(".regression-line").remove();
+        vis.selectAll("#regression-line, .d3-node.regression-line").remove();
         addLine(formattedData, "regression-line", CSS_COLOR_RESERVED_REGRESSION_LINE);
     };
 
@@ -272,6 +281,7 @@ var PatternRecogPlot = (function(resultData) {
         updateChartStrain:updateChartStrain,
         InitChart:InitChart,
         updateDataSet:updateDataSet,
+        updateRegressionLines:updateRegressionLines,
         drawRegressionLine:drawRegressionLine,
         getDataUrl:getDataUrl
     };

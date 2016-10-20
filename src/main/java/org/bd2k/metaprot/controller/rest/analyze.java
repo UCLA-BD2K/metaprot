@@ -1,6 +1,5 @@
 package org.bd2k.metaprot.controller.rest;
 
-import org.apache.catalina.Server;
 import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
@@ -202,7 +201,7 @@ public class analyze {
 
         // try to analyze the file with R
         File rScript;
-        double[] regressionLine = null;
+        double[][] regressionLines = null;
         try {
             TaskInfo taskInfo = new TaskInfo(token, keyArr[keyArr.length-1], s3Status.getFileSize());
             TaskScheduler scheduler = TaskScheduler.getInstance();
@@ -219,7 +218,7 @@ public class analyze {
             keyArr[keyArr.length - 1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv', " +
                     numClusters + ", " + minMembersPerCluster + ")");
 
-            regressionLine = rexp.asDoubles();
+            regressionLines = rexp.asDoubleMatrix();
 
             scheduler.endTask(portToUse);   // notify scheduler that task is complete (all R commands done)
             manager.closeConnection();
@@ -233,7 +232,7 @@ public class analyze {
 
         // create task object and upload task results to DB (as DynamoDB chunks)
         PatternRecogTask task = new PatternRecogTask(token, new Date(), keyArr[keyArr.length-1], s3Status.getFileSize(),
-                numClusters, minMembersPerCluster, 0, regressionLine);
+                numClusters, minMembersPerCluster, 0, regressionLines);
 
         int numChunks = dao.saveTaskResults(task, results);
 
@@ -246,7 +245,7 @@ public class analyze {
         boolean taskSaved = dao.saveTask(task);
 
         if (!taskSaved) {
-            throw new BadRequestException("There was an issue with your task token. Please try again at a later time.");
+            throw new BadRequestException("There was an issue with saving your task. Please try again at a later time.");
         }
 
 
@@ -290,7 +289,7 @@ public class analyze {
         TaskScheduler scheduler = TaskScheduler.getInstance();
         int portToUse = scheduler.scheduleTask(taskInfo);
 
-        double[] regressionLine = null;
+        double[][] regressionLines = null;
         try {
             // analyze the file again
             manager =  RManager.getInstance(portToUse);
@@ -303,7 +302,7 @@ public class analyze {
                     task.getFilename() + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv', "
                     + numClusters + ", " + minMembersPerCluster + ")");
 
-            regressionLine = rexp.asDoubles();
+            regressionLines = rexp.asDoubleMatrix();
 
             // notify scheduler that all R commands complete
             scheduler.endTask(portToUse);
@@ -326,19 +325,22 @@ public class analyze {
         task.setNumClusters(numClusters);
         task.setMinMembersPerCluster(minMembersPerCluster);
         task.setNumChunks(numChunks);
-        task.setRegressionLine(regressionLine);
+        task.setRegressionLines(regressionLines);
         dao.saveOrUpdateTask(task); // always succeeds
 
+        // specific to re-anlyze since front-end expects some return value
+        // return the results as well as the new regression lines
         ReAnalyzeResult result = new ReAnalyzeResult();
         result.results = results;
-        result.regressionLine = regressionLine;
+        result.regressionLines = regressionLines;
+
         return result;
     }
 
     // local class for returning the results of a re-analyzed pattern recognition task
     class ReAnalyzeResult {
         public List<List<PatternRecogStat>> results;
-        public double[] regressionLine;
+        public double[][] regressionLines;
     }
 
     @RequestMapping(value = "/token", method = RequestMethod.GET)

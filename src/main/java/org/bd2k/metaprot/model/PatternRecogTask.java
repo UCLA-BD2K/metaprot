@@ -21,13 +21,13 @@ public class PatternRecogTask {
     private int numClusters;
     private int minMembersPerCluster;
     private int numChunks;              // number of chunks used to store file in DB
-    private double[] regressionLine;
+    private double[][] regressionLines;
 
     public PatternRecogTask() {}
 
     public PatternRecogTask(String token, Date timeStamp, String filename, long fileSize, int numClusters,
                             int minMembersPerCluster,
-                            int numChunks, double[] regressionLine) {
+                            int numChunks, double[][] regressionLines) {
         this.token = token;
         this.timestamp = timeStamp;
         this.filename = filename;
@@ -35,7 +35,7 @@ public class PatternRecogTask {
         this.numClusters = numClusters;
         this.minMembersPerCluster = minMembersPerCluster;
         this.numChunks = numChunks;
-        this.regressionLine = regressionLine;
+        this.regressionLines = regressionLines;
     }
 
     @DynamoDBHashKey(attributeName = "token")
@@ -102,13 +102,13 @@ public class PatternRecogTask {
     }
 
     @DynamoDBAttribute
-    @DynamoDBTypeConverted(converter = Converters.DoubleArrayConverter.class)
-    public double[] getRegressionLine() {
-        return regressionLine;
+    @DynamoDBTypeConverted(converter = Converters.DoubleArrayArrayConverter.class)
+    public double[][] getRegressionLines() {
+        return regressionLines;
     }
 
-    public void setRegressionLine(double[] regressionLine) {
-        this.regressionLine = regressionLine;
+    public void setRegressionLines(double[][] regressionLines) {
+        this.regressionLines = regressionLines;
     }
 
     @Override
@@ -121,7 +121,7 @@ public class PatternRecogTask {
                 ", numClusters=" + numClusters +
                 ", minMembersPerCluster=" + minMembersPerCluster +
                 ", numChunks=" + numChunks +
-                ", regressionLine=" + Arrays.toString(regressionLine) +
+                ", regressionLine=" + Arrays.toString(regressionLines) +
                 '}';
     }
 
