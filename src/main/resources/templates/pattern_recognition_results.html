@@ -459,6 +459,11 @@
                         // update results variable and redraw necessary UI components
                         results = data.results;
                         redrawUI(data.results, data.regressionLines);
+
+                        var alertEle = document.getElementById("cluster-form-alert");
+                        if (alertEle) {
+                            $(alertEle).remove();
+                        }
                     },
                     error:function(jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR)
@@ -472,7 +477,7 @@
                             var alert = document.createElement("div");
                             alert.innerText = jqXHR.responseJSON.message;
                             alert.classList.add("alert", "alert-danger");
-                            alert.id = "cluster-form-select";
+                            alert.id = "cluster-form-alert";
 
                             $(self).parent()[0].appendChild(alert);
                         }

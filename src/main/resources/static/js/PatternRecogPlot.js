@@ -9,9 +9,10 @@
  * resultData currently expected in [[{'dataPoints':[{'abundanceRatio':1.0,'timePoint':0},{'abundanceRatio':1.25714285714286,'timePoint':1} ... 'metaboliteName':'C14:1_p180'}, format
  */
 
-var PatternRecogPlot = (function(resultData, regressionLines) {
+var PatternRecogPlot = (function(resultData, regressionLinesInput) {
 
     var results = resultData;
+    var regressionLines = regressionLinesInput;
     var len = results[0][0].dataPoints.length - 1;
     var xVals = [0];
     var xMax = results[0][0].dataPoints[len].timePoint;
@@ -229,8 +230,8 @@ var PatternRecogPlot = (function(resultData, regressionLines) {
         xMax = results[0][0].dataPoints[len].timePoint; // ?
     };
 
-    var updateRegressionLines = function(regressionLines) {
-        regressionLines = regressionLines;
+    var updateRegressionLines = function(regressionLinesNew) {
+        regressionLines = regressionLinesNew;
     };
 
     // draws a regression line, removing any existing one if they exist
