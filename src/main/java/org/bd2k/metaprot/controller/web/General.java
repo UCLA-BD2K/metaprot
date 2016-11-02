@@ -18,4 +18,14 @@ public class General {
         return "index";
     }
 
+    @RequestMapping("/upload")
+    public String getUploadPage() {
+        return "upload";
+    }
+
+    @RequestMapping("/upload-pass")
+    public String getUploadPassPage() {
+        return "upload_pass";
+    }
+
 }

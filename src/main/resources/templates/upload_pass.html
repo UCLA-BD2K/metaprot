@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Analyze file</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.simplex.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+    <div th:include="fragments/header :: header"></div>
+
+    <div class="container">
+        <h2>Handle missing values</h2>
+        <div class="active section">
+            on form submit, makes a REST call and updates active window
+        </div>
+        <hr />
+
+        <h2>Normalization</h2>
+        <div class="section">
+            on form submit, makes a REST call and updates active window
+        </div>
+
+        <hr/>
+        <h2>Analyze</h2>
+        <div class="section">
+            2 links, either one makes associated REST call, and then redirects to result page
+        </div>
+    </div>
+
+
+    <div th:include="fragments/footer :: footer"></div>
+
+    <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+</body>
+</html>

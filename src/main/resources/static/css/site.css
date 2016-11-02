@@ -148,8 +148,9 @@ a.card-link:active {
     color: #777777;
 }
 .card-img-top {
-    border-top-right-radius: .25rem;
-    border-top-left-radius: .25rem;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
     width: 100%;
 }
 .card-text {
