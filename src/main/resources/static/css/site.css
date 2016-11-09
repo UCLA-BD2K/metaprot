@@ -156,3 +156,32 @@ a.card-link:active {
 .card-text {
     margin: 15px 5px;
 }
+
+/** mainly used in upload-pass.html **/
+div.processing-section {
+    display: none;
+    min-height: 250px;
+}
+
+div.processing-section.active {
+    display: block;
+}
+
+div.processing-section .card:hover {
+    background-color: #adadad;
+    cursor: pointer;
+    color: white;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.navigation-tool {
+    cursor: pointer;
+}
+
+h5 {
+    font-weight: bold;
+    font-size:16px;
+}
