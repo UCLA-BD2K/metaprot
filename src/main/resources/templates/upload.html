@@ -59,16 +59,102 @@
     <script type="text/javascript" src="/js/aws/S3Uploader.js"></script>
     <script type="text/javascript">
         $(function() {
+
+            var $progressBar = $('.progress-bar');
+            var $fileInput = $('#fileInput');
+
+            function updateProgressBar(progress) {
+                $progressBar.html(progress + "% complete");
+                $progressBar.css("width", progress+"%");
+            }
+
+            // when all files are uploaded, tell server to check for integrity
+            function notifyAllFilesUploaded(token, s3Key) {
+                var $progressText = $('#progressText');
+                $progressText.html('<h5>Checking integrity...</h5><i class="fa fa-refresh fa-spin fa-3x"></i>');
+
+                var formData = new FormData();
+                formData.append("objectKey", s3Key);
+                formData.append("token", token);
+
+                // notify server of file upload and updates UI to reflect status
+                $.ajax({
+                    url: '/some-endpoint' + token,   // TODO abineet, define endpoint
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success:function(data) {    // really just prints on screen any response from server
+                        $progressText.html('<div class="alert alert-success">' + data + '</div>');
+                    },
+                    error:function(jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR)
+                        console.log(textStatus)
+                        console.log(errorThrown)
+                        $progressText.html('<div class="alert alert-danger">' + jqXHR.responseJSON.message + '</div>');
+                    }
+                });
+            }
+
             $('#csv-upload-form').on("submit", function(e) {
                 e.preventDefault();
 
                 // upload w/ token
+                // number of files to upload, for now, just handle 1
+                var numFiles = $fileInput[0].files.length;
+                var numFilesUploaded = 0;
 
-                // tell integrity checker to check
+                if (!numFiles) {
+                    return;
+                }
 
-                // then relocate if pass, else display a message
-                console.log("wooo")
-                window.location.href = "/upload-pass/some-token-here";
+                $('#progress-bar-display').css("opacity", 1);
+
+                var afterEachFileRead = function(options) {
+                    console.log("A file is ready to upload.");
+                    var delayCounter = 0;
+
+                    var moreParams = {
+                        ContentLength : options.size,
+                        ContentType : options.type
+                    };
+
+                    // get token for s3 upload
+                    $.ajax({
+                        url: "/analyze/token",
+                        method: "GET",
+                        success:function(token) {
+                            // after retrieving a token, can upload to s3
+                            S3Uploader.upload(options.data, "user-input/" + token + "/" + options.name, moreParams,
+                                    function(data) {
+                                        numFilesUploaded++;
+                                        if (numFilesUploaded == numFiles) {
+                                            // we are done uploading!
+                                            console.log("all files have been uploaded to s3");
+                                            updateProgressBar(100);
+                                            notifyAllFilesUploaded(token, data.Key);
+                                        }
+                                    },
+                                    function(key, bytesUploaded, bytesTotal) {
+                                        // called whenever bytes transferred to s3, with performance delay
+                                        delayCounter++;
+                                        if (delayCounter == 10) {
+                                            updateProgressBar(bytesUploaded/bytesTotal*100);
+                                        }
+                                    });
+                        },
+                        error:function() {
+                            console.log("Error in retrieving upload token.");
+                        }
+                    });
+
+                };
+
+                // set up FC and read in files
+                FileController.setOnFileRead(afterEachFileRead);
+                FileController.setInputElement($fileInput);
+                FileController.readFiles();
+
             });
         });
     </script>

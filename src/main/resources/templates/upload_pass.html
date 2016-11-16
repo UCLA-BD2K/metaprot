@@ -33,7 +33,6 @@
                             </div>
                             <div class="form-group">
                                 <input type="submit" value="Process" class="btn btn-default" />
-                                <span id="mve-progress"><i class="fa fa-spin fa-cog fa-3x"></i></span>
                             </div>
                         </form>
                     </div>
@@ -76,6 +75,20 @@
                                 <label for="cube-root-trans">Cube root transformation</label>
                                 <input id="cube-root-trans" type="radio" value="cube-root-trans" name="trans" />
 
+                            </div>
+
+                            <div class="form-group">
+                                <h5>Data scaling:</h5>
+                                <label for="none-scaling">None</label>
+                                <input id="none-scaling" type="radio" value="none" name="scaling" checked="checked" />
+                                <br/>
+
+                                <label for="mean-centered">Mean centering</label>
+                                <input id="mean-centered" type="radio" value="mean-centered" name="scaling" />
+                                <br />
+
+                                <label for="pareto">Pareto scaling</label>
+                                <input id="pareto" type="radio" value="pareto" name="scaling" />
                             </div>
 
                             <input type="submit" value="Process" class="btn btn-default" />
