@@ -79,7 +79,7 @@
 
                 // notify server of file upload and updates UI to reflect status
                 $.ajax({
-                    url: '/some-endpoint' + token,   // TODO abineet, define endpoint
+                    url: '/analyze/integrity-check',   // TODO abineet, define endpoint
                     method: "POST",
                     data: formData,
                     processData: false,

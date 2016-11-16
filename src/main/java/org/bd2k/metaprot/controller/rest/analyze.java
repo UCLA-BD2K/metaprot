@@ -343,6 +343,52 @@ public class analyze {
         public double[][] regressionLines;
     }
 
+    /**
+     * Checks the integrity of a file located at the specified S3 path (objectKey).
+     * If the file already exists, returns the results of checking the integrity of the
+     * local file.
+     *
+     * @param token
+     * @param objectKey
+     * @return a human-readable message to be displayed to the user
+     */
+    @RequestMapping(value = "/integrity-check", method = RequestMethod.POST)
+    public String checkIntegrityOfFile(@RequestParam("token") String token,
+                                       @RequestParam("objectKey") String objectKey) {
+
+        // validation
+        String[] keyArr = objectKey.split("/");
+        if (!(objectKey.startsWith("user-input/" + token)) ||
+                !(keyArr[keyArr.length-2].equals(token)) ||
+                keyArr.length != 3) {
+
+            // should return error message
+            throw new BadRequestException("Invalid request, please try again later.");
+        }
+
+        String fileName = keyArr[keyArr.length-1];
+
+        // check for the existence of this file
+        // if it does not exist, download from s3
+        File f = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + fileName);
+        if (!f.exists()) {
+            S3Status s3Status = copakbS3.pullAndStoreObject(objectKey, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+            int status = s3Status.getStatusCode();
+
+            // error
+            if (status == -1) {
+                throw new ServerException("There was an error with your request, please try again later.");
+            } else if (status > 0) {
+                throw new BadRequestException(copakbS3.getAWSStatusMessage(status));
+            }
+        }
+
+        // TODO abineet, this is where you will call the integrity checker on the file
+        // which is now located at: LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + fileName
+
+        return "Token was: " + token;    // whatever you return will be printed on screen for the user
+    }
+
     @RequestMapping(value = "/token", method = RequestMethod.GET)
     public String getToken() {
         return UUID.randomUUID().toString();
