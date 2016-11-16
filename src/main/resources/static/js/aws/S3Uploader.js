@@ -51,7 +51,6 @@
 
 			    // Credentials will be available when this function is called.
 			    console.log("Retreived new temporary credentials.");
-			    console.log(AWS.config.credentials);
 			});
 			
 			credentialsInitialized = true;
