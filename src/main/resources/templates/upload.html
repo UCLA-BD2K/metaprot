@@ -76,10 +76,12 @@
                 var formData = new FormData();
                 formData.append("objectKey", s3Key);
                 formData.append("token", token);
+                // TODO abineet, if you want more info from the client, you can grab it from the HTML and
+                // formData.append() it.
 
                 // notify server of file upload and updates UI to reflect status
                 $.ajax({
-                    url: '/analyze/integrity-check',   // TODO abineet, define endpoint
+                    url: '/analyze/integrity-check',
                     method: "POST",
                     data: formData,
                     processData: false,
