@@ -2,6 +2,7 @@ package org.bd2k.metaprot.controller.rest;
 
 import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.aws.S3Status;
+import org.bd2k.metaprot.data.IntegrityChecker;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.BadRequestException;
 import org.bd2k.metaprot.exception.ServerException;
@@ -385,6 +386,10 @@ public class analyze {
 
         // TODO abineet, this is where you will call the integrity checker on the file
         // which is now located at: LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + fileName
+
+        String pathToFile = LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + fileName;
+        IntegrityChecker i = new IntegrityChecker();
+        i.checkIntegrity(pathToFile);
 
         return "Token was: " + token;    // whatever you return will be printed on screen for the user
     }

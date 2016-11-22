@@ -2,8 +2,6 @@ package org.bd2k.metaprot.dbaccess.converter;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.tools.classfile.TypeAnnotation;
-import com.sun.tools.javac.code.TargetType;
 
 /**
  * Interface with inner static classes to be used for DynamoDB marshalling.

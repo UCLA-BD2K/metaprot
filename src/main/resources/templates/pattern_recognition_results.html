@@ -9,24 +9,6 @@
     <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="/css/site.css" />
 </head>
-<style>
-    .axis {
-        shape-rendering: crispEdges;
-    }
-
-    .x.axis line {
-        stroke: #000;
-    }
-
-    .x.axis .minor {
-        stroke-opacity: .5;
-    }
-
-    .y.axis line,
-    .y.axis path {
-        stroke: #000;
-    }
-</style>
 <body>
     <div th:include="fragments/header :: header"></div>
 
@@ -37,8 +19,7 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-sm-7">
-                            <div class="plot">
-                                <svg id="visualisation"></svg>  <!-- rendered in JS -->
+                            <div class="plot" id="visualisation">
                             </div>
                             <div class="well well-lg">
                                 <h4>Tools</h4>
@@ -88,14 +69,11 @@
                     <div class="row">
                         <h3>Strain visualization</h3>
                         <div class="col-sm-7">
-                            <div class="plot">
-                                <svg id="strain-plot-1"></svg>  <!-- rendered in JS -->
+                            <div class="plot" id="strain-plot-1">
                             </div>
-                            <div class="plot">
-                                <svg id="strain-plot-2"></svg>  <!-- rendered in JS -->
+                            <div class="plot" id="strain-plot-2">
                             </div>
-                            <div class="plot">
-                                <svg id="strain-plot-3"></svg>  <!-- rendered in JS -->
+                            <div class="plot" id="strain-plot-3">
                             </div>
                         </div>
                         <div class="col-sm-5">

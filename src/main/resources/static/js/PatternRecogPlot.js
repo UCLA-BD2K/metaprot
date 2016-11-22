@@ -53,7 +53,11 @@ var PatternRecogPlot = (function(resultData, regressionLinesInput) {
 
         console.log("initruns");
 
-        vis = d3.select('#' + svgID),
+        vis = d3.select("#" + svgID).append("svg")
+                .attr("height", (HEIGHT + MARGINS.top + MARGINS.bottom))
+                .attr("width", WIDTH + MARGINS.left + MARGINS.right)
+                .attr("id", svgID + "-svg");
+            /*
             WIDTH,
             HEIGHT,
             MARGINS,
@@ -61,7 +65,7 @@ var PatternRecogPlot = (function(resultData, regressionLinesInput) {
             yScale,
             xAxis,
             yAxis;
-
+            */
         vis.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
@@ -264,7 +268,7 @@ var PatternRecogPlot = (function(resultData, regressionLinesInput) {
      */
     var getDataUrl = function() {
         // get svg DOM element
-        var currSvg = document.getElementById("visualisation");
+        var currSvg = document.getElementById("visualisation-svg");
         if (!currSvg) {
             console.log("Error in finding DOM element to generate the dataUrl");
             return null;
