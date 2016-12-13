@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 
+import org.apache.log4j.Logger;
 import org.bd2k.metaprot.util.Globals;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,8 @@ import java.io.InputStream;
 @PropertySource("classpath:application.properties")
 @DependsOn({"Globals"})
 public class S3Client {
+
+    private static final Logger log = Logger.getLogger(S3Client.class);
 
     private final int BUFFER_SIZE = 1024 * 16;   // 16 bytes
 
@@ -111,7 +114,8 @@ public class S3Client {
                 // zero out buffer
                 buff = new byte[BUFFER_SIZE];
             }
-            System.out.println("Read " + totalBytesRead + " bytes from S3 for file: " + objectKey +".");
+
+            log.info("Read " + totalBytesRead + " bytes from S3 for file: " + objectKey +".");
         } catch (Exception e) {
             e.printStackTrace();
             sc = -1;

@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.document.*;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.KeysAndAttributes;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
+import org.apache.log4j.Logger;
 import org.bd2k.metaprot.util.Globals;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +45,9 @@ public class DynamoDBClient {
     // initialized via post construct
     private static BasicAWSCredentials credentials;
     private static DynamoDB dynamoDB;
+
+    // logging
+    private static final Logger log = Logger.getLogger(DynamoDBClient.class);
 
     // non-autowired members
     private final int MAX_DYNAMODB_ITEM_SIZE = Globals.getMaxDynamoDBItemSize();
@@ -90,7 +94,7 @@ public class DynamoDBClient {
         byte[] contentBytes = content.getBytes("UTF-8");
         int numChunksNeeded = new Double(Math.ceil((contentBytes.length)/(MAX_DYNAMODB_ITEM_SIZE*1.0))).intValue();
 
-        System.out.println("num chunks needed: " + numChunksNeeded);
+        log.info("num chunks needed: " + numChunksNeeded);
 
         // upload each chunk
         int bytesRemaining = contentBytes.length;
@@ -99,7 +103,7 @@ public class DynamoDBClient {
         int fromIndex = 0;
         int toIndex;
 
-        System.out.println("Total bytes: " + bytesRemaining);
+        log.info("Total bytes: " + bytesRemaining);
 
         int i = 0;
         while(bytesRemaining > 0) {
@@ -118,7 +122,7 @@ public class DynamoDBClient {
 
             toIndex = fromIndex + delta;
 
-            System.out.println("From: " + fromIndex + " to: " + toIndex );
+            log.info("From: " + fromIndex + " to: " + toIndex);
             currByteArr = Arrays.copyOfRange(contentBytes, fromIndex, toIndex);
 
             Item currChunk = new Item()
@@ -141,7 +145,7 @@ public class DynamoDBClient {
         tableWriteItems.withItemsToPut(chunks);
 
         // write to Dynamo
-        System.out.println("PUTing items to Dynamo...");
+        log.info("PUTing items to Dynamo...");
 
         try {
             int exponentialBackoffFactor = 1500;    // time to sleep before next dynamo request
@@ -152,18 +156,17 @@ public class DynamoDBClient {
             // per AWS documentation
             do {
                 // Check for unprocessed keys which could happen if you exceed provisioned throughput
-
                 Map<String, List<WriteRequest>> unprocessedItems = outcome.getUnprocessedItems();
 
                 if (outcome.getUnprocessedItems().size() == 0) {
-                    System.out.println("No unprocessed items found");
+                    log.info("No unprocessed items found");
                 } else {
                     // sleep for x seconds to avoid exceeding provisioned capacity
-                    System.out.println("Sleeping for" + exponentialBackoffFactor + "seconds...");
+                    log.info("Sleeping for" + exponentialBackoffFactor + "seconds...");
                     Thread.sleep(exponentialBackoffFactor);
 
-                    System.out.println("Retrieving the unprocessed items...");
-                    System.out.println("Attempting to write unprocessed items...");
+                    log.info("Retrieving the unprocessed items...");
+                    log.info("Attempting to write unprocessed items...");
                     outcome = dynamoDB.batchWriteItemUnprocessed(unprocessedItems);
                 }
 
@@ -178,7 +181,7 @@ public class DynamoDBClient {
             throw new Exception(e.getMessage());
         }
 
-        System.out.println("Uploaded " + i + " items to Dynamo.");
+        log.info("Uploaded " + i + " items to Dynamo.");
         return i;
     }
 
@@ -219,15 +222,15 @@ public class DynamoDBClient {
                 unprocessed = outcome.getUnprocessedKeys();
 
                 if (unprocessed.isEmpty()) {
-                    System.out.println("No unprocessed keys found");
+                    log.info("No unprocessed keys found");
                 } else {
 
                     // sleep for 1.5 seconds to avoid exceeding provisioned capacity
-                    System.out.println("Sleeping for" + exponentialBackoffFactor + "seconds...");
+                    log.info("Sleeping for" + exponentialBackoffFactor + "seconds...");
                     Thread.sleep(exponentialBackoffFactor);
 
                     // TODO NEED TO TEST THIS!!!
-                    System.out.println("Retrieving the unprocessed items");
+                    log.info("Retrieving the unprocessed items...");
                     BatchGetItemOutcome unprocessedOutcome = dynamoDB.batchGetItemUnprocessed(unprocessed);
                     for (Map<String, AttributeValue> chunk : unprocessedOutcome.getBatchGetItemResult().getResponses().get(tableName)) {
                         response.add(chunk);

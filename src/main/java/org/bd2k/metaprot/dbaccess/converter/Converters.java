@@ -2,6 +2,7 @@ package org.bd2k.metaprot.dbaccess.converter;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.log4j.Logger;
 
 /**
  * Interface with inner static classes to be used for DynamoDB marshalling.
@@ -43,6 +44,8 @@ public interface Converters {
 
     class DoubleArrayArrayConverter implements DynamoDBTypeConverter<String, double[][]> {
 
+        private static final Logger log = Logger.getLogger(DoubleArrayArrayConverter.class);
+
         @Override
         public String convert(double[][] doubles) {
             ObjectMapper mapper = new ObjectMapper();
@@ -52,7 +55,7 @@ public interface Converters {
                 result = mapper.writeValueAsString(doubles);
             } catch (Exception e) {
                 e.printStackTrace();
-                System.err.println("issue with mapping array of arrays of doubles...");
+                log.error("Issue with mapping array of arrays of doubles...");
             }
 
             return result;
@@ -67,7 +70,7 @@ public interface Converters {
                 result = mapper.readValue(s, double[][].class);
             } catch(Exception e) {
                 e.printStackTrace();
-                System.err.println("issue with unmapping array of arrays of doubles string");
+                log.error("Issue with unmapping array of arrays of doubles string.");
             }
 
             return result;

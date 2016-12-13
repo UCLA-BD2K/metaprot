@@ -1,5 +1,7 @@
 package org.bd2k.metaprot.data;
 
+import org.apache.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,19 +12,26 @@ import java.io.IOException;
  */
 public class IntegrityChecker {
 
-    String separator = ",";
-    boolean separatorIsSet = false;
+    private static final Logger log = Logger.getLogger(IntegrityChecker.class);
 
-    int columnCount = -1;
+    private String separator = ",";
+    private boolean separatorIsSet = false;
 
-    private class feedBackType{
-        boolean result;
-        String errorMessage;
+    private int columnCount = -1;
 
-        public feedBackType(boolean result, String errorMessage) {
+
+    // TODO must be public if you are returning instances of this class in checkIntegrity()
+    public class FeedBackType {
+        boolean result;         // true means success, false means error
+        String errorMessage;    // associated message
+
+        public FeedBackType(boolean result, String errorMessage) {
             this.result = result;
             this.errorMessage = errorMessage;
         }
+
+        public boolean getResult() { return result; }
+        public String getErrorMessage() { return errorMessage; }
     }
 
     private boolean setSeparator(String line){
@@ -46,7 +55,7 @@ public class IntegrityChecker {
         return true;
     }
 
-    public feedBackType checkIntegrity(String inputFile){
+    public FeedBackType checkIntegrity(String inputFile){
         int lineCount = 0;
         int nonNumericInputs = 0;
         try(BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
@@ -54,15 +63,15 @@ public class IntegrityChecker {
                 lineCount++;
                 if(!separatorIsSet){
                     if(!setSeparator(line)){
-                        System.out.println("Invalid file separators, line: " + lineCount);
-                        return new feedBackType(false, "Invalid file separators");
+                        log.info("Invalid file separators, line: " + lineCount);
+                        return new FeedBackType(false, "Invalid file separators");
                     }
                 }
                 String[] toks = line.split(separator);
                 if(toks.length != columnCount){
                     String err = "Invalid column size, Line : " + lineCount;
-                    System.out.println(err);
-                    return new feedBackType(false, err);
+                    log.info(err);
+                    return new FeedBackType(false, err);
                 }
 
                 if(lineCount > 5){
@@ -74,19 +83,21 @@ public class IntegrityChecker {
                     }
                 }
             }
-            System.out.println("");
-            System.out.printf("Successfully parsed file");
-            System.out.println("Total Lines: " + lineCount);
-            System.out.println("Total non-numeric values: " + nonNumericInputs);
+
+            log.info("Successfully parsed file");
+            log.info("Total Lines: " + lineCount);
+            log.info("Total non-numeric values: " + nonNumericInputs);
         }
         catch (IOException e){
             e.printStackTrace();
         }
 
         if(lineCount == 0){
-            return new feedBackType(false, "Input file is empty");
+            return new FeedBackType(false, "Input file is empty");
         }
-        return new feedBackType(true, "Success!");
+
+        // only way to return success
+        return new FeedBackType(true, "Success!");
     }
 
     /**

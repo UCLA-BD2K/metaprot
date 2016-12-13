@@ -1,5 +1,6 @@
 package org.bd2k.metaprot.controller.rest;
 
+import org.apache.log4j.Logger;
 import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.data.IntegrityChecker;
@@ -31,10 +32,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/analyze")
 @DependsOn({"Globals"})
-public class analyze {
+public class Analyze {
+
+    private static final Logger log = Logger.getLogger(Analyze.class);
 
     @Autowired
-    private S3Client copakbS3;
+    private S3Client s3Client;
 
     @Autowired
     private DAOImpl dao;
@@ -86,15 +89,16 @@ public class analyze {
             throw new BadRequestException("Invalid request, please try again later.");
         }
 
-        S3Status s3Status = copakbS3.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+        S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
         int status = s3Status.getStatusCode();
-        System.out.println("new status s3: " + s3Status.toString());
+
+        log.info("new status s3: " + s3Status.toString());
 
         // error
         if (status == -1) {
             throw new ServerException("There was an error with your request, please try again later.");
         } else if (status > 0) {
-            throw new BadRequestException(copakbS3.getAWSStatusMessage(status));
+            throw new BadRequestException(s3Client.getAWSStatusMessage(status));
         }
 
         // everything is OK on the server end, attempt to analyze the file
@@ -104,7 +108,8 @@ public class analyze {
             TaskInfo taskInfo = new TaskInfo(token, keyArr[keyArr.length-1], s3Status.getFileSize());
             TaskScheduler scheduler = TaskScheduler.getInstance();
             int portUsed = scheduler.scheduleTask(taskInfo);
-            System.out.println("Port used for Rserve: " + portUsed);
+
+            log.info("Port used for Rserve: " + portUsed);
 
             // run the R commands
             manager = RManager.getInstance(portUsed);
@@ -189,15 +194,16 @@ public class analyze {
         }
 
         // grab uploaded file from S3
-        S3Status s3Status = copakbS3.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+        S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
         int status = s3Status.getStatusCode();
-        System.out.println("new status s3: " + s3Status.toString());
+
+        log.info("new status s3: " + s3Status.toString());
 
         // check for errors in s3 pull/store
         if (status == -1) {
             throw new ServerException("There was an error with your request, please try again later.");
         } else if (status > 0) {
-            throw new BadRequestException(copakbS3.getAWSStatusMessage(status));
+            throw new BadRequestException(s3Client.getAWSStatusMessage(status));
         }
 
         // try to analyze the file with R
@@ -207,7 +213,8 @@ public class analyze {
             TaskInfo taskInfo = new TaskInfo(token, keyArr[keyArr.length-1], s3Status.getFileSize());
             TaskScheduler scheduler = TaskScheduler.getInstance();
             int portToUse = scheduler.scheduleTask(taskInfo);
-            System.out.println("Port to use for Rserve: " + portToUse);
+
+            log.info("Port to use for Rserve: " + portToUse);
 
             // get manager instance and run R commands
             RManager manager = RManager.getInstance(portToUse);
@@ -373,14 +380,14 @@ public class analyze {
         // if it does not exist, download from s3
         File f = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + fileName);
         if (!f.exists()) {
-            S3Status s3Status = copakbS3.pullAndStoreObject(objectKey, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+            S3Status s3Status = s3Client.pullAndStoreObject(objectKey, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
             int status = s3Status.getStatusCode();
 
             // error
             if (status == -1) {
                 throw new ServerException("There was an error with your request, please try again later.");
             } else if (status > 0) {
-                throw new BadRequestException(copakbS3.getAWSStatusMessage(status));
+                throw new BadRequestException(s3Client.getAWSStatusMessage(status));
             }
         }
 
@@ -389,9 +396,14 @@ public class analyze {
 
         String pathToFile = LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + fileName;
         IntegrityChecker i = new IntegrityChecker();
-        i.checkIntegrity(pathToFile);
+        IntegrityChecker.FeedBackType feedBackType =  i.checkIntegrity(pathToFile);
 
-        return "Token was: " + token;    // whatever you return will be printed on screen for the user
+        if (feedBackType.getResult()) {
+            return "File check passed! Head over to the <a href='/upload-pass/" + token + "'>data pre-processing page</a> to continue.";
+        } else {
+            throw new BadRequestException("There was an issue with your input file: " + feedBackType.getErrorMessage() +
+                    " - Please resolve this issue(s) and try again.");
+        }
     }
 
     @RequestMapping(value = "/token", method = RequestMethod.GET)

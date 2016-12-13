@@ -1,5 +1,6 @@
 package org.bd2k.metaprot.util;
 
+import org.apache.log4j.Logger;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
@@ -16,9 +17,7 @@ import org.rosuda.REngine.Rserve.RserveException;
 public class RManager {
 
     private static final String HOST = "localhost";
-
-    // { <port> : {"src/.../script1.R", "src/.../script2.R"} }
-    //private static Map<Integer, Set<String>> scriptsReadInByPort = new HashMap<Integer, Set<String>>();
+    private static final Logger log = Logger.getLogger(RManager.class);
 
     // member variables
     private RConnection connection = null;
@@ -27,8 +26,7 @@ public class RManager {
     // private cstr only for internal factory use
     private RManager(int portToUse) throws RserveException {
         port = portToUse;
-        //initScriptMap(port);                            // ensure map contains reference to port
-        connection = new RConnection(HOST, port);       // attempt to connect to localhost:(6311)
+        connection = new RConnection(HOST, port);       // attempt to connect to localhost:(port)
     }
 
     /**
@@ -43,14 +41,6 @@ public class RManager {
         return new RManager(port);
     }
 
-    // internal initialization method to ensure that scriptsReadInByPort
-    // contains a key-value pair for this port
-//    private void initScriptMap(int port) {
-//        if (!scriptsReadInByPort.containsKey(port)) {
-//            scriptsReadInByPort.put(port, new HashSet<String>());
-//        }
-//    }
-
     /**
       * Run arbitrary R script with no input arguments. End effect is sourcing the
       * file. **The file must exist locally. As an optimization, scripts that
@@ -59,10 +49,7 @@ public class RManager {
       * @param sourceFilePath absolute path of the R file to execute (e.g. "/drive/script.R")
       */
     public void runRScript(String sourceFilePath) throws RserveException {
-        //if (!scriptsReadInByPort.get(this.port).contains(sourceFilePath)) {
             runRCommand("source('" + sourceFilePath + "')");
-        //    scriptsReadInByPort.get(this.port).add(sourceFilePath);
-        //}
     }
 
     /**
@@ -74,7 +61,7 @@ public class RManager {
      * @return an REXP instance with the result of the specified statement.
      */
     public REXP runRCommand(String statement) throws RserveException {
-        System.out.println("running R command: " + statement);
+        log.info("running R command: " + statement);
         return connection.eval(statement);
     }
 
