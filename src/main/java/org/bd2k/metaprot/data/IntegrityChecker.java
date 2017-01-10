@@ -19,21 +19,6 @@ public class IntegrityChecker {
 
     private int columnCount = -1;
 
-
-    // TODO must be public if you are returning instances of this class in checkIntegrity()
-    public class FeedBackType {
-        boolean result;         // true means success, false means error
-        String errorMessage;    // associated message
-
-        public FeedBackType(boolean result, String errorMessage) {
-            this.result = result;
-            this.errorMessage = errorMessage;
-        }
-
-        public boolean getResult() { return result; }
-        public String getErrorMessage() { return errorMessage; }
-    }
-
     private boolean setSeparator(String line){
         String[] toks = line.split(",");
         if(toks.length > 1){

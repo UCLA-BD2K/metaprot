@@ -3,6 +3,7 @@ package org.bd2k.metaprot.controller.rest;
 import org.apache.log4j.Logger;
 import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.aws.S3Status;
+import org.bd2k.metaprot.data.FeedBackType;
 import org.bd2k.metaprot.data.IntegrityChecker;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.BadRequestException;
@@ -396,7 +397,7 @@ public class Analyze {
 
         String pathToFile = LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + fileName;
         IntegrityChecker i = new IntegrityChecker();
-        IntegrityChecker.FeedBackType feedBackType =  i.checkIntegrity(pathToFile);
+        FeedBackType feedBackType =  i.checkIntegrity(pathToFile);
 
         if (feedBackType.getResult()) {
             return "File check passed! Head over to the <a href='/upload-pass/" + token + "'>data pre-processing page</a> to continue.";

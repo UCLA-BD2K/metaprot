@@ -32,6 +32,23 @@
                             <input id="fileInput" type="file" class="form-control" required="required" />
 
                             <br/>
+
+                            <label for="xAxisSelector">What do rows define in the input file?</label>
+                            <select id="xAxisSelector">
+                                <option value="Metabolite">Protein/Metabolite</option>
+                                <option value="Time-Series">Time Point Data</option>
+                            </select>
+
+                            <br/>
+
+                            <label for="yAxisSelector">What do columns define in the input file?</label>
+                            <select id="yAxisSelector">
+                                <option value="Time-Series">Time Point Data</option>
+                                <option value="Metabolite">Protein/Metabolite</option>
+                            </select>
+
+                            <br/>
+
                             <input type="submit" value="Submit" class="form-control"/>
                             <input type="reset" value="Reset" class="form-control"/>
 
