@@ -5,8 +5,7 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
     padding-top: 50px;
-    background-color: #E4E8EC;
-    /*background-color: #C8D7E3;*/
+    background-color: #C8D7E3;
     /*  #DDE8F1;*/
     /*  color:#D8D8D8;*/
 }

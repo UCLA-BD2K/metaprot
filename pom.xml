@@ -11,6 +11,15 @@
 	<name>Metaprot</name>
 	<description>Metaprot v1</description>
 
+    <profiles>
+        <profile>
+            <id>profile-name</id>
+            <properties>
+                <r-script-location>src/main/resources/R/scripts/</r-script-location>
+            </properties>
+        </profile>
+    </profiles>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
