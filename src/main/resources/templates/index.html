@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="/css/lib/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="/css/temp.css" />
     </head>
+
     <body>
         <!--<div th:include="fragments/header :: header"></div>-->
 
@@ -84,7 +85,6 @@
                         <!--<div id="pieChart"></div>-->
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -103,8 +103,6 @@
             ga('create', 'UA-90308842-1', 'auto');
             ga('send', 'pageview');
 
-        </script>
-        <script>
             var pie = new d3pie("pieChart", {
                 "header": {
                     "title": {
@@ -195,5 +193,7 @@
                 }
             });
         </script>
+
     </body>
 </html>
+

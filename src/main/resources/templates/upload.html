@@ -6,30 +6,53 @@
     <meta charset="UTF-8" />
     <title>Upload file</title>
 
-    <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.simplex.min.css" />
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
-    <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="/css/site.css" />
+    <link rel="stylesheet" href="/css/lib/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/temp.css" />
 </head>
 <body>
 
-    <div th:include="fragments/header :: header"></div>
 
-    <div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Metaprot</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-offset-3 col-sm-6">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li class="active"><a href="#">Upload Data<span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">Preprocessing</a></li>
+                    <li><a href="#">Analysis</a></li>
+                    <li><a href="#">Annotation</a></li>
+                    <li><a href="">Integration</a></li>
+                    <li><a href="">Summary</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">
+
                 <h2>Upload a file</h2>
-                <div class="alert-warning jumbotron">
-                    Some things to note:<br/>
-                    [list of things] <br/>
-                    See sample CSV file: <a href="#">here</a>
-                </div>
                 <div class="well well-lg">
                     <form id="csv-upload-form" class="form-horizontal">
                         <fieldset>
 
-                            <!--<label for="fileInput">Select file: </label>-->
-                            <!--<input id="fileInput" type="file" class="form-control" required="required" />-->
+                            <label for="fileInput">Select file: </label>
+                            <input id="fileInput" type="file" class="form-control" required="required" />
 
                             <br/>
 
@@ -39,7 +62,7 @@
                                 <option value="Time-Series">Time Point Data</option>
                             </select>
 
-                            <br/>
+                            <br />
 
                             <label for="yAxisSelector">What do columns define in the input file?</label>
                             <select id="yAxisSelector">
@@ -47,10 +70,10 @@
                                 <option value="Metabolite">Protein/Metabolite</option>
                             </select>
 
-                            <br/>
+                            <br />
 
-                            <input type="submit" value="Submit" class="form-control"/>
-                            <input type="reset" value="Reset" class="form-control"/>
+                            <input type="submit" value="Submit" class="form-control" />
+                            <input type="reset" value="Reset" class="form-control" />
 
                         </fieldset>
                     </form>
@@ -62,8 +85,19 @@
                             0% Complete
                         </div>
                     </div>
-                    <div id="progressText" class="text-center"></div><br/>
+                    <div id="progressText" class="text-center"></div><br />
                 </div>
+
+            </div>
+            <div class="col-sm-3 col-md-2">
+                <ul class="nav nav-sidebar navbar navbar-default navbar-fixed-side">
+                    <li class="active"><a href="#">file1<span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">file2</a></li>
+                    <li><a href="#">file3</a></li>
+                    <li><a href="#">file4</a></li>
+                    <li><a href="">file5</a></li>
+                    <li><a href="">file6</a></li>
+                </ul>
             </div>
         </div>
     </div>
@@ -182,3 +216,4 @@
 
 </body>
 </html>
+
