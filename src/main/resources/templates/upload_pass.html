@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8" />
     <title>Upload file</title>
@@ -256,12 +255,12 @@
                 });
 
 
-                // form events
-                $('#mve-form').on("submit", function(e) {
-                    e.preventDefault();
-
-                    console.log("process mve");
-                });
+            // form events
+            $('#mve-form').on("submit", function(e) {
+                e.preventDefault();
+                console.log(localStorage.getItem("root"));
+                console.log("process mve");
+            });
 
                 $('#normalization-form').on("submit", function(e) {
                     e.preventDefault();
@@ -275,195 +274,3 @@
         </script>
     </body>
 </html>
-<!--<!DOCTYPE html>-->
-<!--<html lang="en" xmlns="http://www.w3.org/1999/xhtml"-->
-      <!--xmlns:th="http://www.thymeleaf.org">-->
-<!--<head>-->
-    <!--<meta charset="UTF-8" />-->
-    <!--<title>Process file</title>-->
-
-    <!--<link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.simplex.min.css" />-->
-    <!--<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />-->
-    <!--<link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />-->
-    <!--<link rel="stylesheet" type="text/css" href="/css/site.css" />-->
-<!--</head>-->
-<!--<body>-->
-    <!--<div th:include="fragments/header :: header"></div>-->
-
-    <!--<div class="container">-->
-        <!--<div id="window" style="margin-bottom:15px">-->
-            <!--<div id="missing-value-estimation" class="processing-section active" data-section-index="1">-->
-                <!--<h2><span class="badge">1</span> Handle missing values</h2>-->
-                <!--<div class="section">-->
-                    <!--<div>-->
-                        <!--<form id="mve-form">-->
-                            <!--<div class="form-group">-->
-                                <!--<h5><input id="remove-threshold-checkbox" type="checkbox" /> Remove features with too many missing values:</h5>-->
-                                <!--<input id="remove-threshold" type="text" value="50" /> %-->
-                            <!--</div>-->
-                            <!--<div class="form-group">-->
-                                <!--<h5>Estimate remaining missing values:</h5>-->
-                                <!--<select id="estimate-mv">-->
-                                    <!--<option value="replace">Replace by a small value (half of the minimum positive value in the original data)</option>-->
-                                    <!--<option value="exclude">Exclude variables with missing values</option>-->
-                                <!--</select>-->
-                            <!--</div>-->
-                            <!--<div class="form-group">-->
-                                <!--<input type="submit" value="Process" class="btn btn-default" />-->
-                            <!--</div>-->
-                        <!--</form>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-
-            <!--<div id="normalization" class="processing-section" data-section-index="2">-->
-                <!--<h2><span class="badge">2</span> Normalization</h2>-->
-                <!--<div class="section">-->
-                    <!--<div>-->
-                        <!--<form id="normalization-form">-->
-                            <!--<div class="form-group">-->
-                                <!--<h5>Sample normalization:</h5>-->
-                                <!--<label for="none">None</label>-->
-                                <!--<input id="none" type="radio" value="none" name="norm-by" checked="checked" />-->
-                                <!--<br />-->
-                                <!--<label for="sum">Normalization by sum</label>-->
-                                <!--<input id="sum" type="radio" value="sum" name="norm-by" />-->
-                                <!--<br />-->
-                                <!--<label for="median">Normalization by median</label>-->
-                                <!--<input id="median" type="radio" value="median" name="norm-by" />-->
-                                <!--<br />-->
-                                <!--<label for="spec-ref-sample">Norm. by specific reference sample</label>-->
-                                <!--<input id="spec-ref-sample" type="radio" value="srs" name="norm-by" />-->
-                                <!--<br />-->
-                                <!--<label for="ref-feature">Norm. by reference feature</label>-->
-                                <!--<input id="ref-feature" type="radio" value="rf" name="norm-by" />-->
-                            <!--</div>-->
-
-                            <!--<div class="form-group">-->
-                                <!--<h5>Data transformation:</h5>-->
-                                <!--<label for="none-trans">None</label>-->
-                                <!--<input id="none-trans" type="radio" value="none" name="trans" checked="checked" />-->
-                                <!--<br/>-->
-
-                                <!--<label for="log-trans">Log transformation</label>-->
-                                <!--<input id="log-trans" type="radio" value="log-trans" name="trans" />-->
-                                <!--<br />-->
-
-                                <!--<label for="cube-root-trans">Cube root transformation</label>-->
-                                <!--<input id="cube-root-trans" type="radio" value="cube-root-trans" name="trans" />-->
-
-                            <!--</div>-->
-
-                            <!--<div class="form-group">-->
-                                <!--<h5>Data scaling:</h5>-->
-                                <!--<label for="none-scaling">None</label>-->
-                                <!--<input id="none-scaling" type="radio" value="none" name="scaling" checked="checked" />-->
-                                <!--<br/>-->
-
-                                <!--<label for="mean-centered">Mean centering</label>-->
-                                <!--<input id="mean-centered" type="radio" value="mean-centered" name="scaling" />-->
-                                <!--<br />-->
-
-                                <!--<label for="pareto">Pareto scaling</label>-->
-                                <!--<input id="pareto" type="radio" value="pareto" name="scaling" />-->
-                            <!--</div>-->
-
-                            <!--<input type="submit" value="Process" class="btn btn-default" />-->
-                        <!--</form>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-
-            <!--<div id="analyze" class="processing-section" data-section-index="3">-->
-                <!--<h2><span class="badge">3</span> Analyze</h2>-->
-                <!--<div class="section">-->
-                    <!--<div class="row">-->
-                        <!--<div class="col-sm-6 card">-->
-                            <!--<div class="card-text">-->
-                                <!--Metabolite-analysis-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="col-sm-6 card">-->
-                            <!--<div class="card-text">-->
-                                <!--Temporal pattern recognition-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-
-            <!--<div id="section-navigation" class="text-center">-->
-                <!--<span class="navigation-tool prev invisible"><i class="fa fa-arrow-left fa-3x"></i></span>-->
-                <!--<span style="margin: 0 15px"></span>-->
-                <!--<span class="navigation-tool next"><i class="fa fa-arrow-right fa-3x"></i></span>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-
-
-    <!--<div th:include="fragments/footer :: footer"></div>-->
-
-    <!--<script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>-->
-    <!--<script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>-->
-    <!--<script type="text/javascript">-->
-        <!--/*<![CDATA[*/-->
-        <!--$(function() {-->
-            <!--// events for navigation via the prev/next arrows-->
-            <!--var activeSection = 1;  // 1 = mve, 2 = norm, 3 = analye-->
-            <!--var $next = $('.navigation-tool.next'), $prev = $('.navigation-tool.prev');-->
-            <!--$('.navigation-tool').on("click", function() {-->
-                <!--if ($(this).hasClass("next")) {-->
-                    <!--if (activeSection < 3) {        // 3 is the last section possible-->
-
-                        <!--$('div[data-section-index=' + activeSection + ']').hide();-->
-                        <!--activeSection += 1;-->
-                        <!--$('div[data-section-index=' + activeSection + ']').fadeIn(600);-->
-
-                        <!--if (activeSection >= 3) {-->
-                            <!--$next.addClass("invisible");-->
-                            <!--$prev.removeClass("invisible");-->
-                        <!--} else {-->
-                            <!--$next.removeClass("invisible");-->
-                            <!--$prev.removeClass("invisible");-->
-                        <!--}-->
-                    <!--}-->
-
-                <!--} else {-->
-                    <!--// must have been the prev pointer-->
-                    <!--if (activeSection > 1) {-->
-
-                        <!--$('div[data-section-index=' + activeSection + ']').hide();-->
-                        <!--activeSection -= 1;-->
-                        <!--$('div[data-section-index=' + activeSection + ']').fadeIn(600);-->
-
-                        <!--if (activeSection <= 1) {-->
-                            <!--$next.removeClass("invisible");-->
-                            <!--$prev.addClass("invisible");-->
-                        <!--} else {-->
-                            <!--$next.removeClass("invisible");-->
-                            <!--$prev.removeClass("invisible");-->
-                        <!--}-->
-                    <!--}-->
-                <!--}-->
-            <!--});-->
-
-
-            <!--// form events-->
-            <!--$('#mve-form').on("submit", function(e) {-->
-                <!--e.preventDefault();-->
-
-                <!--console.log("process mve");-->
-            <!--});-->
-
-            <!--$('#normalization-form').on("submit", function(e) {-->
-                <!--e.preventDefault();-->
-
-                <!--console.log("process normalization");-->
-            <!--});-->
-
-
-        <!--});-->
-        <!--/*]]>*/-->
-    <!--</script>-->
-<!--</body>-->
-<!--</html>-->

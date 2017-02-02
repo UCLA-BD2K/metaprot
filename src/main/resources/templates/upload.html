@@ -208,6 +208,7 @@
 
                 var afterEachFileRead = function(options) {
                     console.log("A file is ready to upload.");
+                    localStorage.setItem("root", options.name);
                     var delayCounter = 0;
 
                     var moreParams = {

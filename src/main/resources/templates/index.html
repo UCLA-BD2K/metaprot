@@ -40,8 +40,8 @@
 
         <div class="container-fluid">
             <div class="jumbotron">
-                <h1>Metaprot</h1>
-                <p class="lead">Description of Metaprot</p>
+                <h1>MetProt</h1>
+                <p class="lead">A Cloud-based Platform to Analyze, Annotate, and Integrate Metabolomics Datasets with Proteomics Information.</p>
                 <div class="col-sm-12 col-md-12 main">
                     <div class = "btn-border">
                         <p><a class="btn btn-lg btn-default" onclick="window.location.href='/upload'">Start Analysis</a></p>
@@ -53,14 +53,22 @@
                 <div class="col-sm-12 col-md-12 main">
                     <div class="row placeholders">
                         <div class="col-xs-8 col-sm-4 placeholder">
-                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="305" height="305" class="img-responsive" alt="img1"></img>
-                            <h4>Metabolite-analysis</h4>
-                            <span class="text-muted">Analyze time-series metabolite data and generate high quality volcano plots to visualize inherent trends.</span>
+                            <img src="img/traffic-vis.jpg" width="305" height="305" class="img-responsive" alt="img1"></img>
+                            <h4>Site Traffic</h4>
+                            <span class="text-muted">Real time traffic visualization</span>
                         </div>
                         <div class="col-xs-8 col-sm-4 placeholder">
-                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="305" height="305" class="img-responsive" alt="img2"></img>
-                            <h4>Temporal Pattern Recognition</h4>
-                            <span class="text-muted">Analyze temporal patterns and visualize clusters based on these trends.</span>
+                            <!--<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="305" height="305" class="img-responsive" alt="img2"></img>-->
+                            <div id="list" width="305" height="305">
+                                <ul width="305" height="305">
+                                    <li>User1(2/2/2017): lorem ipsum I don't know the rest of the lorem ipsum</li>
+                                    <li>User1(2/2/2017): lorem ipsum I don't know the rest of the lorem ipsum</li>
+                                    <li>User1(2/2/2017): lorem ipsum I don't know the rest of the lorem ipsum</li>
+                                    <li>User1(2/2/2017): lorem ipsum I don't know the rest of the lorem ipsum</li>
+                                </ul>
+                            </div>
+                            <h4>Recent Updates</h4>
+                            <span class="text-muted">Recent news and updates</span>
                         </div>
                         <div class="col-xs-8 col-sm-4 placeholder">
                             <!--<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="240" height="240" class="img-responsive" alt="img3"></img>-->
@@ -129,12 +137,17 @@
                     "pieOuterRadius": "90%"
                 },
                 "data": {
-                    "sortOrder": "value-desc",
+                    "sortOrder": "label-desc",
                     "content": [
                         {
-                            "label": "Metabolite Analysis",
+                            "label": "Differential Expression Analysis ",
                             "value": 200,
-                            "color": "#2383c1"
+                            "color": "#2282c1"
+                        },
+                        {
+                            "label": "Association Study",
+                            "value": 90,
+                            "color": "#7b6688"
                         },
                         {
                             "label": "Pattern Recognition ",
@@ -155,7 +168,7 @@
                     "mainLabel": {
                         "color": "#faf8f8",
                         "font": "open sans",
-                        "fontSize": 11
+                        "fontSize": 9
                     },
                     "percentage": {
                         "color": "#ffffff",
@@ -169,8 +182,14 @@
                         "enabled": true
                     },
                     "truncation": {
-                        "enabled": true
+                        "enabled": true,
+                        "truncateLength": 33
                     }
+                },
+                "tooltips": {
+                    "enabled": true,
+                    "type": "placeholder",
+                    "string": "{label}:  {percentage}%"
                 },
                 "effects": {
                     "pullOutSegmentOnClick": {
