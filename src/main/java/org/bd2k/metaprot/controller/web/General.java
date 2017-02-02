@@ -49,4 +49,9 @@ public class General {
         return "upload_pass";
     }
 
+    @RequestMapping("/analysis")
+    public String getAnalysisPage() {
+        return "analysis";
+    }
+
 }

@@ -6,8 +6,15 @@
     <meta charset="UTF-8" />
     <title>Upload file</title>
 
-    <link rel="stylesheet" href="/css/lib/bootstrap.min.css" />
+    <link href="/css/lib/bootstrap.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/bootstrap-treeview.css" />
     <link rel="stylesheet" type="text/css" href="/css/temp.css" />
+    <!-- Required Stylesheets -->
+    <!--<link href="/css/lib/bootstrap.css" rel="stylesheet"/>-->
+
+    <!-- Required Javascript -->
+
 </head>
 <body>
 
@@ -37,9 +44,9 @@
             <div class="col-sm-3 col-md-2 sidebar">
                 <ul class="nav nav-sidebar">
                     <li class="active"><a href="#">Upload Data<span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">Preprocessing</a></li>
-                    <li><a href="#">Analysis</a></li>
-                    <li><a href="#">Annotation</a></li>
+                    <li><a href="" class="preprocess">Preprocessing</a></li>
+                    <li><a href="">Analysis</a></li>
+                    <li><a href="">Annotation</a></li>
                     <li><a href="">Integration</a></li>
                     <li><a href="">Summary</a></li>
                 </ul>
@@ -51,7 +58,9 @@
                     <form id="csv-upload-form" class="form-horizontal">
                         <fieldset>
 
-                            <label for="fileInput">Select file: </label>
+                            <label for="fileInput">
+                                <p>Select file:</p>
+                            </label>
                             <input id="fileInput" type="file" class="form-control" required="required" />
 
                             <br/>
@@ -90,14 +99,7 @@
 
             </div>
             <div class="col-sm-3 col-md-2">
-                <ul class="nav nav-sidebar navbar navbar-default navbar-fixed-side">
-                    <li class="active"><a href="#">file1<span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">file2</a></li>
-                    <li><a href="#">file3</a></li>
-                    <li><a href="#">file4</a></li>
-                    <li><a href="">file5</a></li>
-                    <li><a href="">file6</a></li>
-                </ul>
+                <div id="treeview"/>
             </div>
         </div>
     </div>
@@ -108,7 +110,34 @@
     <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.4.12.min.js"></script>
     <script type="text/javascript" src="/js/aws/S3Uploader.js"></script>
+    <script src="js/lib/jquery.js"></script>
+    <script src="js/bootstrap-treeview.js"></script>
     <script type="text/javascript">
+        function buildDomTree() {
+
+            var data = [];
+
+            function walk(nodes, data) {
+                if (!nodes) { return; }
+                $.each(nodes, function (id, node) {
+                    var obj = {
+                        id: id,
+                        // text: "file"+id,
+                        text: "Samplefile.csv",
+                        tags: [node.childElementCount > 0 ? node.childElementCount + ' child elements' : '']
+                    };
+                    if (node.childElementCount > 0) {
+                        obj.nodes = [];
+                        walk(node.children, obj.nodes);
+                    }
+                    data.push(obj);
+                });
+            }
+
+            walk($('label')[0].children, data);
+            return data;
+        }
+
         $(function() {
 
             var $progressBar = $('.progress-bar');
@@ -122,6 +151,7 @@
             // when all files are uploaded, tell server to check for integrity
             function notifyAllFilesUploaded(token, s3Key) {
                 var $progressText = $('#progressText');
+//                var $fileText = $('#fileText');
                 $progressText.html('<h5>Checking integrity...</h5><i class="fa fa-refresh fa-spin fa-3x"></i>');
 
                 var formData = new FormData();
@@ -139,12 +169,25 @@
                     contentType: false,
                     success:function(data) {    // really just prints on screen any response from server
                         $progressText.html('<div class="alert alert-success">' + data + '</div>');
+//                        $('#preprocess').html(onclick="window.location.href='/upload'");
+                        $(function() {
+
+                            var options = {
+                                bootstrap2: false,
+                                showTags: false,
+                                levels: 5,
+                                data: buildDomTree()
+                            };
+
+                            $('#treeview').treeview(options);
+                        });
                     },
                     error:function(jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR)
                         console.log(textStatus)
                         console.log(errorThrown)
                         $progressText.html('<div class="alert alert-danger">' + jqXHR.responseJSON.message + '</div>');
+//                        $fileText.html('filex');
                     }
                 });
             }
