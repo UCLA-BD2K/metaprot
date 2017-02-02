@@ -1,162 +1,23 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en" xmlns="http://www.w3.org/1999/xhtml"-->
-      <!--xmlns:th="http://www.thymeleaf.org">-->
-
-<!--<head>-->
-    <!--<meta charset="UTF-8" />-->
-    <!--<title>Upload file</title>-->
-
-    <!--<link href="/css/lib/bootstrap.css" rel="stylesheet"/>-->
-    <!--<link rel="stylesheet" href="/css/bootstrap.min.css" />-->
-    <!--<link rel="stylesheet" href="/css/bootstrap-treeview.css" />-->
-    <!--<link rel="stylesheet" type="text/css" href="/css/temp.css" />-->
-    <!--&lt;!&ndash; Required Stylesheets &ndash;&gt;-->
-    <!--&lt;!&ndash;<link href="/css/lib/bootstrap.css" rel="stylesheet"/>&ndash;&gt;-->
-
-    <!--&lt;!&ndash; Required Javascript &ndash;&gt;-->
-
-<!--</head>-->
-<!--<body>-->
-
-
-    <!--<nav class="navbar navbar-inverse navbar-fixed-top">-->
-        <!--<div class="container-fluid">-->
-            <!--<div class="navbar-header">-->
-                <!--<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">-->
-                    <!--<span class="sr-only">Toggle navigation</span>-->
-                    <!--<span class="icon-bar"></span>-->
-                    <!--<span class="icon-bar"></span>-->
-                    <!--<span class="icon-bar"></span>-->
-                <!--</button>-->
-                <!--<a class="navbar-brand" href="#">Metaprot</a>-->
-            <!--</div>-->
-            <!--<div id="navbar" class="navbar-collapse collapse">-->
-                <!--<ul class="nav navbar-nav navbar-right">-->
-                    <!--<li><a href="#">About</a></li>-->
-                    <!--<li><a href="#">Contact</a></li>-->
-                <!--</ul>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</nav>-->
-
-    <!--<div class="container-fluid">-->
-        <!--<div class="row">-->
-            <!--<div class="col-sm-3 col-md-2 sidebar">-->
-                <!--<ul class="nav nav-sidebar">-->
-                    <!--<li><a onclick="window.location.href='/upload'">Upload Data</a></li>-->
-                    <!--<li><a href="#">Preprocessing</a></li>-->
-                    <!--<li class="active"><a href="#">Analysis<span class="sr-only">(current)</span></a></li>-->
-                    <!--<li><a href="#">Annotation</a></li>-->
-                    <!--<li><a href="">Integration</a></li>-->
-                    <!--<li><a href="">Summary</a></li>-->
-                <!--</ul>-->
-            <!--</div>-->
-            <!--&lt;!&ndash;<div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">&ndash;&gt;-->
-            <!--<div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">-->
-                <!--<div id="window" style="margin-bottom:15px">-->
-
-                    <!--<div id="analyze" class="processing-section" data-section-index="3">-->
-                        <!--<h2><span class="badge">3</span> Analyze</h2>-->
-                        <!--<div class="section">-->
-                            <!--<div class="row">-->
-                                <!--<div class="col-sm-6 card">-->
-                                    <!--<div class="card-text">-->
-                                        <!--Metabolite-analysis-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                                <!--<div class="col-sm-6 card">-->
-                                    <!--<div class="card-text">-->
-                                        <!--Temporal pattern recognition-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-
-                    <!--<div id="section-navigation" class="text-center">-->
-                        <!--<span class="navigation-tool prev invisible"><i class="fa fa-arrow-left fa-3x"></i></span>-->
-                        <!--<span style="margin: 0 15px"></span>-->
-                        <!--<span class="navigation-tool next"><i class="fa fa-arrow-right fa-3x"></i></span>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="col-sm-3 col-md-2">-->
-                <!--<div id="treeview"/>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-
-
-
-
-    <!--<div th:include="fragments/footer :: footer"></div>-->
-
-    <!--<script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>-->
-    <!--<script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>-->
-    <!--<script src="js/lib/jquery.js"></script>-->
-    <!--<script src="js/bootstrap-treeview.js"></script>-->
-    <!--<script type="text/javascript">-->
-        <!--function buildDomTree() {-->
-
-            <!--var data = [];-->
-
-            <!--function walk(nodes, data) {-->
-                <!--if (!nodes) { return; }-->
-                <!--$.each(nodes, function (id, node) {-->
-                    <!--var obj = {-->
-                        <!--id: id,-->
-                        <!--// text: "file"+id,-->
-                        <!--text: "File" + " - " + id+1,-->
-                        <!--tags: [node.childElementCount > 0 ? node.childElementCount + ' child elements' : '']-->
-                    <!--};-->
-                    <!--if (node.childElementCount > 0) {-->
-                        <!--obj.nodes = [];-->
-                        <!--walk(node.children, obj.nodes);-->
-                    <!--}-->
-                    <!--data.push(obj);-->
-                <!--});-->
-            <!--}-->
-
-            <!--walk($('html')[0].children, data);-->
-            <!--return data;-->
-        <!--}-->
-
-        <!--$(function() {-->
-
-            <!--var options = {-->
-                <!--bootstrap2: false,-->
-                <!--showTags: false,-->
-                <!--levels: 5,-->
-                <!--data: buildDomTree()-->
-            <!--};-->
-
-            <!--$('#treeview').treeview(options);-->
-        <!--});-->
-
-        <!--/*]]>*/-->
-    <!--</script>-->
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+
     <head>
-        <meta charset="UTF-8"/>
-        <title>Metaprot</title>
+        <meta charset="UTF-8" />
+        <title>Upload file</title>
 
-        <!--<link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.simplex.min.css" />-->
-        <!--<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />-->
-        <!--<link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />-->
-        <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" type="text/css"/>-->
-        <!--<link rel="stylesheet" type="text/css" href="/css/site.css" />-->
-        <!-- Latest compiled and minified CSS -->
+        <link href="/css/lib/bootstrap.css" rel="stylesheet"/>
         <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/css/bootstrap-treeview.css" />
         <link rel="stylesheet" type="text/css" href="/css/temp.css" />
-    </head>
+        <!-- Required Stylesheets -->
+        <!--<link href="/css/lib/bootstrap.css" rel="stylesheet"/>-->
 
+        <!-- Required Javascript -->
+
+    </head>
     <body>
-    <!--<div th:include="fragments/header :: header"></div>-->
+
 
         <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container-fluid">
@@ -179,160 +40,116 @@
         </nav>
 
         <div class="container-fluid">
-            <div class="jumbotron">
-                <h1>Metaprot</h1>
-                <p class="lead">Description of Metaprot</p>
-                <div class="col-sm-12 col-md-12 main">
-                    <div class = "btn-border">
-                        <p><a class="btn btn-lg btn-default" onclick="window.location.href='/upload'">Start Analysis</a></p>
-                    </div>
-                </div>
-            </div>
-
             <div class="row">
-                <div class="col-sm-12 col-md-12 main">
-                    <div class="row placeholders">
-                        <div class="col-xs-8 col-sm-4 placeholder">
-                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="305" height="305" class="img-responsive" alt="img1"></img>
-                            <h4>Metabolite-analysis</h4>
-                            <span class="text-muted">Analyze time-series metabolite data and generate high quality volcano plots to visualize inherent trends.</span>
-                        </div>
-                        <div class="col-xs-8 col-sm-4 placeholder">
-                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="305" height="305" class="img-responsive" alt="img2"></img>
-                            <h4>Temporal Pattern Recognition</h4>
-                            <span class="text-muted">Analyze temporal patterns and visualize clusters based on these trends.</span>
-                        </div>
-                        <div class="col-xs-8 col-sm-4 placeholder">
-                            <!--<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="240" height="240" class="img-responsive" alt="img3"></img>-->
-                            <div id="pieChart"></div>
-                            <h4>Feature Use Statistics</h4>
-                            <span class="text-muted">A full pie chart to show usage statistics of various features in MetaProt</span>
-                        </div>
-                    </div>
-
+                <div class="col-sm-3 col-md-2 sidebar">
+                    <ul class="nav nav-sidebar">
+                        <li><a onclick="window.location.href='/upload'">Upload Data</a></li>
+                        <li><a href="#">Preprocessing</a></li>
+                        <li class="active"><a href="">Analysis<span class="sr-only">(current)</span></a></li>
+                        <li><a href="#">Annotation</a></li>
+                        <li><a href="">Integration</a></li>
+                        <li><a href="">Summary</a></li>
+                    </ul>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="card card-block">
-                        <!--<h2 class="card-title">Site Traffic</h2>-->
-                        <!--<img style="width: 5300px" src="/img/data-graph.jpg" />-->
+                <!--<div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">-->
+                <div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">
+                    <div id="window" style="margin-bottom:15px">
+
+                        <!--<div id="analyze" class="processing-section" data-section-index="3">-->
+
+                        <h2>Analysis</h2>
+                        <div class="row placeholders">
+                            <div class="col-xs-6 col-sm-3 col-md-4 placeholder">
+                                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="305" height="305" class="img-responsive" alt="img1"></img>
+                                <h4>Metabolite-analysis</h4>
+                                <span class="text-muted">Analyze time-series metabolite data and generate high quality volcano plots to visualize inherent trends.</span>
+                            </div>
+                            <div class="col-xs-6 col-sm-3 col-md-4 placeholder">
+                                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="305" height="305" class="img-responsive" alt="img2"></img>
+                                <h4>Temporal Pattern Recognition</h4>
+                                <span class="text-muted">Analyze temporal patterns and visualize clusters based on these trends.</span>
+                            </div>
+                        </div>
+
+                        <div id="section-navigation" class="text-center">
+                            <span class="navigation-tool prev invisible"><i class="fa fa-arrow-left fa-3x"></i></span>
+                            <span style="margin: 0 15px"></span>
+                            <span class="navigation-tool next"><i class="fa fa-arrow-right fa-3x"></i></span>
+                        </div>
                     </div>
                 </div>
-
-                <div class="col-sm-6">
-                    <div class="card card-block">
-                        <!--<div id="pieChart"></div>-->
-                    </div>
+                <div class="col-sm-3 col-md-2">
+                    <div id="treeview"/>
                 </div>
             </div>
         </div>
 
+
+
+
         <div th:include="fragments/footer :: footer"></div>
+
         <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
         <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script>
-        <script src="/js/d3pie.min.js"></script>
+        <script src="js/lib/jquery.js"></script>
+        <script src="js/bootstrap-treeview.js"></script>
+        <script type="text/javascript">
+            function buildDomTree() {
 
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+                var data = [];
 
-            ga('create', 'UA-90308842-1', 'auto');
-            ga('send', 'pageview');
-
-            var pie = new d3pie("pieChart", {
-                "header": {
-                    "title": {
-                        "fontSize": 24,
-                        "font": "open sans"
-                    },
-                    "subtitle": {
-                        "color": "#999999",
-                        "fontSize": 12,
-                        "font": "open sans"
-                    },
-                    "location": "pie-center",
-                    "titleSubtitlePadding": 9
-                },
-                "footer": {
-                    "color": "#999999",
-                    "fontSize": 10,
-                    "font": "open sans",
-                    "location": "bottom-center"
-                },
-                "size": {
-                    "canvasHeight": 300,
-                    "canvasWidth": 300,
-                    "pieOuterRadius": "90%"
-                },
-                "data": {
-                    "sortOrder": "value-desc",
-                    "content": [
-                        {
-                            "label": "Metabolite Analysis",
-                            "value": 200,
-                            "color": "#2383c1"
-                        },
-                        {
-                            "label": "Pattern Recognition ",
-                            "value": 100,
-                            "color": "#64a61f"
+                function walk(nodes, data) {
+                    if (!nodes) { return; }
+                    $.each(nodes, function (id, node) {
+                        var obj = {
+                            id: id,
+                            // text: "file"+id,
+                            text: "File" + " - " + id+1,
+                            tags: [node.childElementCount > 0 ? node.childElementCount + ' child elements' : '']
+                        };
+                        if (node.childElementCount > 0) {
+                            obj.nodes = [];
+                            walk(node.children, obj.nodes);
                         }
-                    ]
-                },
-                "labels": {
-                    "outer": {
-                        "format": "none",
-                        "pieDistance": 32
-                    },
-                    "inner": {
-                        "format": "label",
-                        "hideWhenLessThanPercentage": 3
-                    },
-                    "mainLabel": {
-                        "color": "#faf8f8",
-                        "font": "open sans",
-                        "fontSize": 11
-                    },
-                    "percentage": {
-                        "color": "#ffffff",
-                        "decimalPlaces": 0
-                    },
-                    "value": {
-                        "color": "#adadad",
-                        "fontSize": 11
-                    },
-                    "lines": {
-                        "enabled": true
-                    },
-                    "truncation": {
-                        "enabled": true
-                    }
-                },
-                "effects": {
-                    "pullOutSegmentOnClick": {
-                        "effect": "linear",
-                        "speed": 400,
-                        "size": 8
-                    }
-                },
-                "misc": {
-                    "gradient": {
-                        "enabled": true,
-                        "percentage": 100
-                    },
-                    "canvasPadding": {
-                        "top": 0,
-                        "right": 0,
-                        "bottom": 0,
-                        "left": 0
-                    }
+                        data.push(obj);
+                    });
                 }
-            });
-        </script>
 
+                walk($('label')[0].children, data);
+                return data;
+            }
+
+            $(function() {
+
+                var options = {
+                    bootstrap2: false,
+                    showTags: false,
+                    levels: 5,
+                    data: buildDomTree()
+                };
+
+                $('#treeview').treeview(options);
+            });
+
+            /*<![CDATA[*/
+//            $(function() {
+//
+//                // form events
+//                $('#mve-form').on("submit", function(e) {
+//                    e.preventDefault();
+//
+//                    console.log("process mve");
+//                });
+//
+//                $('#normalization-form').on("submit", function(e) {
+//                    e.preventDefault();
+//
+//                    console.log("process normalization");
+//                });
+//
+//
+//            });
+            /*]]>*/
+        </script>
     </body>
 </html>
