@@ -171,3 +171,16 @@ body {
 .transparent {
     opacity: 0;
 }
+
+
+/*for analysis*/
+.plot-container {
+    width: 615px;
+}
+
+.plot {
+    min-height: 430px;
+    position: relative;
+    background-color: #ffffff;  /* better contrast with data points, as well as for downloading */
+    overflow:hidden;
+}

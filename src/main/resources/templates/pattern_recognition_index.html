@@ -1,21 +1,56 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Temporal Pattern Recognition | Metaprot</title>
 
-    <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.simplex.min.css" />
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
-    <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="/css/site.css" />
+<head>
+    <meta charset="UTF-8" />
+    <title>Temporal Pattern Recognition</title>
+
+    <link href="/css/lib/bootstrap.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/bootstrap-treeview.css" />
+    <link rel="stylesheet" type="text/css" href="/css/temp.css" />
+
 </head>
 <body>
-    <!-- header -->
-    <div th:include="fragments/header :: header"></div>
-    <div class="container">
+
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Metaprot</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-offset-3 col-sm-6">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li><a href="/upload">Upload Data</a></li>
+                    <li><a href="" class="preprocess">Preprocessing</a></li>
+                    <li class="active"><a href="#">Analysis<span class="sr-only">(current)</span></a></li>
+                    <li><a href="">Annotation</a></li>
+                    <li><a href="">Integration</a></li>
+                    <li><a href="">Summary</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">
                 <h2>Temporal Pattern Recognition Analysis</h2>
                 <h3>Select a .csv file to analyze:</h3>
                 <div class="well well-lg">
@@ -52,17 +87,21 @@
                     <div id="progressText" class="text-center"></div><br/>
                 </div>
             </div>
+
+            <div class="col-sm-3 col-md-2">
+                <div id="treeview"/>
+            </div>
         </div>
     </div>
 
-
-    <!-- footer -->
     <div th:include="fragments/footer :: footer"></div>
 
     <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
     <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.4.12.min.js"></script>
     <script type="text/javascript" src="/js/aws/S3Uploader.js"></script>
+    <script src="js/lib/jquery.js"></script>
+    <script src="js/bootstrap-treeview.js"></script>
     <script type="text/javascript">
         $(function() {
 
@@ -136,22 +175,22 @@
                         success:function(token) {
                             // after retrieving a token, can upload to s3
                             S3Uploader.upload(options.data, "user-input/" + token + "/" + options.name, moreParams,
-                                    function(data) {
-                                        numFilesUploaded++;
-                                        if (numFilesUploaded == numFiles) {
-                                            // we are done uploading!
-                                            console.log("all files have been uploaded to s3");
-                                            updateProgressBar(100);
-                                            notifyAllFilesUploaded(token, data.Key);
-                                        }
-                                    },
-                                    function(key, bytesUploaded, bytesTotal) {
-                                        // called whenever bytes transferred to s3, with performance delay
-                                        delayCounter++;
-                                        if (delayCounter == 10) {
-                                            updateProgressBar(bytesUploaded/bytesTotal*100);
-                                        }
-                                    });
+                                function(data) {
+                                    numFilesUploaded++;
+                                    if (numFilesUploaded == numFiles) {
+                                        // we are done uploading!
+                                        console.log("all files have been uploaded to s3");
+                                        updateProgressBar(100);
+                                        notifyAllFilesUploaded(token, data.Key);
+                                    }
+                                },
+                                function(key, bytesUploaded, bytesTotal) {
+                                    // called whenever bytes transferred to s3, with performance delay
+                                    delayCounter++;
+                                    if (delayCounter == 10) {
+                                        updateProgressBar(bytesUploaded/bytesTotal*100);
+                                    }
+                                });
                         },
                         error:function() {
                             console.log("Error in retrieving upload token.");
@@ -171,3 +210,4 @@
 
 </body>
 </html>
+

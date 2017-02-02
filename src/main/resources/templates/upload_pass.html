@@ -42,9 +42,9 @@
             <div class="row">
                 <div class="col-sm-3 col-md-2 sidebar">
                     <ul class="nav nav-sidebar">
-                        <li><a onclick="window.location.href='/upload'">Upload Data</a></li>
+                        <li><a href="/upload">Upload Data</a></li>
                         <li class="active"><a href="#">Preprocessing<span class="sr-only">(current)</span></a></li>
-                        <li><a onclick="window.location.href='../analysis'">Analysis</a></li>
+                        <li><a href="../analysis">Analysis</a></li>
                         <li><a href="#">Annotation</a></li>
                         <li><a href="">Integration</a></li>
                         <li><a href="">Summary</a></li>
@@ -68,9 +68,6 @@
                                                 <option value="replace">Replace by a small value (half of the minimum positive value in the original data)</option>
                                                 <option value="exclude">Exclude variables with missing values</option>
                                             </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="submit" value="Process" class="btn btn-default" />
                                         </div>
                                     </form>
                                 </div>
@@ -167,18 +164,17 @@
         </div>
 
 
-
-
         <div th:include="fragments/footer :: footer"></div>
 
         <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
         <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
-        <script src="js/lib/jquery.js"></script>
-        <script src="js/bootstrap-treeview.js"></script>
+        <script src="/js/lib/jquery.js"></script>
+        <script src="/js/bootstrap-treeview.js"></script>
         <script type="text/javascript">
             function buildDomTree() {
 
                 var data = [];
+                var array = localStorage.getItem("root").split(",");
 
                 function walk(nodes, data) {
                     if (!nodes) { return; }
@@ -186,90 +182,87 @@
                         var obj = {
                             id: id,
                             // text: "file"+id,
-                            text: "File" + " - " + id+1,
+                            text: node.nodeName,
                             tags: [node.childElementCount > 0 ? node.childElementCount + ' child elements' : '']
                         };
-                        if (node.childElementCount > 0) {
+                        if (array.length > 0) {
                             obj.nodes = [];
-                            walk(node.children, obj.nodes);
+                            array = array.slice(1)
+                            walk(array, obj.nodes);
                         }
                         data.push(obj);
                     });
                 }
 
-                walk($('html')[0].children, data);
+                walk(array, data);
                 return data;
             }
 
-            $(function() {
-
-                var options = {
-                    bootstrap2: false,
-                    showTags: false,
-                    levels: 5,
-                    data: buildDomTree()
-                };
-
-                $('#treeview').treeview(options);
-            });
+//            function prevFile() {
+//
+//                var data = [];
+//                var array = localStorage.getItem("root").split(",");
+//
+//                function walk(nodes, data) {
+//                    if (!nodes) { return; }
+//                    $.each(nodes, function (id, node) {
+//                        var obj = {
+//                            id: id,
+//                            // text: "file"+id,
+//                            text: node.nodeName,
+//                            tags: [node.childElementCount > 0 ? node.childElementCount + ' child elements' : '']
+//                        };
+//                        if (array.length > 0) {
+//                            obj.nodes = [];
+//                            array = array.slice(1)
+//                            walk(array, obj.nodes);
+//                        }
+//                        data.push(obj);
+//                    });
+//                }
+//
+//                walk(array, data);
+//                return data;
+//            }
+//
+//            $(function() {
+//                //file tree
+//                var options = {
+//                    bootstrap2: false,
+//                    showTags: false,
+//                    levels: 5,
+//                    data: prevFile()//[0,"you"]localStorage.getItem("root")
+//                };
+//
+//                $('#treeview').treeview(options);
+//            });
 
             /*<![CDATA[*/
             $(function() {
-                // events for navigation via the prev/next arrows
-                var activeSection = 1;  // 1 = mve, 2 = norm, 3 = analye
-                var $next = $('.navigation-tool.next'), $prev = $('.navigation-tool.prev');
-                $('.navigation-tool').on("click", function() {
-                    if ($(this).hasClass("next")) {
-                        if (activeSection < 3) {        // 3 is the last section possible
-
-                            $('div[data-section-index=' + activeSection + ']').hide();
-                            activeSection += 1;
-                            $('div[data-section-index=' + activeSection + ']').fadeIn(600);
-
-                            if (activeSection >= 3) {
-                                $next.addClass("invisible");
-                                $prev.removeClass("invisible");
-                            } else {
-                                $next.removeClass("invisible");
-                                $prev.removeClass("invisible");
-                            }
-                        }
-
-                    } else {
-                        // must have been the prev pointer
-                        if (activeSection > 1) {
-
-                            $('div[data-section-index=' + activeSection + ']').hide();
-                            activeSection -= 1;
-                            $('div[data-section-index=' + activeSection + ']').fadeIn(600);
-
-                            if (activeSection <= 1) {
-                                $next.removeClass("invisible");
-                                $prev.addClass("invisible");
-                            } else {
-                                $next.removeClass("invisible");
-                                $prev.removeClass("invisible");
-                            }
-                        }
-                    }
-                });
-
 
             // form events
-            $('#mve-form').on("submit", function(e) {
-                e.preventDefault();
-                var a = localStorage.getItem("root");
-                console.log(a);
-                var toAdd = a + "PP_" + a;
-                localStorage.setItem("root", toAdd);
-                console.log(localStorage.getItem("root"));
-                console.log("process mve");
-            });
 
                 $('#normalization-form').on("submit", function(e) {
                     e.preventDefault();
-
+                    var a = localStorage.getItem("root");
+                    console.log(a);
+                    var toAdd = a + "PP_" + a;
+                    localStorage.setItem("root", toAdd);
+                    console.log(localStorage.getItem("root"));
+                    console.log("process mve");
                     console.log("process normalization");
+
+                    $(function() {
+                        //file tree
+                        var options = {
+                            bootstrap2: false,
+                            showTags: false,
+                            levels: 5,
+                            data: buildDomTree()//[0,"you"]localStorage.getItem("root")
+                        };
+
+                        $('#treeview').treeview(options);
+                    });
                 });
 
 
