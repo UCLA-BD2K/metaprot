@@ -174,7 +174,36 @@
             function buildDomTree() {
 
                 var data = [];
-                var array = localStorage.getItem("root").split(",");
+                var str = localStorage.getItem("root");
+                var str_len = str.length;
+                var array = str.substring(0,str_len-1).split(",");
+
+                function walk(nodes, data) {
+                    if (!nodes) { return; }
+//                    $.each(nodes, function (id, node) {
+                    var obj = {
+                        id: 0,
+                        // text: "file"+id,
+                        text: nodes[0],
+                        tags:0
+                    };
+                    if (array.length > 1) {
+                        obj.nodes = [];
+                        array = array.slice(1)
+                        walk(array, obj.nodes);
+                    }
+                    data.push(obj);
+//                    });
+                }
+
+                walk(array, data);
+                return data;
+            }
+
+            function prevFile() {
+
+                var data = [];
+                var array = ["sample.csv"];
 
                 function walk(nodes, data) {
                     if (!nodes) { return; }
@@ -182,14 +211,9 @@
                         var obj = {
                             id: id,
                             // text: "file"+id,
-                            text: node.nodeName,
+                            text: node,
                             tags: [node.childElementCount > 0 ? node.childElementCount + ' child elements' : '']
                         };
-                        if (array.length > 0) {
-                            obj.nodes = [];
-                            array = array.slice(1)
-                            walk(array, obj.nodes);
-                        }
                         data.push(obj);
                     });
                 }
@@ -198,44 +222,17 @@
                 return data;
             }
 
-//            function prevFile() {
-//
-//                var data = [];
-//                var array = localStorage.getItem("root").split(",");
-//
-//                function walk(nodes, data) {
-//                    if (!nodes) { return; }
-//                    $.each(nodes, function (id, node) {
-//                        var obj = {
-//                            id: id,
-//                            // text: "file"+id,
-//                            text: node.nodeName,
-//                            tags: [node.childElementCount > 0 ? node.childElementCount + ' child elements' : '']
-//                        };
-//                        if (array.length > 0) {
-//                            obj.nodes = [];
-//                            array = array.slice(1)
-//                            walk(array, obj.nodes);
-//                        }
-//                        data.push(obj);
-//                    });
-//                }
-//
-//                walk(array, data);
-//                return data;
-//            }
-//
-//            $(function() {
-//                //file tree
-//                var options = {
-//                    bootstrap2: false,
-//                    showTags: false,
-//                    levels: 5,
-//                    data: prevFile()//[0,"you"]localStorage.getItem("root")
-//                };
-//
-//                $('#treeview').treeview(options);
-//            });
+            $(function() {
+                //file tree
+                var options = {
+                    bootstrap2: false,
+                    showTags: false,
+                    levels: 5,
+                    data: prevFile()//[0,"you"]localStorage.getItem("root")
+                };
+
+                $('#treeview').treeview(options);
+            });
 
             /*<![CDATA[*/
             $(function() {
