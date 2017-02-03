@@ -184,3 +184,54 @@ body {
     background-color: #ffffff;  /* better contrast with data points, as well as for downloading */
     overflow:hidden;
 }
+
+rect.selection {
+    stroke          : red;
+    stroke-dasharray: 5px;
+    stroke-opacity  : 0.5;
+    fill            : transparent;
+}
+
+.results img {
+    width: 100%;
+}
+
+.result-panel .panel-body {
+    max-height: 150px;
+    overflow: scroll;
+}
+
+.result-panel .table>tbody>tr.active,
+.result-panel .table>tbody>tr:hover,
+#sidePanel .table>tbody>tr.data-row.active,
+#sidePanel .table>tbody>tr.data-row.active:hover,
+#metabolite-table-container .table>tbody>tr.data-row.active,
+#metabolite-table-container .table>tbody>tr.data-row.active:hover{
+    background-color: #fcf8e3;
+    color: red;
+    cursor: pointer;
+}
+
+#sidePanel.pattern-recognition table,
+#metabolite-table-container table{
+    display: block;
+    max-height: 250px;
+    overflow: scroll;
+}
+
+svg:not(:root) {
+    overflow:visible;
+}
+
+.axis-label {
+    background-color: rgba(211, 211, 211, .4);
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
