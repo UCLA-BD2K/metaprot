@@ -47,6 +47,13 @@ body {
 .navbar-header > a:focus {
     color: #D8D8D8;
 }
+.navbar-header > a {
+    color: white;
+}
+.navbar-header > a:hover,
+.navbar-header > a:focus {
+    color: #D8D8D8;
+}
 
 /*
  * Sidebar
@@ -82,12 +89,18 @@ body {
     padding-right: 20px;
     padding-left: 20px;
 }
+.nav-sidebar > li > a:hover,
+.nav-sidebar > li > a:focus{
+    text-decoration: none;
+    color: black;
+}
 .nav-sidebar > .active > a{
     color: #fff;
     background-color: #484E5C;
 }
 .nav-sidebar > .active > a:hover,
 .nav-sidebar > .active > a:focus{
+    text-decoration: none;
     color: black;
 }
 
@@ -147,14 +160,15 @@ body {
     color:#D8D8D8;
 }
 
-.navbar-fixed-side{
-    background-image: none;
-    background-color:#E7E7E7;
-    bottom: 0;
-}
-.navbar-fixed-side a {
-    color:black;
-}
+/*.navbar-fixed-side{*/
+    /*background-image: none;*/
+    /*background-color:#E7E7E7;*/
+    /*bottom: 0;*/
+/*}*/
+/*.navbar-fixed-side a {*/
+    /*text-decoration: none;*/
+    /*color:black;*/
+/*}*/
 
 .btn{
     background-color: #E7E7E7;

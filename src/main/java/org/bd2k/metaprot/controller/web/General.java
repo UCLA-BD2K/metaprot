@@ -54,4 +54,14 @@ public class General {
         return "analysis";
     }
 
+    @RequestMapping("/about")
+    public String getAboutPage() {
+        return "about";
+    }
+
+    @RequestMapping("/contact")
+    public String getContactPage() {
+        return "contact";
+    }
+
 }
