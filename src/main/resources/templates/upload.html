@@ -168,7 +168,8 @@
                     processData: false,
                     contentType: false,
                     success:function(data) {    // really just prints on screen any response from server
-                        $progressText.html('<div class="alert alert-success">' + data + '</div>');
+                        var s = data.toString();
+                        $progressText.html('<div class="alert alert-success">' + s + '</div>');
 //                        $('#preprocess').html(onclick="window.location.href='/upload'");
                         $(function() {
 

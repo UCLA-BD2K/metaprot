@@ -43,6 +43,7 @@ public class IntegrityChecker {
     public FeedBackType checkIntegrity(String inputFile){
         int lineCount = 0;
         int nonNumericInputs = 0;
+        int totalInputs = 0;
         try(BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
             for(String line; (line = br.readLine()) != null; ) {
                 lineCount++;
@@ -65,6 +66,7 @@ public class IntegrityChecker {
                         if(!toks[i].matches("^[0-9]+$")){
                             nonNumericInputs++;
                         }
+                        totalInputs++;
                     }
                 }
             }
@@ -82,7 +84,7 @@ public class IntegrityChecker {
         }
 
         // only way to return success
-        return new FeedBackType(true, "Success!");
+        return new FeedBackType(true, "Success!", totalInputs, nonNumericInputs);
     }
 
     /**
