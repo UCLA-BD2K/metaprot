@@ -400,7 +400,12 @@ public class Analyze {
         FeedBackType feedBackType =  i.checkIntegrity(pathToFile);
 
         if (feedBackType.getResult()) {
-            return "File check passed! Head over to the <a href='/upload-pass/" + token + "'>data pre-processing page</a> to continue.";
+            String outString = "File check passed!\n";
+            outString += "Total number of inputs = " + feedBackType.getTotalInputs() + ",\n";
+            int percent = (feedBackType.getMissingInputs()*100/feedBackType.getTotalInputs());
+            outString += "Total number of missing values = " + feedBackType.getMissingInputs() + "("+ percent + "%)..\n";
+            outString += "Head over to the <a href='/upload-pass/" + token + "'>data pre-processing page</a> to continue.";
+            return outString;
         } else {
             throw new BadRequestException("There was an issue with your input file: " + feedBackType.getErrorMessage() +
                     " - Please resolve this issue(s) and try again.");
