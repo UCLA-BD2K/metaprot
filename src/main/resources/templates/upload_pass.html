@@ -241,10 +241,14 @@
 
                 $('#normalization-form').on("submit", function(e) {
                     e.preventDefault();
-                    var a = localStorage.getItem("root");
+                    var a = JSON.parse(localStorage.getItem("root"));
                     console.log(a);
-                    var toAdd = a + "PP_" + a;
-                    localStorage.setItem("root", toAdd);
+                    var rootName = a["name"];
+                    console.log(rootName);
+                    var toAdd = "PP_" + rootName;
+                    var b = {name: toAdd, children: []}
+                    a["children"].push(b);
+                    localStorage.setItem("root", JSON.stringify(a));
                     console.log(localStorage.getItem("root"));
                     console.log("process mve");
                     console.log("process normalization");

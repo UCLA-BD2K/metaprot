@@ -209,8 +209,9 @@
 
                 var afterEachFileRead = function(options) {
                     console.log("A file is ready to upload.");
-                    var toPush = options.name + ",";
-                    localStorage.setItem("root", toPush);
+                    //var toPush = options.name + ",";
+                    var toPush = {name: options.name, children: []};
+                    localStorage.setItem("root", JSON.stringify(toPush));
                     var delayCounter = 0;
 
                     var moreParams = {
