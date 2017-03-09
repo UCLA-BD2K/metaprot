@@ -27,7 +27,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">MetProt</a>
+                    <img src="/img/icon9.png" height="42" width="70"/>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -51,7 +51,7 @@
                     </ul>
                 </div>
                 <!--<div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">-->
-                <div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">
+                <div class="col-sm-6 col-sm-offset-3 col-md-7 col-md-offset-2 main">
                     <div id="window" style="margin-bottom:15px">
                         <div id="missing-value-estimation" class="processing-section active" data-section-index="1">
                             <h1>Handle missing values</h1>
@@ -157,7 +157,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-3 col-md-2">
+                <div class="col-sm-3 col-md-3">
                     <div id="treeview"/>
                 </div>
             </div>
@@ -174,53 +174,38 @@
             function buildDomTree() {
 
                 var data = [];
-                var str = localStorage.getItem("root");
-                var str_len = str.length;
-                var array = str.substring(0,str_len-1).split(",");
 
                 function walk(nodes, data) {
-                    if (!nodes) { return; }
-//                    $.each(nodes, function (id, node) {
-                    var obj = {
-                        id: 0,
-                        // text: "file"+id,
-                        text: nodes[0],
-                        tags:0
-                    };
-                    if (array.length > 1) {
-                        obj.nodes = [];
-                        array = array.slice(1)
-                        walk(array, obj.nodes);
-                    }
-                    data.push(obj);
-//                    });
-                }
-
-                walk(array, data);
-                return data;
-            }
-
-            function prevFile() {
-
-                var data = [];
-                var array = ["sample.csv"];
-
-                function walk(nodes, data) {
+                    console.log("nodes",nodes);
+//                    console.log("nodes.children",nodes.children);
+//                    console.log("nodes.name",nodes.name);
                     if (!nodes) { return; }
                     $.each(nodes, function (id, node) {
-                        var obj = {
-                            id: id,
-                            // text: "file"+id,
-                            text: node,
-                            tags: [node.childElementCount > 0 ? node.childElementCount + ' child elements' : '']
-                        };
-                        data.push(obj);
+                        console.log("node",node);
+                        if(node.length>0)
+                        {
+                            var obj = {
+                                id: id,
+                                text: node,
+                                tags: [node.childElementCount > 0 ? node.childElementCount + ' child elements' : '']
+                            };
+                            //console.log("node.children",node.children);
+                            if (node.length>0) {
+                                console.log("node;from children",node);
+                                obj.nodes = [];
+                                walk(node, obj.nodes);
+                            }
+                            data.push(obj);
+                        }
                     });
                 }
 
-                walk(array, data);
+                var a = JSON.parse(localStorage.getItem("root"));
+                console.log("a",a);
+                walk(a, data);
                 return data;
             }
+
 
             $(function() {
                 //file tree
@@ -228,7 +213,7 @@
                     bootstrap2: false,
                     showTags: false,
                     levels: 5,
-                    data: prevFile()//[0,"you"]localStorage.getItem("root")
+                    data: buildDomTree()//[0,"you"]localStorage.getItem("root")
                 };
 
                 $('#treeview').treeview(options);
