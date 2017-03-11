@@ -192,7 +192,7 @@
                 var afterEachFileRead = function(options) {
                     console.log("A file is ready to upload.");
                     //var toPush = options.name + ",";
-                    var toPush = {name: options.name, children: []};
+                    var toPush = [{name: options.name, children: []}];
                     localStorage.setItem("root", JSON.stringify(toPush));
                     var delayCounter = 0;
 
@@ -247,32 +247,33 @@
             var data = [];
 
             function walk(nodes, data) {
-                console.log("nodes",nodes);
-                console.log("nodes.children",nodes.children);
-                console.log("nodes.name",nodes.name);
-                if (!nodes) { return; }
-                $.each(nodes, function (id, node) {
-                    console.log("node",node);
-                    if(node.length>0)
+                $.each(nodes, function (id,node) {
+                    //name
+                    if (node["name"])
                     {
+                        console.log(node["name"]);
                         var obj = {
                             id: id,
-                            // text: "file"+id,
-                            text: node,
-                            tags: [node.childElementCount > 0 ? node.childElementCount + ' child elements' : '']
+                            text: node["name"]
                         };
-                        if (node.childElementCount > 0) {
-                            obj.nodes = [];
-                            walk(node.children, obj.nodes);
-                        }
                         data.push(obj);
+                    }
+                    //children
+                    if(node["children"])
+                    {
+                        if(node["children"].length>0)
+                        {
+                            obj.nodes = [];
+                            walk(node["children"], obj.nodes);
+                        }
                     }
                 });
             }
 
-            var a = JSON.parse(localStorage.getItem("root"));
-            console.log("a",a);
-            walk(a, data);
+            var tree = JSON.parse(localStorage.getItem("root"));
+            console.log("tree",tree);
+            walk(tree, data);
+            console.log("data",data)
             return data;
         }
 
