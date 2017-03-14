@@ -57,7 +57,7 @@
                     <li><a href="">Summary</a></li>
                 </ul>
             </div>
-            <div class="col-sm-6 col-sm-offset-3 col-md-7 col-md-offset-2 main">
+            <div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">
 
                 <h2>Upload a file</h2>
                 <div class="well well-lg">
@@ -104,8 +104,11 @@
                 </div>
 
             </div>
-            <div class="col-sm-3 col-md-3">
-                <div id="treeview"/>
+            <div class="col-sm-3 col-md-2" id="sidebar_right">
+                <div id="top_part">
+                    <div id="treeview" />
+                </div>
+                <div id = "bottom_part"/>
             </div>
         </div>
     </div>
@@ -156,9 +159,13 @@
                         $(function() {
 
                             var options = {
-                                bootstrap2: false,
-                                showTags: false,
-                                levels: 5,
+//                                bootstrap2: false,
+//                                levels: 5,
+                                backColor: '#cbd2d6',
+                                onhoverColor: '#cbd2d6',
+                                highlightSelected: false,
+                                showBorder: false,
+                                enableLinks: true,
                                 data: buildDomTree()
                             };
 
@@ -254,7 +261,8 @@
                         console.log(node["name"]);
                         var obj = {
                             id: id,
-                            text: node["name"]
+                            text: node["name"],
+                            href: "./contact"
                         };
                         data.push(obj);
                     }

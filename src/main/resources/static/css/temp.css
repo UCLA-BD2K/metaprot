@@ -250,3 +250,43 @@ svg:not(:root) {
     shape-rendering: crispEdges;
 }
 
+/*right sidebar*/
+/*#sidebar_right*/
+/*{*/
+    /*!*height: 500px;*!*/
+    /*!*background-color: white;*!*/
+    /*!*color: blue;*!*/
+    /*float: right;*/
+    /*width: 200px;*/
+    /*height:100%;*/
+    /*background-color: white;*/
+/*}*/
+#sidebar_right {
+    display: none;
+}
+@media (min-width: 768px) {
+    #sidebar_right {
+        position: fixed;
+        top: 51px;
+        bottom: 120px;
+        right: 0;
+        z-index: 1000;
+        display: block;
+        /*padding: 20px;*/
+        overflow-x: hidden;
+        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+        background-color: #cbd2d6;/*#CFD8DC;*/
+        border-left: 1px solid #eee;
+    }
+}
+
+/*#top_part {*/
+    /*top: 51px;*/
+    /*height:75%;*/
+/*}*/
+
+/*#bottom_part {*/
+    /*height:120px;*/
+    /*bottom: 0px;*/
+    /*background-color: white;!*#CFD8DC;*!*/
+/*}*/

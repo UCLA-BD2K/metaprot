@@ -157,8 +157,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-3 col-md-3">
-                    <div id="treeview"/>
+                <div class="col-sm-3 col-md-2" id="sidebar_right">
+                    <div id="treeview" />
                 </div>
             </div>
         </div>
@@ -183,7 +183,8 @@
                             console.log(node["name"]);
                             var obj = {
                                 id: id,
-                                text: node["name"]
+                                text: node["name"],
+                                href: "./index"
                             };
                             data.push(obj);
                         }
@@ -210,10 +211,12 @@
             $(function() {
                 //file tree
                 var options = {
-                    bootstrap2: false,
-                    showTags: false,
-                    levels: 5,
-                    data: buildDomTree()//[0,"you"]localStorage.getItem("root")
+                    backColor: '#cbd2d6',
+                    onhoverColor: '#cbd2d6',
+                    highlightSelected: false,
+                    showBorder: false,
+                    enableLinks: true,
+                    data: buildDomTree()
                 };
 
                 $('#treeview').treeview(options);
@@ -242,10 +245,12 @@
                     $(function() {
                         //file tree
                         var options = {
-                            bootstrap2: false,
-                            showTags: false,
-                            levels: 5,
-                            data: buildDomTree()//[0,"you"]localStorage.getItem("root")
+                            backColor: '#cbd2d6',
+                            onhoverColor: '#cbd2d6',
+                            highlightSelected: false,
+                            showBorder: false,
+                            enableLinks: true,
+                            data: buildDomTree()
                         };
 
                         $('#treeview').treeview(options);
