@@ -229,6 +229,8 @@
 
                 $('#normalization-form').on("submit", function(e) {
                     e.preventDefault();
+                    var $progressText = $('#progressText');
+
                     var a = JSON.parse(localStorage.getItem("root"));
                     console.log("a",a);
                     var rootName = a[0]["name"];
@@ -241,6 +243,85 @@
                     console.log(localStorage.getItem("root"));
                     console.log("process mve");
                     console.log("process normalization");
+
+                    //Pass selection data to backend to store
+                    var formData = new FormData();
+
+                    if(document.getElementById("remove-threshold-checkbox").checked){
+                        formData.append("removeThresholdCheckbox", "True");
+                    }
+                    else{
+                        formData.append("removeThresholdCheckbox", "False");
+                    }
+
+                    formData.append("threshPercent", document.getElementById("remove-threshold").value);
+                    var e = document.getElementById("estimate-mv");
+                    var estimationPreference = e.options[e.selectedIndex].value;
+                    //console.log(estimationPreference);
+                    formData.append("estPreference", estimationPreference);
+                    if(document.getElementById("none").checked){
+                        //console.log("Norm-none");
+                        formData.append("Norm", "none");
+                    }
+                    else if(document.getElementById("sum").checked){
+                        //console.log("Norm-sum")
+                        formData.append("Norm", "sum");
+                    }
+                    else if(document.getElementById("median").checked){
+                        //console.log("Norm-median")
+                        formData.append("Norm", "median");
+                    }
+                    else if(document.getElementById("spec-ref-sample").checked){
+                        //console.log("Norm-spec-ref-sample")
+                        formData.append("Norm", "spec-ref-sample");
+                    }
+                    else if(document.getElementById("ref-feature").checked){
+                        //console.log("Norm-ref-feature")
+                        formData.append("Norm", "ref-feature");
+                    }
+
+                    if(document.getElementById("none-trans").checked){
+                        formData.append("Trans", "none");
+                    }
+                    else if(document.getElementById("log-trans").checked){
+                        formData.append("Trans", "log");
+                    }
+                    else if(document.getElementById("cube-root-trans").checked){
+                        formData.append("Trans", "cube-root");
+                    }
+
+                    if(document.getElementById("none-scaling").checked){
+                        formData.append("Scaling", "none");
+                    }
+                    else if(document.getElementById("mean-centered").checked){
+                        formData.append("Scaling", "mean-centered");
+                    }
+                    else if(document.getElementById("pareto").checked){
+                        formData.append("Scaling", "pareto");
+                    }
+
+                    // notify server of file upload and updates UI to reflect status
+                    $.ajax({
+                        url: '/analyze/updateProcessingStats',
+                        method: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success:function(data) {    // really just prints on screen any response from server
+                            var s = data.toString();
+                            $progressText.html('<div class="alert alert-success">' + s + '</div>');
+                            $(function() {
+
+                            });
+                        },
+                        error:function(jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR);
+                            console.log(textStatus);
+                            console.log(errorThrown);
+                            $progressText.html('<div class="alert alert-danger">' + jqXHR.responseJSON.message + '</div>');
+                        }
+                    });
+
 
                     $(function() {
                         //file tree

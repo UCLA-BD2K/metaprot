@@ -416,4 +416,21 @@ public class Analyze {
     public String getToken() {
         return UUID.randomUUID().toString();
     }
+
+    @RequestMapping(value= "/updateProcessingStats", method = RequestMethod.POST)
+    public String updateStatsTable(@RequestParam("removeThresholdCheckbox") String removeThresholdCheckbox,
+                                   @RequestParam("threshPercent") String thresholdPercent,
+                                   @RequestParam("estPreference") String estimationPreference,
+                                   @RequestParam("Norm") String normalizationType,
+                                   @RequestParam("Trans") String transformationType,
+                                   @RequestParam("Scaling") String scalingType){
+        System.out.println(removeThresholdCheckbox);
+        System.out.println(thresholdPercent);
+        System.out.println(estimationPreference);
+        System.out.println(normalizationType);
+        System.out.println(transformationType);
+        System.out.println(scalingType);
+
+        return "";
+    }
 }
