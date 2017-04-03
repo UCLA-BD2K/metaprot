@@ -268,25 +268,33 @@ svg:not(:root) {
     #sidebar_right {
         position: fixed;
         top: 51px;
-        bottom: 120px;
+        bottom: 0px;
         right: 0;
-        z-index: 1000;
+        /*z-index: 1000;*/
         display: block;
         /*padding: 20px;*/
-        overflow-x: hidden;
+        overflow-x: auto;
         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
         background-color: #cbd2d6;/*#CFD8DC;*/
         border-left: 1px solid #eee;
     }
 }
 
-/*#top_part {*/
-    /*top: 51px;*/
-    /*height:75%;*/
-/*}*/
+#top_part {
+    top: 51px;
+    bottom: 120px;
+    height:80%;
+    /*height:500px;*/
+}
 
-/*#bottom_part {*/
-    /*height:120px;*/
-    /*bottom: 0px;*/
-    /*background-color: white;!*#CFD8DC;*!*/
-/*}*/
+#bottom_part {
+    height:120px;
+    background-color: white;/*#CFD8DC;*/
+    /*margin-left: -15px;*/
+    /*margin-right: -15px;*/
+    /*position: fixed;*/
+    width: 100%;
+    left:0px;
+    right:0px;
+    bottom: 0px;
+}

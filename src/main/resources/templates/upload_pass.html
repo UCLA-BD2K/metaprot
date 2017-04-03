@@ -52,6 +52,16 @@
                 </div>
                 <!--<div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">-->
                 <div class="col-sm-6 col-sm-offset-3 col-md-7 col-md-offset-2 main">
+                    <form>
+                        <div class="form-group">
+                            <label for="sel1">Select file:</label>
+                            <select class="form-control" id="sel1">
+                                <option>General Feedback</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
+
                     <div id="window" style="margin-bottom:15px">
                         <div id="missing-value-estimation" class="processing-section active" data-section-index="1">
                             <h1>Handle missing values</h1>
@@ -158,7 +168,10 @@
                     </div>
                 </div>
                 <div class="col-sm-3 col-md-2" id="sidebar_right">
-                    <div id="treeview" />
+                    <div id="top_part">
+                        <div id="treeview" />
+                    </div>
+                    <div id = "bottom_part"/>
                 </div>
             </div>
         </div>
