@@ -203,7 +203,7 @@
                     });
                 }
 
-                var tree = JSON.parse(localStorage.getItem("root"));
+                var tree = JSON.parse(sessionStorage.getItem("root"));
                 walk(tree, data);
                 return data;
             }
@@ -232,7 +232,7 @@
                     e.preventDefault();
                     var $progressText = $('#progressText');
 
-                    var a = JSON.parse(localStorage.getItem("root"));
+                    var a = JSON.parse(sessionStorage.getItem("root"));
                     console.log("a",a);
                     var rootName = a[0]["name"];
                     console.log("rootName",rootName);
@@ -240,8 +240,8 @@
                     var b = {name: toAdd, children: []};
                     //var toPush = [{name: options.name, children: []}];
                     a[0]["children"].push(b);
-                    localStorage.setItem("root", JSON.stringify(a));
-                    console.log(localStorage.getItem("root"));
+                    sessionStorage.setItem("root", JSON.stringify(a));
+                    console.log(sessionStorage.getItem("root"));
                     console.log("process mve");
                     console.log("process normalization");
 
@@ -344,7 +344,7 @@
 
             $(document).ready(function()
             {
-                var tree = JSON.parse(localStorage.getItem("root"));
+                var tree = JSON.parse(sessionStorage.getItem("root"));
                 console.log("tree",tree);
                 $.each(tree,function(key,value)
                 {

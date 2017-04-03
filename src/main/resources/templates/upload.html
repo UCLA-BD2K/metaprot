@@ -201,13 +201,13 @@
                     //var toPush = options.name + ",";
                     var toPush = [{name: options.name, children: []}];
                     var b = {name: options.name, children: []};
-                    if (localStorage.getItem("root") === null) {
-                        localStorage.setItem("root", JSON.stringify(toPush));
+                    if (sessionStorage.getItem("root") === null) {
+                        sessionStorage.setItem("root", JSON.stringify(toPush));
                     }
                     else{
-                        var curr = JSON.parse(localStorage.getItem("root"));
+                        var curr = JSON.parse(sessionStorage.getItem("root"));
                         curr.push(b);
-                        localStorage.setItem("root", JSON.stringify(curr));
+                        sessionStorage.setItem("root", JSON.stringify(curr));
                         console.log(JSON.stringify(curr));
                     }
                     var delayCounter = 0;
@@ -287,7 +287,7 @@
                 });
             }
 
-            var tree = JSON.parse(localStorage.getItem("root"));
+            var tree = JSON.parse(sessionStorage.getItem("root"));
             console.log("tree",tree);
             walk(tree, data);
             console.log("data",data)
