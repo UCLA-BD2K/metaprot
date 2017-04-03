@@ -49,6 +49,20 @@ public class General {
         return "upload_pass";
     }
 
+    /**
+     * Invoked when an upload + integrity check was successful, and a
+     * corresponding view page needs to be returned for the next steps.
+     * @return
+     */
+    @RequestMapping("/upload-pass")
+    public String getUploadPassPage() {
+        //System.out.println(token);
+
+        //model.addAttribute("token", token);     // pass token to view as model variable
+
+        return "upload_pass";
+    }
+
     @RequestMapping("/analysis")
     public String getAnalysisPage() {
         return "analysis";
