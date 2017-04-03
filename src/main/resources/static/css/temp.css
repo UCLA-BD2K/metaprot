@@ -251,16 +251,7 @@ svg:not(:root) {
 }
 
 /*right sidebar*/
-/*#sidebar_right*/
-/*{*/
-    /*!*height: 500px;*!*/
-    /*!*background-color: white;*!*/
-    /*!*color: blue;*!*/
-    /*float: right;*/
-    /*width: 200px;*/
-    /*height:100%;*/
-    /*background-color: white;*/
-/*}*/
+
 #sidebar_right {
     display: none;
 }
@@ -297,4 +288,14 @@ svg:not(:root) {
     left:0px;
     right:0px;
     bottom: 0px;
+}
+
+.block-deco {
+    background-color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-bottom: 20px;
 }

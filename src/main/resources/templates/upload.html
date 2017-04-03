@@ -294,6 +294,21 @@
             return data;
         }
 
+
+        $(function() {
+            //file tree
+            var options = {
+                backColor: '#cbd2d6',
+                onhoverColor: '#cbd2d6',
+                highlightSelected: false,
+                showBorder: false,
+                enableLinks: true,
+                data: buildDomTree()
+            };
+
+            $('#treeview').treeview(options);
+        });
+
     </script>
 
 </body>

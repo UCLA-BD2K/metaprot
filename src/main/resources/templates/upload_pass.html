@@ -42,7 +42,7 @@
             <div class="row">
                 <div class="col-sm-3 col-md-2 sidebar">
                     <ul class="nav nav-sidebar">
-                        <li><a href="/upload">Upload Data</a></li>
+                        <li><a href="../upload">Upload Data</a></li>
                         <li class="active"><a href="#">Preprocessing<span class="sr-only">(current)</span></a></li>
                         <li><a href="../analysis">Analysis</a></li>
                         <li><a href="#">Annotation</a></li>
@@ -52,19 +52,21 @@
                 </div>
                 <!--<div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">-->
                 <div class="col-sm-6 col-sm-offset-3 col-md-7 col-md-offset-2 main">
-                    <form>
-                        <div class="form-group">
-                            <label for="sel1">Select file:</label>
-                            <select class="form-control" id="sel1">
-                                <option>General Feedback</option>
+
+                    <div class="block-deco">
+                        <form>
+                            <label>Choose file </label>
+                            <select id= "dropDownDest">
                             </select>
-                        </div>
-                        <button type="submit" class="btn btn-default">Submit</button>
-                    </form>
+                        </form>
+                    </div>
+
+                    <!--<div style="height:20px;"></div>-->
 
                     <div id="window" style="margin-bottom:15px">
-                        <div id="missing-value-estimation" class="processing-section active" data-section-index="1">
-                            <h1>Handle missing values</h1>
+
+                        <div id="missing-value-estimation" class="processing-section active block-deco" data-section-index="1">
+                            <h1>Handle Missing Values</h1>
                             <div class="section">
                                 <div>
                                     <form id="mve-form">
@@ -84,8 +86,10 @@
                             </div>
                         </div>
 
-                        <div id="normalization" class="processing-section" data-section-index="2">
-                            <h2>Normalization</h2>
+                        <div style="height:20px;"></div>
+
+                        <div id="normalization" class="processing-section block-deco" data-section-index="2">
+                            <h1>Normalization</h1>
                             <div class="section">
                                 <div>
                                     <form id="normalization-form">
@@ -136,35 +140,21 @@
                                             <label for="pareto">Pareto scaling</label>
                                         </div>
 
-                                        <input type="submit" value="Process" class="btn btn-default" />
+                                        <!--<input type="submit" value="Process" class="btn btn-default" />-->
                                     </form>
                                 </div>
                             </div>
                         </div>
 
-                        <!--<div id="analyze" class="processing-section" data-section-index="3">-->
-                            <!--<h2><span class="badge">3</span> Analyze</h2>-->
-                            <!--<div class="section">-->
-                                <!--<div class="row">-->
-                                    <!--<div class="col-sm-6 card">-->
-                                        <!--<div class="card-text">-->
-                                            <!--Metabolite-analysis-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                    <!--<div class="col-sm-6 card">-->
-                                        <!--<div class="card-text">-->
-                                            <!--Temporal pattern recognition-->
-                                        <!--</div>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
+                        <div style="height:20px;"></div>
 
-                        <div id="section-navigation" class="text-center">
-                            <span class="navigation-tool prev invisible"><i class="fa fa-arrow-left fa-3x"></i></span>
-                            <span style="margin: 0 15px"></span>
-                            <span class="navigation-tool next"><i class="fa fa-arrow-right fa-3x"></i></span>
-                        </div>
+                        <input type="submit" value="Process" class="btn btn-default" />
+
+                        <!--<div id="section-navigation" class="text-center">-->
+                            <!--<span class="navigation-tool prev invisible"><i class="fa fa-arrow-left fa-3x"></i></span>-->
+                            <!--<span style="margin: 0 15px"></span>-->
+                            <!--<span class="navigation-tool next"><i class="fa fa-arrow-right fa-3x"></i></span>-->
+                        <!--</div>-->
                     </div>
                 </div>
                 <div class="col-sm-3 col-md-2" id="sidebar_right">
@@ -214,9 +204,7 @@
                 }
 
                 var tree = JSON.parse(localStorage.getItem("root"));
-                console.log("tree",tree);
                 walk(tree, data);
-                console.log("data",data)
                 return data;
             }
 
@@ -352,6 +340,19 @@
                 });
 
 
+            });
+
+            $(document).ready(function()
+            {
+                var tree = JSON.parse(localStorage.getItem("root"));
+                console.log("tree",tree);
+                $.each(tree,function(key,value)
+                {
+                    console.log("key",key);
+                    console.log("value",value);
+                    var option = $('<option />').text(value.name);
+                    $("#dropDownDest").append(option);
+                });
             });
             /*]]>*/
         </script>
