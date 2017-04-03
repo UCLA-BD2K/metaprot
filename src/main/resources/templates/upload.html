@@ -50,7 +50,7 @@
             <div class="col-sm-3 col-md-2 sidebar sidebar-left sidebar-animate sidebar-md-show">
                 <ul class="nav nav-sidebar ">
                     <li class="active"><a href="#">Upload Data<span class="sr-only">(current)</span></a></li>
-                    <li><a href="" class="preprocess">Preprocessing</a></li>
+                    <li><a href="/upload-pass" class="preprocess">Preprocessing</a></li>
                     <li><a href="../analysis">Analysis</a></li>
                     <li><a href="">Annotation</a></li>
                     <li><a href="">Integration</a></li>
@@ -173,9 +173,9 @@
                         });
                     },
                     error:function(jqXHR, textStatus, errorThrown) {
-                        console.log(jqXHR)
-                        console.log(textStatus)
-                        console.log(errorThrown)
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
                         $progressText.html('<div class="alert alert-danger">' + jqXHR.responseJSON.message + '</div>');
 //                        $fileText.html('filex');
                     }
@@ -200,7 +200,16 @@
                     console.log("A file is ready to upload.");
                     //var toPush = options.name + ",";
                     var toPush = [{name: options.name, children: []}];
-                    localStorage.setItem("root", JSON.stringify(toPush));
+                    var b = {name: options.name, children: []};
+                    if (localStorage.getItem("root") === null) {
+                        localStorage.setItem("root", JSON.stringify(toPush));
+                    }
+                    else{
+                        var curr = JSON.parse(localStorage.getItem("root"));
+                        curr.push(b);
+                        localStorage.setItem("root", JSON.stringify(curr));
+                        console.log(JSON.stringify(curr));
+                    }
                     var delayCounter = 0;
 
                     var moreParams = {
@@ -215,23 +224,23 @@
                         success:function(token) {
                             // after retrieving a token, can upload to s3
                             S3Uploader.upload(options.data, "user-input/" + token + "/" + options.name, moreParams,
-                                    function(data) {
-                                        numFilesUploaded++;
-                                        if (numFilesUploaded == numFiles) {
-                                            // we are done uploading!
-                                            console.log("all files have been uploaded to s3");
-                                            updateProgressBar(100);
-                                            notifyAllFilesUploaded(token, data.Key);
-                                        }
-                                    },
-                                    function(key, bytesUploaded, bytesTotal) {
-                                        // called whenever bytes transferred to s3, with performance delay
-                                        delayCounter++;
-                                        if (delayCounter == 10) {
-                                            updateProgressBar(bytesUploaded/bytesTotal*100);
-                                        }
-                                    });
-                        },
+                                function(data) {
+                                    numFilesUploaded++;
+                                    if (numFilesUploaded == numFiles) {
+                                        // we are done uploading!
+                                        console.log("all files have been uploaded to s3");
+                                        updateProgressBar(100);
+                                        notifyAllFilesUploaded(token, data.Key);
+                                    }
+                                },
+                                function(key, bytesUploaded, bytesTotal) {
+                                    // called whenever bytes transferred to s3, with performance delay
+                                    delayCounter++;
+                                    if (delayCounter == 10) {
+                                        updateProgressBar(bytesUploaded/bytesTotal*100);
+                                    }
+                                });
+                    },
                         error:function() {
                             console.log("Error in retrieving upload token.");
                         }

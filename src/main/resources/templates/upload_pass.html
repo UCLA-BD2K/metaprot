@@ -249,7 +249,7 @@
                     var rootName = a[0]["name"];
                     console.log("rootName",rootName);
                     var toAdd = "PP_" + rootName;
-                    var b = {name: toAdd, children: []}
+                    var b = {name: toAdd, children: []};
                     //var toPush = [{name: options.name, children: []}];
                     a[0]["children"].push(b);
                     localStorage.setItem("root", JSON.stringify(a));
