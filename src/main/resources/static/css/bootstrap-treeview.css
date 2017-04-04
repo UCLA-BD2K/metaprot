@@ -26,10 +26,10 @@
 	margin-right: 0px;
 }
 
-.treeview span.icon {
-	width: 12px;
-	height: 5px;
-}
+/*.treeview span.icon {*/
+	/*width: 12px;*/
+	/*height: 5px;*/
+/*}*/
 
 .treeview .node-disabled {
 	color: silver;
