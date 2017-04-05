@@ -9,38 +9,40 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/bootstrap-treeview.css" />
     <link rel="stylesheet" type="text/css" href="/css/temp.css" />
-    <!-- Required Stylesheets -->
-    <!--<link href="/css/lib/bootstrap.css" rel="stylesheet"/>-->
-
-    <!-- Required Javascript -->
+    <link rel="stylesheet" href="/css/sidebar.css" />
 
 </head>
 <body>
 
 
-        <nav class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <img src="/img/icon9.png" height="42" width="70"/>
-                </div>
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
+    <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle toggle-left hidden-md hidden-lg" data-toggle="sidebar" data-target=".sidebar-left">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <img src="/img/icon11.png" height="40" width="100" align="middle" style="margin-top:5px;"/>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="./about">About</a></li>
+                    <li><a href="./contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-3 col-md-2 sidebar">
+                <div class="col-sm-3 col-md-2 sidebar sidebar-left sidebar-animate sidebar-md-show">
                     <ul class="nav nav-sidebar">
                         <li><a href="../upload">Upload Data</a></li>
                         <li class="active"><a href="#">Preprocessing<span class="sr-only">(current)</span></a></li>
@@ -55,13 +57,13 @@
 
                     <div class="block-deco">
                         <form>
-                            <label>Choose file </label>
-                            <select id= "dropDownDest">
-                            </select>
+                            <div class="form-group">
+                                <label>Choose file </label>
+                                <select id= "dropDownDest">
+                                </select>
+                            </div>
                         </form>
                     </div>
-
-                    <!--<div style="height:20px;"></div>-->
 
                     <div id="window" style="margin-bottom:15px">
 
@@ -156,8 +158,13 @@
                             <!--<span class="navigation-tool next"><i class="fa fa-arrow-right fa-3x"></i></span>-->
                         <!--</div>-->
                     </div>
+
+                    <div class="footer">
+                        <img src="img/nih_icon_2.svg" width="50"/>
+                        &copy; 2017  BD2K MetProt is supported by the NIH Big Data to Knowledge award U54 GM114833.
+                    </div>
                 </div>
-                <div class="col-sm-3 col-md-2" id="sidebar_right">
+                <div class="col-sm-3 col-md-3" id="sidebar_right">
                     <div id="top_part">
                         <div id="treeview" />
                     </div>
@@ -167,14 +174,20 @@
         </div>
 
 
-        <div th:include="fragments/footer :: footer"></div>
+    <!--<div th:include="fragments/footer :: footer"></div>-->
 
-        <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
-        <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
-        <script src="/js/lib/jquery.js"></script>
-        <script src="/js/bootstrap-treeview.js"></script>
-        <script type="text/javascript">
-            function buildDomTree() {
+    <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+    <script src="js/lib/jquery.js"></script>
+    <script src="js/bootstrap-treeview.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script type="text/javascript">
+        function callJavascriptFunction(){
+            console.log("hello");
+            return;
+        }
+
+        function buildDomTree() {
 
                 var data = [];
 
@@ -186,9 +199,9 @@
                             console.log(node["name"]);
                             var obj = {
                                 id: id,
-                                text: node["name"],
-                                href: "./index"
+                                text: node["name"]
                             };
+                            obj.onclick=callJavascriptFunction();
                             data.push(obj);
                         }
                         //children
@@ -209,13 +222,13 @@
             }
 
 
-            $(function() {
+        $(function() {
                 //file tree
                 var options = {
                     backColor: '#cbd2d6',
                     onhoverColor: '#cbd2d6',
-                    highlightSelected: false,
                     showBorder: false,
+                    highlightSelected: false,
                     enableLinks: true,
                     data: buildDomTree()
                 };
@@ -224,7 +237,7 @@
             });
 
             /*<![CDATA[*/
-            $(function() {
+        $(function() {
 
             // form events
 
@@ -342,19 +355,20 @@
 
             });
 
-            $(document).ready(function()
-            {
+        $(document).ready(function()
+        {
                 var tree = JSON.parse(sessionStorage.getItem("root"));
                 console.log("tree",tree);
                 $.each(tree,function(key,value)
                 {
                     console.log("key",key);
                     console.log("value",value);
+                    console.log("value",value);
                     var option = $('<option />').text(value.name);
                     $("#dropDownDest").append(option);
                 });
             });
-            /*]]>*/
-        </script>
-    </body>
+        /*]]>*/
+    </script>
+</body>
 </html>

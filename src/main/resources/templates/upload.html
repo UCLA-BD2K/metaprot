@@ -51,13 +51,13 @@
                 <ul class="nav nav-sidebar ">
                     <li class="active"><a href="#">Upload Data<span class="sr-only">(current)</span></a></li>
                     <li><a href="/upload-pass" class="preprocess">Preprocessing</a></li>
-                    <li><a href="../analysis">Analysis</a></li>
+                    <li><a href="/analysis">Analysis</a></li>
                     <li><a href="">Annotation</a></li>
                     <li><a href="">Integration</a></li>
                     <li><a href="">Summary</a></li>
                 </ul>
             </div>
-            <div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">
+            <div class="col-sm-6 col-sm-offset-3 col-md-7 col-md-offset-2 main">
 
                 <h2>Upload a file</h2>
                 <div class="well well-lg">
@@ -102,9 +102,14 @@
                     </div>
                     <div id="progressText" class="text-center"></div><br />
                 </div>
+                <div class="footer">
+                    <img src="img/nih_icon_2.svg" width="50"/>
+                    &copy; 2017  BD2K MetProt is supported by the NIH Big Data to Knowledge award U54 GM114833.
+                </div>
+                <!--<div class="footer">© 2017 BD2K MetProt is supported by the NIH Big Data to Knowledge award U54 GM114833.</div>-->
 
             </div>
-            <div class="col-sm-3 col-md-2" id="sidebar_right">
+            <div class="col-sm-3 col-md-3" id="sidebar_right">
                 <div id="top_part">
                     <div id="treeview" />
                 </div>
@@ -113,7 +118,7 @@
         </div>
     </div>
 
-    <div th:include="fragments/footer :: footer"></div>
+    <!--<div th:include="fragments/footer :: footer"></div>-->
 
     <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
     <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
@@ -258,6 +263,12 @@
             });
         });
 
+        function callJavascriptFunction(){
+            console.log("hello");
+            return;
+        }
+
+
         function buildDomTree() {
 
             var data = [];
@@ -271,8 +282,9 @@
                         var obj = {
                             id: id,
                             text: node["name"],
-                            href: "./contact"
+//                            href: "./contact"
                         };
+                        obj.onclick=callJavascriptFunction();
                         data.push(obj);
                     }
                     //children
