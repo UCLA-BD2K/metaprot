@@ -44,7 +44,16 @@ public class siteTrafficData {
 
     public void updateTrafficData(String ip, String country){
         dateMapper current = dailyCounter.getFirst();
-        current.visitCounter += 1;
+        if(!currentDayIPAddresses.contains(ip)) {
+            current.visitCounter += 1;
+            currentDayIPAddresses.add(ip);
+        }
+
+        if(!countryCounter.containsKey(country))
+            countryCounter.put(country, 0);
+        int i = countryCounter.get(country);
+        i += 1;
+        countryCounter.put(country,i);
     }
 
     public String getFormattedTrafficData(){
@@ -58,6 +67,19 @@ public class siteTrafficData {
             dateCountMap.add(dateCounterDetails);
         }
         JSONToReturn.put("dateCountMap", dateCountMap);
+
+        JSONArray countryCountMap = new JSONArray();
+        Iterator it = countryCounter.entrySet().iterator();
+        while(it.hasNext()){
+            JSONObject countryDetails = new JSONObject();
+            Map.Entry pair = (Map.Entry)it.next();
+            countryDetails.put("country", pair.getKey());
+            countryDetails.put("count", pair.getValue());
+            countryCountMap.add(countryDetails);
+            it.remove();
+        }
+        JSONToReturn.put("countryCountMap", countryCountMap);
+
         return JSONToReturn.toJSONString();
     }
 

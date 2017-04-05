@@ -275,35 +275,43 @@
 //            });
 
             $(function() {
-                var formData = new FormData();
+                //var formData = new FormData();
                 $.getJSON('//freegeoip.net/json/?callback=?', function (data) {
                     //var parsed = JSON.parse(data);
-                    formData.append("ipAddress", data.ip);
-                    formData.append("country", data.country_name);
-                    console.log(formData);
+                    //console.log(data);
+//                    formData.append("ipAddress", data.ip);
+//                    formData.append("country", data.country_name);
+                    //console.log(formData);
+                    receivedClientStats(data.ip, data.country_name);
                     //console.log(data.ip);
                     //console.log(data.country_name);
                 });
-                formData.append("ipAddress", "ojadbias");
-                formData.append("country", "ashdbasj");
-                console.log(formData);
-                // notify server to update site traffic data and return data for graph
-                $.ajax({
-                    url: '/analyze/siteTrafficChart',
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (data) {
-                        var s = data.toString();
-                        console.log(s);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.log(jqXHR);
-                        console.log(textStatus);
-                        console.log(errorThrown);
-                    }
-                });
+                //formData.append("ipAddress", "ojadbias");
+                //formData.append("country", "sdiashlb");
+                //console.log(formData);
+
+                function receivedClientStats(ip, country_name) {
+                    var formData = new FormData();
+                    formData.append("ipAddress", ip);
+                    formData.append("country", country_name);
+                    // notify server to update site traffic data and return data for graph
+                    $.ajax({
+                        url: '/analyze/siteTrafficChart',
+                        method: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            var s = data.toString();
+                            console.log(s);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR);
+                            console.log(textStatus);
+                            console.log(errorThrown);
+                        }
+                    });
+                }
             });
         </script>
     </body>
