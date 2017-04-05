@@ -102,6 +102,11 @@
                     </div>
                     <div id="progressText" class="text-center"></div><br />
                 </div>
+                <div class="footer">
+                    <img src="img/nih_icon_2.svg" width="50"/>
+                    &copy; 2017  BD2K MetProt is supported by the NIH Big Data to Knowledge award U54 GM114833.
+                </div>
+                <!--<div class="footer">© 2017 BD2K MetProt is supported by the NIH Big Data to Knowledge award U54 GM114833.</div>-->
 
             </div>
             <div class="col-sm-3 col-md-3" id="sidebar_right">
@@ -113,7 +118,7 @@
         </div>
     </div>
 
-    <div th:include="fragments/footer :: footer"></div>
+    <!--<div th:include="fragments/footer :: footer"></div>-->
 
     <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
     <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
@@ -258,6 +263,12 @@
             });
         });
 
+        function callJavascriptFunction(){
+            console.log("hello");
+            return;
+        }
+
+
         function buildDomTree() {
 
             var data = [];
@@ -271,8 +282,9 @@
                         var obj = {
                             id: id,
                             text: node["name"],
-                            href: "./contact"
+//                            href: "./contact"
                         };
+                        obj.onclick=callJavascriptFunction();
                         data.push(obj);
                     }
                     //children

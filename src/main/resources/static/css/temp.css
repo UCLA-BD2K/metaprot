@@ -272,21 +272,21 @@ svg:not(:root) {
 }
 
 #top_part {
-    top: 51px;
-    bottom: 120px;
+    /*top: 51px;*/
+    bottom: 150px;
     height:80%;
     /*height:500px;*/
     position: absolute;
     padding: 0px;
     top:0;
-    bottom: 0;
+    /*bottom: 0;*/
     left: 0;
     right: 0;
 }
 
 #bottom_part {
-    height:120px;
-    background-color: #f5f5f5;/*#CFD8DC;*/
+    height:150px;
+    background-color: #eeeeee;/*#CFD8DC;*/
     position: absolute;
     padding: 0px;
     bottom: 0;
@@ -300,4 +300,10 @@ svg:not(:root) {
     margin-bottom: 20px;
     border-radius: 5px;
     overflow: auto;
+}
+
+.footer{
+    position: absolute;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
