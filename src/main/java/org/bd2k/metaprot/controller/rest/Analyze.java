@@ -5,6 +5,7 @@ import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.data.FeedBackType;
 import org.bd2k.metaprot.data.IntegrityChecker;
+import org.bd2k.metaprot.data.siteTrafficData;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.BadRequestException;
 import org.bd2k.metaprot.exception.ServerException;
@@ -57,6 +58,9 @@ public class Analyze {
 
     // handler to perform R related logic
     private RManager manager = null;
+
+    //Site Traffic Data Manager
+    private siteTrafficData trafficData = new siteTrafficData();
 
     /**
      * Analyzes an uploaded CSV file for metabolite analysis.
@@ -437,8 +441,7 @@ public class Analyze {
     @RequestMapping(value= "/siteTrafficChart", method = RequestMethod.POST)
     public String getSiteTrafficData(@RequestParam("ipAddress") String IP,
                                      @RequestParam("country") String countryName){
-
-
-        return "";
+        trafficData.updateTrafficData(IP, countryName);
+        return trafficData.getFormattedTrafficData();
     }
 }

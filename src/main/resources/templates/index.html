@@ -215,15 +215,7 @@
                 }
             });
         </script>
-        <script>
-            (function(w,d,s,g,js,fs){
-                g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(f){this.q.push(f);}};
-                js=d.createElement(s);fs=d.getElementsByTagName(s)[0];
-                js.src='https://apis.google.com/js/platform.js';
-                fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');};
-            }(window,document,'script'));
-        </script>
-        <script>
+        <script type="text/javascript">
 
 //            gapi.analytics.ready(function() {
 //
@@ -282,14 +274,36 @@
 //                gapi.analytics.auth.signOut();
 //            });
 
-            $.getJSON('//freegeoip.net/json/?callback=?', function(data) {
-                //var parsed = JSON.parse(data);
+            $(function() {
                 var formData = new FormData();
-                formData.append("ip", data.ip);
-                formData.append("country", data.country_name);
-                console.log(data.ip);
-                console.log(data.country_name);
-
+                $.getJSON('//freegeoip.net/json/?callback=?', function (data) {
+                    //var parsed = JSON.parse(data);
+                    formData.append("ipAddress", data.ip);
+                    formData.append("country", data.country_name);
+                    console.log(formData);
+                    //console.log(data.ip);
+                    //console.log(data.country_name);
+                });
+                formData.append("ipAddress", "ojadbias");
+                formData.append("country", "ashdbasj");
+                console.log(formData);
+                // notify server to update site traffic data and return data for graph
+                $.ajax({
+                    url: '/analyze/siteTrafficChart',
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var s = data.toString();
+                        console.log(s);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                });
             });
         </script>
     </body>
