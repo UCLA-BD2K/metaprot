@@ -20,13 +20,15 @@ public class siteTrafficData {
         }
     }
 
-    //private SimpleDateFormat fmt = new SimpleDateFormat("MMMM dd, yyyy", Locale.US);
     private SimpleDateFormat fmt = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
     private HashSet<String> currentDayIPAddresses;
     private int totalSiteVisitors;
     private LinkedList<dateMapper> dailyCounter;
     private HashMap<String, Integer> countryCounter;
 
+    /**
+     * Constructs new instance and initializes data structures
+     */
     public siteTrafficData() {
         currentDayIPAddresses = new HashSet<>();
         totalSiteVisitors = 0;
@@ -40,20 +42,28 @@ public class siteTrafficData {
             //System.out.println(fmt.format(current));
             dailyCounter.addFirst(new dateMapper(fmt.format(current), 0));
         }
+
+
     }
 
+    /**
+     * Update counter if given ip address hasn't visited today.
+     * @param ip - IP address of user querying website
+     * @param country - country of incoming IP
+     */
     public void updateTrafficData(String ip, String country){
         dateMapper current = dailyCounter.getFirst();
         if(!currentDayIPAddresses.contains(ip)) {
             current.visitCounter += 1;
+            totalSiteVisitors++;
             currentDayIPAddresses.add(ip);
-        }
 
-        if(!countryCounter.containsKey(country))
-            countryCounter.put(country, 0);
-        int i = countryCounter.get(country);
-        i += 1;
-        countryCounter.put(country,i);
+            if(!countryCounter.containsKey(country))
+                countryCounter.put(country, 0);
+            int i = countryCounter.get(country);
+            i += 1;
+            countryCounter.put(country,i);
+        }
     }
 
     public String getFormattedTrafficData(){
@@ -80,6 +90,7 @@ public class siteTrafficData {
         }
         JSONToReturn.put("countryCountMap", countryCountMap);
 
+        JSONToReturn.put("totalVisitors", totalSiteVisitors);
         return JSONToReturn.toJSONString();
     }
 

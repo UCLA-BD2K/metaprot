@@ -222,23 +222,12 @@
                 fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');};
             }(window,document,'script'));
         </script>
-        <script>
-
+        <script type="text/javascript">
             $(function() {
                 //var formData = new FormData();
                 $.getJSON('//freegeoip.net/json/?callback=?', function (data) {
-                    //var parsed = JSON.parse(data);
-                    //console.log(data);
-//                    formData.append("ipAddress", data.ip);
-//                    formData.append("country", data.country_name);
-                    //console.log(formData);
                     receivedClientStats(data.ip, data.country_name);
-                    //console.log(data.ip);
-                    //console.log(data.country_name);
                 });
-                //formData.append("ipAddress", "ojadbias");
-                //formData.append("country", "sdiashlb");
-                //console.log(formData);
 
                 function receivedClientStats(ip, country_name) {
                     var formData = new FormData();

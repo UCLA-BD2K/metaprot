@@ -14,16 +14,14 @@ import org.bd2k.metaprot.scheduler.TaskScheduler;
 import org.bd2k.metaprot.util.FileAccess;
 import org.bd2k.metaprot.util.Globals;
 import org.bd2k.metaprot.util.RManager;
+import org.json.simple.JSONObject;
 import org.rosuda.REngine.REXP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * REST controller that exposes endpoints
@@ -61,6 +59,9 @@ public class Analyze {
 
     //Site Traffic Data Manager
     private siteTrafficData trafficData = new siteTrafficData();
+
+    //File Information Data Store
+    private HashMap<String, String> fileInfoMap = new HashMap<>();
 
     /**
      * Analyzes an uploaded CSV file for metabolite analysis.
@@ -421,19 +422,37 @@ public class Analyze {
         return UUID.randomUUID().toString();
     }
 
-    @RequestMapping(value= "/updateProcessingStats", method = RequestMethod.POST)
-    public String updateStatsTable(@RequestParam("removeThresholdCheckbox") String removeThresholdCheckbox,
+    @RequestMapping(value= "/pre-process", method = RequestMethod.POST)
+    public String updateStatsTable(@RequestParam("sourceFile") String sourceFile,
+                                   @RequestParam("destFile") String destFile,
+                                   @RequestParam("removeThresholdCheckbox") String removeThresholdCheckbox,
                                    @RequestParam("threshPercent") String thresholdPercent,
                                    @RequestParam("estPreference") String estimationPreference,
                                    @RequestParam("Norm") String normalizationType,
                                    @RequestParam("Trans") String transformationType,
                                    @RequestParam("Scaling") String scalingType){
-        System.out.println(removeThresholdCheckbox);
-        System.out.println(thresholdPercent);
-        System.out.println(estimationPreference);
-        System.out.println(normalizationType);
-        System.out.println(transformationType);
-        System.out.println(scalingType);
+
+//        System.out.println(sourceFile);
+//        System.out.println(destFile);
+//        System.out.println(removeThresholdCheckbox);
+//        System.out.println(thresholdPercent);
+//        System.out.println(estimationPreference);
+//        System.out.println(normalizationType);
+//        System.out.println(transformationType);
+//        System.out.println(scalingType);
+
+        JSONObject JSONtoStore = new JSONObject();
+
+        JSONtoStore.put("Source File", sourceFile);
+        JSONtoStore.put("Destination File", destFile);
+        JSONtoStore.put("Remove Threshold Checkbox", removeThresholdCheckbox);
+        JSONtoStore.put("Threshold Percentage", thresholdPercent);
+        JSONtoStore.put("Estimation Preference", estimationPreference);
+        JSONtoStore.put("Normalization Type", normalizationType);
+        JSONtoStore.put("Transformation Type", transformationType);
+        JSONtoStore.put("Scaling Type", scalingType);
+
+        fileInfoMap.put(destFile, JSONtoStore.toJSONString());
 
         return "";
     }
@@ -443,5 +462,15 @@ public class Analyze {
                                      @RequestParam("country") String countryName){
         trafficData.updateTrafficData(IP, countryName);
         return trafficData.getFormattedTrafficData();
+    }
+
+    @RequestMapping(value= "/getProcessingStats", method = RequestMethod.POST)
+    public String getSiteTrafficData(@RequestParam("ipAddress") String fileName){
+        if(fileInfoMap.containsKey(fileName))
+            return fileInfoMap.get(fileName);
+
+        JSONObject notFoundJSON = new JSONObject();
+        notFoundJSON.put("Error", "Selected item is an unprocessed source file.");
+        return  notFoundJSON.toJSONString();
     }
 }

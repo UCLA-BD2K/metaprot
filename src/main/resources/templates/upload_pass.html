@@ -142,7 +142,7 @@
                                             <label for="pareto">Pareto scaling</label>
                                         </div>
 
-                                        <!--<input type="submit" value="Process" class="btn btn-default" />-->
+                                        <input type="submit" value="Process" class="btn btn-default" />
                                     </form>
                                 </div>
                             </div>
@@ -150,7 +150,7 @@
 
                         <div style="height:20px;"></div>
 
-                        <input type="submit" value="Process" class="btn btn-default" />
+                        <!--<input type="submit" value="Process" class="btn btn-default" />-->
 
                         <!--<div id="section-navigation" class="text-center">-->
                             <!--<span class="navigation-tool prev invisible"><i class="fa fa-arrow-left fa-3x"></i></span>-->
@@ -240,7 +240,6 @@
         $(function() {
 
             // form events
-
                 $('#normalization-form').on("submit", function(e) {
                     e.preventDefault();
                     var $progressText = $('#progressText');
@@ -260,6 +259,12 @@
 
                     //Pass selection data to backend to store
                     var formData = new FormData();
+
+                    var fileNameDropdown =  document.getElementById("dropDownDest");
+                    console.log(fileNameDropdown.options[fileNameDropdown.selectedIndex].value);
+                    formData.append("sourceFile", fileNameDropdown.options[fileNameDropdown.selectedIndex].value);
+
+                    formData.append("destFile", toAdd);
 
                     if(document.getElementById("remove-threshold-checkbox").checked){
                         formData.append("removeThresholdCheckbox", "True");
@@ -316,7 +321,7 @@
 
                     // notify server of file upload and updates UI to reflect status
                     $.ajax({
-                        url: '/analyze/updateProcessingStats',
+                        url: '/analyze/pre-process',
                         method: "POST",
                         data: formData,
                         processData: false,
