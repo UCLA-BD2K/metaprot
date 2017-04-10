@@ -128,6 +128,98 @@
     <script src="js/bootstrap-treeview.js"></script>
     <script src="js/sidebar.js"></script>
     <script type="text/javascript">
+        /*<![CDATA[*/
+        function buildDomTree() {
+
+            console.log("buildDomTreeFunction");
+
+            var data = [];
+
+            function walk(nodes, data) {
+                $.each(nodes, function (id,node) {2
+                    //name
+                    if (node["name"])
+                    {
+//                        console.log(node["name"]);
+                        var obj = {
+                            id: id,
+                            text: node["name"],
+//                            href: "./contact"
+                        };
+                        data.push(obj);
+                    }
+                    //children
+                    if(node["children"])
+                    {
+                        if(node["children"].length>0)
+                        {
+                            obj.nodes = [];
+                            walk(node["children"], obj.nodes);
+                        }
+                    }
+                });
+            }
+
+            var tree = JSON.parse(sessionStorage.getItem("root"));
+            walk(tree, data);
+            console.log("data",data)
+            return data;
+        }
+
+
+        $(function() {
+            console.log("buildDomTree1");
+
+            //file tree
+            var options = {
+//                backColor: '#cbd2d6',
+//                onhoverColor: '#cbd2d6',
+                highlightSelected: false,
+                showBorder: false,
+//                enableLinks: true,
+                data: buildDomTree()
+            };
+
+            $('#treeview').treeview(options);
+        });
+
+        function modifyText(filename) {
+            console.log("filename",filename);
+        }
+
+        function passFilenames(filename){
+//            $(function() {
+            console.log("buildDomTree2");
+
+            //file tree
+            var options = {
+//                backColor: '#cbd2d6',
+//                onhoverColor: '#cbd2d6',
+                highlightSelected: false,
+                showBorder: false,
+//                enableLinks: true,
+                data: buildDomTree()
+            };
+
+            $('#treeview').treeview(options);
+
+            var el = document.getElementById(filename);
+            console.log("el", el);
+//            el.addEventListener("click", function () {modifyText(filename)});
+            el.addEventListener('click', function () {
+                console.log("alert:filename",filename);
+            } );
+
+//            document.getElementById("treeview").addEventListener("click",function(e) {
+//                // e.target is our targetted element.
+//                // try doing console.log(e.target.nodeName), it will result LI
+//                if(e.target && e.target.nodeName == "LI") {
+//                    console.log(e.target.id + " was clicked");
+//                }
+//            });
+        }
+
+
         $(function() {
 
             var $progressBar = $('.progress-bar');
@@ -161,21 +253,7 @@
                         var s = data.toString();
                         $progressText.html('<div class="alert alert-success">' + s + '</div>');
 //                        $('#preprocess').html(onclick="window.location.href='/upload'");
-                        $(function() {
 
-                            var options = {
-//                                bootstrap2: false,
-//                                levels: 5,
-                                backColor: '#cbd2d6',
-                                onhoverColor: '#cbd2d6',
-                                highlightSelected: false,
-                                showBorder: false,
-                                enableLinks: true,
-                                data: buildDomTree()
-                            };
-
-                            $('#treeview').treeview(options);
-                        });
                     },
                     error:function(jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR);
@@ -235,7 +313,33 @@
                                         // we are done uploading!
                                         console.log("all files have been uploaded to s3");
                                         updateProgressBar(100);
+
                                         notifyAllFilesUploaded(token, data.Key);
+                                        $(function() {
+                                            passFilenames(options.name);
+                                        });
+
+//                                        console.log("buildDomTree2");
+//
+//                                        var option = {
+//                                            //                                backColor: '#cbd2d6',
+//                                            //                                onhoverColor: '#cbd2d6',
+//                                            highlightSelected: false,
+//                                            showBorder: false,
+//                                            //                                enableLinks: true,
+//                                            data: buildDomTree()
+//                                        };
+//
+//                                        $('#treeview').treeview(option);
+//
+//                                        console.log("options", options);
+//                                        console.log("options.name", options.name);
+////                                        console.log("options.data", options.data);
+////                                        console.log("options.data[0]", options.data[0]);
+//                                        var el = document.getElementById(options.name);
+//                                        console.log("el", el);
+//                                        el.addEventListener("click", function () {modifyText(options.name)});
+
                                     }
                                 },
                                 function(key, bytesUploaded, bytesTotal) {
@@ -263,64 +367,8 @@
             });
         });
 
-        function callJavascriptFunction(){
-            console.log("hello");
-            return;
-        }
 
-
-        function buildDomTree() {
-
-            var data = [];
-
-            function walk(nodes, data) {
-                $.each(nodes, function (id,node) {
-                    //name
-                    if (node["name"])
-                    {
-                        console.log(node["name"]);
-                        var obj = {
-                            id: id,
-                            text: node["name"],
-//                            href: "./contact"
-                        };
-                        obj.onclick=callJavascriptFunction();
-                        data.push(obj);
-                    }
-                    //children
-                    if(node["children"])
-                    {
-                        if(node["children"].length>0)
-                        {
-                            obj.nodes = [];
-                            walk(node["children"], obj.nodes);
-                        }
-                    }
-                });
-            }
-
-            var tree = JSON.parse(sessionStorage.getItem("root"));
-            console.log("tree",tree);
-            walk(tree, data);
-            console.log("data",data)
-            return data;
-        }
-
-
-        $(function() {
-            //file tree
-            var options = {
-                backColor: '#cbd2d6',
-                onhoverColor: '#cbd2d6',
-                highlightSelected: false,
-                showBorder: false,
-                enableLinks: true,
-                data: buildDomTree()
-            };
-
-            $('#treeview').treeview(options);
-        });
-
+        /*]]>*/
     </script>
 
 </body>
