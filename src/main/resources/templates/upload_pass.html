@@ -182,11 +182,7 @@
     <script src="js/bootstrap-treeview.js"></script>
     <script src="js/sidebar.js"></script>
     <script type="text/javascript">
-        function callJavascriptFunction(){
-            console.log("hello");
-            return;
-        }
-
+        /*<![CDATA[*/
         function buildDomTree() {
 
                 var data = [];
@@ -201,7 +197,7 @@
                                 id: id,
                                 text: node["name"]
                             };
-                            obj.onclick=callJavascriptFunction();
+//                            obj.onclick=callJavascriptFunction();
                             data.push(obj);
                         }
                         //children
@@ -225,18 +221,57 @@
         $(function() {
                 //file tree
                 var options = {
-                    backColor: '#cbd2d6',
-                    onhoverColor: '#cbd2d6',
+//                    backColor: '#cbd2d6',
+//                    onhoverColor: '#cbd2d6',
                     showBorder: false,
                     highlightSelected: false,
-                    enableLinks: true,
+//                    enableLinks: true,
                     data: buildDomTree()
                 };
 
                 $('#treeview').treeview(options);
             });
 
-            /*<![CDATA[*/
+        function passFilenames(filename){
+            console.log("buildDomTree2");
+
+            //file tree
+            var options = {
+//                backColor: '#cbd2d6',
+//                onhoverColor: '#cbd2d6',
+                highlightSelected: false,
+                showBorder: false,
+//                enableLinks: true,
+                data: buildDomTree()
+            };
+
+            $('#treeview').treeview(options);
+
+            document.getElementById("treeview").addEventListener("click",function(e) {
+                // e.target is our targetted element.
+                // try doing console.log(e.target.nodeName), it will result LI
+                if(e.target && e.target.nodeName == "LI") {
+                    console.log(e.target.id + " was clicked");
+                }
+            });
+
+//            var el = document.getElementById(filename);
+//            console.log("el", el);
+////            el.addEventListener("click", function () {modifyText(filename)});
+//            el.addEventListener('click', function () {
+//                console.log("alert:filename",filename);
+//            } );
+//
+//            var newName = "PP_"+filename
+//            var el1 = document.getElementById(newName);
+//            console.log("el1", el1);
+////            el.addEventListener("click", function () {modifyText(filename)});
+//            el1.addEventListener('click', function () {
+//                console.log("alert:newName",newName);
+//            } );
+
+        }
+
         $(function() {
 
             // form events
@@ -341,20 +376,9 @@
                         }
                     });
 
+                    passFilenames(rootName);
+//                    passFilenames(toAdd);
 
-                    $(function() {
-                        //file tree
-                        var options = {
-                            backColor: '#cbd2d6',
-                            onhoverColor: '#cbd2d6',
-                            highlightSelected: false,
-                            showBorder: false,
-                            enableLinks: true,
-                            data: buildDomTree()
-                        };
-
-                        $('#treeview').treeview(options);
-                    });
                 });
 
 

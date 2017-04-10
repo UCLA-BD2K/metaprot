@@ -183,12 +183,11 @@
             $('#treeview').treeview(options);
         });
 
-        function modifyText(filename) {
-            console.log("filename",filename);
-        }
+//        function modifyText(filename) {
+//            console.log("filename",filename);
+//        }
 
         function passFilenames(filename){
-//            $(function() {
             console.log("buildDomTree2");
 
             //file tree
@@ -203,20 +202,20 @@
 
             $('#treeview').treeview(options);
 
-            var el = document.getElementById(filename);
-            console.log("el", el);
-//            el.addEventListener("click", function () {modifyText(filename)});
-            el.addEventListener('click', function () {
-                console.log("alert:filename",filename);
-            } );
+//            var el = document.getElementById(filename);
+//            console.log("el", el);
+////            el.addEventListener("click", function () {modifyText(filename)});
+//            el.addEventListener('click', function () {
+//                console.log("alert:filename",filename);
+//            } );
 
-//            document.getElementById("treeview").addEventListener("click",function(e) {
-//                // e.target is our targetted element.
-//                // try doing console.log(e.target.nodeName), it will result LI
-//                if(e.target && e.target.nodeName == "LI") {
-//                    console.log(e.target.id + " was clicked");
-//                }
-//            });
+            document.getElementById("treeview").addEventListener("click",function(e) {
+                // e.target is our targetted element.
+                // try doing console.log(e.target.nodeName), it will result LI
+                if(e.target && e.target.nodeName == "LI") {
+                    console.log(e.target.id + " was clicked");
+                }
+            });
         }
 
 
@@ -318,28 +317,6 @@
                                         $(function() {
                                             passFilenames(options.name);
                                         });
-
-//                                        console.log("buildDomTree2");
-//
-//                                        var option = {
-//                                            //                                backColor: '#cbd2d6',
-//                                            //                                onhoverColor: '#cbd2d6',
-//                                            highlightSelected: false,
-//                                            showBorder: false,
-//                                            //                                enableLinks: true,
-//                                            data: buildDomTree()
-//                                        };
-//
-//                                        $('#treeview').treeview(option);
-//
-//                                        console.log("options", options);
-//                                        console.log("options.name", options.name);
-////                                        console.log("options.data", options.data);
-////                                        console.log("options.data[0]", options.data[0]);
-//                                        var el = document.getElementById(options.name);
-//                                        console.log("el", el);
-//                                        el.addEventListener("click", function () {modifyText(options.name)});
-
                                     }
                                 },
                                 function(key, bytesUploaded, bytesTotal) {
