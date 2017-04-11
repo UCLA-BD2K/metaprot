@@ -292,22 +292,25 @@
                     return;
                 }
 
+                console.log("PATHNAME: " + $fileInput[0].value);
+                var arr = $fileInput[0].value.split("\\");
+                var nameOfFile = arr[arr.length-1];
+                console.log("FILENAME: " + nameOfFile);
+                if(!(sessionStorage.getItem("root") === null)){
+                    var a = JSON.parse(sessionStorage.getItem("root"));
+                    for(var i = 0; i < a.length; i++){
+                        if(a[i]["name"] == nameOfFile){
+                            alert("A file with this name already exists. Please rename and upload.");
+                            return;
+                        }
+                    }
+                }
+
                 $('#progress-bar-display').css("opacity", 1);
 
                 var afterEachFileRead = function(options) {
                     console.log("A file is ready to upload.");
                     //var toPush = options.name + ",";
-//                    var nameOfFile = options.name;
-//                    if(!(sessionStorage.getItem("root") === null)){
-//                        var a = JSON.parse(sessionStorage.getItem("root"));
-//                        for(var i = 0; i < a.length; i++){
-//                            if(a[i]["name"] == nameOfFile){
-//                                var x = nameOfFile.split(".");
-//                                x
-//                                break;
-//                            }
-//                        }
-//                    }
                     var toPush = [{name: options.name, children: []}];
                     var b = {name: options.name, children: []};
                     if (sessionStorage.getItem("root") === null) {
