@@ -166,33 +166,33 @@
             return data;
         }
 
+        passFilenames();
 
-        $(function() {
-            console.log("buildDomTree1");
-
-            //file tree
-            var options = {
-//                backColor: '#cbd2d6',
-//                onhoverColor: '#cbd2d6',
-                highlightSelected: false,
-                showBorder: false,
-//                enableLinks: true,
-                data: buildDomTree()
-            };
-
-            $('#treeview').treeview(options);
-        });
+//        $(function() {
+//            console.log("buildDomTree1");
+//
+//            //file tree
+//            var options = {
+////                backColor: '#cbd2d6',
+////                onhoverColor: '#cbd2d6',
+//                highlightSelected: false,
+//                showBorder: false,
+////                enableLinks: true,
+//                data: buildDomTree()
+//            };
+//
+//            $('#treeview').treeview(options);
+//        });
 
 //        function modifyText(filename) {
 //            console.log("filename",filename);
 //        }
 
-        function passFilenames(filename){
-            console.log("buildDomTree2");
+        function passFilenames(){
 
             //file tree
             var options = {
-//                backColor: '#cbd2d6',
+                backColor: '#eeeeee',
 //                onhoverColor: '#cbd2d6',
                 highlightSelected: false,
                 showBorder: false,
@@ -331,7 +331,7 @@
 
                                         notifyAllFilesUploaded(token, data.Key);
                                         $(function() {
-                                            passFilenames(options.name);
+                                            passFilenames();
                                         });
                                     }
                                 },

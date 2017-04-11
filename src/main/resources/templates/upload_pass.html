@@ -218,26 +218,28 @@
             }
 
 
-        $(function() {
-                //file tree
-                var options = {
-//                    backColor: '#cbd2d6',
-//                    onhoverColor: '#cbd2d6',
-                    showBorder: false,
-                    highlightSelected: false,
-//                    enableLinks: true,
-                    data: buildDomTree()
-                };
+//        $(function() {
+//                //file tree
+//                var options = {
+////                    backColor: '#cbd2d6',
+////                    onhoverColor: '#cbd2d6',
+//                    showBorder: false,
+//                    highlightSelected: false,
+////                    enableLinks: true,
+//                    data: buildDomTree()
+//                };
+//
+//                $('#treeview').treeview(options);
+//            });
 
-                $('#treeview').treeview(options);
-            });
+        passFilenames();
 
-        function passFilenames(filename){
+        function passFilenames(){
             console.log("buildDomTree2");
 
             //file tree
             var options = {
-//                backColor: '#cbd2d6',
+                backColor: '#eeeeee',
 //                onhoverColor: '#cbd2d6',
                 highlightSelected: false,
                 showBorder: false,
@@ -266,6 +268,12 @@
                     success:function(data) {    // really just prints on screen any response from server
                         var s = data.toString();
                         console.log(s);
+                        var properties = JSON.parse(s);
+                        var strings = "";
+                        $.each( properties, function( key, value ) {
+                            strings += key + ": " + value + "<br>";
+                        });
+                        document.getElementById("bottom_part").innerHTML = strings;
                     },
                     error:function(jqXHR, textStatus, errorThrown) {
                         console.log(jqXHR);
@@ -381,7 +389,7 @@
                         }
                     });
 
-                    passFilenames(rootName);
+                    passFilenames();
 //                    passFilenames(toAdd);
 
                 });
