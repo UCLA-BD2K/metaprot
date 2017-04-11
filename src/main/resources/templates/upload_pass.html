@@ -292,14 +292,21 @@
                     e.preventDefault();
                     var $progressText = $('#progressText');
 
+                    var fileNameDropdown =  document.getElementById("dropDownDest");
                     var a = JSON.parse(sessionStorage.getItem("root"));
                     console.log("a",a);
-                    var rootName = a[0]["name"];
+                    var rootName = fileNameDropdown.options[fileNameDropdown.selectedIndex].value;
                     console.log("rootName",rootName);
                     var toAdd = "PP_" + rootName;
                     var b = {name: toAdd, children: []};
                     //var toPush = [{name: options.name, children: []}];
-                    a[0]["children"].push(b);
+                    for(var i = 0; i < a.length; i++){
+                        if(a[i]["name"] == fileNameDropdown.options[fileNameDropdown.selectedIndex].value){
+                            a[i]["children"].push(b);
+                            break;
+                        }
+                    }
+                    //a[0]["children"].push(b);
                     sessionStorage.setItem("root", JSON.stringify(a));
                     console.log(sessionStorage.getItem("root"));
                     console.log("process mve");
@@ -308,7 +315,6 @@
                     //Pass selection data to backend to store
                     var formData = new FormData();
 
-                    var fileNameDropdown =  document.getElementById("dropDownDest");
                     console.log(fileNameDropdown.options[fileNameDropdown.selectedIndex].value);
                     formData.append("sourceFile", fileNameDropdown.options[fileNameDropdown.selectedIndex].value);
 

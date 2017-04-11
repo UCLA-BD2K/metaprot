@@ -297,6 +297,17 @@
                 var afterEachFileRead = function(options) {
                     console.log("A file is ready to upload.");
                     //var toPush = options.name + ",";
+//                    var nameOfFile = options.name;
+//                    if(!(sessionStorage.getItem("root") === null)){
+//                        var a = JSON.parse(sessionStorage.getItem("root"));
+//                        for(var i = 0; i < a.length; i++){
+//                            if(a[i]["name"] == nameOfFile){
+//                                var x = nameOfFile.split(".");
+//                                x
+//                                break;
+//                            }
+//                        }
+//                    }
                     var toPush = [{name: options.name, children: []}];
                     var b = {name: options.name, children: []};
                     if (sessionStorage.getItem("root") === null) {
