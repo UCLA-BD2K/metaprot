@@ -202,12 +202,6 @@
 
             $('#treeview').treeview(options);
 
-//            var el = document.getElementById(filename);
-//            console.log("el", el);
-////            el.addEventListener("click", function () {modifyText(filename)});
-//            el.addEventListener('click', function () {
-//                console.log("alert:filename",filename);
-//            } );
 
             document.getElementById("treeview").addEventListener("click",function(e) {
                 // e.target is our targetted element.
@@ -215,7 +209,29 @@
                 if(e.target && e.target.nodeName == "LI") {
                     console.log(e.target.id + " was clicked");
                 }
+
+                var formData = new FormData();
+                formData.append("fileName", e.target.id);
+                // notify server of file upload and updates UI to reflect status
+                $.ajax({
+                    url: '/analyze/getProcessingStats',
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success:function(data) {    // really just prints on screen any response from server
+                        var s = data.toString();
+                        console.log(s);
+                    },
+                    error:function(jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                        $progressText.html('<div class="alert alert-danger">' + jqXHR.responseJSON.message + '</div>');
+                    }
+                });
             });
+
         }
 
 
