@@ -307,3 +307,12 @@ svg:not(:root) {
     margin-top: 20px;
     margin-bottom: 10px;
 }
+
+/*for site traffic*/
+.axis { font: 14px sans-serif; }
+
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2px;
+}

@@ -103,6 +103,7 @@
         <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script>
         <script src="/js/d3pie.min.js"></script>
+        <!--<script src="https://d3js.org/d3.v4.min.js"></script>-->
         <!--for pie chart-->
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -242,7 +243,8 @@
                         contentType: false,
                         success: function (data) {
                             var s = data.toString();
-                            console.log(s);
+                            var traffic = JSON.parse(s);
+                            plotTraffic(traffic["dateCountMap"]);
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
                             console.log(jqXHR);
@@ -253,56 +255,83 @@
                 }
             });
 
-            function line_chart(data)
+            function plotTraffic(data)
             {
-                var parseTime = d3.timeParse("%d-%b-%y");
+// set the dimensions and margins of the graph
+                var margin = {top: 20, right: 20, bottom: 70, left: 50},
+                    width = 305 - margin.left - margin.right,
+                    height = 305 - margin.top - margin.bottom;
 
-                data.forEach(function(d) {
-                    d.date = parseTime(d.date);
-                });
+// parse the date / time
+                var parseTime = d3.time.format("%d-%b-%Y").parse;//d3.timeParse("%d-%b-%Y");
 
-                var vis = d3.select("#visualisation"),
-                    WIDTH = 305,
-                    HEIGHT = 305,
-                    MARGINS = {
-                        top: 20,
-                        right: 20,
-                        bottom: 20,
-                        left: 50
-                    },
-                    xScale = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([1,10]),
-                    yScale = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([1,10]),
-                    xAxis = d3.svg.axis()
-                        .scale(xScale),
+// set the ranges
+                var x = d3.time.scale().range([0, width]);
+                var y = d3.scale.linear().range([height, 0]);
 
-                    yAxis = d3.svg.axis()
-                        .scale(yScale)
-                        .orient("left");
+// define the line
+                var valueline = d3.svg.line()
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.count); });
 
-                vis.append("svg:g")
-                    .attr("class","axis")
-                    .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
-                    .call(xAxis);
-                vis.append("svg:g")
-                    .attr("class","axis")
-                    .attr("transform", "translate(" + (MARGINS.left) + ",0)")
-                    .call(yAxis);
+// append the svg obgect to the body of the page
+// appends a 'group' element to 'svg'
+// moves the 'group' element to the top left margin
+                var svg = d3.select("#visualisation")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform",
+                        "translate(" + margin.left + "," + margin.top + ")");
 
-                var lineGen = d3.svg.line()
-                    .x(function(d) {
-                        return xScale(d.date);
-                    })
-                    .y(function(d) {
-                        return yScale(d.count);
-                    })
-                    .interpolate("basis");
+// Get the data
+//                d3.csv("/css/data.csv", function(error, data) {
+//                    if (error) throw error;
 
-                vis.append('svg:path')
-                    .attr('d', lineGen(data))
-                    .attr('stroke', 'green')
-                    .attr('stroke-width', 2)
-                    .attr('fill', 'none');
+                    // format the data
+//                    console.log("data",data);
+
+                    data.forEach(function(d) {
+                        d.date = parseTime(d.date);
+                        d.count = +d.count;
+                    });
+
+                    // Scale the range of the data
+                    x.domain(d3.extent(data, function(d) { return d.date; }));
+                    y.domain([0, d3.max(data, function(d) { return d.count; })]);
+
+                    // Add the valueline path.
+                    svg.append("path")
+                        .data([data])
+                        .attr("class", "line")
+                        .attr("d", valueline);
+
+                    // Add the X Axis
+                    svg.append("g")
+                        .attr("class", "axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(d3.svg.axis()
+                            .scale(x)
+                            .orient("bottom"))
+//                        .call(d3.axisBottom(x).ticks(10))
+                        .selectAll("text")
+                        .style("text-anchor", "end")
+                        .attr("dx", "-.8em")
+                        .attr("dy", ".15em")
+                        .attr("transform", "rotate(-65)");
+
+                    // Add the Y Axis
+                    svg.append("g")
+                        .attr("class", "axis")
+                        .call(d3.svg.axis()
+                            .scale(y)
+                            .orient("left"));
+//                        .call(d3.axisLeft(y));
+
+//                });
             }
+
+
         </script>
     </body>
 </html>
