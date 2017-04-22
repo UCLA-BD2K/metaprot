@@ -1,5 +1,12 @@
 package org.bd2k.metaprot.data;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -25,6 +32,7 @@ public class siteTrafficData {
     private int totalSiteVisitors;
     private LinkedList<dateMapper> dailyCounter;
     private HashMap<String, Integer> countryCounter;
+    private static final HttpClient HTTP_CLIENT = new DefaultHttpClient();
 
     /**
      * Constructs new instance and initializes data structures
@@ -35,7 +43,7 @@ public class siteTrafficData {
         dailyCounter = new LinkedList<>();
         countryCounter = new HashMap<>();
         Date currentDate = new Date();
-        System.out.printf("CurrentDate: %s\n", fmt.format(currentDate));
+        //System.out.printf("CurrentDate: %s\n", fmt.format(currentDate));
         for (int i = 365; i >= 0; i--) {
             long milliseconds = (long) i * 24 * 60 * 60 * 1000;
             Date current = new Date(currentDate.getTime() - milliseconds);
@@ -53,6 +61,12 @@ public class siteTrafficData {
      */
     public void updateTrafficData(String ip, String country){
         dateMapper current = dailyCounter.getFirst();
+        Date today = new Date();
+        if(current.date != fmt.format(today)){
+            dailyCounter.pollLast();
+            dailyCounter.addFirst(new dateMapper(fmt.format(today), 0));
+            current = dailyCounter.getFirst();
+        }
         if(!currentDayIPAddresses.contains(ip)) {
             current.visitCounter += 1;
             totalSiteVisitors++;
@@ -94,14 +108,21 @@ public class siteTrafficData {
         return JSONToReturn.toJSONString();
     }
 
-    /**
-     * For testing purposes only.
-     * @return
-     */
-    public static void main(String[] args){
-        siteTrafficData test = new siteTrafficData();
-        System.out.println(test.getFormattedTrafficData());
+    public static void getIPInfo(String ip) {
+        String url = "http://freegeoip.net/" + ip; // Using the API
+        try {
+            HttpGet httpGet = new HttpGet(url);
+            HttpResponse httpResponse = HTTP_CLIENT.execute(httpGet, new BasicHttpContext());
+            String responseString;
+            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                throw new RuntimeException("Sorry! Response Error. Status Code: " + httpResponse.getStatusLine().getStatusCode());
+            }
+            responseString = EntityUtils.toString(httpResponse.getEntity());
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        } finally {
+            HTTP_CLIENT.getConnectionManager().shutdown();
+        }
     }
-
 }
 
