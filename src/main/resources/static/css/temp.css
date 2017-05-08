@@ -309,10 +309,39 @@ svg:not(:root) {
 }
 
 /*for site traffic*/
-.axis { font: 14px sans-serif; }
+/*.axis { font: 14px; }*/
 
-.line {
+/*.line {*/
+    /*fill: none;*/
+    /*stroke: steelblue;*/
+    /*stroke-width: 2px;*/
+/*}*/
+
+svg {
+    font: 10px sans-serif;
+}
+
+.area {
+    fill: lightgray;
+    clip-path: url(#clip);
+}
+
+.axis path,
+.axis line {
     fill: none;
-    stroke: steelblue;
-    stroke-width: 2px;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.brush .extent {
+    stroke: #fff;
+    fill-opacity: .125;
+    shape-rendering: crispEdges;
+    clip-path: url(#clip);
+}
+
+rect.pane {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
 }
