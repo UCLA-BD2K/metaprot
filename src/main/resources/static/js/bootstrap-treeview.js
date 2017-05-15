@@ -36,7 +36,8 @@
 		expandIcon: 'glyphicon glyphicon-plus',
 		collapseIcon: 'glyphicon glyphicon-minus',
 		emptyIcon: 'glyphicon',
-		nodeIcon: '',
+		nodeIcon2: "glyphicon glyphicon-trash",
+        nodeIcon1: "glyphicon glyphicon-eye-open",
 		selectedIcon: '',
 		checkedIcon: 'glyphicon glyphicon-check',
 		uncheckedIcon: 'glyphicon glyphicon-unchecked',
@@ -547,23 +548,76 @@
 				);
 
 
+            // Add text
+            if (_this.options.enableLinks) {
+                // Add hyperlink
+                treeItem
+                    .append($(_this.template.link)
+                        .attr('href', node.href)
+                        .append(node.text)
+                    );
+            }
+            else {
+                // otherwise just text
+                treeItem
+                    .append(node.text);
+            }
+
+            // Add node icon
+            if (_this.options.showIcon) {
+
+                var classList = ['node-icon'];
+
+                classList.push(node.icon);
+                if (node.state.selected) {
+                    classList.pop();
+                    classList.push(node.selectedIcon || _this.options.selectedIcon ||
+                        node.icon);
+                }
+
+                treeItem
+                    .append($(_this.template.icon)
+                        .addClass(classList.join(' '))
+                    );
+            }
+
 			// Add node icon
-			if (_this.options.showIcon) {
-				
-				var classList = ['node-icon'];
+            if (_this.options.showIcon) {
 
-				classList.push(node.icon || _this.options.nodeIcon);
-				if (node.state.selected) {
-					classList.pop();
-					classList.push(node.selectedIcon || _this.options.selectedIcon || 
-									node.icon || _this.options.nodeIcon);
-				}
+                var classList = ['node-icon'];
 
-				treeItem
-					.append($(_this.template.icon)
-						.addClass(classList.join(' '))
-					);
-			}
+                classList.push(_this.options.nodeIcon1);
+                if (node.state.selected) {
+                    classList.pop();
+                    classList.push(node.selectedIcon || _this.options.selectedIcon ||
+                         _this.options.nodeIcon1);
+                }
+
+                // console.log("treeItem1",treeItem);
+                treeItem
+                    .append($(_this.template.button1)
+                        .addClass(classList.join(' '))
+                    );
+                // console.log("treeItem2",treeItem);
+            }
+
+            // Add node icon
+            if (_this.options.showIcon) {
+
+                var classList = ['node-icon'];
+
+                classList.push(_this.options.nodeIcon2);
+                if (node.state.selected) {
+                    classList.pop();
+                    classList.push(node.selectedIcon || _this.options.selectedIcon ||
+                        _this.options.nodeIcon2);
+                }
+
+                treeItem
+                    .append($(_this.template.button2)
+                        .addClass(classList.join(' '))
+                    );
+            }
 
 			// Add check / unchecked icon
 			if (_this.options.showCheckbox) {
@@ -580,21 +634,6 @@
 					.append($(_this.template.icon)
 						.addClass(classList.join(' '))
 					);
-			}
-
-			// Add text
-			if (_this.options.enableLinks) {
-				// Add hyperlink
-				treeItem
-					.append($(_this.template.link)
-						.attr('href', node.href)
-						.append(node.text)
-					);
-			}
-			else {
-				// otherwise just text
-				treeItem
-					.append(node.text);
 			}
 
 			// Add tags as badges
@@ -692,6 +731,8 @@
 		item: '<li class="list-group-item"></li>',
 		indent: '<span class="indent"></span>',
 		icon: '<span class="icon"></span>',
+        button1: '<button type="button" id="myBtn" class="btn btn-default btn-xs pull-right"><span class="icon" ></span></button>',
+        button2: '<button type="button" id="myBtn2" class="btn btn-default btn-xs pull-right"><span class="icon" ></span></button>',
 		link: '<a href="#" style="color:inherit;"></a>',
 		badge: '<span class="badge"></span>'
 	};
