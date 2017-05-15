@@ -4,7 +4,9 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Poorly named model class representing a document in the
@@ -98,13 +100,16 @@ public class Task {
 
     @Override
     public String toString() {
+
+        long secondsSinceEpoch = System.currentTimeMillis() / 1000L;
+        long ttl = secondsSinceEpoch + 604800;
         return "Task{" +
                 "token='" + token + '\'' +
                 ", timestamp=" + timestamp +
                 ", filename='" + filename + '\'' +
                 ", pValueThreshold=" + pValueThreshold +
                 ", fcThreshold=" + fcThreshold +
-                ", numChunks=" + numChunks +
+                ", numChunks=" + numChunks + ", ttl=" + ttl +
                 '}';
     }
 

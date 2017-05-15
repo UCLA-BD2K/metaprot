@@ -113,6 +113,8 @@ public class PatternRecogTask {
 
     @Override
     public String toString() {
+        long secondsSinceEpoch = System.currentTimeMillis() / 1000L;
+        long ttl = secondsSinceEpoch + 604800;
         return "PatternRecogTask{" +
                 "token='" + token + '\'' +
                 ", timestamp=" + timestamp +
@@ -122,6 +124,7 @@ public class PatternRecogTask {
                 ", minMembersPerCluster=" + minMembersPerCluster +
                 ", numChunks=" + numChunks +
                 ", regressionLine=" + Arrays.toString(regressionLines) +
+                ", ttl=" + ttl +
                 '}';
     }
 

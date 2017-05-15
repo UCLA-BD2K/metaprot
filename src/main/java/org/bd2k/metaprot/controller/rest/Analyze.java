@@ -63,6 +63,9 @@ public class Analyze {
     //File Information Data Store
     private HashMap<String, String> fileInfoMap = new HashMap<>();
 
+    //Session Information Data Store
+    private HashMap<String, String> sessionInfoMap = new HashMap<>();
+
     /**
      * Analyzes an uploaded CSV file for metabolite analysis.
      *
@@ -432,15 +435,6 @@ public class Analyze {
                                    @RequestParam("Trans") String transformationType,
                                    @RequestParam("Scaling") String scalingType){
 
-//        System.out.println(sourceFile);
-//        System.out.println(destFile);
-//        System.out.println(removeThresholdCheckbox);
-//        System.out.println(thresholdPercent);
-//        System.out.println(estimationPreference);
-//        System.out.println(normalizationType);
-//        System.out.println(transformationType);
-//        System.out.println(scalingType);
-
         JSONObject JSONtoStore = new JSONObject();
 
         JSONtoStore.put("Source File", sourceFile);
@@ -471,6 +465,23 @@ public class Analyze {
 
         JSONObject notFoundJSON = new JSONObject();
         notFoundJSON.put("Error", "Selected item is an unprocessed source file.");
+        return  notFoundJSON.toJSONString();
+    }
+
+    @RequestMapping(value= "/updateSessionData", method = RequestMethod.POST)
+    public String updateSessionData(@RequestParam("token") String token,
+                                    @RequestParam("data") String data){
+        sessionInfoMap.put(token, data);
+        return "";
+    }
+
+    @RequestMapping(value= "/getSessionData", method = RequestMethod.POST)
+    public String updateSessionData(@RequestParam("token") String token){
+        if(sessionInfoMap.containsKey(token)){
+            return sessionInfoMap.get(token);
+        }
+        JSONObject notFoundJSON = new JSONObject();
+        notFoundJSON.put("Error", "Token does not exist");
         return  notFoundJSON.toJSONString();
     }
 }

@@ -166,7 +166,7 @@
 //                        console.log(node["name"]);
                         var obj = {
                             id: id,
-                            text: node["name"],
+                            text: node["name"]
 //                            href: "./contact"
                         };
                         data.push(obj);
@@ -358,6 +358,35 @@
 
                 $('#progress-bar-display').css("opacity", 1);
 
+                function uploadFileToS3(options, token, moreParams) {
+                    // after retrieving a token, can upload to s3
+                    var delayCounter = 0;
+                    S3Uploader.upload(options.data, "user-input/" + token + "/" + options.name, moreParams,
+                        function(data) {
+                            numFilesUploaded++;
+                            if (numFilesUploaded == numFiles) {
+                                // we are done uploading!
+                                console.log("all files have been uploaded to s3");
+                                updateProgressBar(100);
+
+                                notifyAllFilesUploaded(token, data.Key);
+                                $(function() {
+                                    passFilenames();
+                                });
+                            }
+                        },
+                        function(key, bytesUploaded, bytesTotal) {
+                            // called whenever bytes transferred to s3, with performance delay
+                            delayCounter++;
+                            if (delayCounter == 10) {
+                                updateProgressBar(bytesUploaded/bytesTotal*100);
+                            }
+                        });
+                }
+
+                function updateSessionData(){
+
+                }
                 var afterEachFileRead = function(options) {
                     console.log("A file is ready to upload.");
                     //var toPush = options.name + ",";
@@ -372,45 +401,32 @@
                         sessionStorage.setItem("root", JSON.stringify(curr));
                         console.log(JSON.stringify(curr));
                     }
-                    var delayCounter = 0;
 
                     var moreParams = {
                         ContentLength : options.size,
                         ContentType : options.type
                     };
-
-                    // get token for s3 upload
-                    $.ajax({
-                        url: "/analyze/token",
-                        method: "GET",
-                        success:function(token) {
-                            // after retrieving a token, can upload to s3
-                            S3Uploader.upload(options.data, "user-input/" + token + "/" + options.name, moreParams,
-                                function(data) {
-                                    numFilesUploaded++;
-                                    if (numFilesUploaded == numFiles) {
-                                        // we are done uploading!
-                                        console.log("all files have been uploaded to s3");
-                                        updateProgressBar(100);
-
-                                        notifyAllFilesUploaded(token, data.Key);
-                                        $(function() {
-                                            passFilenames();
-                                        });
-                                    }
-                                },
-                                function(key, bytesUploaded, bytesTotal) {
-                                    // called whenever bytes transferred to s3, with performance delay
-                                    delayCounter++;
-                                    if (delayCounter == 10) {
-                                        updateProgressBar(bytesUploaded/bytesTotal*100);
-                                    }
-                                });
-                    },
-                        error:function() {
-                            console.log("Error in retrieving upload token.");
-                        }
-                    });
+                    /*TODO: (Yolanda) The "sessionToken" key in sessionStorage is keeping the sessionToken.
+                     *When the page loads there should be some interface that asks the user if they previously have a token
+                      * or to generate a new one.
+                     */
+                    if(sessionStorage.getItem("sessionToken") === null) {
+                        // get token for s3 upload
+                        $.ajax({
+                            url: "/analyze/token",
+                            method: "GET",
+                            success: function (token) {
+                                uploadFileToS3(options, token, moreParams);
+                                sessionStorage.setItem('sessionToken', token);
+                            },
+                            error: function () {
+                                console.log("Error in retrieving upload token.");
+                            }
+                        });
+                    }
+                    else{
+                        uploadFileToS3(options, sessionStorage.getItem('sessionToken'), moreParams);
+                    }
 
                 };
 

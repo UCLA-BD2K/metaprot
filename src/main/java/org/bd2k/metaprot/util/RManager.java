@@ -26,6 +26,7 @@ public class RManager {
     // private cstr only for internal factory use
     private RManager(int portToUse) throws RserveException {
         port = portToUse;
+        System.out.println(portToUse);
         connection = new RConnection(HOST, port);       // attempt to connect to localhost:(port)
     }
 
