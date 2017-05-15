@@ -44,9 +44,14 @@
                 <h1>MetProt</h1>
                 <p class="lead">A Cloud-based Platform to Analyze, Annotate, and Integrate Metabolomics Datasets with Proteomics Information.</p>
                 <div class="col-sm-12 col-md-12 main">
-                    <div class = "btn-border">
-                        <p><a class="btn btn-lg btn-default" onclick="window.location.href='/upload'">Start Analysis</a></p>
-                    </div>
+                    <form class="form-inline">
+                        <button type="submit" id="generate_token" class="btn btn-default">Generate Token</button>
+                        <div class="form-group">
+                            <label>Token</label>
+                            <input type="text" placeholder="1234567" />
+                        </div>
+                        <button type="submit" class="btn btn-lg btn-default">Start Analysis</button>
+                    </form>
                 </div>
             </div>
 
@@ -409,76 +414,6 @@
 
             }
 
-
-//            function plotTraffic(data)
-//            {
-//// set the dimensions and margins of the graph
-//                var margin = {top: 20, right: 20, bottom: 70, left: 50},
-//                    width = 305 - margin.left - margin.right,
-//                    height = 305 - margin.top - margin.bottom;
-//
-//// parse the date / time
-//                var parseTime = d3.time.format("%d-%b-%Y").parse;//d3.timeParse("%d-%b-%Y");
-//
-//// set the ranges
-//                var x = d3.time.scale().range([0, width]);
-//                var y = d3.scale.linear().range([height, 0]);
-//
-//// define the line
-//                var valueline = d3.svg.line()
-//                    .x(function(d) { return x(d.date); })
-//                    .y(function(d) { return y(d.count); });
-//
-//// append the svg obgect to the body of the page
-//// appends a 'group' element to 'svg'
-//// moves the 'group' element to the top left margin
-//                var svg = d3.select("#visualisation")
-//                    .attr("width", width + margin.left + margin.right)
-//                    .attr("height", height + margin.top + margin.bottom)
-//                    .append("g")
-//                    .attr("transform",
-//                        "translate(" + margin.left + "," + margin.top + ")");
-//
-//                    data.forEach(function(d) {
-//                        d.date = parseTime(d.date);
-//                        d.count = +d.count;
-//                    });
-//
-//                    // Scale the range of the data
-//                    x.domain(d3.extent(data, function(d) { return d.date; }));
-//                    y.domain([0, d3.max(data, function(d) { return d.count; })]);
-//
-//                    // Add the valueline path.
-//                    svg.append("path")
-//                        .data([data])
-//                        .attr("class", "line")
-//                        .attr("d", valueline);
-//
-//                    // Add the X Axis
-//                    svg.append("g")
-//                        .attr("class", "axis")
-//                        .attr("transform", "translate(0," + height + ")")
-//                        .call(d3.svg.axis()
-//                            .scale(x)
-//                            .orient("bottom"))
-////                        .call(d3.axisBottom(x).ticks(10))
-//                        .selectAll("text")
-//                        .style("text-anchor", "end")
-//                        .attr("dx", "-.8em")
-//                        .attr("dy", ".15em")
-//                        .attr("transform", "rotate(-45)");
-//
-//                    // Add the Y Axis
-//                    svg.append("g")
-//                        .attr("class", "axis")
-//                        .call(d3.svg.axis()
-//                            .scale(y)
-//                            .orient("left"));
-////                        .call(d3.axisLeft(y));
-//
-////                });
-//            }
-
             function plotCountry(dataset){
 
                 (function(d3) {
@@ -519,6 +454,42 @@
             }
 
             /*]]>*/
+        </script>
+        <script>
+            $('#generate_token').on("submit", function(e) {
+                // get token for s3 upload
+                $.ajax({
+                    url: "/analyze/token",
+                    method: "GET",
+                    success: function (token) {
+                        uploadFileToS3(options, token, moreParams);
+                        sessionStorage.setItem('sessionToken', token);
+                    },
+                    error: function () {
+                        console.log("Error in retrieving upload token.");
+                    }
+                });
+            }
+            else{
+                uploadFileToS3(options, sessionStorage.getItem('sessionToken'), moreParams);
+            }
+//            if(sessionStorage.getItem("sessionToken") === null) {
+//                // get token for s3 upload
+//                $.ajax({
+//                    url: "/analyze/token",
+//                    method: "GET",
+//                    success: function (token) {
+//                        uploadFileToS3(options, token, moreParams);
+//                        sessionStorage.setItem('sessionToken', token);
+//                    },
+//                    error: function () {
+//                        console.log("Error in retrieving upload token.");
+//                    }
+//                });
+//            }
+//            else{
+//                uploadFileToS3(options, sessionStorage.getItem('sessionToken'), moreParams);
+//            }
         </script>
     </body>
 </html>
