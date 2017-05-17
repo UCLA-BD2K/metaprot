@@ -44,14 +44,9 @@
                 <h1>MetProt</h1>
                 <p class="lead">A Cloud-based Platform to Analyze, Annotate, and Integrate Metabolomics Datasets with Proteomics Information.</p>
                 <div class="col-sm-12 col-md-12 main">
-                    <form class="form-inline">
-                        <button type="submit" id="generate_token" class="btn btn-default">Generate Token</button>
-                        <div class="form-group">
-                            <label>Token</label>
-                            <input type="text" placeholder="1234567" />
-                        </div>
-                        <button type="submit" class="btn btn-lg btn-default">Start Analysis</button>
-                    </form>
+                    <div class="btn-border">
+                        <p><a class="btn btn-lg btn-default" onclick="window.location.href='/upload'">Start Analysis</a></p>
+                    </div>
                 </div>
             </div>
 
@@ -454,42 +449,6 @@
             }
 
             /*]]>*/
-        </script>
-        <script>
-            $('#generate_token').on("submit", function(e) {
-                // get token for s3 upload
-                $.ajax({
-                    url: "/analyze/token",
-                    method: "GET",
-                    success: function (token) {
-                        uploadFileToS3(options, token, moreParams);
-                        sessionStorage.setItem('sessionToken', token);
-                    },
-                    error: function () {
-                        console.log("Error in retrieving upload token.");
-                    }
-                });
-            }
-            else{
-                uploadFileToS3(options, sessionStorage.getItem('sessionToken'), moreParams);
-            }
-//            if(sessionStorage.getItem("sessionToken") === null) {
-//                // get token for s3 upload
-//                $.ajax({
-//                    url: "/analyze/token",
-//                    method: "GET",
-//                    success: function (token) {
-//                        uploadFileToS3(options, token, moreParams);
-//                        sessionStorage.setItem('sessionToken', token);
-//                    },
-//                    error: function () {
-//                        console.log("Error in retrieving upload token.");
-//                    }
-//                });
-//            }
-//            else{
-//                uploadFileToS3(options, sessionStorage.getItem('sessionToken'), moreParams);
-//            }
         </script>
     </body>
 </html>
