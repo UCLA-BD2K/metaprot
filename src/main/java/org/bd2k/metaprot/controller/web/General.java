@@ -1,5 +1,6 @@
 package org.bd2k.metaprot.controller.web;
 
+import org.bd2k.metaprot.data.sessionData;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,20 @@ public class General {
      * Invoked when user wants to upload a file for analysis.
      * @return
      */
+    @RequestMapping("/upload/{token}")
+    public String getTokenUploadPage(Model model, @PathVariable("token") String token) {
+        System.out.println(token);
+
+        model.addAttribute("token", token);     // pass token to view as model variable
+        model.addAttribute("sessionData", sessionData.getData(token));
+
+        return "upload";
+    }
+
+    /**
+     * Invoked when user wants to upload a file for analysis.
+     * @return
+     */
     @RequestMapping("/upload")
     public String getUploadPage() {
         return "upload";
@@ -44,7 +59,7 @@ public class General {
         System.out.println(token);
 
         model.addAttribute("token", token);     // pass token to view as model variable
-
+        model.addAttribute("sessionData", sessionData.getData(token));
 
         return "upload_pass";
     }

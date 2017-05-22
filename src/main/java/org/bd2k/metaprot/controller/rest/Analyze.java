@@ -5,6 +5,7 @@ import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.data.FeedBackType;
 import org.bd2k.metaprot.data.IntegrityChecker;
+import org.bd2k.metaprot.data.sessionData;
 import org.bd2k.metaprot.data.siteTrafficData;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.BadRequestException;
@@ -62,9 +63,6 @@ public class Analyze {
 
     //File Information Data Store
     private HashMap<String, String> fileInfoMap = new HashMap<>();
-
-    //Session Information Data Store
-    private HashMap<String, String> sessionInfoMap = new HashMap<>();
 
     /**
      * Analyzes an uploaded CSV file for metabolite analysis.
@@ -412,7 +410,7 @@ public class Analyze {
             outString += "Total number of inputs = " + feedBackType.getTotalInputs() + ",\n";
             int percent = (feedBackType.getMissingInputs()*100/feedBackType.getTotalInputs());
             outString += "Total number of missing values = " + feedBackType.getMissingInputs() + "("+ percent + "%)..\n";
-            outString += "Head over to the <a href='/upload-pass'>data pre-processing page</a> to continue.";
+            outString += "Head over to the <a href='/upload-pass/"+token+"'>data pre-processing page</a> to continue.";
             return outString;
         } else {
             throw new BadRequestException("There was an issue with your input file: " + feedBackType.getErrorMessage() +
@@ -471,17 +469,11 @@ public class Analyze {
     @RequestMapping(value= "/updateSessionData", method = RequestMethod.POST)
     public String updateSessionData(@RequestParam("token") String token,
                                     @RequestParam("data") String data){
-        sessionInfoMap.put(token, data);
-        return "";
+        return sessionData.setData(token, data);
     }
 
-    @RequestMapping(value= "/getSessionData", method = RequestMethod.POST)
-    public String updateSessionData(@RequestParam("token") String token){
-        if(sessionInfoMap.containsKey(token)){
-            return sessionInfoMap.get(token);
-        }
-        JSONObject notFoundJSON = new JSONObject();
-        notFoundJSON.put("Error", "Token does not exist");
-        return  notFoundJSON.toJSONString();
+    @RequestMapping(value= "/checkToken", method = RequestMethod.POST)
+    public boolean checkToken(@RequestParam("token") String token){
+        return sessionData.checkToken(token);
     }
 }

@@ -124,10 +124,10 @@
                 <div class="well well-lg">
                     <form class="form-inline">
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Token</label>
-                            <input class="form-control" id="exampleInputEmail1" placeholder="token number"/>
+                            <label for="inputToken">Token</label>
+                            <input class="form-control" id="inputToken" placeholder="token number"/>
                         </div>
-                        <button type="submit" class="btn btn-default">Go</button>
+                        <input type="submit" value="Go" class="form-control" />
                     </form>
                 </div>
 
@@ -331,6 +331,73 @@
                 });
             }
 
+            function validateToken(token) {
+
+                var formData = new FormData();
+                formData.append("token", token);
+
+                return $.ajax({
+                    url: '/analyze/checkToken',
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    async: false,
+                    data: formData,
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+
+            function updateSessionData(token){
+
+                var formData = new FormData();
+                console.log(token);
+                console.log(sessionStorage.getItem("root"));
+                formData.append("token", token);
+
+                formData.append("data", sessionStorage.getItem("root"));
+                //formData.append("data", "TEST");
+
+                $.ajax({
+                    url: '/analyze/updateSessionData',
+                    method: "POST",
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    success:function(data) {    // really just prints on screen any response from server
+                        var s = data.toString();
+                        console.log(s);
+                    },
+                    error:function(jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                });
+
+            }
+
+            //TODO: Yolanda, this code has to execute on click of the "GO" Button
+            $('#form-inline').on("submit", function(e) {
+                e.preventDefault();
+
+                console.log("Token Received: ", $inputToken[0].value);
+                var tokenReceived = $inputToken[0].value; //TODO: Yolanda I need the value from the text field as string here
+
+                validateToken(tokenReceived).done(function(data){
+                    if(data == true) {
+                        console.log("TOKEN VALIDATED");
+                        sessionStorage.setItem("sessionToken", tokenReceived);
+                    }
+                    else{
+                        console.log("TOKEN INVALID");
+                    }
+                });
+
+                //TODO: Yolanda, session storage is updated here, Refresh the page to load the data
+            });
+
             $('#csv-upload-form').on("submit", function(e) {
                 e.preventDefault();
 
@@ -385,9 +452,6 @@
                         });
                 }
 
-                function updateSessionData(){
-
-                }
                 var afterEachFileRead = function(options) {
                     console.log("A file is ready to upload.");
                     //var toPush = options.name + ",";
@@ -419,6 +483,8 @@
                             success: function (token) {
                                 uploadFileToS3(options, token, moreParams);
                                 sessionStorage.setItem('sessionToken', token);
+                                updateSessionData(token);
+                                console.log(token);
                             },
                             error: function () {
                                 console.log("Error in retrieving upload token.");
@@ -427,6 +493,7 @@
                     }
                     else{
                         uploadFileToS3(options, sessionStorage.getItem('sessionToken'), moreParams);
+                        updateSessionData();
                     }
 
 //                    document.getElementById("#token_num").innerHTML = sessionStorage.getItem("sessionToken");
@@ -461,7 +528,6 @@
                 .append("td")
                 .text(function(d) { return d; });
         });
-
 
         /*]]>*/
     </script>
