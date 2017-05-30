@@ -211,6 +211,23 @@
 
                 var data = [];
 
+                function getTreeData(token) {
+
+                    var formData = new FormData();
+                    formData.append("token", token);
+
+                    return $.ajax({
+                        url: '/analyze/getSessionData',
+                        type: 'POST',
+                        processData: false,
+                        contentType: false,
+                        async: false,
+                        data: formData,
+                        success: function (data) {
+                            console.log(data);
+                        }
+                    });
+                }
                 function walk(nodes, data) {
                     $.each(nodes, function (id,node) {
                         //name
@@ -235,7 +252,15 @@
                         }
                     });
                 }
-
+                var url = window.location.href;
+                console.log(url);
+                var toks = url.split('/');
+                console.log(toks);
+                if(!(toks[toks.length - 1] == "upload-pass" || toks[toks.length - 1] == "")){
+                    getTreeData(toks[toks.length-1]).done(function(data){
+                        sessionStorage.setItem("root", data);
+                    });
+                }
                 var tree = JSON.parse(sessionStorage.getItem("root"));
                 walk(tree, data);
                 return data;

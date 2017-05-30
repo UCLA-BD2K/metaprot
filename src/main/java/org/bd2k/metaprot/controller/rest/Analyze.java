@@ -410,7 +410,7 @@ public class Analyze {
             outString += "Total number of inputs = " + feedBackType.getTotalInputs() + ",\n";
             int percent = (feedBackType.getMissingInputs()*100/feedBackType.getTotalInputs());
             outString += "Total number of missing values = " + feedBackType.getMissingInputs() + "("+ percent + "%)..\n";
-            outString += "Head over to the <a href='/upload-pass/"+token+"'>data pre-processing page</a> to continue.";
+            outString += "Head over to the <a href='/upload-pass'>data pre-processing page</a> to continue.";
             return outString;
         } else {
             throw new BadRequestException("There was an issue with your input file: " + feedBackType.getErrorMessage() +
@@ -470,6 +470,11 @@ public class Analyze {
     public String updateSessionData(@RequestParam("token") String token,
                                     @RequestParam("data") String data){
         return sessionData.setData(token, data);
+    }
+
+    @RequestMapping(value= "/getSessionData", method = RequestMethod.POST)
+    public String getSessionData(@RequestParam("token") String token){
+        return sessionData.getData(token);
     }
 
     @RequestMapping(value= "/checkToken", method = RequestMethod.POST)

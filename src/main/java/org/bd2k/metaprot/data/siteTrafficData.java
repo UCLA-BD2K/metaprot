@@ -83,11 +83,16 @@ public class siteTrafficData {
     public String getFormattedTrafficData(){
         JSONObject JSONToReturn = new JSONObject();
         JSONArray dateCountMap = new JSONArray();
+        int k = 0;
         for(int i = 0; i < dailyCounter.size(); i++){
             dateMapper curr = dailyCounter.get(i);
             JSONObject dateCounterDetails = new JSONObject();
             dateCounterDetails.put("date", curr.date);
-            dateCounterDetails.put("count", curr.visitCounter);
+            //dateCounterDetails.put("count", curr.visitCounter);
+            dateCounterDetails.put("count", k);
+            if(k < 10)
+                k++;
+            else k = 0;
             dateCountMap.add(dateCounterDetails);
         }
         JSONToReturn.put("dateCountMap", dateCountMap);

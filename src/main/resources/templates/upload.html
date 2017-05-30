@@ -282,8 +282,36 @@
     <script type="text/javascript">
         /*<![CDATA[*/
 
-        document.getElementById("token_num").innerHTML = sessionStorage.getItem("sessionToken");
-        console.log(sessionStorage.getItem("sessionToken"));
+//        var url = window.location.href;
+//        console.log(url);
+//        var toks = url.split('/');
+//        console.log(toks);
+//        if(!(toks[toks.length - 1] == "upload" || toks[toks.length - 1] == "")){
+//            getTreeData(toks[toks.length-1]).done(function(data){
+//                sessionStorage.setItem("root", data);
+//            });
+//        }
+//
+//        document.getElementById("token_num").innerHTML = sessionStorage.getItem("sessionToken");
+//        console.log(sessionStorage.getItem("sessionToken"));
+
+        function getTreeData(token) {
+
+            var formData = new FormData();
+            formData.append("token", token);
+
+            return $.ajax({
+                url: '/analyze/getSessionData',
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                async: false,
+                data: formData,
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        }
 
         function buildDomTree() {
 
@@ -292,10 +320,9 @@
             var data = [];
 
             function walk(nodes, data) {
-                $.each(nodes, function (id,node) {
+                $.each(nodes, function (id, node) {
                     //name
-                    if (node["name"])
-                    {
+                    if (node["name"]) {
 //                        console.log(node["name"]);
                         var obj = {
                             id: id,
@@ -305,10 +332,8 @@
                         data.push(obj);
                     }
                     //children
-                    if(node["children"])
-                    {
-                        if(node["children"].length>0)
-                        {
+                    if (node["children"]) {
+                        if (node["children"].length > 0) {
                             obj.nodes = [];
                             walk(node["children"], obj.nodes);
                         }
@@ -316,9 +341,14 @@
                 });
             }
 
+            if(sessionStorage.getItem("sessionToken") !== null) {
+                getTreeData(sessionStorage.getItem("sessionToken")).done(function (data) {
+                    sessionStorage.setItem("root", data);
+                });
+            }
             var tree = JSON.parse(sessionStorage.getItem("root"));
             walk(tree, data);
-            console.log("data",data)
+            console.log("data",data);
             return data;
         }
 

@@ -44,7 +44,10 @@ public class General {
      * @return
      */
     @RequestMapping("/upload")
-    public String getUploadPage() {
+    public String getUploadPage(Model model) {
+
+        model.addAttribute("sessionData", "INVALID");
+
         return "upload";
     }
 
