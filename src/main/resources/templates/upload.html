@@ -178,7 +178,7 @@
                 </ul>
                 <div id="token_text" >
                     <p class="navbar-text">Token number</p>
-                    <p class="navbar-text" id="token_num"></p>
+                    <div class="navbar-text" id="token_num"></div>
                 </div>
             </div>
             <div class="col-sm-6 col-sm-offset-3 col-md-7 col-md-offset-2 main">
@@ -237,7 +237,14 @@
                             <input class="form-control" id="inputToken" placeholder="token number"/>
                         </div>
                         <input type="submit" value="Go" class="form-control" />
+                        <!--<input type="submit" value="Go" class="form-control btn btn-default" data-container="body" data-toggle="popover" data-placement="right" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">-->
+                            <!--Popover on right-->
+                        <!--</input>-->
                     </form>
+                </div>
+
+                <div class="alert alert-danger transition transparent" id="token-num-display">
+                    <strong>Warning!</strong> Error in token number input.
                 </div>
 
                 <div class="footer">
@@ -254,12 +261,8 @@
                 <div id = "bottom_part"/>
             </div>
         </div>
-        <!-- The Modal -->
         <div id="myModal" class="modal col-sm-5 col-md-6 col-md-offset-1">
-            <!-- Modal content -->
             <div class="modal-content">
-                <!--<span class="close">&times;</span>-->
-                <!--<p>File Data</p>-->
                 <div id="csvFile"></div>
             </div>
         </div>
@@ -293,8 +296,8 @@
 //            });
 //        }
 //
-//        document.getElementById("token_num").innerHTML = sessionStorage.getItem("sessionToken");
-//        console.log(sessionStorage.getItem("sessionToken"));
+        document.getElementById("token_num").innerHTML = sessionStorage.getItem("sessionToken");
+        console.log(sessionStorage.getItem("sessionToken"));
 
         function getTreeData(token) {
 
@@ -535,9 +538,11 @@
                     if(data == true) {
                         console.log("TOKEN VALIDATED");
                         sessionStorage.setItem("sessionToken", tokenReceived);
+                        location.reload();
                     }
                     else{
                         console.log("TOKEN INVALID");
+                        $('#token-num-display').css("opacity", 1);
                     }
                 });
 
@@ -586,13 +591,9 @@
                                 notifyAllFilesUploaded(token, data.Key);
                                 $(function() {
                                     passFilenames();
-//                                    create_table( function() {
-//                                        console.log("hello1");
-//                                        update_table( function() {
-//                                            console.log("hello2");
-//                                        });
-//                                    });
                                 });
+                                document.getElementById("token_num").innerHTML = sessionStorage.getItem("sessionToken");
+                                console.log(sessionStorage.getItem("sessionToken"));
                             }
                         },
                         function(key, bytesUploaded, bytesTotal) {
@@ -658,110 +659,8 @@
                 FileController.setInputElement($fileInput);
                 FileController.readFiles();
 
-
-
             });
         });
-
-//        function create_table(){
-//            d3.text("/css/data.csv", function(data) {
-//                var parsedCSV = d3.csv.parseRows(data);
-//
-////            var container = d3.select('#csvFile')
-////                .append('table')
-////
-////                .selectAll("tr")
-////                .data(parsedCSV).enter()
-////                .append("tr")
-////
-////                .selectAll("td")
-////                .data(function(d) { return d; }).enter()
-////                .append("td")
-////                .text(function(d) { return d; });
-//                var container = d3.select("#csvFile")
-//                    .append("div").attr("class", "container")
-//                    .append("table").attr("class", "table table-hover table-bordered table-striped")
-////                    .append("table").attr("class", "display")
-////                    .attr("id", "example")
-////                    .attr("cellspacing", "0")
-////                    .attr("width", "100%")
-//                    .append("tbody")
-//
-//                    .selectAll("tr")
-//                    .data(parsedCSV).enter()
-//                    .append("tr")
-//
-//                    .selectAll("td")
-//                    .data(function(d) {
-//                        return d;
-//                    }).enter()
-//                    .append("td")
-//                    .text(function(d) {
-//                        return d;
-//                    });
-//
-//                console.log("create_table");
-//
-//            });
-//
-//        }
-
-//        function create_table(){
-//            d3.csv("/css/data.csv", function(error, data) {
-//                if (error) throw error;
-//
-//                var sortAscending = true;
-//                var table = d3.select('#csvFile').append('table');
-//                var titles = d3.keys(data[0]);
-//                var headers = table.append('thead').append('tr')
-//                    .selectAll('th')
-//                    .data(titles).enter()
-//                    .append('th')
-//                    .text(function (d) {
-//                        return d;
-//                    })
-//                    .on('click', function (d) {
-//                        headers.attr('class', 'header');
-//
-//                        if (sortAscending) {
-//                            rows.sort(function(a, b) { return b[d] < a[d]; });
-//                            sortAscending = false;
-//                            this.className = 'aes';
-//                        } else {
-//                            rows.sort(function(a, b) { return b[d] > a[d]; });
-//                            sortAscending = true;
-//                            this.className = 'des';
-//                        }
-//
-//                    });
-//
-//                var rows = table.append('tbody').selectAll('tr')
-//                    .data(data).enter()
-//                    .append('tr');
-//                rows.selectAll('td')
-//                    .data(function (d) {
-//                        return titles.map(function (k) {
-//                            return { 'value': d[k], 'name': k};
-//                        });
-//                    }).enter()
-//                    .append('td')
-//                    .attr('data-th', function (d) {
-//                        return d.name;
-//                    })
-//                    .text(function (d) {
-//                        return d.value;
-//                    });
-//            });
-//
-//        }
-
-//        function update_table(){
-//            console.log($('#example'));
-//            $(document).ready(function() {
-//                $('#example').DataTable();
-//            });
-//            console.log("update_table");
-//        }
 
         myfunction();
 
@@ -779,11 +678,6 @@
                                     .attr("cellspacing", "0")
                                     .attr("width", "100%");
 
-//                console.log("data[0]",data[0]);
-//                console.log("data[1]",data[1]);
-//                console.log("data[2]",data[2]);
-//                console.log("data[3]",data[3]);
-//                console.log("data",data);
                 console.log("parsedCSV[0]",parsedCSV[0]);
                 var titles = d3.keys(parsedCSV[0]);
                 var headers = table.append("thead")
@@ -830,24 +724,60 @@
             console.log("update_table");
 //            setTimeout('alert("second function finished");', 200);
         };
-//        function update_table(callback){
-//            $('#example').DataTable();
-//            console.log("update_table");
-//
-//            callback();
-//        }
-//
-//        create_table();
 
-//        $(document).ready(function() {
-//            create_table();
-//            update_table();
-//        } );
 
-//        $( window ).on( "load", function(){
-//            $('#example').DataTable();
-//            console.log("datatable");
-//        } );
+        function selectElementContents(el)
+        {
+            // Copy textarea, pre, div, etc.
+            if (document.body.createTextRange) {
+                // IE
+                var textRange = document.body.createTextRange();
+                textRange.moveToElementText(el);
+                textRange.select();
+                textRange.execCommand("Copy");
+            }
+            else if (window.getSelection && document.createRange) {
+                // non-IE
+                var range = document.createRange();
+                range.selectNodeContents(el);
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+                try {
+                    var successful = document.execCommand('copy');
+                    var msg = successful ? 'successful' : 'unsuccessful';
+                    console.log('Copy command was ' + msg);
+                } catch(err) {
+                    console.log('Oops, unable to copy');
+                }
+            }
+        } // end function selectElementContents(el)
+
+        function make_copy_button(el)
+        {
+            var copy_btn = document.createElement('input');
+            copy_btn.type = "button";
+            el.parentNode.insertBefore(copy_btn, el.nextSibling);
+            copy_btn.onclick = function() { selectElementContents(el); };
+
+            if (document.queryCommandSupported("copy") || parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]) >= 42)
+            {
+                // Copy works with IE 4+, Chrome 42+, Firefox 41+, Opera 29+
+                copy_btn.value = "Copy";
+            }
+            else
+            {
+                // Select only for Safari and older Chrome, Firefox and Opera
+                copy_btn.value = "Select All (then press CTRL+C to Copy)";
+            }
+        }
+        /* Note: document.queryCommandSupported("copy") should return "true" on browsers that support copy
+         but there was a bug in Chrome versions 42 to 47 that makes it return "false".  So in those
+         versions of Chrome feature detection does not work!
+         See https://code.google.com/p/chromium/issues/detail?id=476508
+         */
+
+        make_copy_button(document.getElementById("token_num"));
 
         /*]]>*/
     </script>
