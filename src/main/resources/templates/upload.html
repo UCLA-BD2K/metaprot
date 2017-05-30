@@ -178,7 +178,9 @@
                 </ul>
                 <div id="token_text" >
                     <p class="navbar-text">Token number</p>
-                    <div class="navbar-text" id="token_num"></div>
+                    <p class="navbar-text" id="token_num"></p>
+                    <!--<input type="button" value="copy" id="copyBtn"/>-->
+                    <!--<button type="submit" value="copy"/>-->
                 </div>
             </div>
             <div class="col-sm-6 col-sm-offset-3 col-md-7 col-md-offset-2 main">
@@ -594,6 +596,7 @@
                                 });
                                 document.getElementById("token_num").innerHTML = sessionStorage.getItem("sessionToken");
                                 console.log(sessionStorage.getItem("sessionToken"));
+                                make_copy_button(document.getElementById("token_num"));
                             }
                         },
                         function(key, bytesUploaded, bytesTotal) {
@@ -757,7 +760,10 @@
         {
             var copy_btn = document.createElement('input');
             copy_btn.type = "button";
+            copy_btn.className = "btn btn-default btn-sm";
+//            copy_btn.style = "background-color:grey";
             el.parentNode.insertBefore(copy_btn, el.nextSibling);
+//            copy_btn = document.getElementById('#copyBtn');
             copy_btn.onclick = function() { selectElementContents(el); };
 
             if (document.queryCommandSupported("copy") || parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]) >= 42)
@@ -771,13 +777,8 @@
                 copy_btn.value = "Select All (then press CTRL+C to Copy)";
             }
         }
-        /* Note: document.queryCommandSupported("copy") should return "true" on browsers that support copy
-         but there was a bug in Chrome versions 42 to 47 that makes it return "false".  So in those
-         versions of Chrome feature detection does not work!
-         See https://code.google.com/p/chromium/issues/detail?id=476508
-         */
 
-        make_copy_button(document.getElementById("token_num"));
+//        make_copy_button(document.getElementById("token_num"));
 
         /*]]>*/
     </script>
