@@ -178,10 +178,11 @@
                 </ul>
                 <div id="token_text" >
                     <p class="navbar-text">Token number</p>
-                    <p id="token_num"></p>
+                    <p class="navbar-text" id="token_num"></p>
                 </div>
             </div>
             <div class="col-sm-6 col-sm-offset-3 col-md-7 col-md-offset-2 main">
+                <!--<div id="csvFile"></div>-->
 
                 <h2>Upload a File</h2>
                 <div class="well well-lg">
@@ -662,50 +663,48 @@
             });
         });
 
-        create_table();
-
-        function create_table(){
-            d3.text("/css/data.csv", function(data) {
-                var parsedCSV = d3.csv.parseRows(data);
-
-//            var container = d3.select('#csvFile')
-//                .append('table')
+//        function create_table(){
+//            d3.text("/css/data.csv", function(data) {
+//                var parsedCSV = d3.csv.parseRows(data);
 //
-//                .selectAll("tr")
-//                .data(parsedCSV).enter()
-//                .append("tr")
+////            var container = d3.select('#csvFile')
+////                .append('table')
+////
+////                .selectAll("tr")
+////                .data(parsedCSV).enter()
+////                .append("tr")
+////
+////                .selectAll("td")
+////                .data(function(d) { return d; }).enter()
+////                .append("td")
+////                .text(function(d) { return d; });
+//                var container = d3.select("#csvFile")
+//                    .append("div").attr("class", "container")
+//                    .append("table").attr("class", "table table-hover table-bordered table-striped")
+////                    .append("table").attr("class", "display")
+////                    .attr("id", "example")
+////                    .attr("cellspacing", "0")
+////                    .attr("width", "100%")
+//                    .append("tbody")
 //
-//                .selectAll("td")
-//                .data(function(d) { return d; }).enter()
-//                .append("td")
-//                .text(function(d) { return d; });
-                var container = d3.select("#csvFile")
-                    .append("div").attr("class", "container")
-                    .append("table").attr("class", "table table-hover table-bordered table-striped")
-//                    .append("table").attr("class", "display")
-//                    .attr("id", "example")
-//                    .attr("cellspacing", "0")
-//                    .attr("width", "100%")
-                    .append("tbody")
-
-                    .selectAll("tr")
-                    .data(parsedCSV).enter()
-                    .append("tr")
-
-                    .selectAll("td")
-                    .data(function(d) {
-                        return d;
-                    }).enter()
-                    .append("td")
-                    .text(function(d) {
-                        return d;
-                    });
-
-                console.log("create_table");
-
-            });
-
-        }
+//                    .selectAll("tr")
+//                    .data(parsedCSV).enter()
+//                    .append("tr")
+//
+//                    .selectAll("td")
+//                    .data(function(d) {
+//                        return d;
+//                    }).enter()
+//                    .append("td")
+//                    .text(function(d) {
+//                        return d;
+//                    });
+//
+//                console.log("create_table");
+//
+//            });
+//
+//        }
 
 //        function create_table(){
 //            d3.csv("/css/data.csv", function(error, data) {
@@ -756,6 +755,81 @@
 //
 //        }
 
+//        function update_table(){
+//            console.log($('#example'));
+//            $(document).ready(function() {
+//                $('#example').DataTable();
+//            });
+//            console.log("update_table");
+//        }
+
+        myfunction();
+
+        function myfunction() {
+            create_table(update_table);
+        }
+
+        function create_table(callback) {
+            d3.text("/css/data.csv", function(data) {
+                var parsedCSV = d3.csv.parseRows(data);
+                var table = d3.select("#csvFile")
+                    .append("div").attr("class", "container")
+                    .append("table").attr("class", "table table-hover table-bordered table-striped")
+                                    .attr("id", "example")
+                                    .attr("cellspacing", "0")
+                                    .attr("width", "100%");
+
+//                console.log("data[0]",data[0]);
+//                console.log("data[1]",data[1]);
+//                console.log("data[2]",data[2]);
+//                console.log("data[3]",data[3]);
+//                console.log("data",data);
+                console.log("parsedCSV[0]",parsedCSV[0]);
+                var titles = d3.keys(parsedCSV[0]);
+                var headers = table.append("thead")
+                                .append('tr')
+                                .selectAll('th')
+                                .data(parsedCSV[0]).enter()
+                                .append('th')
+                                .text(function (d) {
+                                    return d;
+                                });
+
+                parsedCSV = parsedCSV.slice(1,parsedCSV.length);
+                var rows = table.append("tbody")
+
+                    .selectAll("tr")
+                    .data(parsedCSV).enter()
+                    .append("tr")
+
+                    .selectAll("td")
+                    .data(function(d) {
+                        return d;
+                    }).enter()
+                    .append("td")
+                    .text(function(d) {
+                        return d;
+                    });
+
+                console.log("create_table");
+
+            });
+
+
+            setTimeout(function() {
+//                alert('first function finished');
+                if(typeof callback == 'function')
+                    callback();
+            }, 1000);
+        };
+
+        function update_table() {
+            $('#example').DataTable( {
+                "scrollX": true
+            } );
+            console.log("update_table");
+//            setTimeout('alert("second function finished");', 200);
+        };
 //        function update_table(callback){
 //            $('#example').DataTable();
 //            console.log("update_table");
