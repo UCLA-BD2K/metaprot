@@ -17,12 +17,12 @@
     <!--<link href="/css/lib/bootstrap.css" rel="stylesheet"/>-->
 
      <!--Required Javascript-->
-    <!--<style>-->
-        <!--div.dataTables_wrapper {-->
-            <!--width: 800px;-->
-            <!--margin: 0 auto;-->
-        <!--}-->
-    <!--</style>-->
+    <style>
+        .dataTables_scroll
+        {
+            overflow:auto;
+        }
+    </style>
 
 
 </head>
@@ -610,8 +610,9 @@
 
         function update_table() {
             $('#example').DataTable( {
-                "scrollX": true
+//                "scrollX": true,
             } );
+            jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
             console.log("update_table");
 //            setTimeout('alert("second function finished");', 200);
         };
