@@ -65,9 +65,10 @@
                     <li><a href="">Integration</a></li>
                     <li><a href="">Summary</a></li>
                 </ul>
-                <div id="token_text" >
-                    <p class="navbar-text">Token number</p>
-                    <p class="navbar-text" id="token_num"></p>
+                <div id="token_text">
+                    <p>Token number</p>
+                    <p id="token_num"></p>
+                    <!--<input id="copy_button" type="button" class="btn btn-default btn-xs btn-block" value="Copy"/>-->
                     <!--<input type="button" value="copy" id="copyBtn"/>-->
                     <!--<button type="submit" value="copy"/>-->
                 </div>
@@ -285,6 +286,9 @@
                             modal.style.display = "none";
                         }
                     }
+
+                    console.log("data",data);
+                    myfunction(data);
                 }
 
                 //trash icon to delete file
@@ -487,6 +491,28 @@
                                 document.getElementById("token_num").innerHTML = sessionStorage.getItem("sessionToken");
                                 console.log(sessionStorage.getItem("sessionToken"));
                                 make_copy_button(document.getElementById("token_num"));
+
+//                                var copyTextareaBtn = document.querySelector('.js-textareacopybtn');
+//
+//                                copyTextareaBtn.addEventListener('click', function(event) {
+//                                    var selection = window.getSelection();
+//                                    var copyTextarea = document.getElementsByClassName(".js-copytextarea");
+////                                    var copyTextarea = document.querySelector('.js-copytextarea');
+//                                    console.log("copyTextarea",copyTextarea);
+//                                    var range = document.createRange();
+//                                    range.selectNodeContents(copyTextarea[0]);
+//                                    selection.removeAllRanges();
+//                                    selection.addRange(range);
+//                                    console.log("range.selectNodeContents(copyTextarea[0])",range.selectNodeContents(copyTextarea[0]));
+//
+//                                    try {
+//                                        var successful = document.execCommand('copy');
+//                                        var msg = successful ? 'successful' : 'unsuccessful';
+//                                        console.log('Copying text command was ' + msg);
+//                                    } catch (err) {
+//                                        console.log('Oops, unable to copy');
+//                                    }
+//                                });
                             }
                         },
                         function(key, bytesUploaded, bytesTotal) {
@@ -556,52 +582,54 @@
             });
         });
 
-        myfunction();
-
-        function myfunction() {
-            create_table(update_table);
+        function myfunction(data_file) {
+            console.log("data_file in myfunction",data_file);
+            create_table(data_file,update_table);
         }
 
-        function create_table(callback) {
-            d3.text("/css/data.csv", function(data) {
-                var parsedCSV = d3.csv.parseRows(data);
-                var table = d3.select("#csvFile")
-                    .append("div").attr("class", "container")
-                    .append("table").attr("class", "display nowrap table table-hover table-bordered table-striped")
-                                    .attr("id", "example")
-                                    .attr("cellspacing", "0")
-                                    .attr("width", "100%");
+        function create_table(data_file,callback) {
+//            d3.text("/css/data.csv", function(data) {
+//            d3.csv.parse(data_file, function(data) {
+            console.log("data_file in create_table",data_file);
+            var data = d3.csv.parse(data_file);
+            var parsedCSV = d3.csv.parseRows(data);
+            var table = d3.select("#csvFile")
+                .append("div").attr("class", "container")
+                .append("table").attr("class", "display nowrap table table-hover table-bordered table-striped")
+                                .attr("id", "example")
+                                .attr("cellspacing", "0")
+                                .attr("width", "100%");
 
-                console.log("parsedCSV[0]",parsedCSV[0]);
-                var titles = d3.keys(parsedCSV[0]);
-                var headers = table.append("thead")
-                                .append('tr')
-                                .selectAll('th')
-                                .data(parsedCSV[0]).enter()
-                                .append('th')
-                                .text(function (d) {
-                                    return d;
-                                });
+            console.log("parsedCSV[0]",parsedCSV[0]);
+            var titles = d3.keys(parsedCSV[0]);
+            var headers = table.append("thead")
+                            .append('tr')
+                            .selectAll('th')
+                            .data(parsedCSV[0]).enter()
+                            .append('th')
+                            .text(function (d) {
+                                return d;
+                            });
 
-                parsedCSV = parsedCSV.slice(1,parsedCSV.length);
-                var rows = table.append("tbody")
+            parsedCSV = parsedCSV.slice(1,parsedCSV.length);
+            var rows = table.append("tbody")
 
-                    .selectAll("tr")
-                    .data(parsedCSV).enter()
-                    .append("tr")
+                .selectAll("tr")
+                .data(parsedCSV).enter()
+                .append("tr")
 
-                    .selectAll("td")
-                    .data(function(d) {
-                        return d;
-                    }).enter()
-                    .append("td")
-                    .text(function(d) {
-                        return d;
-                    });
+                .selectAll("td")
+                .data(function(d) {
+                    return d;
+                }).enter()
+                .append("td")
+                .text(function(d) {
+                    return d;
+                });
 
-                console.log("create_table");
+            console.log("create_table");
 
-            });
+//            });
 
 
             setTimeout(function() {
@@ -613,7 +641,6 @@
 
         function update_table() {
             $('#example').DataTable( {
-//                "scrollX": true,
             } );
             jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
             console.log("update_table");
@@ -652,8 +679,7 @@
         {
             var copy_btn = document.createElement('input');
             copy_btn.type = "button";
-            copy_btn.className = "btn btn-default btn-sm";
-//            copy_btn.style = "background-color:grey";
+            copy_btn.className = "btn btn-default btn-xs btn-block";
             el.parentNode.insertBefore(copy_btn, el.nextSibling);
 //            copy_btn = document.getElementById('#copyBtn');
             copy_btn.onclick = function() { selectElementContents(el); };

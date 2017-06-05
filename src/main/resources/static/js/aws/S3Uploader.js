@@ -109,8 +109,9 @@
 					} else {
 						alert("Loaded " + data.ContentLength + " bytes");
 						// do something with data.Body
-						console.log(new TextDecoder("utf-8").decode(data.Body));
-						return new TextDecoder("utf-8").decode(data.Body);
+						// console.log(new TextDecoder("utf-8").decode(data.Body));
+						var result = new TextDecoder("utf-8").decode(data.Body);
+						return result;
 					}
 				}
 			);
