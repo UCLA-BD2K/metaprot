@@ -97,6 +97,26 @@
 
 		};
 
+		var download = function(filePath){
+
+			initAWSCredentials();
+			var s3 = new AWS.S3();
+			s3.getObject(
+				{ Bucket: s3BucketName, Key: filePath },
+				function (error, data) {
+					if (error != null) {
+						alert("Failed to retrieve an object: " + error);
+					} else {
+						alert("Loaded " + data.ContentLength + " bytes");
+						// do something with data.Body
+						console.log(new TextDecoder("utf-8").decode(data.Body));
+						return new TextDecoder("utf-8").decode(data.Body);
+					}
+				}
+			);
+
+		};
+
 		// private
 		var refreshAWSCredentials = function() {
 			// every 45 minutes, refresh access credentials
@@ -114,7 +134,8 @@
 		};
 
 		return {
-			upload:upload
+			upload:upload,
+			download:download
 		};
 
 	})();
