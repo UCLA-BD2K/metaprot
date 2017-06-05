@@ -265,7 +265,9 @@
 
             $('#treeview').treeview(options);
 
-
+            function downloadFilesFromS3(fileName){
+                S3Uploader.download("user-input/" + sessionStorage.getItem("sessionToken") + "/" + fileName);
+            }
             document.getElementById("treeview").addEventListener("click",function(e) {
                 // e.target is our targetted element.
                 // try doing console.log(e.target.nodeName), it will result LI
@@ -273,6 +275,7 @@
                 //eye view icon
                 if(e.target && e.target.id == "myBtn") {
                     // Get the modal
+                    var data = downloadFilesFromS3(e.target.name);
                     var modal = document.getElementById('myModal');
                     modal.style.display = "block";
 

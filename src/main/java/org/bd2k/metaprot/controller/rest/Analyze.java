@@ -481,4 +481,5 @@ public class Analyze {
     public boolean checkToken(@RequestParam("token") String token){
         return sessionData.checkToken(token);
     }
+
 }
