@@ -16,125 +16,14 @@
     <!-- Required Stylesheets -->
     <!--<link href="/css/lib/bootstrap.css" rel="stylesheet"/>-->
 
-    <!-- Required Javascript -->
+     <!--Required Javascript-->
     <!--<style>-->
-        <!--* {-->
-            <!--margin: 0;-->
-            <!--padding: 0;-->
-        <!--}-->
-        <!--body {-->
-            <!--font: 14px/1.4 Georgia, Serif;-->
-        <!--}-->
-        <!--#page-wrap {-->
-            <!--margin: 50px;-->
-        <!--}-->
-        <!--p {-->
-            <!--margin: 20px 0;-->
-        <!--}-->
-
-        <!--/*-->
-        <!--Generic Styling, for Desktops/Laptops-->
-        <!--*/-->
-        <!--table {-->
-            <!--width: 100%;-->
-            <!--border-collapse: collapse;-->
-        <!--}-->
-        <!--/* Zebra striping */-->
-        <!--tr:nth-of-type(odd) {-->
-            <!--background: #eee;-->
-        <!--}-->
-        <!--th {-->
-            <!--background: #333;-->
-            <!--color: white;-->
-            <!--font-weight: bold;-->
-            <!--cursor: s-resize;-->
-            <!--background-repeat: no-repeat;-->
-            <!--background-position: 3% center;-->
-        <!--}-->
-        <!--td, th {-->
-            <!--padding: 6px;-->
-            <!--border: 1px solid #ccc;-->
-            <!--text-align: left;-->
-        <!--}-->
-
-        <!--th.des:after {-->
-            <!--content: "\21E9";-->
-        <!--}-->
-
-        <!--th.aes:after {-->
-            <!--content: "\21E7";-->
-        <!--}-->
-
-        <!--/*-->
-        <!--Max width before this PARTICULAR table gets nasty-->
-        <!--This query will take effect for any screen smaller than 760px-->
-        <!--and also iPads specifically.-->
-        <!--*/-->
-        <!--@media-->
-        <!--only screen and (max-width: 760px),-->
-        <!--(min-device-width: 768px) and (max-device-width: 1024px)  {-->
-
-            <!--/* Force table to not be like tables anymore */-->
-            <!--table, thead, tbody, th, td, tr {-->
-                <!--display: block;-->
-            <!--}-->
-
-            <!--/* Hide table headers (but not display: none;, for accessibility) */-->
-            <!--thead tr {-->
-                <!--position: absolute;-->
-                <!--top: -9999px;-->
-                <!--left: -9999px;-->
-            <!--}-->
-
-            <!--tr { border: 1px solid #ccc; }-->
-
-            <!--td {-->
-                <!--/* Behave  like a "row" */-->
-                <!--border: none;-->
-                <!--border-bottom: 1px solid #eee;-->
-                <!--position: relative;-->
-                <!--padding-left: 50%;-->
-            <!--}-->
-
-            <!--td:before {-->
-                <!--/* Now like a table header */-->
-                <!--position: absolute;-->
-                <!--/* Top/left values mimic padding */-->
-                <!--top: 6px;-->
-                <!--left: 6px;-->
-                <!--width: 45%;-->
-                <!--padding-right: 10px;-->
-                <!--white-space: nowrap;-->
-            <!--}-->
-
-            <!--/*-->
-            <!--Label the data-->
-            <!--*/-->
-            <!--td:before {-->
-                <!--content: attr(data-th) ": ";-->
-                <!--font-weight: bold;-->
-                <!--width: 6.5em;-->
-                <!--display: inline-block;-->
-            <!--}-->
-        <!--}-->
-
-        <!--/* Smartphones (portrait and landscape) -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
-        <!--@media only screen-->
-        <!--and (min-device-width : 320px)-->
-        <!--and (max-device-width : 480px) {-->
-            <!--body {-->
-                <!--padding: 0;-->
-                <!--margin: 0;-->
-                <!--width: 320px; }-->
-        <!--}-->
-
-        <!--/* iPads (portrait and landscape) -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; */-->
-        <!--@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {-->
-            <!--body {-->
-                <!--width: 495px;-->
-            <!--}-->
+        <!--div.dataTables_wrapper {-->
+            <!--width: 800px;-->
+            <!--margin: 0 auto;-->
         <!--}-->
     <!--</style>-->
+
 
 </head>
 <body>
@@ -380,19 +269,11 @@
                 // e.target is our targetted element.
                 // try doing console.log(e.target.nodeName), it will result LI
                 console.log('e.target',e.target);
+                //eye view icon
                 if(e.target && e.target.id == "myBtn") {
                     // Get the modal
                     var modal = document.getElementById('myModal');
                     modal.style.display = "block";
-
-//                    // Get the <span> element that closes the modal
-//                    var span = document.getElementsByClassName("close")[0];
-//                    console.log("span", span);
-//
-//                    // When the user clicks on <span> (x), close the modal
-//                    span.onclick = function () {
-//                        modal.style.display = "none";
-//                    }
 
                     // When the user clicks anywhere outside of the modal, close it
                     window.onclick = function (event) {
@@ -400,6 +281,11 @@
                             modal.style.display = "none";
                         }
                     }
+                }
+
+                //trash icon to delete file
+                if(e.target && e.target.id == "myBtn2") {
+
                 }
 
                 if(e.target && e.target.nodeName == "LI") {
@@ -676,7 +562,7 @@
                 var parsedCSV = d3.csv.parseRows(data);
                 var table = d3.select("#csvFile")
                     .append("div").attr("class", "container")
-                    .append("table").attr("class", "table table-hover table-bordered table-striped")
+                    .append("table").attr("class", "display nowrap table table-hover table-bordered table-striped")
                                     .attr("id", "example")
                                     .attr("cellspacing", "0")
                                     .attr("width", "100%");
