@@ -597,6 +597,7 @@
                 treeItem
                     .append($(_this.template.button1)
                         .addClass(classList.join(' '))
+                        .attr('name', node.text)
                     );
                 // console.log("treeItem2",treeItem);
             }
@@ -616,6 +617,7 @@
                 treeItem
                     .append($(_this.template.button2)
                         .addClass(classList.join(' '))
+                        .attr('name', node.text)
                     );
             }
 
