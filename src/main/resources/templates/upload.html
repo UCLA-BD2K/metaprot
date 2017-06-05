@@ -249,6 +249,7 @@
 
         passFilenames();
 
+
         function passFilenames(){
 
             //file tree
@@ -534,8 +535,9 @@
                         });
                     }
                     else{
+                        console.log("session Updating Backend");
                         uploadFileToS3(options, sessionStorage.getItem('sessionToken'), moreParams);
-                        updateSessionData();
+                        updateSessionData(sessionStorage.getItem('sessionToken'));
                     }
 
 //                    document.getElementById("#token_num").innerHTML = sessionStorage.getItem("sessionToken");
