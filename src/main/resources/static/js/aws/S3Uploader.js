@@ -97,20 +97,41 @@
 
 		};
 
-		var download = function(filePath){
+		function download(filePath, callback){
 
 			initAWSCredentials();
 			var s3 = new AWS.S3();
+			var fileData = "";
 			s3.getObject(
 				{ Bucket: s3BucketName, Key: filePath },
 				function (error, data) {
 					if (error != null) {
 						alert("Failed to retrieve an object: " + error);
 					} else {
-						alert("Loaded " + data.ContentLength + " bytes");
 						// do something with data.Body
-						console.log(new TextDecoder("utf-8").decode(data.Body));
-						return new TextDecoder("utf-8").decode(data.Body);
+						//console.log(new TextDecoder("utf-8").decode(data.Body));
+						fileData = new TextDecoder("utf-8").decode(data.Body);
+						console.log("loda", fileData);
+						callback(fileData);
+					}
+				}
+			);
+		}
+
+		var deleteFile = function(filePath, callback){
+
+			initAWSCredentials();
+			var s3 = new AWS.S3();
+			s3.deleteObject(
+				{ Bucket: s3BucketName, Key: filePath },
+				function (error, data) {
+					if (error != null) {
+						console.log("Failed to delete an object: " + error);
+						callback(false);
+					} else {
+						// do something with data.Body
+						console.log("Successfully deleted file");
+						callback(true);
 					}
 				}
 			);
@@ -135,7 +156,8 @@
 
 		return {
 			upload:upload,
-			download:download
+			download:download,
+			deleteFile:deleteFile
 		};
 
 	})();

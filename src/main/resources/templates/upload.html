@@ -265,9 +265,13 @@
 
             $('#treeview').treeview(options);
 
-            function downloadFilesFromS3(fileName){
-                S3Uploader.download("user-input/" + sessionStorage.getItem("sessionToken") + "/" + fileName);
+            function downloadFilesFromS3(fileName, callback){
+                S3Uploader.download("user-input/" + sessionStorage.getItem("sessionToken") + "/" + fileName, callback);
             }
+            function deleteFilesFromS3(fileName, callback){
+                S3Uploader.deleteFile("user-input/" + sessionStorage.getItem("sessionToken") + "/" + fileName, callback);
+            }
+
             document.getElementById("treeview").addEventListener("click",function(e) {
                 // e.target is our targetted element.
                 // try doing console.log(e.target.nodeName), it will result LI
@@ -275,7 +279,11 @@
                 //eye view icon
                 if(e.target && e.target.id == "myBtn") {
                     // Get the modal
-                    var data = downloadFilesFromS3(e.target.name);
+                    var data;
+                    downloadFilesFromS3(e.target.name, function(fileData) {
+                        data = fileData;
+                        //TODO: YOLANDA data here is the data you need.
+                    });
                     var modal = document.getElementById('myModal');
                     modal.style.display = "block";
 
@@ -289,7 +297,25 @@
 
                 //trash icon to delete file
                 if(e.target && e.target.id == "myBtn2") {
-
+                    deleteFilesFromS3(e.target.name, function (status) {
+                       if(status) {
+                           if (!(sessionStorage.getItem("root") === null)) {
+                               var a = JSON.parse(sessionStorage.getItem("root"));
+                               for (var i = 0; i < a.length; i++) {
+                                   if (a[i]["name"] == e.target.name) {
+                                       a.splice(i, 1);
+                                       sessionStorage.setItem("root", JSON.stringify(a));
+                                       alert("File deletion successful");
+                                       passFilenames();
+                                       break;
+                                   }
+                               }
+                           }
+                       }
+                        else{
+                            alert("File deletion failed.");
+                       }
+                    });
                 }
 
                 if(e.target && e.target.nodeName == "LI") {
