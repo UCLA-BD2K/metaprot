@@ -249,6 +249,35 @@
 
         passFilenames();
 
+        function updateSessionData(token){
+
+            var formData = new FormData();
+            console.log(token);
+            console.log(sessionStorage.getItem("root"));
+            formData.append("token", token);
+
+            formData.append("data", sessionStorage.getItem("root"));
+            //formData.append("data", "TEST");
+
+            $.ajax({
+                url: '/analyze/updateSessionData',
+                method: "POST",
+                contentType: false,
+                processData: false,
+                data: formData,
+                success:function(data) {    // really just prints on screen any response from server
+                    var s = data.toString();
+                    console.log(s);
+                },
+                error:function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+
+        }
+
 
         function passFilenames(){
 
@@ -304,8 +333,10 @@
                                for (var i = 0; i < a.length; i++) {
                                    if (a[i]["name"] == e.target.name) {
                                        a.splice(i, 1);
+                                       console.log(JSON.stringify(a));
                                        sessionStorage.setItem("root", JSON.stringify(a));
                                        alert("File deletion successful");
+                                       updateSessionData(sessionStorage.getItem("sessionToken"));
                                        passFilenames();
                                        break;
                                    }
@@ -414,35 +445,6 @@
                 });
             }
 
-            function updateSessionData(token){
-
-                var formData = new FormData();
-                console.log(token);
-                console.log(sessionStorage.getItem("root"));
-                formData.append("token", token);
-
-                formData.append("data", sessionStorage.getItem("root"));
-                //formData.append("data", "TEST");
-
-                $.ajax({
-                    url: '/analyze/updateSessionData',
-                    method: "POST",
-                    contentType: false,
-                    processData: false,
-                    data: formData,
-                    success:function(data) {    // really just prints on screen any response from server
-                        var s = data.toString();
-                        console.log(s);
-                    },
-                    error:function(jqXHR, textStatus, errorThrown) {
-                        console.log(jqXHR);
-                        console.log(textStatus);
-                        console.log(errorThrown);
-                    }
-                });
-
-            }
-
             //TODO: Yolanda, this code has to execute on click of the "GO" Button
             $('#retrieve-file').on("submit", function(e) {
                 e.preventDefault();
@@ -463,8 +465,6 @@
                         $('#token-num-display').css("opacity", 1);
                     }
                 });
-
-                //TODO: Yolanda, session storage is updated here, Refresh the page to load the data
             });
 
             $('#csv-upload-form').on("submit", function(e) {
