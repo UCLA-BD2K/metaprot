@@ -4,11 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bd2k.metaprot.aws.DynamoDBClient;
 import org.bd2k.metaprot.dbaccess.repository.PatternRecogTaskRepository;
+import org.bd2k.metaprot.dbaccess.repository.SessionDataRepository;
 import org.bd2k.metaprot.dbaccess.repository.TaskRepository;
-import org.bd2k.metaprot.model.MetaboliteStat;
-import org.bd2k.metaprot.model.PatternRecogStat;
-import org.bd2k.metaprot.model.PatternRecogTask;
-import org.bd2k.metaprot.model.Task;
+import org.bd2k.metaprot.model.*;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +27,9 @@ public class DAOImpl implements DAO {
 
     @Autowired
     private PatternRecogTaskRepository PRTaskRepository;
+
+    @Autowired
+    private SessionDataRepository sessionDataRepository;
 
     @Autowired
     private DynamoDBClient dynamoDBClient;
@@ -167,6 +169,30 @@ public class DAOImpl implements DAO {
         }
 
         return numChunks;
+    }
+
+
+    /* Session Data */
+
+    @Override
+    public SessionData getSessionData(String token) {
+        return sessionDataRepository.findByToken(token);
+    }
+
+    @Override
+    public boolean saveSessionData(SessionData sessionData) {
+
+        if (getSessionData(sessionData.getToken()) != null) {
+            return false;   // someone is trying to save a task whos UUID already exists!
+        }
+
+        sessionDataRepository.save(sessionData);
+        return true;
+    }
+
+    @Override
+    public void saveOrUpdateSessionData(SessionData sessionData) {
+        sessionDataRepository.save(sessionData);
     }
 
 }

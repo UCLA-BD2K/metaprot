@@ -5,7 +5,6 @@ import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.data.FeedBackType;
 import org.bd2k.metaprot.data.IntegrityChecker;
-import org.bd2k.metaprot.data.sessionData;
 import org.bd2k.metaprot.data.siteTrafficData;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.BadRequestException;
@@ -469,17 +468,28 @@ public class Analyze {
     @RequestMapping(value= "/updateSessionData", method = RequestMethod.POST)
     public String updateSessionData(@RequestParam("token") String token,
                                     @RequestParam("data") String data){
-        return sessionData.setData(token, data);
+        dao.saveOrUpdateSessionData(new SessionData(token, data));
+        return "success";
     }
 
     @RequestMapping(value= "/getSessionData", method = RequestMethod.POST)
     public String getSessionData(@RequestParam("token") String token){
-        return sessionData.getData(token);
+        SessionData sessionData = dao.getSessionData(token);
+        if (sessionData != null)
+            return sessionData.getData();
+        else
+            return new JSONObject().put("Error", "Token does not exist").toString();
+
     }
 
     @RequestMapping(value= "/checkToken", method = RequestMethod.POST)
     public boolean checkToken(@RequestParam("token") String token){
-        return sessionData.checkToken(token);
+        if (dao.getSessionData(token) == null)
+            return false;
+        return true;
     }
+
+
+
 
 }

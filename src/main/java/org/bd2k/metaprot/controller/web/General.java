@@ -1,6 +1,7 @@
 package org.bd2k.metaprot.controller.web;
 
-import org.bd2k.metaprot.data.sessionData;
+import org.bd2k.metaprot.dbaccess.DAOImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class General {
+
+    @Autowired
+    private DAOImpl dao;
 
     /**
      * Home page
@@ -34,7 +38,7 @@ public class General {
         System.out.println(token);
 
         model.addAttribute("token", token);     // pass token to view as model variable
-        model.addAttribute("sessionData", sessionData.getData(token));
+        model.addAttribute("sessionData", dao.getSessionData(token));
 
         return "upload";
     }
@@ -62,7 +66,7 @@ public class General {
         System.out.println(token);
 
         model.addAttribute("token", token);     // pass token to view as model variable
-        model.addAttribute("sessionData", sessionData.getData(token));
+        model.addAttribute("sessionData", dao.getSessionData(token));
 
         return "upload_pass";
     }

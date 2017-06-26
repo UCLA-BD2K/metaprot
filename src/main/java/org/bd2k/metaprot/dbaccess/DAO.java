@@ -1,9 +1,6 @@
 package org.bd2k.metaprot.dbaccess;
 
-import org.bd2k.metaprot.model.MetaboliteStat;
-import org.bd2k.metaprot.model.PatternRecogStat;
-import org.bd2k.metaprot.model.PatternRecogTask;
-import org.bd2k.metaprot.model.Task;
+import org.bd2k.metaprot.model.*;
 
 import java.util.List;
 
@@ -18,6 +15,8 @@ import java.util.List;
  * Created by allengong on 8/30/16.
  */
 public interface DAO {
+
+    /* Metabolite Analysis */
 
     /**
      * Given a UUID token, return the associated task.
@@ -42,6 +41,9 @@ public interface DAO {
      */
     void saveOrUpdateTask(Task task);
 
+
+    /* Pattern Recognition */
+
     /**
      * Retrieves the results of the task, with return type matching that of
      * saveTaskResults() for this task type.
@@ -61,7 +63,6 @@ public interface DAO {
      * @return number of chunks used to store the results, or -1 if error; use as needed
      */
     int saveTaskResults(Task task, List<List<MetaboliteStat>> results);
-
 
 
     /**
@@ -106,4 +107,32 @@ public interface DAO {
      * @return number of chunks used to store the results, or -1 if error; use as needed
      */
     int saveTaskResults(PatternRecogTask task, List<List<PatternRecogStat>> results);
+
+
+
+    /* Session Data */
+
+    /**
+     * Given a UUID token, return the associated SessionData.
+     *
+     * @param token the UUID token
+     * @return an initialized SessionData instance, or null if UUID is invalid (DNE in database)
+     */
+    SessionData getSessionData(String token);
+
+    /**
+     * Saves the given SessionData to the database as a new entry.
+     *
+     * @param sessionData the SessionData to save
+     * @return true if the SessionData was added to the database, false otherwise
+     */
+    boolean saveSessionData(SessionData sessionData);
+
+    /**
+     * Saves the given SessionData to the database if it does not exist, or updates it.
+     *
+     * @param sessionData the SessionData to save
+     */
+    void saveOrUpdateSessionData(SessionData sessionData);
+
 }
