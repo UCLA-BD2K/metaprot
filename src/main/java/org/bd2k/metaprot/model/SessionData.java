@@ -22,10 +22,14 @@ import java.util.HashMap;
 public class SessionData {
     String token;
     String data;
+    long timestampMillis;
 
-    public SessionData(String token, String data) {
+    public SessionData() {}
+
+    public SessionData(String token, String data, long timestampMillis) {
         this.token = token;
         this.data = data;
+        this.timestampMillis = timestampMillis;
     }
 
     // getters and setters
@@ -48,12 +52,22 @@ public class SessionData {
         this.data = data;
     }
 
+    @DynamoDBAttribute
+    public long getTimestampMillis() {
+        return this.timestampMillis;
+    }
+
+    public void setTimestampMillis(long timestampMillis) {
+        this.timestampMillis = timestampMillis;
+    }
+
     @Override
     public String toString() {
 
         return "SessionData{" +
                 "token='" + this.token + '\'' +
                 ", data=" + this.data +
+                ", time=" + this.timestampMillis +
                 "}";
     }
 
