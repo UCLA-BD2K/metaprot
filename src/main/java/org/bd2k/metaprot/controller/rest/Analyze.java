@@ -456,7 +456,7 @@ public class Analyze {
     }
 
     @RequestMapping(value= "/getProcessingStats", method = RequestMethod.POST)
-    public String getSiteTrafficData(@RequestParam("fileName") String fileName){
+    public String getProcessingStats(@RequestParam("fileName") String fileName){
         if(fileInfoMap.containsKey(fileName))
             return fileInfoMap.get(fileName);
 

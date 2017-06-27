@@ -44,7 +44,7 @@ public class siteTrafficData {
         countryCounter = new HashMap<>();
         Date currentDate = new Date();
         //System.out.printf("CurrentDate: %s\n", fmt.format(currentDate));
-        for (int i = 365; i >= 0; i--) {
+        for (int i = 365; i > 0; i--) {
             long milliseconds = (long) i * 24 * 60 * 60 * 1000;
             Date current = new Date(currentDate.getTime() - milliseconds);
             //System.out.println(fmt.format(current));
@@ -88,11 +88,16 @@ public class siteTrafficData {
             dateMapper curr = dailyCounter.get(i);
             JSONObject dateCounterDetails = new JSONObject();
             dateCounterDetails.put("date", curr.date);
-            //dateCounterDetails.put("count", curr.visitCounter);
+            dateCounterDetails.put("count", curr.visitCounter);
+
+            /*
+            // dummy count data
             dateCounterDetails.put("count", k);
             if(k < 10)
                 k++;
             else k = 0;
+            // end dummy count data
+            */
             dateCountMap.add(dateCounterDetails);
         }
         JSONToReturn.put("dateCountMap", dateCountMap);

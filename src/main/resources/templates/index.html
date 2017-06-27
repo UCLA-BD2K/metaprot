@@ -248,11 +248,11 @@
                         contentType: false,
                         success: function (data) {
                             var s = data.toString();
-//                            console.log(s);
+                             console.log(s);
                             var traffic = JSON.parse(s);
                             plotTraffic(traffic["dateCountMap"]);
                             console.log(traffic["dateCountMap"]);
-//                            console.log(traffic["countryCountMap"]);
+                           console.log(traffic["countryCountMap"]);
                             plotCountry(traffic["countryCountMap"]);
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
