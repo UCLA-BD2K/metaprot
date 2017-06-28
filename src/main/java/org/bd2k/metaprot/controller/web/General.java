@@ -1,11 +1,18 @@
 package org.bd2k.metaprot.controller.web;
 
+import com.google.api.services.analytics.Analytics;
+import com.google.api.services.analytics.model.GaData;
+import org.bd2k.metaprot.data.GoogleAnalytics;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Web controller that handles general URLs.
@@ -20,12 +27,56 @@ public class General {
     @Autowired
     private DAOImpl dao;
 
+    ConcurrentHashMap<String, GAInfo> GAInfoMapping;
+
+    private class GAInfo {
+        GaData gaData;
+        int numCountries;
+        public GAInfo(GaData data, int numCountries) {
+            this.gaData = data;
+            this.numCountries = numCountries;
+        }
+    }
+
     /**
      * Home page
      * @return
      */
     @RequestMapping("/")
-    public String getHomePage() {
+    public String getHomePage(Model model) {
+        if(GAInfoMapping == null || GAInfoMapping.get(new SimpleDateFormat("DDDD MMMM yyyy").format(new Date())) == null) {
+            GAInfoMapping = new ConcurrentHashMap<>(); //Reset the mapping
+            GaData results;
+            int numCountries;
+            try {
+                Analytics analytics = GoogleAnalytics.initializeAnalytics();
+                String profile = GoogleAnalytics.getFirstProfileId(analytics);
+                //System.out.println("First Profile Id: " + profile);
+                results = (GoogleAnalytics.getResults(analytics, profile));
+                numCountries = GoogleAnalytics.getNumCountries(analytics, profile);
+                GAInfoMapping.put(new SimpleDateFormat("DDDD MMMM yyyy").format(new Date()), new GAInfo(results, numCountries));
+            } catch (Exception e) {
+                e.printStackTrace();
+                GAInfoMapping.put(new SimpleDateFormat("DDDD MMMM yyyy").format(new Date()), new GAInfo(null, 0));
+            }
+        }
+
+        GAInfo info = GAInfoMapping.get(new SimpleDateFormat("DDDD MMMM yyyy").format(new Date()));
+        if (info.gaData != null) {
+            model.addAttribute("month", "As of " + new SimpleDateFormat("MMMM yyyy").format(new Date()) + ", Google Analytics reports the following data on MetaProt:");
+            model.addAttribute("pageviews", String.format("%s", info.gaData.getRows().get(0).get(0)));
+            model.addAttribute("pageviewsPerVisit", String.format("%.02f", Float.valueOf(info.gaData.getRows().get(0).get(1))));
+            model.addAttribute("uniqueVisitors", info.gaData.getRows().get(0).get(2));
+            model.addAttribute("numCountries", info.numCountries);
+        } else {
+            model.addAttribute("month", "As of " + new SimpleDateFormat("MMMM yyyy").format(new Date()) + ", Google Analytics reports the following data on MetaProt:");
+            model.addAttribute("pageviews", "n/a");
+            model.addAttribute("pageviewsPerVisit", "n/a");
+            model.addAttribute("uniqueVisitors", "n/a");
+            model.addAttribute("numCountries", "n/a");
+        }
+
+
         return "index";
     }
 

@@ -76,35 +76,32 @@
                         <div class="col-xs-8 col-sm-4 placeholder">
                             <!--<div id="chart-container"></div>-->
                             <h4>Site Traffic</h4>
-                            <span class="text-muted">Real time traffic visualization</span>
-                            <svg id="visualisation" width="500" height="400"></svg>
+                            <span class="text-muted"><p th:text='${month}'>Google Analytics Reports:</p></span>
+                            <ul style="text-align:left;">
+                                <li><span style="text-decoration: underline"><em th:text='${pageviews}'>n/a</em></span> pageviews</li>
+                                <li><span style="text-decoration: underline"><em th:text='${pageviewsPerVisit}'>n/a</em></span> pageviews per visit</li>
+                                <li><span style="text-decoration: underline"><em th:text='${uniqueVisitors}'>n/a</em></span> unique visitors</li>
+                                <li><span style="text-decoration: underline"><em th:text='${numCountries}'>n/a</em></span> countries represented.<br /></li>
+                            </ul>
                         </div>
+
+
+
                     </div>
 
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12 col-md-12 main">
-                    <div class="row placeholders">
-                        <div class="col-xs-8 col-sm-4 col-sm-offset-1 placeholder">
-                            <h4>Feature Use Statistics</h4>
-                            <span class="text-muted">A full pie chart to show usage statistics of various features in MetaProt</span>
-                            <!--<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="240" height="240" class="img-responsive" alt="img3"></img>-->
-                            <svg id="countryPie" width="305" height="305"></svg>
-                        </div>
-                        <div class="col-xs-8 col-sm-4 col-sm-offset-2 placeholder">
-                        </div>
-                        <!--<div class="col-xs-8 col-sm-4 placeholder">-->
-                        <!--</div>-->
-                    </div>
-                </div>
-            </div>
+
         </div>
+
+
+
 
         <div th:replace="fragments/footer :: footer"></div>
         <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
         <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script>
+        <script src="/js/analytics.js"></script>
         <script src="/js/d3pie.min.js"></script>
         <!--<script src="nv.d3.min.js"></script>-->
         <!--<script src="https://d3js.org/d3.v4.min.js"></script>-->
@@ -218,14 +215,6 @@
                     }
                 }
             });
-        </script>
-        <script>
-            (function(w,d,s,g,js,fs){
-                g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(f){this.q.push(f);}};
-                js=d.createElement(s);fs=d.getElementsByTagName(s)[0];
-                js.src='https://apis.google.com/js/platform.js';
-                fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');};
-            }(window,document,'script'));
         </script>
         <script type="text/javascript">
             /*<![CDATA[*/
