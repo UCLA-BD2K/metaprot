@@ -508,9 +508,9 @@
                 // try implementing map() function for parsing when done using dummy data
                 for (var i = 0; i < dailyVisitCounts.length; i++) {
                     dataDaily.addRow([new Date(dailyVisitCounts[i][0],
-                                            dailyVisitCounts[i][1]-1,
-                                            dailyVisitCounts[i][2]),
-                                    (i%3)*i*100+parseInt(dailyVisitCounts[i][3], 10)]);
+                                                dailyVisitCounts[i][1]-1,
+                                                dailyVisitCounts[i][2]),
+                                            parseInt(dailyVisitCounts[i][3], 10)]);
                 }
 
             }
@@ -518,8 +518,8 @@
             // try implementing map() function for parsing when done using dummy data
                 for (var i = 0; i < monthlyVisitCounts.length; i++) {
                     dataMonthly.addRow([new Date(monthlyVisitCounts[i][0],
-                                            monthlyVisitCounts[i][1]-1, 0),
-                                    (i%3)*i*1000+parseInt(monthlyVisitCounts[i][2], 10)]);
+                                                monthlyVisitCounts[i][1]-1, 1),
+                                            parseInt(monthlyVisitCounts[i][2], 10)]);
                 }
 
             }

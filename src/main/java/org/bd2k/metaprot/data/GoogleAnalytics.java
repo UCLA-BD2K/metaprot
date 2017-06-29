@@ -109,21 +109,21 @@ public class GoogleAnalytics {
 
     public static GaData getDailyVisitCounts(Analytics analytics, String profileId) throws IOException {
         return analytics.data().ga()
-                .get("ga:" + profileId, "2016-01-01", "today", "ga:pageviews")
+                .get("ga:" + profileId, "2017-05-01", "today", "ga:pageviews")
                 .setDimensions("ga:year, ga:month, ga:day")
                 .execute();
     }
 
     public static GaData getMonthlyVisitCounts(Analytics analytics, String profileId) throws IOException {
         return analytics.data().ga()
-                .get("ga:" + profileId, "2016-01-01", "today", "ga:pageviews")
+                .get("ga:" + profileId, "2017-05-01", "today", "ga:pageviews")
                 .setDimensions("ga:year, ga:month")
                 .execute();
     }
 
     public static GaData getCountryData(Analytics analytics, String profileId) throws IOException {
         return analytics.data().ga()
-                .get("ga:" + profileId, "2017-06-01", "today", "ga:pageviews")
+                .get("ga:" + profileId, "2017-05-01", "today", "ga:pageviews")
                 .setDimensions("ga:country")
                 .execute();
     }
