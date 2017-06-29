@@ -13,6 +13,7 @@
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="/css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="/css/temp.css" />
+        <link rel="stylesheet" type="text/css" href="/css/style.css" />
         <!--<link href="nv.d3.min.css" rel="stylesheet"/>-->
     </head>
 
@@ -51,9 +52,9 @@
             </div>
 
             <div class="row">
-                <div class="col-sm-12 col-md-12 main">
+                <div class="col-xs-12 col-md-12 main">
                     <div class="row placeholders">
-                        <div class="col-xs-8 col-sm-4 placeholder">
+                        <div class="col-xs-12 col-md-6 placeholder">
                             <!--<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="305" height="305" class="img-responsive" alt="img2"></img>-->
                             <h4>Recent Updates</h4>
                             <span class="text-muted">Recent news and updates</span>
@@ -67,22 +68,33 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-xs-8 col-sm-4 placeholder">
+                        <div class="col-xs-12 col-md-6 placeholder">
                             <h4>Feature Use Statistics</h4>
                             <span class="text-muted">A full pie chart to show usage statistics of various features in MetaProt</span>
                             <!--<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="240" height="240" class="img-responsive" alt="img3"></img>-->
                             <div id="pieChart"></div>
                         </div>
-                        <div class="col-xs-8 col-sm-4 placeholder">
+                        <div class="col-xs-12 col-md-6 placeholder">
                             <!--<div id="chart-container"></div>-->
-                            <h4>Site Traffic</h4>
-                            <span class="text-muted"><p th:text='${month}'>Google Analytics Reports:</p></span>
-                            <ul style="text-align:left;">
-                                <li><span style="text-decoration: underline"><em th:text='${pageviews}'>n/a</em></span> pageviews</li>
-                                <li><span style="text-decoration: underline"><em th:text='${pageviewsPerVisit}'>n/a</em></span> pageviews per visit</li>
-                                <li><span style="text-decoration: underline"><em th:text='${uniqueVisitors}'>n/a</em></span> unique visitors</li>
-                                <li><span style="text-decoration: underline"><em th:text='${numCountries}'>n/a</em></span> countries represented.<br /></li>
-                            </ul>
+                            <h4>Site Usage</h4>
+                            <span class="text-muted"><p th:text='${month}'>Google Analytics Reports</p>
+                                <p>(worldwide usage map shown below):</p></span>
+                            <div style="max-width: 220px; margin: 0 auto;">
+                                <ul style="text-align:left;">
+                                    <li><span style="text-decoration: underline"><em th:text='${pageviews}'>n/a</em></span> pageviews</li>
+                                    <li><span style="text-decoration: underline"><em th:text='${pageviewsPerVisit}'>n/a</em></span> pageviews per visit</li>
+                                    <li><span style="text-decoration: underline"><em th:text='${uniqueVisitors}'>n/a</em></span> unique visitors</li>
+                                    <li><span style="text-decoration: underline"><em th:text='${numCountries}'>n/a</em></span> countries represented.<br /></li>
+                                </ul>
+                            </div>
+                            <div id="regions_div" style="width: 480px; height: auto; margin:20px auto 0 auto;"></div>
+                        </div>
+
+                        <div class="col-xs-12 col-md-6 placeholder">
+                            <h4>Usage Trends</h4>
+                            <span class="text-muted"><p id="chart_title">Views per Day</p></span>
+                            <div id="chart_div" style="width: 480px; height: 360px; margin: 40px auto 20px auto;"></div>
+                            <button id="chart_toggle_view">View monthly totals</button>
                         </div>
 
 
@@ -90,7 +102,12 @@
                     </div>
 
                 </div>
+
+
             </div>
+
+
+
 
         </div>
 
@@ -438,6 +455,138 @@
             }
 
             /*]]>*/
+        </script>
+
+        <!--Countries heatmap and monthly visitors-->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script th:inline="javascript">
+        /*<![CDATA[*/
+          google.charts.load('current', {
+            'packages':['geochart'],
+            'mapsApiKey': 'AIzaSyCXkYdibsxSbTe8LZwdB6hZ9eoFiOC0tMU'
+          });
+          google.charts.setOnLoadCallback(drawRegionsMap);
+
+          function drawRegionsMap() {
+            var arr = [['Country', 'Visits']];
+            var mapData = /*[[${mapData}]]*/ null
+            console.log(mapData);
+            if (mapData) {
+                mapData = mapData.map(function(row) {
+                    return [row[0],parseInt(row[1],10)];
+                });
+                arr = arr.concat(mapData);
+            }
+            console.log(arr);
+            var data = google.visualization.arrayToDataTable(arr);
+            console.log(arr);
+
+            var options = {};
+
+            var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+            chart.draw(data, options);
+          }
+
+          google.charts.load('current', {'packages':['corechart']});
+          google.charts.setOnLoadCallback(drawChart);
+
+          function drawChart() {
+
+            var dataDaily = new google.visualization.DataTable();
+            var dataMonthly = new google.visualization.DataTable();
+            dataDaily.addColumn('date', 'Daily');
+            dataDaily.addColumn('number', 'Visits');
+            dataMonthly.addColumn('date', 'Monthly');
+            dataMonthly.addColumn('number', 'Visits');
+
+            var dailyVisitCounts = /*[[${dailyVisitsData}]]*/ null
+            var monthlyVisitCounts = /*[[${monthlyVisitsData}]]*/ null
+
+            console.log(dailyVisitCounts);
+            if (dailyVisitCounts) {
+                // try implementing map() function for parsing when done using dummy data
+                for (var i = 0; i < dailyVisitCounts.length; i++) {
+                    dataDaily.addRow([new Date(dailyVisitCounts[i][0],
+                                            dailyVisitCounts[i][1]-1,
+                                            dailyVisitCounts[i][2]),
+                                    (i%3)*i*100+parseInt(dailyVisitCounts[i][3], 10)]);
+                }
+
+            }
+            if (monthlyVisitCounts) {
+            // try implementing map() function for parsing when done using dummy data
+                for (var i = 0; i < monthlyVisitCounts.length; i++) {
+                    dataMonthly.addRow([new Date(monthlyVisitCounts[i][0],
+                                            monthlyVisitCounts[i][1]-1, 0),
+                                    (i%3)*i*1000+parseInt(monthlyVisitCounts[i][2], 10)]);
+                }
+
+            }
+            console.log(monthlyVisitCounts);
+            console.log(dataMonthly);
+            console.log(dataDaily);
+
+            var today = new Date();
+            var lastMonth = new Date();
+            lastMonth.setMonth(today.getMonth()-1);
+            var lastYear = new Date();
+            lastYear.setMonth(today.getMonth()-13);
+
+            var options = {
+              width: '100%',
+              height: 'auto',
+              hAxis: {
+                format: "MMM dd",
+                gridlines: {color: 'none'},
+                viewWindowMode: 'pretty',
+                baselineColor: {color: 'gray'},
+                viewWindow: {
+                    max: today,
+                    min: lastMonth
+                }
+              },
+              vAxis: {
+                gridlines: {color: 'gray'},
+                minValue: 0
+              },
+              legend: "none",
+              explorer: {
+                axis: "horizontal",
+                maxZoomOut: 1
+              }
+
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+            chart.draw(dataDaily, options);
+
+            var button = document.getElementById("chart_toggle_view");
+            button.onclick = function() {
+                // currently viewing daily data, toggle to monthly data
+                if (options.hAxis.format === "MMM dd") {
+                    options.hAxis.format = "MMM yyyy";
+                    options.hAxis.viewWindow.min = lastYear;
+                    chart.draw(dataMonthly, options);
+                    button.innerHTML = "View daily totals";
+                    $("#chart_title").text("Views per Month");
+                }
+                else {
+                    options.hAxis.format = "MMM dd";
+                    options.hAxis.viewWindow.min = lastMonth;
+                    chart.draw(dataDaily, options);
+                    button.innerHTML = "View monthly totals";
+                    $("#chart_title").text("Views per Day");
+                }
+
+
+            }
+
+
+          }
+
+         /*]]>*/
         </script>
     </body>
 </html>

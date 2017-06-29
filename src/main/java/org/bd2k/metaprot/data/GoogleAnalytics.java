@@ -15,14 +15,12 @@ import com.google.api.services.analytics.model.Accounts;
 import com.google.api.services.analytics.model.GaData;
 import com.google.api.services.analytics.model.Profiles;
 import com.google.api.services.analytics.model.Webproperties;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 import java.io.File;
 import java.io.IOException;
 
 
-@SpringBootApplication
 @PropertySource("classpath:application.properties")
 public class GoogleAnalytics {
 
@@ -33,6 +31,7 @@ public class GoogleAnalytics {
     private static final String KEY_FILE_LOCATION = "/ssd2/metaprot/secret/secret.p12";
     private static final String SERVICE_ACCOUNT_EMAIL = "metaprot@metaprot-172022.iam.gserviceaccount.com";
 
+    /*
     public static void main(String[] args) {
         try {
             Analytics analytics = initializeAnalytics();
@@ -43,6 +42,7 @@ public class GoogleAnalytics {
             e.printStackTrace();
         }
     }
+    */
     public static Analytics initializeAnalytics() throws Exception {
         // Initializes an authorized analytics service object.
 
@@ -99,19 +99,33 @@ public class GoogleAnalytics {
         return profileId;
     }
 
-    public static GaData getResults(Analytics analytics, String profileId) throws IOException {
+    public static GaData getVisitSummary(Analytics analytics, String profileId) throws IOException {
         // Query the Core Reporting API for the number of sessions
         // in the past seven days.
         return analytics.data().ga()
-                .get("ga:" + profileId, "2011-01-01", "today", "ga:pageviews,ga:pageviewsPerSession,ga:users")
+                .get("ga:" + profileId, "2017-06-01", "today", "ga:pageviews,ga:pageviewsPerSession,ga:users")
                 .execute();
     }
 
-    public static int getNumCountries(Analytics analytics, String profileId) throws IOException {
+    public static GaData getDailyVisitCounts(Analytics analytics, String profileId) throws IOException {
         return analytics.data().ga()
-                .get("ga:" + profileId, "2011-01-01", "today", "ga:users")
+                .get("ga:" + profileId, "2016-01-01", "today", "ga:pageviews")
+                .setDimensions("ga:year, ga:month, ga:day")
+                .execute();
+    }
+
+    public static GaData getMonthlyVisitCounts(Analytics analytics, String profileId) throws IOException {
+        return analytics.data().ga()
+                .get("ga:" + profileId, "2016-01-01", "today", "ga:pageviews")
+                .setDimensions("ga:year, ga:month")
+                .execute();
+    }
+
+    public static GaData getCountryData(Analytics analytics, String profileId) throws IOException {
+        return analytics.data().ga()
+                .get("ga:" + profileId, "2017-06-01", "today", "ga:pageviews")
                 .setDimensions("ga:country")
-                .execute().getRows().size();
+                .execute();
     }
 
     public static void printResults(GaData results) {

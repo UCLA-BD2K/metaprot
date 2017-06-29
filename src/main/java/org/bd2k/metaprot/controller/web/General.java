@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Web controller that handles general URLs.
@@ -27,53 +26,57 @@ public class General {
     @Autowired
     private DAOImpl dao;
 
-    ConcurrentHashMap<String, GAInfo> GAInfoMapping;
-
-    private class GAInfo {
-        GaData gaData;
-        int numCountries;
-        public GAInfo(GaData data, int numCountries) {
-            this.gaData = data;
-            this.numCountries = numCountries;
-        }
-    }
-
     /**
      * Home page
      * @return
      */
     @RequestMapping("/")
     public String getHomePage(Model model) {
-        if(GAInfoMapping == null || GAInfoMapping.get(new SimpleDateFormat("DDDD MMMM yyyy").format(new Date())) == null) {
-            GAInfoMapping = new ConcurrentHashMap<>(); //Reset the mapping
-            GaData results;
-            int numCountries;
-            try {
-                Analytics analytics = GoogleAnalytics.initializeAnalytics();
-                String profile = GoogleAnalytics.getFirstProfileId(analytics);
-                //System.out.println("First Profile Id: " + profile);
-                results = (GoogleAnalytics.getResults(analytics, profile));
-                numCountries = GoogleAnalytics.getNumCountries(analytics, profile);
-                GAInfoMapping.put(new SimpleDateFormat("DDDD MMMM yyyy").format(new Date()), new GAInfo(results, numCountries));
-            } catch (Exception e) {
-                e.printStackTrace();
-                GAInfoMapping.put(new SimpleDateFormat("DDDD MMMM yyyy").format(new Date()), new GAInfo(null, 0));
-            }
+
+        GaData results = null;
+        GaData dailyVisitCounts = null;
+        GaData monthlyVisitCounts = null;
+        GaData countryData = null;
+        int numCountries = 0;
+
+        try {
+            Analytics analytics = GoogleAnalytics.initializeAnalytics();
+            String profile = GoogleAnalytics.getFirstProfileId(analytics);
+            results = (GoogleAnalytics.getVisitSummary(analytics, profile));
+            dailyVisitCounts = GoogleAnalytics.getDailyVisitCounts(analytics, profile);
+            monthlyVisitCounts = GoogleAnalytics.getMonthlyVisitCounts(analytics, profile);
+            countryData = GoogleAnalytics.getCountryData(analytics, profile);
+            System.out.println(results);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        GAInfo info = GAInfoMapping.get(new SimpleDateFormat("DDDD MMMM yyyy").format(new Date()));
-        if (info.gaData != null) {
+        if (results != null) {
             model.addAttribute("month", "As of " + new SimpleDateFormat("MMMM yyyy").format(new Date()) + ", Google Analytics reports the following data on MetaProt:");
-            model.addAttribute("pageviews", String.format("%s", info.gaData.getRows().get(0).get(0)));
-            model.addAttribute("pageviewsPerVisit", String.format("%.02f", Float.valueOf(info.gaData.getRows().get(0).get(1))));
-            model.addAttribute("uniqueVisitors", info.gaData.getRows().get(0).get(2));
-            model.addAttribute("numCountries", info.numCountries);
+            model.addAttribute("pageviews", String.format("%s", results.getRows().get(0).get(0)));
+            model.addAttribute("pageviewsPerVisit", String.format("%.02f", Float.valueOf(results.getRows().get(0).get(1))));
+            model.addAttribute("uniqueVisitors", results.getRows().get(0).get(2));
         } else {
             model.addAttribute("month", "As of " + new SimpleDateFormat("MMMM yyyy").format(new Date()) + ", Google Analytics reports the following data on MetaProt:");
             model.addAttribute("pageviews", "n/a");
             model.addAttribute("pageviewsPerVisit", "n/a");
             model.addAttribute("uniqueVisitors", "n/a");
             model.addAttribute("numCountries", "n/a");
+        }
+
+        if (countryData != null) {
+            model.addAttribute("numCountries", countryData.getRows().size());
+            model.addAttribute("mapData", countryData.getRows());
+        }
+
+        if (dailyVisitCounts != null) {
+            System.out.print(dailyVisitCounts.getRows());
+            model.addAttribute("dailyVisitsData", dailyVisitCounts.getRows());
+        }
+
+        if (monthlyVisitCounts != null) {
+            System.out.print(monthlyVisitCounts.getRows());
+            model.addAttribute("monthlyVisitsData", monthlyVisitCounts.getRows());
         }
 
 

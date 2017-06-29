@@ -118,7 +118,8 @@ body {
     text-align: center;
 }
 .placeholders h4 {
-    margin-bottom: 0;
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 .placeholder {
     margin-bottom: 20px;
@@ -159,3 +160,7 @@ body {
     background-color: #E7E7E7;
 }
 
+.home_info {
+    width: 60% !important;
+    margin: auto !important;
+}
