@@ -16,8 +16,9 @@ import com.google.api.services.analytics.model.GaData;
 import com.google.api.services.analytics.model.Profiles;
 import com.google.api.services.analytics.model.Webproperties;
 import org.springframework.context.annotation.PropertySource;
+        import org.springframework.util.ResourceUtils;
 
-import java.io.File;
+        import java.io.File;
 import java.io.IOException;
 
 
@@ -28,7 +29,7 @@ public class GoogleAnalytics {
 
     private static final String APPLICATION_NAME = "MetaProtGoogleAnalytics";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-    private static final String KEY_FILE_LOCATION = "/ssd2/metaprot/secret/secret.p12";
+    private static final String KEY_FILENAME ="secret.p12";
     private static final String SERVICE_ACCOUNT_EMAIL = "metaprot@metaprot-172022.iam.gserviceaccount.com";
 
     /*
@@ -46,15 +47,17 @@ public class GoogleAnalytics {
     public static Analytics initializeAnalytics() throws Exception {
         // Initializes an authorized analytics service object.
 
+        File file = ResourceUtils.getFile("classpath:"+KEY_FILENAME);
+
         // Construct a GoogleCredential object with the service account email
         // and p12 file downloaded from the developer console.
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        System.out.println(KEY_FILE_LOCATION);
+        System.out.println(KEY_FILENAME);
         GoogleCredential credential = new GoogleCredential.Builder()
                 .setTransport(httpTransport)
                 .setJsonFactory(JSON_FACTORY)
                 .setServiceAccountId(SERVICE_ACCOUNT_EMAIL)
-                .setServiceAccountPrivateKeyFromP12File(new File(KEY_FILE_LOCATION))
+                .setServiceAccountPrivateKeyFromP12File(file)
                 .setServiceAccountScopes(AnalyticsScopes.all())
                 .build();
 

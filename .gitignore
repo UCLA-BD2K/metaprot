@@ -12,3 +12,4 @@ target/**
 .mvn/**
 .idea/**
 *.p12
+ebextensions
