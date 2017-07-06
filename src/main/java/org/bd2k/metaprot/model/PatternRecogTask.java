@@ -1,6 +1,8 @@
 package org.bd2k.metaprot.model;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import org.bd2k.metaprot.dbaccess.converter.Converters;
 
 import java.util.Arrays;
@@ -11,67 +13,21 @@ import java.util.Date;
  *
  * Created by Abineet on 9/1/2016.
  */
-@DynamoDBTable(tableName = "Metaprot-Task")
-public class PatternRecogTask {
+@DynamoDBTable(tableName = "Metaprot-PRTask")
+public class PatternRecogTask extends Task{
 
-    private String token;
-    private Date timestamp;
-    private String filename;
-    private long fileSize;
     private int numClusters;
     private int minMembersPerCluster;
-    private int numChunks;              // number of chunks used to store file in DB
     private double[][] regressionLines;
 
     public PatternRecogTask() {}
 
     public PatternRecogTask(String token, Date timeStamp, String filename, long fileSize, int numClusters,
-                            int minMembersPerCluster,
-                            int numChunks, double[][] regressionLines) {
-        this.token = token;
-        this.timestamp = timeStamp;
-        this.filename = filename;
-        this.fileSize = fileSize;
+                            int minMembersPerCluster, int numChunks, double[][] regressionLines) {
+        super(token, timeStamp, filename, fileSize, numChunks);
         this.numClusters = numClusters;
         this.minMembersPerCluster = minMembersPerCluster;
-        this.numChunks = numChunks;
         this.regressionLines = regressionLines;
-    }
-
-    @DynamoDBHashKey(attributeName = "token")
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    @DynamoDBAttribute
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    @DynamoDBAttribute
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    @DynamoDBAttribute
-    public long getFileSize() {
-        return fileSize;
-    }
-
-    public void setFileSize(long fileSize) {
-        this.fileSize = fileSize;
     }
 
     @DynamoDBAttribute
@@ -92,14 +48,6 @@ public class PatternRecogTask {
         this.minMembersPerCluster = minMembersPerCluster;
     }
 
-    @DynamoDBAttribute
-    public int getNumChunks() {
-        return numChunks;
-    }
-
-    public void setNumChunks(int numChunks) {
-        this.numChunks = numChunks;
-    }
 
     @DynamoDBAttribute
     @DynamoDBTypeConverted(converter = Converters.DoubleArrayArrayConverter.class)
@@ -113,24 +61,16 @@ public class PatternRecogTask {
 
     @Override
     public String toString() {
-        long secondsSinceEpoch = System.currentTimeMillis() / 1000L;
-        long ttl = secondsSinceEpoch + 604800;
-        return "PatternRecogTask{" +
-                "token='" + token + '\'' +
-                ", timestamp=" + timestamp +
-                ", filename='" + filename + '\'' +
-                ", fileSize=" + fileSize +
+        // call and build upon base class's toString
+        String str = super.toString();
+        int start = str.indexOf("{");
+        int end = str.indexOf("}");
+
+        return "PatternRecogTask{" + str.substring(start, end) +
                 ", numClusters=" + numClusters +
                 ", minMembersPerCluster=" + minMembersPerCluster +
-                ", numChunks=" + numChunks +
                 ", regressionLine=" + Arrays.toString(regressionLines) +
-                ", ttl=" + ttl +
                 '}';
     }
 
-    // per example on git
-    @Override
-    public int hashCode() {
-        return token.hashCode();
-    }
 }

@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title th:text="${'TPR Results for task: ' + token + '| Metaprot'}"></title>
+    <title th:text="${'TPR Results for metaboliteTask: ' + token + '| Metaprot'}"></title>
     <link href="/css/lib/bootstrap.css" rel="stylesheet"/>
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/bootstrap-treeview.css" />
@@ -34,18 +34,8 @@
     <div class="container">
         <div class="row">
             <div class="panel panel-default">
-                <div class="panel-heading" th:text="'Pattern Recognition Results for task: ' + ${token}"></div>
+                <div class="panel-heading" th:text="'Pattern Recognition Results for metaboliteTask: ' + ${token}"></div>
                 <div class="panel-body">
-
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="plot" id="boxplot">
-
-                            </div>
-                        </div>
-
-                    </div>
-
 
                     <div class="row">
                         <div class="col-sm-7">
@@ -322,7 +312,7 @@
     <script th:inline="javascript" type="text/javascript">
         $(function() {
 
-            // results of the task
+            // results of the metaboliteTask
             var results = [[${results}]];
             console.log(results);
 

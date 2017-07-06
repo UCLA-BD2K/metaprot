@@ -44,15 +44,15 @@ public class DAOImpl implements DAO {
     /* Metabolite Analysis */
 
     @Override
-    public Task getTask(String token) {
+    public MetaboliteTask getTask(String token) {
         return taskRepository.findByToken(token);
     }
 
     @Override
-    public boolean saveTask(Task task) {
+    public boolean saveTask(MetaboliteTask task) {
 
         if (getTask(task.getToken()) != null) {
-            return false;   // someone is trying to save a task whos UUID already exists!
+            return false;   // someone is trying to save a metaboliteTask whos UUID already exists!
         }
 
         taskRepository.save(task);
@@ -60,12 +60,12 @@ public class DAOImpl implements DAO {
     }
 
     @Override
-    public void saveOrUpdateTask(Task task) {
-        taskRepository.save(task);
+    public void saveOrUpdateTask(MetaboliteTask metaboliteTask) {
+        taskRepository.save(metaboliteTask);
     }
 
     @Override
-    public List<List<MetaboliteStat>> getTaskResults(Task task) {
+    public List<List<MetaboliteStat>> getTaskResults(MetaboliteTask task) {
 
         if (task.getToken() == null) {
             return null;
@@ -86,7 +86,7 @@ public class DAOImpl implements DAO {
     }
 
     @Override
-    public int saveTaskResults(Task task, List<List<MetaboliteStat>> results) {
+    public int saveTaskResults(MetaboliteTask task, List<List<MetaboliteStat>> results) {
 
         // quick validation
         if (task.getToken() == null) {

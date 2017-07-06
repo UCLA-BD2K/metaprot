@@ -22,47 +22,47 @@ public interface DAO {
      * Given a UUID token, return the associated task.
      *
      * @param token the UUID token
-     * @return an initialized Task instance, or null if UUID is invalid (DNE in database)
+     * @return an initialized MetaboliteTask instance, or null if UUID is invalid (DNE in database)
      */
-    Task getTask(String token);
+    MetaboliteTask getTask(String token);
 
     /**
-     * Saves the given task to the database as a new entry.
+     * Saves the given metaboliteTask to the database as a new entry.
      *
-     * @param task the task to save
-     * @return true if the task was added to the database, false otherwise
+     * @param metaboliteTask the metaboliteTask to save
+     * @return true if the metaboliteTask was added to the database, false otherwise
      */
-    boolean saveTask(Task task);
+    boolean saveTask(MetaboliteTask metaboliteTask);
 
     /**
-     * Saves the given task to the database if it does not exist, or updates it.
+     * Saves the given metaboliteTask to the database if it does not exist, or updates it.
      *
-     * @param task the task to save
+     * @param metaboliteTask the metaboliteTask to save
      */
-    void saveOrUpdateTask(Task task);
+    void saveOrUpdateTask(MetaboliteTask metaboliteTask);
 
 
     /* Pattern Recognition */
 
     /**
-     * Retrieves the results of the task, with return type matching that of
-     * saveTaskResults() for this task type.
+     * Retrieves the results of the metaboliteTask, with return type matching that of
+     * saveTaskResults() for this metaboliteTask type.
      *
-     * @param task the task that the results are for
+     * @param metaboliteTask the metaboliteTask that the results are for
      * @return the results in the same form as they were inputted in saveTaskResults()
      */
-    List<List<MetaboliteStat>> getTaskResults(Task task);
+    List<List<MetaboliteStat>> getTaskResults(MetaboliteTask metaboliteTask);
 
     /**
-     * Saves the results of the task to the database. Internally,
+     * Saves the results of the metaboliteTask to the database. Internally,
      * chunking is used so this method returns the number of chunks
      * required to store the results.
      *
-     * @param task the task, with (at the very least) token defined
-     * @param results the results of the task
+     * @param metaboliteTask the metaboliteTask, with (at the very least) token defined
+     * @param results the results of the metaboliteTask
      * @return number of chunks used to store the results, or -1 if error; use as needed
      */
-    int saveTaskResults(Task task, List<List<MetaboliteStat>> results);
+    int saveTaskResults(MetaboliteTask metaboliteTask, List<List<MetaboliteStat>> results);
 
 
     /**

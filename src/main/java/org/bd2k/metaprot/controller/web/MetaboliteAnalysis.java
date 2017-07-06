@@ -3,7 +3,7 @@ package org.bd2k.metaprot.controller.web;
 import com.amazonaws.util.IOUtils;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.ResourceNotFoundException;
-import org.bd2k.metaprot.model.Task;
+import org.bd2k.metaprot.model.MetaboliteTask;
 import org.bd2k.metaprot.util.FileAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -44,16 +44,16 @@ public class MetaboliteAnalysis {
     public String getMetaAnalysisResults(Model model, @PathVariable("token") String token) {
 
         // get task information from database
-        Task currentTask = dao.getTask(token);
+        MetaboliteTask currentMetaboliteTask = dao.getTask(token);
 
         // no longer  needed, but here for demo table
         model.addAttribute("results", new FileAccess().getMetaboliteAnalysisResults(token));
 
         // data to pass back
-        model.addAttribute("multipleResults", dao.getTaskResults(currentTask));
+        model.addAttribute("multipleResults", dao.getTaskResults(currentMetaboliteTask));
         model.addAttribute("token", token);
-        model.addAttribute("pThreshold", currentTask.getpValueThreshold());
-        model.addAttribute("fcThreshold", currentTask.getFcThreshold());
+        model.addAttribute("pThreshold", currentMetaboliteTask.getpValueThreshold());
+        model.addAttribute("fcThreshold", currentMetaboliteTask.getFcThreshold());
 
         return "meta_analysis_results";
     }

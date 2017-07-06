@@ -1,9 +1,8 @@
 package org.bd2k.metaprot.dbaccess.repository;
 
-import org.bd2k.metaprot.model.Task;
+import org.bd2k.metaprot.model.MetaboliteTask;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
 /**
  * Poorly named repository for accessing collections and
@@ -18,14 +17,14 @@ import org.springframework.stereotype.Repository;
  * Created by allengong on 8/30/16.
  */
 @EnableScan
-public interface TaskRepository extends CrudRepository<Task, String> {
+public interface TaskRepository extends CrudRepository<MetaboliteTask, String> {
 
     /**
      * Given a token (UUID), return the information related
      * to the archived task.
      *
      * @param token The UUID referencing the particular task
-     * @return an intitialized Task instance, or null if UUID is invalid
+     * @return an intitialized MetaboliteTask instance, or null if UUID is invalid
      */
-    Task findByToken(String token);
+    MetaboliteTask findByToken(String token);
 }

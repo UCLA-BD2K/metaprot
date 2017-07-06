@@ -81,7 +81,7 @@ public class DynamoDBClient {
      * This method may throw an Exception if uploading fails (most commonly due to
      * exceeding provisioned Dynamo capacity) It is advised to catch and react appropriately.
      *
-     * @param tableName the name of the table to upload to, e.g. Metaprot-Task-Chunk
+     * @param tableName the name of the table to upload to, e.g. Metaprot-MetaboliteTask-Chunk
      * @param keyPrefix the partition key (sort key is automcatically generated), e.g. task token
      * @param content the content to chunk and upload
      * @return int the number of chunks uploaded
