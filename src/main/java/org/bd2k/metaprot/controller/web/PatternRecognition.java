@@ -1,17 +1,13 @@
 package org.bd2k.metaprot.controller.web;
 
 import org.bd2k.metaprot.dbaccess.DAOImpl;
-import org.bd2k.metaprot.model.PatternRecogStat;
 import org.bd2k.metaprot.model.PatternRecogTask;
-import org.bd2k.metaprot.util.FileAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
 
 /**
  * Web controller for temporal pattern recognition.
@@ -42,6 +38,12 @@ public class PatternRecognition {
         model.addAttribute("regressionLines", task.getRegressionLines());
         
         return "pattern_recognition_results";
+    }
+
+    @RequestMapping("/boxplot")
+    public String getBoxplotIndex() {
+        return "boxplot_index";
+
     }
 
 }

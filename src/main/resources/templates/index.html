@@ -13,7 +13,6 @@
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="/css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="/css/temp.css" />
-        <link rel="stylesheet" type="text/css" href="/css/style.css" />
         <!--<link href="nv.d3.min.css" rel="stylesheet"/>-->
     </head>
 
@@ -534,8 +533,10 @@
             lastYear.setMonth(today.getMonth()-13);
 
             var options = {
+              //backgroundColor: "#d9edf7",
+              //theme: 'maximized',
               width: '100%',
-              height: 'auto',
+              height: '100%',
               hAxis: {
                 format: "MMM dd",
                 gridlines: {color: 'none'},
@@ -547,13 +548,20 @@
                 }
               },
               vAxis: {
+                format: 'decimal',
                 gridlines: {color: 'gray'},
-                minValue: 0
+                viewWindow: {
+                    min: 0
+                }
               },
               legend: "none",
               explorer: {
                 axis: "horizontal",
                 maxZoomOut: 1
+              },
+              chartArea: {
+                width: '75%',
+                height: '75%'
               }
 
             };

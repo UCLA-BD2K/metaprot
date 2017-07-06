@@ -36,6 +36,17 @@
             <div class="panel panel-default">
                 <div class="panel-heading" th:text="'Pattern Recognition Results for task: ' + ${token}"></div>
                 <div class="panel-body">
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="plot" id="boxplot">
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
                     <div class="row">
                         <div class="col-sm-7">
                             <div class="plot" id="visualisation">
@@ -313,6 +324,7 @@
 
             // results of the task
             var results = [[${results}]];
+            console.log(results);
 
             //Initialize plot
             var plot = new PatternRecogPlot(results, [[${regressionLines}]]);

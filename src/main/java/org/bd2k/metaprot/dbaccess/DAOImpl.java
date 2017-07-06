@@ -7,7 +7,6 @@ import org.bd2k.metaprot.dbaccess.repository.PatternRecogTaskRepository;
 import org.bd2k.metaprot.dbaccess.repository.SessionDataRepository;
 import org.bd2k.metaprot.dbaccess.repository.TaskRepository;
 import org.bd2k.metaprot.model.*;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -144,6 +143,7 @@ public class DAOImpl implements DAO {
                     task.getNumChunks());
 
             results = mapper.readValue(resultsAsString, new TypeReference<List<List<PatternRecogStat>>>(){});
+
         } catch (Exception e) {
             e.printStackTrace();
         }
