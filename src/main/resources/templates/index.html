@@ -86,13 +86,13 @@
                                     <li><span style="text-decoration: underline"><em th:text='${numCountries}'>n/a</em></span> countries represented.<br /></li>
                                 </ul>
                             </div>
-                            <div id="regions_div" style="width: 480px; height: auto; margin:20px auto 0 auto;"></div>
+                            <div id="regions_div" class="drop-shadow" style="width: 480px; height: auto; margin:20px auto 0 auto;"></div>
                         </div>
 
                         <div class="col-xs-12 col-md-6 placeholder">
                             <h4>Usage Trends</h4>
                             <span class="text-muted"><p id="chart_title">Views per Day</p></span>
-                            <div id="chart_div" style="width: 480px; height: 360px; margin: 40px auto 20px auto;"></div>
+                            <div id="chart_div" class="drop-shadow" style="width: 480px; height: 360px; margin: 40px auto 20px auto;"></div>
                             <button id="chart_toggle_view">View monthly totals</button>
                         </div>
 
@@ -480,7 +480,11 @@
             var data = google.visualization.arrayToDataTable(arr);
             console.log(arr);
 
-            var options = {};
+            var options = {
+              backgroundColor: "#eef7fb",
+              colorAxis: {colors: ['#0000ff', '#DC143C']},
+              datalessRegionColor: '#90EE90'
+            };
 
             var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
 
@@ -533,7 +537,8 @@
             lastYear.setMonth(today.getMonth()-13);
 
             var options = {
-              //backgroundColor: "#d9edf7",
+              backgroundColor: "#eef7fb",
+              colors: ["black"],
               //theme: 'maximized',
               width: '100%',
               height: '100%',
@@ -541,7 +546,7 @@
                 format: "MMM dd",
                 gridlines: {color: 'none'},
                 viewWindowMode: 'pretty',
-                baselineColor: {color: 'gray'},
+                color: 'gray',
                 viewWindow: {
                     max: today,
                     min: lastMonth
@@ -549,10 +554,11 @@
               },
               vAxis: {
                 format: 'decimal',
-                gridlines: {color: 'gray'},
+                color: 'gray',
                 viewWindow: {
                     min: 0
-                }
+                },
+                title: 'Pageviews'
               },
               legend: "none",
               explorer: {
@@ -560,8 +566,8 @@
                 maxZoomOut: 1
               },
               chartArea: {
-                width: '75%',
-                height: '75%'
+                width: '78%',
+                height: '78%'
               }
 
             };

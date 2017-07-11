@@ -128,14 +128,17 @@ body {
  */
 
 .placeholders {
+    margin-top: 30px;
     margin-bottom: 30px;
     text-align: center;
 }
+
 .placeholders h4 {
-    margin-bottom: 0;
+    margin: 4px;
 }
 .placeholder {
     margin-bottom: 20px;
+    margin-top: 20px;
 }
 .placeholder img {
     display: inline-block;
@@ -422,3 +425,7 @@ div.container {
     color:white;
 }
 
+.drop-shadow {
+    -webkit-box-shadow: 0 0 5px 2px rgba(0, 0, 0, .5);
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, .5);
+}
