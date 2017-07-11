@@ -24,7 +24,7 @@ public interface DAO {
      * @param token the UUID token
      * @return an initialized MetaboliteTask instance, or null if UUID is invalid (DNE in database)
      */
-    MetaboliteTask getTask(String token);
+    MetaboliteTask getMetaboliteTask(String token);
 
     /**
      * Saves the given metaboliteTask to the database as a new entry.
@@ -51,7 +51,7 @@ public interface DAO {
      * @param metaboliteTask the metaboliteTask that the results are for
      * @return the results in the same form as they were inputted in saveTaskResults()
      */
-    List<List<MetaboliteStat>> getTaskResults(MetaboliteTask metaboliteTask);
+    List<List<MetaboliteStat>> getMetaboliteTaskResults(MetaboliteTask metaboliteTask);
 
     /**
      * Saves the results of the metaboliteTask to the database. Internally,

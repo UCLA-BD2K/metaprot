@@ -20,9 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.*;
 
 /**
@@ -519,8 +517,8 @@ public class Analyze {
      *
      * @return an HTML formatted message ready to be displayed to the end user.
      */
-    @RequestMapping(value = "/boxplot/{token}", method = RequestMethod.POST)
-    public ArrayList<DataRow> analyzeBoxplot(@PathVariable("token") String token,
+    @RequestMapping(value = "/time-series/{token}", method = RequestMethod.POST)
+    public String analyzeTimeSeries(@PathVariable("token") String token,
                                   @RequestParam("objectKey") String key) {
 
         // validation
@@ -530,39 +528,67 @@ public class Analyze {
                 keyArr.length != 3) {
 
             // should return error message
-            throw new BadRequestException("Invalid request, please try again.");
+            throw new BadRequestException("Invalid request, please try again later.");
         }
 
-        // DEBUG TEMP FILE
-        // grab uploaded file from S3
-        //S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
-        //int status = s3Status.getStatusCode();
-        int status = 0;
-        //log.info("new status s3: " + s3Status.toString());
+        S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+        int status = s3Status.getStatusCode();
 
-        // check for errors in s3 pull/store
+        // error
         if (status == -1) {
             throw new ServerException("There was an error with your request, please try again later.");
         } else if (status > 0) {
             throw new BadRequestException(s3Client.getAWSStatusMessage(status));
         }
 
-        // parse CSV
-        String line = "";
-        String localCsvPath = LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + keyArr[keyArr.length - 1];
-        ArrayList<DataRow> data = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(localCsvPath))) {
-            while ((line = br.readLine()) != null) {
-                String[] row = line.replaceAll("\"\t", "").split(",");
-                System.out.println(line);
-                data.add(new DataRow(row[0],
-                        new ArrayList(Arrays.asList(Arrays.copyOfRange(row, 1, row.length)))));
-            }
-        }  catch (Exception e) {
+        // everything is OK on the server end, attempt to analyze the file
+        try {
+            String rCommand = "analyze.file('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token
+                    + sep + keyArr[keyArr.length-1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep +
+                    token + sep + "data.csv', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "volcano.png', " +
+                    pThreshold + ", " + fcThreshold + ")";
+
+            executeRScript(token, keyArr[keyArr.length-1], s3Status.getFileSize(),
+                    METABOLITES_R_SCRIPT_LOC, rCommand);
+        } catch (Exception e) {
+            // handle exception so that we can return appropriate error messages
             e.printStackTrace();
+            throw new ServerException("There was an error with our R Engine. Please try again at a later time.");
         }
 
-        return data;
+        // store results to database, TODO any new logic to read in all result files, for now just one, maybe just need to modify the file access function to return a list of lists
+        List<List<MetaboliteStat>> totalResults = new ArrayList<>();
+        List<MetaboliteStat> results = new FileAccess().getMetaboliteAnalysisResults(token);
+        totalResults.add(results);
+
+        MetaboliteTask currentMetaboliteTask = new MetaboliteTask(token, new Date(), keyArr[keyArr.length-1],
+                s3Status.getFileSize(), pThreshold, fcThreshold, 0);
+
+        // save the chunks
+        int numChunks = dao.saveTaskResults(currentMetaboliteTask, totalResults);
+
+        if (numChunks < 0) {
+            throw new ServerException("There was an issue with uploading your file, please try again at a later time.");
+        }
+
+        // save the task
+        currentMetaboliteTask.setNumChunks(numChunks);
+        boolean taskSaved = dao.saveTask(currentMetaboliteTask);
+
+        if (!taskSaved) {
+            throw new BadRequestException("There was an issue with your task token. Please try again at a later time.");
+        }
+
+        // analysis complete and results recorded, safe to delete all temporary files
+        new FileAccess().deleteTemporaryAnalysisFiles(token);
+
+
+        // everything went well, success message
+        String successMessage = "Your file has been successfully analyzed! Head over to the %s page" +
+                " to see the report.";
+
+        return String.format(successMessage, "<a href='/time-series-viewer/results/" + token + "'>results</a>");
+
     }
 
 

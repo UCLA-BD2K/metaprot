@@ -2,9 +2,12 @@ package org.bd2k.metaprot.util;
 
 import org.bd2k.metaprot.model.MetaboliteStat;
 import org.bd2k.metaprot.model.PatternRecogStat;
+import org.bd2k.metaprot.model.TimeSeriesSignificance;
+import org.bd2k.metaprot.model.TimeSeriesStat;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -137,6 +140,125 @@ public class FileAccess {
                 e.printStackTrace();
             }
         }
+        return list;
+    }
+
+    /**
+     * Returns a list of stats that represent each row in the resultant
+     * time_series_concentrations.csv file from the time series analysis.
+     *
+     * @param token the token of the task that produced the result files
+     * @return list of TimeSeriesStats
+     */
+    public List<TimeSeriesStat> getTimeSeriesAnalysisResults(String token) {
+
+        File file = new File(String.format("%s%s%s%stime_series_concentrations.csv", LOCAL_FILE_DOWNLOAD_PATH, sep, token, sep));
+        List<TimeSeriesStat> list = new ArrayList<>();
+
+        if (file.exists()) {
+            FileReader fr = null;
+            BufferedReader br = null;
+
+            try {
+                fr = new FileReader(file);
+                br = new BufferedReader(fr);
+
+                String line;
+                String[] lineArr;
+                while((line = br.readLine()) != null) {
+                    line = line.replace("\"", "");
+                    lineArr = line.split(",");
+
+                    list.add(new TimeSeriesStat(lineArr[3], lineArr[2],
+                            new ArrayList(Arrays.asList(Arrays.copyOfRange(lineArr, 4, lineArr.length)))));
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fr != null) {
+                        fr.close();
+                    }
+
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+
+        return list;
+    }
+
+    /**
+     * Returns a list of stats that represent each row in the resultant
+     * time_series_concentrations.csv file from the time series analysis.
+     *
+     * @param token the token of the task that produced the result files
+     * @return list of TimeSeriesSignificances
+     */
+    public List<TimeSeriesSignificance> getTimeSeriesSignificanceResults(String token) {
+
+        File file = new File(String.format("%s%s%s%stime_series_significance.csv", LOCAL_FILE_DOWNLOAD_PATH, sep, token, sep));
+        List<TimeSeriesSignificance> list = new ArrayList<>();
+
+        if (file.exists()) {
+            FileReader fr = null;
+            BufferedReader br = null;
+
+            try {
+                fr = new FileReader(file);
+                br = new BufferedReader(fr);
+
+                String line;
+                String[] lineArr;
+                int startIndex = 0;
+
+                // read in first line to look for significance columns
+                if ((line = br.readLine()) != null) {
+                    line = line.replace("\"", "");
+                    lineArr = line.split(",");
+                    for (int i = 0; i < lineArr.length; i++) {
+                        // first sig column found
+                        if (lineArr[i].startsWith("is_sig")) {
+                            startIndex = i;
+                            break;
+                        }
+                    }
+                }
+                // parse remaining file
+                while((line = br.readLine()) != null) {
+                    line = line.replace("\"", "");
+                    lineArr = line.split(",");
+
+                    list.add(new TimeSeriesSignificance(lineArr[1],
+                            new ArrayList(Arrays.asList(Arrays.copyOfRange(lineArr, startIndex, lineArr.length)))));
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fr != null) {
+                        fr.close();
+                    }
+
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+
         return list;
     }
 

@@ -17,7 +17,7 @@ import org.springframework.data.repository.CrudRepository;
  * Created by allengong on 8/30/16.
  */
 @EnableScan
-public interface TaskRepository extends CrudRepository<MetaboliteTask, String> {
+public interface MetaboliteTaskRepository extends CrudRepository<MetaboliteTask, String> {
 
     /**
      * Given a token (UUID), return the information related

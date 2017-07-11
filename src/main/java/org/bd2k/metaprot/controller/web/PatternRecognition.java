@@ -40,10 +40,4 @@ public class PatternRecognition {
         return "pattern_recognition_results";
     }
 
-    @RequestMapping("/boxplot")
-    public String getBoxplotIndex() {
-        return "boxplot_index";
-
-    }
-
 }

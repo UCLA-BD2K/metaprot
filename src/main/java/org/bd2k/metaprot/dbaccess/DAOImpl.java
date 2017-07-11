@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bd2k.metaprot.aws.DynamoDBClient;
 import org.bd2k.metaprot.dbaccess.repository.PatternRecogTaskRepository;
 import org.bd2k.metaprot.dbaccess.repository.SessionDataRepository;
-import org.bd2k.metaprot.dbaccess.repository.TaskRepository;
+import org.bd2k.metaprot.dbaccess.repository.MetaboliteTaskRepository;
 import org.bd2k.metaprot.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class DAOImpl implements DAO {
 
     // repositories
     @Autowired
-    private TaskRepository taskRepository;
+    private MetaboliteTaskRepository metaboliteTaskRepository;
 
     @Autowired
     private PatternRecogTaskRepository PRTaskRepository;
@@ -44,28 +44,28 @@ public class DAOImpl implements DAO {
     /* Metabolite Analysis */
 
     @Override
-    public MetaboliteTask getTask(String token) {
-        return taskRepository.findByToken(token);
+    public MetaboliteTask getMetaboliteTask(String token) {
+        return metaboliteTaskRepository.findByToken(token);
     }
 
     @Override
     public boolean saveTask(MetaboliteTask task) {
 
-        if (getTask(task.getToken()) != null) {
+        if (getMetaboliteTask(task.getToken()) != null) {
             return false;   // someone is trying to save a metaboliteTask whos UUID already exists!
         }
 
-        taskRepository.save(task);
+        metaboliteTaskRepository.save(task);
         return true;
     }
 
     @Override
     public void saveOrUpdateTask(MetaboliteTask metaboliteTask) {
-        taskRepository.save(metaboliteTask);
+        metaboliteTaskRepository.save(metaboliteTask);
     }
 
     @Override
-    public List<List<MetaboliteStat>> getTaskResults(MetaboliteTask task) {
+    public List<List<MetaboliteStat>> getMetaboliteTaskResults(MetaboliteTask task) {
 
         if (task.getToken() == null) {
             return null;
@@ -170,6 +170,9 @@ public class DAOImpl implements DAO {
 
         return numChunks;
     }
+
+
+
 
 
     /* Session Data */

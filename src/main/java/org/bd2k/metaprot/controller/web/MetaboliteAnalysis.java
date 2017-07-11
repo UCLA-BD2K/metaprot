@@ -44,13 +44,13 @@ public class MetaboliteAnalysis {
     public String getMetaAnalysisResults(Model model, @PathVariable("token") String token) {
 
         // get task information from database
-        MetaboliteTask currentMetaboliteTask = dao.getTask(token);
+        MetaboliteTask currentMetaboliteTask = dao.getMetaboliteTask(token);
 
         // no longer  needed, but here for demo table
         model.addAttribute("results", new FileAccess().getMetaboliteAnalysisResults(token));
 
         // data to pass back
-        model.addAttribute("multipleResults", dao.getTaskResults(currentMetaboliteTask));
+        model.addAttribute("multipleResults", dao.getMetaboliteTaskResults(currentMetaboliteTask));
         model.addAttribute("token", token);
         model.addAttribute("pThreshold", currentMetaboliteTask.getpValueThreshold());
         model.addAttribute("fcThreshold", currentMetaboliteTask.getFcThreshold());
