@@ -42,7 +42,6 @@ public interface DAO {
     void saveOrUpdateTask(MetaboliteTask metaboliteTask);
 
 
-    /* Pattern Recognition */
 
     /**
      * Retrieves the results of the metaboliteTask, with return type matching that of
@@ -58,12 +57,14 @@ public interface DAO {
      * chunking is used so this method returns the number of chunks
      * required to store the results.
      *
-     * @param metaboliteTask the metaboliteTask, with (at the very least) token defined
-     * @param results the results of the metaboliteTask
+     * @param task the Task, with (at the very least) token defined
+     * @param results the results of the Task
      * @return number of chunks used to store the results, or -1 if error; use as needed
      */
-    int saveTaskResults(MetaboliteTask metaboliteTask, List<List<MetaboliteStat>> results);
+    <T> int saveTaskResults(Task task, List<List<T>> results);
 
+
+    /* Pattern Recognition */
 
     /**
      * Retrieves a pattern recognition task given the associated token.
@@ -97,16 +98,51 @@ public interface DAO {
      */
     List<List<PatternRecogStat>> getPRTaskResults(PatternRecogTask task);
 
+    /* Time Series */
+
     /**
-     * Saves the results of the task to the database. Internally,
+     * Retrieves a pattern recognition task given the associated token.
+     *
+     * @param token the uuid
+     * @return an initialized PatternRecogTask, or null if the token is invalid
+     */
+    TimeSeriesTask getTimeSeriesTask(String token);
+
+    /**
+     * Saces the given task to the database as a new entry.
+     *
+     * @param task the task to save
+     * @return true if the task was added to the database, false otherwise
+     */
+    boolean saveTask(TimeSeriesTask task);
+
+    /**
+     * Saves the given task to the database if it does not exist, or updates it.
+     *
+     * @param task the task to save
+     */
+    void saveOrUpdateTask(TimeSeriesTask task);
+
+    /**
+     * Retrieves the results of the task, with return type matching that of
+     * saveTaskResults() for this task type.
+     *
+     * @param task the task that the results are for
+     * @return results in the same form that they were inputted in saveTaskResults()
+     */
+    TimeSeriesResults getTimeSeriesTaskResults(Task task);
+
+    /**
+     * Saves the results of the TimeSeriesTask to the database. Internally,
      * chunking is used so this method returns the number of chunks
      * required to store the results.
      *
-     * @param task the task, with (at the very least) token defined
-     * @param results the results of the task
+     * @param task the TimeSeriesTask, with (at the very least) token defined
+     * @param results the results of the TimeSeriesTask
      * @return number of chunks used to store the results, or -1 if error; use as needed
      */
-    int saveTaskResults(PatternRecogTask task, List<List<PatternRecogStat>> results);
+    int saveTaskResults(TimeSeriesTask task, TimeSeriesResults results);
+
 
 
 

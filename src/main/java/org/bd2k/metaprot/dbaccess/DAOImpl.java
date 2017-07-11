@@ -6,6 +6,7 @@ import org.bd2k.metaprot.aws.DynamoDBClient;
 import org.bd2k.metaprot.dbaccess.repository.PatternRecogTaskRepository;
 import org.bd2k.metaprot.dbaccess.repository.SessionDataRepository;
 import org.bd2k.metaprot.dbaccess.repository.MetaboliteTaskRepository;
+import org.bd2k.metaprot.dbaccess.repository.TimeSeriesTaskRepository;
 import org.bd2k.metaprot.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,9 @@ public class DAOImpl implements DAO {
 
     @Autowired
     private PatternRecogTaskRepository PRTaskRepository;
+
+    @Autowired
+    private TimeSeriesTaskRepository timeSeriesTaskRepository;
 
     @Autowired
     private SessionDataRepository sessionDataRepository;
@@ -86,7 +90,7 @@ public class DAOImpl implements DAO {
     }
 
     @Override
-    public int saveTaskResults(MetaboliteTask task, List<List<MetaboliteStat>> results) {
+    public <T> int saveTaskResults(Task task, List<List<T>> results) {
 
         // quick validation
         if (task.getToken() == null) {
@@ -152,7 +156,47 @@ public class DAOImpl implements DAO {
     }
 
     @Override
-    public int saveTaskResults(PatternRecogTask task, List<List<PatternRecogStat>> results) {
+    public TimeSeriesTask getTimeSeriesTask(String token) {
+        return timeSeriesTaskRepository.findByToken(token);
+    }
+
+    @Override
+    public boolean saveTask(TimeSeriesTask task) {
+        if (getTimeSeriesTask(task.getToken()) != null) {
+            return false;
+        }
+        timeSeriesTaskRepository.save(task);
+        return true;
+    }
+
+    @Override
+    public void saveOrUpdateTask(TimeSeriesTask task) {
+        timeSeriesTaskRepository.save(task);
+    }
+
+    @Override
+    public TimeSeriesResults getTimeSeriesTaskResults(Task task) {
+        if (task.getToken() == null) {
+            return null;
+        }
+
+        TimeSeriesResults results = null;
+
+        try {
+            String resultsAsString = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
+                    task.getNumChunks());
+
+            results = mapper.readValue(resultsAsString, new TypeReference<TimeSeriesResults>(){});
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
+    @Override
+    public int saveTaskResults(TimeSeriesTask task, TimeSeriesResults results) {
 
         // quick validation
         if (task.getToken() == null) {
@@ -170,6 +214,7 @@ public class DAOImpl implements DAO {
 
         return numChunks;
     }
+
 
 
 

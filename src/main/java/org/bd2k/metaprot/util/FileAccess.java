@@ -3,7 +3,7 @@ package org.bd2k.metaprot.util;
 import org.bd2k.metaprot.model.MetaboliteStat;
 import org.bd2k.metaprot.model.PatternRecogStat;
 import org.bd2k.metaprot.model.TimeSeriesSignificance;
-import org.bd2k.metaprot.model.TimeSeriesStat;
+import org.bd2k.metaprot.model.TimeSeriesValue;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -150,10 +150,10 @@ public class FileAccess {
      * @param token the token of the task that produced the result files
      * @return list of TimeSeriesStats
      */
-    public List<TimeSeriesStat> getTimeSeriesAnalysisResults(String token) {
+    public List<TimeSeriesValue> getTimeSeriesConcentrations(String token) {
 
         File file = new File(String.format("%s%s%s%stime_series_concentrations.csv", LOCAL_FILE_DOWNLOAD_PATH, sep, token, sep));
-        List<TimeSeriesStat> list = new ArrayList<>();
+        List<TimeSeriesValue> list = new ArrayList<>();
 
         if (file.exists()) {
             FileReader fr = null;
@@ -169,8 +169,8 @@ public class FileAccess {
                     line = line.replace("\"", "");
                     lineArr = line.split(",");
 
-                    list.add(new TimeSeriesStat(lineArr[3], lineArr[2],
-                            new ArrayList(Arrays.asList(Arrays.copyOfRange(lineArr, 4, lineArr.length)))));
+                    list.add(new TimeSeriesValue(lineArr[4], lineArr[3],
+                            new ArrayList(Arrays.asList(Arrays.copyOfRange(lineArr, 5, lineArr.length)))));
                 }
 
             } catch (Exception e) {
@@ -202,7 +202,7 @@ public class FileAccess {
      * @param token the token of the task that produced the result files
      * @return list of TimeSeriesSignificances
      */
-    public List<TimeSeriesSignificance> getTimeSeriesSignificanceResults(String token) {
+    public List<TimeSeriesSignificance> getTimeSeriesSignificances(String token) {
 
         File file = new File(String.format("%s%s%s%stime_series_significance.csv", LOCAL_FILE_DOWNLOAD_PATH, sep, token, sep));
         List<TimeSeriesSignificance> list = new ArrayList<>();

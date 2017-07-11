@@ -48,7 +48,7 @@
                 </div>
                 <div class="">
 
-                    <div class="row">
+                    <div class="row" style="padding: 10px 0 30px 0">
                         <div class="col-sm-12 col-lg-8">
                             <h3>Plots</h3>
                             <div id="plot">
@@ -57,11 +57,10 @@
 
                         </div>
 
-                        <div class="col-sm-6 col-lg-3">
-                            <h3>Clusters</h3>
-                            <form id="cluster-selection-form" class="form-horizontal">
+                        <div class="col-sm-4 col-sm-offset-4 col-lg-3 col-lg-offset-0" style="padding:60px 20px;">
+                            <form id="metabolite-selection" class="form-horizontal">
                                 <div class="form-group">
-                                    <label for="metabolite-select" class="control-label">Select a cluster:</label>
+                                    <label for="metabolite-select" class="control-label">Select a metabolite:</label>
                                     <select id="metabolite-select" class="form-control"
                                             onchange="generateTimeSeriesViewer(this.options[this.selectedIndex].value)">
                                         <option th:each="metabolite : ${metabolites}" th:text="${metabolite}"

@@ -1,6 +1,6 @@
   analyze.time.series <- function(input, outputData, outputSig) {
   
-  rm(list = ls(all = TRUE)); # remove all variables
+  #rm(list = ls(all = TRUE)); # remove all variables
   
   # # import pkgs
   library(tidyverse); library(stringr); library(ggplot2)
@@ -11,7 +11,7 @@
   data_path = "/Users/davidmeng/Downloads/";
   
   # load data
-  load(paste(data_path, "mouse_tidy.Rdata", sep = ""));
+  load(input);
   
   # missing types?
   missing_type = c("< LOD", "no peak", "NA");
