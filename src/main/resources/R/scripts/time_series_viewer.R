@@ -84,7 +84,7 @@
   fdr_th = 0.05; log2_fold_change_th = log2(1.5);
   diff_expr_significant_tbl = 
     diff_expr_tbl %>% 
-    filter((fdr_1 < fdr_th) | (fdr_3 < fdr_th) | (fdr_5 < fdr_th) | (fdr_7 < fdr_th) | (fdr_14 < fdr_th)) %>% 
+    #filter((fdr_1 < fdr_th) | (fdr_3 < fdr_th) | (fdr_5 < fdr_th) | (fdr_7 < fdr_th) | (fdr_14 < fdr_th)) %>%
     #filter((fdr_1 < fdr_th) & (fdr_3 < fdr_th) & (fdr_5 < fdr_th) & (fdr_7 < fdr_th) & (fdr_14 < fdr_th)) %>% 
     mutate( is_sig_1 = (fdr_1 < fdr_th), is_sig_3 =  (fdr_3 < fdr_th), is_sig_5 =  (fdr_5 < fdr_th), is_sig_7 =  (fdr_7 < fdr_th), is_sig_14 =  (fdr_14 < fdr_th));
   
