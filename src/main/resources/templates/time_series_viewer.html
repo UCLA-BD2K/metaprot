@@ -49,30 +49,33 @@
                 <div class="">
 
                     <div class="row" style="padding: 10px 0 30px 0">
-                        <div class="col-sm-12 col-lg-8">
+                        <div class="col-12 col-lg-8">
                             <h3>Plots</h3>
+
                             <div id="plot">
 
                             </div>
 
                         </div>
 
-                        <div class="col-sm-4 col-sm-offset-4 col-lg-3 col-lg-offset-0" style="padding:60px 20px;">
-                            <form id="metabolite-selection" class="form-horizontal">
+                        <div class="well well-lg col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 col-lg-3 col-lg-offset-0"
+                            style="margin-top:100px;">
+                            <form id="metabolite-selection" class="form-horizontal" style="padding: 0 10px">
                                 <div class="form-group">
                                     <label for="metabolite-select" class="control-label">Select a metabolite:</label>
-                                    <select id="metabolite-select" class="form-control"
-                                            onchange="generateTimeSeriesViewer(this.options[this.selectedIndex].value)">
-                                        <option th:each="metabolite : ${metabolites}" th:text="${metabolite}"
-                                                th:value="${metabolite}"></option>
+                                    <select id="metabolite-select" class="form-control">
+                                        <!--<option th:each="metabolite : ${metabolites}" th:text="${metabolite}"-->
+                                                <!--th:value="${metabolite}"></option>-->
                                     </select>
                                 </div>
-                                <div class="form-group">
-                                    <input class="btn btn-default" type="submit" value="Submit" />
-                                </div>
+
                             </form>
 
+                            <button class="generate-plot-btn btn btn-default" type="button">
+                                Download SVG for plot
+                            </button>
                         </div>
+
 
                     </div>
 
@@ -104,17 +107,26 @@
 <script src="/js/analytics.js"></script>
 <script src="/js/TimeSeriesPlot.js"></script>
 
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+
 <script type="text/javascript" th:inline="javascript">
             $(function() {
 
             var results = [[${results}]];
             var significance_values = [[${significance_values}]];
+            var metabolites = [[${metabolites}]];
+
             console.log(results);
             console.log(significance_values);
 
+            $("#metabolite-select").select2({
+				  data: metabolites
+		    });
 
-            initTimeSeriesData(results, significance_values);
-            generateTimeSeriesViewer($("#metabolite-select").val());
+            var plot = new TimeSeriesPlot(results, significance_values);
+            plot.plot($("#metabolite-select").val());
 
             // resets all user graphical elements to the original state
             function resetUI(plotContainerId) {//TODO
@@ -147,21 +159,25 @@
 
             /* ------------------------ MISC ---------------------------- */
 
+            $('#metabolite-select').on("change", function() {
+                plot.plot($(this).find(":selected").val());
+            })
+
             $('.generate-plot-btn').on("click", function(e) {
                 e.preventDefault();
 
                 // remove any previously generated download links
-                $('#plot-download-link-' + $(this).attr("data-plot-index")).remove();
+                $('#plot-download-link-' + '0').remove();
 
                 // get the plot, set ui animations
-                var plotContainerId = "d3-plot-" + $(this).attr("data-plot-index");
+                var plotContainerId = "plot";
                 var formParent = $(this).parent()[0];
 
                 // create anchor element for download
                 var anchor = document.createElement("a");
-                anchor.id = "plot-download-link-" + $(this).attr("data-plot-index");
-                anchor.setAttribute("href", plots[plotContainerId]['plot'].getDataUrl());
-                anchor.setAttribute("download", "metaprot-plot-"+ $(this).attr("data-plot-index") + ".svg");
+                anchor.id = "plot-download-link-" + '0';
+                anchor.setAttribute("href", plot.getDataUrl());
+                anchor.setAttribute("download", "metaprot-plot-"+ "0" + ".svg");
                 anchor.style.display = "none";
                 anchor.innerText = "Download";
 
@@ -173,7 +189,7 @@
                 anchor.click();
             });
 
-
+/*
             $('input.enable-zoom').on("change", function() {
 
                 var plotContainerId = $(this).parents(".plot-container").children(".plot").attr("id");
@@ -184,6 +200,7 @@
                     plots[plotContainerId]['plot'].enableDragSelect();
                 }
             });
+ */
         }); // end docready
 
     </script>
