@@ -557,7 +557,7 @@ public class Analyze {
             throw new ServerException("There was an error with our R Engine. Please try again at a later time.");
         }
 
-        // store results to database, TODO any new logic to read in all result files, for now just one, maybe just need to modify the file access function to return a list of lists
+        // store results to database
         List<TimeSeriesValue> values = new FileAccess().getTimeSeriesConcentrations(token);
         List<TimeSeriesSignificance> significances = new FileAccess().getTimeSeriesSignificances(token);
         TimeSeriesResults results = new TimeSeriesResults(values, significances);
@@ -581,7 +581,7 @@ public class Analyze {
         }
 
         // analysis complete and results recorded, safe to delete all temporary files
-       // new FileAccess().deleteTemporaryAnalysisFiles(token);
+        new FileAccess().deleteTemporaryAnalysisFiles(token);
 
 
         // everything went well, success message

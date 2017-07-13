@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by davidmeng on 7/11/17.
+ * Created by Nate Sookwongse on 7/11/17.
  */
 public class TimeSeriesResults {
 
