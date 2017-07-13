@@ -37,7 +37,6 @@ public class DAOImpl implements DAO {
     @Autowired
     private DynamoDBClient dynamoDBClient;
 
-    private final String TASK_TABLENAME = "Metaprot-Task";
     private final String TASK_CHUNK_TABLENAME = "Metaprot-Task-Chunk";
 
     private ObjectMapper mapper = new ObjectMapper();
@@ -97,6 +96,7 @@ public class DAOImpl implements DAO {
             return -1;
         }
 
+        // upload results to DynamoDB as chunks
         int numChunks;
         try {
             numChunks = dynamoDBClient.uploadAsChunks(TASK_CHUNK_TABLENAME,
@@ -106,6 +106,7 @@ public class DAOImpl implements DAO {
             return -1;              // return -1, let caller handle error
         }
 
+        // upload successful, return number of chunks used
         return numChunks;
     }
 
@@ -203,6 +204,7 @@ public class DAOImpl implements DAO {
             return -1;
         }
 
+        // upload results to DynamoDB as chunks
         int numChunks;
         try {
             numChunks = dynamoDBClient.uploadAsChunks(TASK_CHUNK_TABLENAME,
@@ -212,12 +214,9 @@ public class DAOImpl implements DAO {
             return -1;              // return -1, let caller handle error
         }
 
+        // upload successful, return number of chunks used
         return numChunks;
     }
-
-
-
-
 
 
     /* Session Data */

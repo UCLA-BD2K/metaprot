@@ -143,9 +143,6 @@ public interface DAO {
      */
     int saveTaskResults(TimeSeriesTask task, TimeSeriesResults results);
 
-
-
-
     /* Session Data */
 
     /**
