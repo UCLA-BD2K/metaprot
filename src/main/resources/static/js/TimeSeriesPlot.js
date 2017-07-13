@@ -1,8 +1,8 @@
 var TimeSeriesPlot = function(data, sig) {
 
-    // global variables to hold result data received from server
-    var globalData = data;
-    var globalSig = sig;
+    // global variables to hold data received received from server
+    var globalData = data;  // concentration values
+    var globalSig = sig;    // significance values
 
     // sizing attributes
     var totalWidth = 720;
@@ -15,8 +15,6 @@ var TimeSeriesPlot = function(data, sig) {
 
     // generates Time Series Viewer plot, based on metabolite user selects
     var plot = function(metabolite) {
-
-
         var data = globalData.filter(function(data) {
             return data.metaboliteName == metabolite;
         });
@@ -53,7 +51,7 @@ var TimeSeriesPlot = function(data, sig) {
         }
 
         // Prepare the data for the box plots
-        var boxPlotData = [];   // each element will be a boxplot for a timepoint
+        var boxPlotData = [];   // each element will be a boxplot for a particular timepoint
         var outliers = {};      // keep track of outliers to help when plotting individual points later
         for (var [key, groupCount] of Object.entries(groupCounts)) {
 
@@ -96,7 +94,6 @@ var TimeSeriesPlot = function(data, sig) {
                 index--;
             }
 
-
             record["whiskers"] = [lowerWhisker, upperWhisker];
             record["counts"] = groupCount;
             boxPlotData.push(record);
@@ -136,6 +133,8 @@ var TimeSeriesPlot = function(data, sig) {
         // Setup the group the box plot elements will render in
         var g = svg.append("g");
 
+        /*** Draw Box Plot elements ***/
+
         // Draw the box plot vertical lines
         var topVerticalLines = g.selectAll(".verticalLines")
             .data(boxPlotData)
@@ -152,16 +151,16 @@ var TimeSeriesPlot = function(data, sig) {
 
         // Draw the box plot vertical lines
         var bottomVerticalLines = g.selectAll(".verticalLines")
-        .data(boxPlotData)
-        .enter()
-        .append("line")
-        .attr("x1", function(d) { return xScale(d.key); })
-        .attr("y1", function(d) { return yScale(d.whiskers[1]); })
-        .attr("x2", function(d) { return xScale(d.key); })
-        .attr("y2", function(d) { return yScale(d.quartile[2]); })
-        .attr("stroke", function(d) { return d.color; })
-        .attr("stroke-width", function(d) { return d.strokeWidth;})
-        .attr("fill", "none");
+            .data(boxPlotData)
+            .enter()
+            .append("line")
+            .attr("x1", function(d) { return xScale(d.key); })
+            .attr("y1", function(d) { return yScale(d.whiskers[1]); })
+            .attr("x2", function(d) { return xScale(d.key); })
+            .attr("y2", function(d) { return yScale(d.quartile[2]); })
+            .attr("stroke", function(d) { return d.color; })
+            .attr("stroke-width", function(d) { return d.strokeWidth;})
+            .attr("fill", "none");
 
         // Draw the boxes of the box plot, filled in white and on top of vertical lines
         var rects = g.selectAll("rect")
@@ -213,58 +212,56 @@ var TimeSeriesPlot = function(data, sig) {
         ];
 
         for(var i=0; i < horizontalLineConfigs.length; i++) {
-        var lineConfig = horizontalLineConfigs[i];
+            var lineConfig = horizontalLineConfigs[i];
 
-        // Draw the whiskers at the min for this series
-        var horizontalLine = g.selectAll(".whiskers")
-          .data(boxPlotData)
-          .enter()
-          .append("line")
-          .attr("x1", lineConfig.x1)
-          .attr("y1", lineConfig.y1)
-          .attr("x2", lineConfig.x2)
-          .attr("y2", lineConfig.y2)
-          .attr("stroke", function(d) { return d.color; })
-          .attr("stroke-width", function(d) { return d.strokeWidth;})
-          .attr("fill", "none");
+            // Draw the whiskers at the min for this series
+            var horizontalLine = g.selectAll(".whiskers")
+                .data(boxPlotData)
+                .enter()
+                .append("line")
+                .attr("x1", lineConfig.x1)
+                .attr("y1", lineConfig.y1)
+                .attr("x2", lineConfig.x2)
+                .attr("y2", lineConfig.y2)
+                .attr("stroke", function(d) { return d.color; })
+                .attr("stroke-width", function(d) { return d.strokeWidth;})
+                .attr("fill", "none");
         }
 
-        // Setup a scale on the left
+        // Setup a scale on the left and bottom
         var axisLeft = d3.axisLeft(yScale);
             axisG.append("g")
             .call(axisLeft);
 
-        // Setup a series axis on the top
         var axisBottom = d3.axisBottom(xScale).tickValues(timepoints);
             axisBottomG.append("g")
             .call(axisBottom);
 
 
+        /*** Draw individual data points and path for each strain ***/
 
-        var dataset = [];
-        var legend = [];
-        console.log(boxPlotData);
+        var dataToPlot = [];
+        var strainNames = [];
+
         for (var i = 1; i < data.length; i++) {
           var strain = [];
           for (var j = 0; j < data[0].values.length; j++) {
-              dataset.push({
+              dataToPlot.push({
                   x: Number(data[0].values[j]),
                   y: Number(data[i].values[j]),
                   id: data[i].strain,
                   outlier: outliers[data[0].values[j]].includes(Number(data[i].values[j]))
               });
           }
-          legend.push(data[i].strain);
+          strainNames.push(data[i].strain);
         }
-        console.log(outliers);
 
-        console.log(dataset);
         // Setup a color scale for each strain
         var colorScaleStrain = d3.scaleOrdinal(d3.schemeCategory10)
-            .domain(legend);
+            .domain(strainNames);
 
         g.selectAll("circle")
-            .data(dataset)
+            .data(dataToPlot)
             .enter()
             .append("circle")
             .attr("class", function(d) { return "circle-" + d.id; })
@@ -273,19 +270,16 @@ var TimeSeriesPlot = function(data, sig) {
             .attr("cy", function(d) { return yScale(d.y); })
             .style("fill", function(d) { return d.outlier ? "gray" : colorScaleStrain(d.id); });
 
+        // summarize mean measured concentration for particular strain and timepoint
         var strainAvgs = d3.nest()
             .key(function(d) { return d.id; })
             .key(function(d) { return d.x; })
             .rollup(function(v) { return { avg: d3.mean(v, function(d) { return d.y})}})
-            .entries(dataset);
-
-
-        var pathData = [];
+            .entries(dataToPlot);
 
         var valueline = d3.line()
                 .x(function(d) { return xScale(Number(d.key)); })
                 .y(function(d) { return yScale(Number(d.value.avg)); });
-
 
         g.selectAll("path")
             .data(strainAvgs)
@@ -304,7 +298,9 @@ var TimeSeriesPlot = function(data, sig) {
                 highlightData(d.key, false);
             });
 
-        // draw legend
+
+        /***    Draw Legend     ***/
+
         var legendRectSize = 18;
         var legendSpacing = 5;
         var legend = svg.selectAll('.legend')
@@ -344,11 +340,9 @@ var TimeSeriesPlot = function(data, sig) {
                 highlightData(d, false);
             })
 
-
-
-
      }
 
+    // helper function to emphasize data for a particular strain
     function highlightData(id, highlighted) {
         if (highlighted) {
             d3.selectAll(".line-"+id).style("stroke-width", 5);
@@ -360,7 +354,7 @@ var TimeSeriesPlot = function(data, sig) {
         }
     }
 
-
+    // helper function to calculate Q1, Q2, Q3 values for box plot
     function boxQuartiles(d) {
         return [
             d3.quantile(d, .25),
@@ -369,7 +363,7 @@ var TimeSeriesPlot = function(data, sig) {
         ];
     }
 
-    // Perform a numeric sort on an array
+    // helper function to perform a numeric sort on an array
     function sortNumber(a,b) {
         return a - b;
     }
