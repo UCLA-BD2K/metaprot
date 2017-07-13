@@ -314,6 +314,12 @@ var TimeSeriesPlot = function(data, sig) {
                 var horz = width;
                 var vert = i * height + padding/2;
                 return 'translate(' + horz + ',' + vert + ')';
+            })
+            .on("mouseover", function (d) {
+                highlightData(d, true);
+            })
+            .on("mouseout", function (d) {
+                highlightData(d, false);
             });
 
         legend.append('rect')
@@ -321,24 +327,12 @@ var TimeSeriesPlot = function(data, sig) {
             .attr('height', legendRectSize)
             .style('fill', colorScaleStrain)
             .style('stroke', colorScaleStrain)
-            .on("mouseover", function (d) {
-                highlightData(d, true);
-            })
-            .on("mouseout", function (d) {
-                highlightData(d, false);
-            });
 
         legend.append('text')
             .attr('x', legendRectSize + legendSpacing)
             .attr('y', legendRectSize - legendSpacing)
             .attr('class', function(d) { return 'legend-'+d; })
             .text(function(d) { return d; })
-            .on("mouseover", function (d) {
-                highlightData(d, true);
-            })
-            .on("mouseout", function (d) {
-                highlightData(d, false);
-            })
 
      }
 
@@ -389,8 +383,8 @@ var TimeSeriesPlot = function(data, sig) {
 
 
     return {
-        plot:plot,
-        getDataUrl:getDataUrl
+        plot: plot,
+        getDataUrl: getDataUrl
     };
 }
 

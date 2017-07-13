@@ -5,7 +5,6 @@ import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.data.FeedBackType;
 import org.bd2k.metaprot.data.IntegrityChecker;
-import org.bd2k.metaprot.data.siteTrafficData;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.BadRequestException;
 import org.bd2k.metaprot.exception.ServerException;
@@ -57,9 +56,6 @@ public class Analyze {
 
     // handler to perform R related logic
     private RManager manager = null;
-
-    //Site Traffic Data Manager
-    private siteTrafficData trafficData = new siteTrafficData();
 
     //File Information Data Store
     private HashMap<String, String> fileInfoMap = new HashMap<>();
@@ -461,13 +457,6 @@ public class Analyze {
         fileInfoMap.put(destFile, JSONtoStore.toJSONString());
 
         return "";
-    }
-
-    @RequestMapping(value= "/siteTrafficChart", method = RequestMethod.POST)
-    public String getSiteTrafficData(@RequestParam("ipAddress") String IP,
-                                     @RequestParam("country") String countryName){
-        trafficData.updateTrafficData(IP, countryName);
-        return trafficData.getFormattedTrafficData();
     }
 
     @RequestMapping(value= "/getProcessingStats", method = RequestMethod.POST)
