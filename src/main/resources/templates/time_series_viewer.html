@@ -49,13 +49,11 @@
                 <div class="">
 
                     <div class="row" style="padding: 10px 0 30px 0">
+
                         <div class="col-12 col-lg-8">
                             <h3>Plots</h3>
-
                             <div id="plot">
-
                             </div>
-
                         </div>
 
                         <div class="well well-lg col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 col-lg-3 col-lg-offset-0"
@@ -63,19 +61,14 @@
                             <form id="metabolite-selection" class="form-horizontal" style="padding: 0 10px">
                                 <div class="form-group">
                                     <label for="metabolite-select" class="control-label">Select a metabolite:</label>
-                                    <select id="metabolite-select" class="form-control">
-                                        <!--<option th:each="metabolite : ${metabolites}" th:text="${metabolite}"-->
-                                                <!--th:value="${metabolite}"></option>-->
+                                    <select id="metabolite-select" >
                                     </select>
                                 </div>
-
                             </form>
-
                             <button class="generate-plot-btn btn btn-default" type="button">
                                 Download SVG for plot
                             </button>
                         </div>
-
 
                     </div>
 
@@ -98,71 +91,39 @@
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>
 <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
-<script src="/js/DataSegregator.js"></script>
 <script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="/js/SVGPlot.js"></script>
-
 <script src="/js/lib/jquery.js"></script>
 <script src="/js/bootstrap-treeview.js"></script>
 <script src="/js/analytics.js"></script>
 <script src="/js/TimeSeriesPlot.js"></script>
-
-
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
 <script type="text/javascript" th:inline="javascript">
             $(function() {
 
+            // load data from server
             var results = [[${results}]];
             var significance_values = [[${significance_values}]];
             var metabolites = [[${metabolites}]];
 
-            console.log(results);
-            console.log(significance_values);
-
+            // init drop-down selection for metabolites
             $("#metabolite-select").select2({
 				  data: metabolites
 		    });
 
+            // generate time series plot
             var plot = new TimeSeriesPlot(results, significance_values);
             plot.plot($("#metabolite-select").val());
 
-            // resets all user graphical elements to the original state
-            function resetUI(plotContainerId) {//TODO
-                // remove highlights
-                highlightedItems.clear();
-
-                // reset the "semi-global" threshold values
-                norm_pThreshold = -1*Math.log10(pThreshold);
-                norm_fcThreshold = Math.log2(fcThreshold);
-
-                // reset zoom value
-                //currentZoomTransform = d3.zoomIdentity;
-
-                // recolor data points
-                svg.selectAll("circle")
-                    .style("fill", function(d) {
-                        return getCircleColor(d);
-                    })
-                    .classed("active", false);  // remove active coloring
-
-                // redraw the side panels and threshold lines
-                redrawSidetables(dataSegregator.resegregate(pThreshold, fcThreshold), $('#result-panels-'));
-                redrawThresholdLines(norm_pThreshold, norm_fcThreshold);
-
-                // reset zoom -- needs debugging
-//                svg.selectAll('circle.d3-node, line.threshold').attr("transform", d3.zoomIdentity);
-//                gXAxis.call(xAxis.scale(d3.zoomIdentity.rescaleX(xScale)));
-//                gYAxis.call(yAxis.scale(d3.zoomIdentity.rescaleY(yScale)));
-            }
-
             /* ------------------------ MISC ---------------------------- */
 
+            // on user selection, generate new plot for selected metabolite
             $('#metabolite-select').on("change", function() {
                 plot.plot($(this).find(":selected").val());
             })
 
+            // download svg plot on click
             $('.generate-plot-btn').on("click", function(e) {
                 e.preventDefault();
 
@@ -188,19 +149,6 @@
 
                 anchor.click();
             });
-
-/*
-            $('input.enable-zoom').on("change", function() {
-
-                var plotContainerId = $(this).parents(".plot-container").children(".plot").attr("id");
-                if (this.checked) {
-                    //enableDragSelect();
-                    plots[plotContainerId]['plot'].disableDragSelect();
-                } else {
-                    plots[plotContainerId]['plot'].enableDragSelect();
-                }
-            });
- */
         }); // end docready
 
     </script>
