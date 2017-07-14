@@ -9,7 +9,7 @@ var TimeSeriesPlot = function(data, sig) {
     var totalHeight = 500;
     var barWidth = 30;
     var margin = {top: 30, left: 20, bottom: 10, right: 95}
-    var padding = 80;
+    var padding = 120;
     var width = totalWidth - margin.left - margin.right;
     var height = totalHeight - margin.top - margin.bottom;
 
@@ -107,7 +107,7 @@ var TimeSeriesPlot = function(data, sig) {
         console.log(xMin + " " + xMax);
         var xScale = d3.scaleLinear()
             .domain([xMin, xMax+1])
-            .range([padding, width-padding/2]);
+            .range([padding, width-padding/3]);
 
         // Compute a global y scale based on the global counts
         var yMin = d3.min(globalCounts);
@@ -127,8 +127,10 @@ var TimeSeriesPlot = function(data, sig) {
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         // plot axes
-        var axisG = svg.append("g").attr("transform", "translate(" + padding/2 + "," + 0 + ")");
-        var axisBottomG = svg.append("g").attr("transform", "translate(" + 0 + ","+(height-padding/2)+")");
+        var axisG = svg.append("g")
+            .attr("transform", "translate(" + padding*2/3 + "," + 0 + ")");
+        var axisBottomG = svg.append("g")
+            .attr("transform", "translate(" + 0 + ","+(height-padding*2/3)+")");
 
         // Setup the group the box plot elements will render in
         var g = svg.append("g");
@@ -237,6 +239,16 @@ var TimeSeriesPlot = function(data, sig) {
             axisBottomG.append("g")
             .call(axisBottom);
 
+        // now add titles to the axes
+        svg.append("text")
+            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+            .attr("transform", "translate("+ padding/4 +","+((height-padding)/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+            .text("Abundance");
+
+        svg.append("text")
+            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+            .attr("transform", "translate("+ (width+padding/2)/2 +","+(height-(padding/4))+")")  // centre below axis
+            .text("Timepoints");
 
         /*** Draw individual data points and path for each strain ***/
 

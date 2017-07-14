@@ -321,7 +321,7 @@ svg:not(:root) {
 /*}*/
 
 svg {
-    font: 10px sans-serif;
+    font: 16px sans-serif;
 }
 
 .area {
@@ -334,6 +334,10 @@ svg {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
+}
+
+.tick > text {
+    font: 14px sans-serif;
 }
 
 .brush .extent {
