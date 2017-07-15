@@ -103,8 +103,6 @@ var TimeSeriesPlot = function(data, sig) {
         var timepoints = Object.keys(groupCounts).map(function(x) { return Number(x); });
         var xMin = d3.min(timepoints);
         var xMax = d3.max(timepoints);
-        console.log(timepoints)
-        console.log(xMin + " " + xMax);
         var xScale = d3.scaleLinear()
             .domain([xMin, xMax+1])
             .range([padding, width-padding/3]);

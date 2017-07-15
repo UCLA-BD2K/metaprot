@@ -42,7 +42,6 @@ function plotGeoMap(mapData) {
         dataMonthly.addColumn('date', 'Monthly');
         dataMonthly.addColumn('number', 'Visits');
 
-        console.log(dailyVisitCounts);
         if (dailyVisitCounts) {
             // try implementing map() function for parsing when done using dummy data
             for (var i = 0; i < dailyVisitCounts.length; i++) {
