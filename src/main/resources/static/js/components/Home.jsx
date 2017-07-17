@@ -3,6 +3,25 @@ import InfoBlock from './InfoBlock'
 
 class Home extends Component {
 
+    // grab thymeleaf variables
+    componentWillMount() {
+        this.siteUsageDescr = SITE_USAGE_DESCR;
+        this.pageViews = PAGE_VIEWS;
+        this.pageViewsPerVisit = PAGE_VIEWS_PER_VISIT;
+        this.uniqueVisitors = UNIQUE_VISITORS;
+        this.numCountries = NUM_COUNTRIES;
+        this.mapData = MAP_DATA;
+        this.dailyVisitsCounts = DAILY_VISITS_COUNTS;
+        this.monthlyVisitsCounts = MONTHLY_VISITS_COUNTS;
+    }
+
+    // render plots after mounting
+    componentDidMount() {
+        plotUsagePieChart();
+        plotGeoMap(this.mapData);
+        plotTrafficChart(this.dailyVisitsCounts, this.monthlyVisitsCounts);
+    }
+
 
     render() {
         var infoblocks = [
@@ -33,6 +52,38 @@ class Home extends Component {
                 title: "Feature Use Statistics",
                 description: "A full pie chart to show usage statistics of various features in MetaProt",
                 postHTML: ( <div id="pieChart"></div> )
+            },
+            {
+                title: "Site Usage",
+                description: (
+                    <div>
+                        <p>{this.siteUsageDescr}</p>
+                        <p>(worldwide usage map shown below):</p>
+                    </div>
+                ),
+                postHTML: (
+                    <div>
+                        <div style={{maxWidth: 220, margin: "0 auto"}}>
+                            <ul style={{textAlign: "left"}}>
+                                <li><em>{this.pageViews}</em> pageviews</li>
+                                <li><em>{this.pageViewsPerVisit}</em> pageviews per visit</li>
+                                <li><em>{this.uniqueVisitors}</em> unique visitors</li>
+                                <li><em>{this.numCountries}</em> countries represented</li>
+                            </ul>
+                        </div>
+                        <div id="regions-chart" className="drop-shadow"></div>
+                    </div>
+                )
+            },
+            {
+                title: "Usage Trends",
+                description: (<p id="usage-trends-title">Views per Day</p>),
+                postHTML: (
+                    <div>
+                        <div id="usage-trends-chart" className="drop-shadow"></div>
+                        <button id="chart-toggle-view">View monthly totals</button>
+                    </div>
+                )
             }
 
 

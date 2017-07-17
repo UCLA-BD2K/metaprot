@@ -71,12 +71,12 @@ public class General {
 
         if (dailyVisitCounts != null) {
             System.out.print(dailyVisitCounts.getRows());
-            model.addAttribute("dailyVisitsData", dailyVisitCounts.getRows());
+            model.addAttribute("dailyVisitCounts", dailyVisitCounts.getRows());
         }
 
         if (monthlyVisitCounts != null) {
             System.out.print(monthlyVisitCounts.getRows());
-            model.addAttribute("monthlyVisitsData", monthlyVisitCounts.getRows());
+            model.addAttribute("monthlyVisitsCounts", monthlyVisitCounts.getRows());
         }
 
 

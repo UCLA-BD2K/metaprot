@@ -1,3 +1,108 @@
+
+function plotUsagePieChart() {
+    var pie = new d3pie("pieChart", {
+                "header": {
+                    "title": {
+                        "fontSize": 24,
+                        "font": "open sans"
+                    },
+                    "subtitle": {
+                        "color": "#999999",
+                        "fontSize": 12,
+                        "font": "open sans"
+                    },
+                    "location": "pie-center",
+                    "titleSubtitlePadding": 9
+                },
+                "footer": {
+                    "color": "#999999",
+                    "fontSize": 10,
+                    "font": "open sans",
+                    "location": "bottom-center"
+                },
+                "size": {
+                    "canvasHeight": 300,
+                    "canvasWidth": 300,
+                    "pieOuterRadius": "90%"
+                },
+                "data": {
+                    "sortOrder": "label-desc",
+                    "content": [
+                        {
+                            "label": "Differential Expression Analysis ",
+                            "value": 200,
+                            "color": "#2282c1"
+                        },
+                        {
+                            "label": "Association Study",
+                            "value": 90,
+                            "color": "#7b6688"
+                        },
+                        {
+                            "label": "Pattern Recognition ",
+                            "value": 100,
+                            "color": "#64a61f"
+                        }
+                    ]
+                },
+                "labels": {
+                    "outer": {
+                        "format": "none",
+                        "pieDistance": 32
+                    },
+                    "inner": {
+                        "format": "label",
+                        "hideWhenLessThanPercentage": 3
+                    },
+                    "mainLabel": {
+                        "color": "#faf8f8",
+                        "font": "open sans",
+                        "fontSize": 9
+                    },
+                    "percentage": {
+                        "color": "#ffffff",
+                        "decimalPlaces": 0
+                    },
+                    "value": {
+                        "color": "#adadad",
+                        "fontSize": 11
+                    },
+                    "lines": {
+                        "enabled": true
+                    },
+                    "truncation": {
+                        "enabled": true,
+                        "truncateLength": 33
+                    }
+                },
+                "tooltips": {
+                    "enabled": true,
+                    "type": "placeholder",
+                    "string": "{label}:  {percentage}%"
+                },
+                "effects": {
+                    "pullOutSegmentOnClick": {
+                        "effect": "linear",
+                        "speed": 400,
+                        "size": 8
+                    }
+                },
+                "misc": {
+                    "gradient": {
+                        "enabled": true,
+                        "percentage": 100
+                    },
+                    "canvasPadding": {
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0,
+                        "left": 0
+                    }
+                }
+            });
+    return pie;
+}
+
 function plotGeoMap(mapData) {
 
       google.charts.load('current', {
@@ -22,7 +127,7 @@ function plotGeoMap(mapData) {
           datalessRegionColor: '#90EE90'
         };
 
-        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+        var chart = new google.visualization.GeoChart(document.getElementById('regions-chart'));
 
         chart.draw(data, options);
       }
@@ -96,7 +201,8 @@ function plotGeoMap(mapData) {
           legend: "none",
           explorer: {
             axis: "horizontal",
-            maxZoomOut: 1
+            maxZoomOut: 1,
+            maxZoomIn: 10
           },
           chartArea: {
             width: '78%',
@@ -105,26 +211,28 @@ function plotGeoMap(mapData) {
 
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        var chart = new google.visualization.LineChart(document.getElementById('usage-trends-chart'));
 
         chart.draw(dataDaily, options);
 
-        var button = document.getElementById("chart_toggle_view");
+        var button = document.getElementById("chart-toggle-view");
         button.onclick = function() {
             // currently viewing daily data, toggle to monthly data
             if (options.hAxis.format === "MMM dd") {
                 options.hAxis.format = "MMM yyyy";
                 options.hAxis.viewWindow.min = lastYear;
+                options.explorer.maxZoomin = 6;
                 chart.draw(dataMonthly, options);
                 button.innerHTML = "View daily totals";
-                $("#chart_title").text("Views per Month");
+                $("#usage-trends-title").text("Views per Month");
             }
             else {
                 options.hAxis.format = "MMM dd";
                 options.hAxis.viewWindow.min = lastMonth;
+                options.explorer.maxZoomin = 10;
                 chart.draw(dataDaily, options);
                 button.innerHTML = "View monthly totals";
-                $("#chart_title").text("Views per Day");
+                $("#usage-trends-title").text("Views per Day");
             }
 
 

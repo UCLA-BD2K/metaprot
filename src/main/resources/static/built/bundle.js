@@ -49,8 +49,6 @@
 
 	'use strict';
 	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
 	var _react = __webpack_require__(/*! react */ 1);
 	
 	var _react2 = _interopRequireDefault(_react);
@@ -71,61 +69,16 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
 	// tag::vars[]
 	var client = __webpack_require__(/*! ./client */ 226);
-	// end::vars[]
 	
-	// tag::app[]
-	
-	var App = function (_React$Component) {
-		_inherits(App, _React$Component);
-	
-		function App(props) {
-			_classCallCheck(this, App);
-	
-			var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
-	
-			_this.state = { employees: [] };
-			return _this;
-		}
-	
-		_createClass(App, [{
-			key: 'componentDidMount',
-			value: function componentDidMount() {
-				var _this2 = this;
-	
-				client({ method: 'GET', path: '/api/employees' }).done(function (response) {
-					_this2.setState({ employees: response.entity._embedded.employees });
-				});
-			}
-		}, {
-			key: 'render',
-			value: function render() {
-				return _react2.default.createElement(EmployeeList, { employees: this.state.employees });
-			}
-		}]);
-	
-		return App;
-	}(_react2.default.Component);
-	// end::app[]
-	
-	
-	function render(word) {
-		console.log(word);
-		// tag::render[]
-		_reactDom2.default.render(_react2.default.createElement(
-			_reactRouterDom.BrowserRouter,
-			null,
-			_react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _Home2.default })
-		), document.getElementById('react'));
-		// end::render[]
-	}
+	// tag::render[]
+	_reactDom2.default.render(_react2.default.createElement(
+	    _reactRouterDom.BrowserRouter,
+	    null,
+	    _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _Home2.default })
+	), document.getElementById('react'));
+	// end::render[]
 
 /***/ }),
 /* 1 */
@@ -25238,9 +25191,9 @@
 
 /***/ }),
 /* 206 */
-/*!*********************************************!*\
-  !*** ./~/path-to-regexp/~/isarray/index.js ***!
-  \*********************************************/
+/*!****************************!*\
+  !*** ./~/isarray/index.js ***!
+  \****************************/
 /***/ (function(module, exports) {
 
 	module.exports = Array.isArray || function (arr) {
@@ -26461,6 +26414,31 @@
 	    }
 	
 	    _createClass(Home, [{
+	        key: 'componentWillMount',
+	
+	
+	        // grab thymeleaf variables
+	        value: function componentWillMount() {
+	            this.siteUsageDescr = SITE_USAGE_DESCR;
+	            this.pageViews = PAGE_VIEWS;
+	            this.pageViewsPerVisit = PAGE_VIEWS_PER_VISIT;
+	            this.uniqueVisitors = UNIQUE_VISITORS;
+	            this.numCountries = NUM_COUNTRIES;
+	            this.mapData = MAP_DATA;
+	            this.dailyVisitsCounts = DAILY_VISITS_COUNTS;
+	            this.monthlyVisitsCounts = MONTHLY_VISITS_COUNTS;
+	        }
+	
+	        // render plots after mounting
+	
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            plotUsagePieChart();
+	            plotGeoMap(this.mapData);
+	            plotTrafficChart(this.dailyVisitsCounts, this.monthlyVisitsCounts);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var infoblocks = [{
@@ -26487,6 +26465,92 @@
 	                title: "Feature Use Statistics",
 	                description: "A full pie chart to show usage statistics of various features in MetaProt",
 	                postHTML: _react2.default.createElement('div', { id: 'pieChart' })
+	            }, {
+	                title: "Site Usage",
+	                description: _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(
+	                        'p',
+	                        null,
+	                        this.siteUsageDescr
+	                    ),
+	                    _react2.default.createElement(
+	                        'p',
+	                        null,
+	                        '(worldwide usage map shown below):'
+	                    )
+	                ),
+	                postHTML: _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: { maxWidth: 220, margin: "0 auto" } },
+	                        _react2.default.createElement(
+	                            'ul',
+	                            { style: { textAlign: "left" } },
+	                            _react2.default.createElement(
+	                                'li',
+	                                null,
+	                                _react2.default.createElement(
+	                                    'em',
+	                                    null,
+	                                    this.pageViews
+	                                ),
+	                                ' pageviews'
+	                            ),
+	                            _react2.default.createElement(
+	                                'li',
+	                                null,
+	                                _react2.default.createElement(
+	                                    'em',
+	                                    null,
+	                                    this.pageViewsPerVisit
+	                                ),
+	                                ' pageviews per visit'
+	                            ),
+	                            _react2.default.createElement(
+	                                'li',
+	                                null,
+	                                _react2.default.createElement(
+	                                    'em',
+	                                    null,
+	                                    this.uniqueVisitors
+	                                ),
+	                                ' unique visitors'
+	                            ),
+	                            _react2.default.createElement(
+	                                'li',
+	                                null,
+	                                _react2.default.createElement(
+	                                    'em',
+	                                    null,
+	                                    this.numCountries
+	                                ),
+	                                ' countries represented'
+	                            )
+	                        )
+	                    ),
+	                    _react2.default.createElement('div', { id: 'regions-chart', className: 'drop-shadow' })
+	                )
+	            }, {
+	                title: "Usage Trends",
+	                description: _react2.default.createElement(
+	                    'p',
+	                    { id: 'usage-trends-title' },
+	                    'Views per Day'
+	                ),
+	                postHTML: _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement('div', { id: 'usage-trends-chart', className: 'drop-shadow' }),
+	                    _react2.default.createElement(
+	                        'button',
+	                        { id: 'chart-toggle-view' },
+	                        'View monthly totals'
+	                    )
+	                )
 	            }];
 	
 	            console.log(infoblocks);
@@ -26546,10 +26610,7 @@
 	    function InfoBlock(props) {
 	        _classCallCheck(this, InfoBlock);
 	
-	        var _this = _possibleConstructorReturn(this, (InfoBlock.__proto__ || Object.getPrototypeOf(InfoBlock)).call(this, props));
-	
-	        console.log(props);
-	        return _this;
+	        return _possibleConstructorReturn(this, (InfoBlock.__proto__ || Object.getPrototypeOf(InfoBlock)).call(this, props));
 	    }
 	
 	    _createClass(InfoBlock, [{
@@ -26567,11 +26628,7 @@
 	                _react2.default.createElement(
 	                    "span",
 	                    { className: "text-muted" },
-	                    _react2.default.createElement(
-	                        "p",
-	                        null,
-	                        this.props.data.description
-	                    )
+	                    this.props.data.description
 	                ),
 	                this.props.data.postHTML
 	            );
@@ -27370,7 +27427,7 @@
   \***************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/** @license MIT License (c) copyright 2010-2014 original author or authors */
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process) {/** @license MIT License (c) copyright 2010-2014 original author or authors */
 	/** @author Brian Cavalier */
 	/** @author John Hann */
 	

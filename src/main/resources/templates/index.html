@@ -50,11 +50,11 @@
                 </div>
             </div>
 
-            <div class="row">
+           <!-- <div class="row">
                 <div class="col-xs-12 col-md-12 main">
                     <div class="row placeholders">
                         <div class="col-xs-12 col-md-6 placeholder">
-                            <!--<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="305" height="305" class="img-responsive" alt="img2"></img>-->
+                            &lt;!&ndash;<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="305" height="305" class="img-responsive" alt="img2"></img>&ndash;&gt;
                             <h4>Recent Updates</h4>
                             <span class="text-muted">Recent news and updates</span>
                             <div id="list" width="305" height="305">
@@ -70,11 +70,11 @@
                         <div class="col-xs-12 col-md-6 placeholder">
                             <h4>Feature Use Statistics</h4>
                             <span class="text-muted">A full pie chart to show usage statistics of various features in MetaProt</span>
-                            <!--<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="240" height="240" class="img-responsive" alt="img3"></img>-->
+                            &lt;!&ndash;<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="240" height="240" class="img-responsive" alt="img3"></img>&ndash;&gt;
                             <div id="pieChart"></div>
                         </div>
                         <div class="col-xs-12 col-md-6 placeholder">
-                            <!--<div id="chart-container"></div>-->
+                            &lt;!&ndash;<div id="chart-container"></div>&ndash;&gt;
                             <h4>Site Usage</h4>
                             <span class="text-muted"><p th:text='${month}'>Google Analytics Reports</p>
                                 <p>(worldwide usage map shown below):</p></span>
@@ -103,154 +103,45 @@
                 </div>
 
 
-            </div>
+            </div>-->
 
 
+            <div id="react"></div>
 
 
         </div>
 
-        <div id="react"></div>
 
 
 
         <div th:replace="fragments/footer :: footer"></div>
 
-        <script src="/built/bundle.js"></script>
+        <!--Store thymeleaf variables globally so React components may access-->
+        <script th:inline="javascript">
+            var SITE_USAGE_DESCR = /*[[${siteUsageDescr}]]*/ "Google Analytics Reports:";
+            var PAGE_VIEWS = /*[[${pageviews}]]*/ "n/a";
+            var PAGE_VIEWS_PER_VISIT = /*[[${pageviewsPerVisit}]]*/ "n/a";
+            var UNIQUE_VISITORS = /*[[${uniqueVisitors}]]*/ "n/a";
+            var NUM_COUNTRIES = /*[[${numCountries}]]*/ "n/a";
+            var MAP_DATA = [[${mapData}]];
+            var DAILY_VISITS_COUNTS = [[${dailyVisitCounts}]];
+            var MONTHLY_VISITS_COUNTS = [[${monthlyVisitsCounts}]];
+        </script>
+
+
         <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
         <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script>
         <script src="/js/analytics.js"></script>
         <script src="/js/d3pie.min.js"></script>
-        <!--<script src="nv.d3.min.js"></script>-->
-        <!--<script src="https://d3js.org/d3.v4.min.js"></script>-->
-        <!--for pie chart-->
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-            ga('create', 'UA-90308842-1', 'auto');
-            ga('send', 'pageview');
-
-            var pie = new d3pie("pieChart", {
-                "header": {
-                    "title": {
-                        "fontSize": 24,
-                        "font": "open sans"
-                    },
-                    "subtitle": {
-                        "color": "#999999",
-                        "fontSize": 12,
-                        "font": "open sans"
-                    },
-                    "location": "pie-center",
-                    "titleSubtitlePadding": 9
-                },
-                "footer": {
-                    "color": "#999999",
-                    "fontSize": 10,
-                    "font": "open sans",
-                    "location": "bottom-center"
-                },
-                "size": {
-                    "canvasHeight": 300,
-                    "canvasWidth": 300,
-                    "pieOuterRadius": "90%"
-                },
-                "data": {
-                    "sortOrder": "label-desc",
-                    "content": [
-                        {
-                            "label": "Differential Expression Analysis ",
-                            "value": 200,
-                            "color": "#2282c1"
-                        },
-                        {
-                            "label": "Association Study",
-                            "value": 90,
-                            "color": "#7b6688"
-                        },
-                        {
-                            "label": "Pattern Recognition ",
-                            "value": 100,
-                            "color": "#64a61f"
-                        }
-                    ]
-                },
-                "labels": {
-                    "outer": {
-                        "format": "none",
-                        "pieDistance": 32
-                    },
-                    "inner": {
-                        "format": "label",
-                        "hideWhenLessThanPercentage": 3
-                    },
-                    "mainLabel": {
-                        "color": "#faf8f8",
-                        "font": "open sans",
-                        "fontSize": 9
-                    },
-                    "percentage": {
-                        "color": "#ffffff",
-                        "decimalPlaces": 0
-                    },
-                    "value": {
-                        "color": "#adadad",
-                        "fontSize": 11
-                    },
-                    "lines": {
-                        "enabled": true
-                    },
-                    "truncation": {
-                        "enabled": true,
-                        "truncateLength": 33
-                    }
-                },
-                "tooltips": {
-                    "enabled": true,
-                    "type": "placeholder",
-                    "string": "{label}:  {percentage}%"
-                },
-                "effects": {
-                    "pullOutSegmentOnClick": {
-                        "effect": "linear",
-                        "speed": 400,
-                        "size": 8
-                    }
-                },
-                "misc": {
-                    "gradient": {
-                        "enabled": true,
-                        "percentage": 100
-                    },
-                    "canvasPadding": {
-                        "top": 0,
-                        "right": 0,
-                        "bottom": 0,
-                        "left": 0
-                    }
-                }
-            });
-        </script>
-
 
         <!--Countries heatmap and monthly visitors-->
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="/js/GoogleAnalyticsGraphics.js"></script>
-        <script th:inline="javascript">
-        /*<![CDATA[*/
-            var mapData = /*[[${mapData}]]*/ null
-            var dailyVisitCounts = /*[[${dailyVisitsData}]]*/ null
-            var monthlyVisitCounts = /*[[${monthlyVisitsData}]]*/ null
 
-            plotGeoMap(mapData);
-            plotTrafficChart(dailyVisitCounts, monthlyVisitCounts);
+        <script src="/built/bundle.js"></script>
 
-         /*]]>*/
-        </script>
+
     </body>
 </html>
 

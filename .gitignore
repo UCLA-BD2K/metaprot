@@ -13,3 +13,4 @@ target/**
 .idea/**
 *.p12
 ebextensions
+node_modules
