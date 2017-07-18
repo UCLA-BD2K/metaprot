@@ -26743,6 +26743,16 @@
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'navbar-header' },
+	
+	                        // show toggle for side Nav Bar if present
+	                        this.props.hasSideNavBar ? _react2.default.createElement(
+	                            'button',
+	                            { type: 'button', className: 'navbar-toggle toggle-left hidden-md hidden-lg', 'data-toggle': 'sidebar', 'data-target': '.sidebar-left' },
+	                            _react2.default.createElement('span', { className: 'icon-bar' }),
+	                            _react2.default.createElement('span', { className: 'icon-bar' }),
+	                            _react2.default.createElement('span', { className: 'icon-bar' })
+	                        ) : null,
+	                        _react2.default.createElement('img', { src: '/img/icon11.png', style: { height: 40, width: 100, align: "middle", marginTop: 5 } }),
 	                        _react2.default.createElement(
 	                            'button',
 	                            { type: 'button', className: 'navbar-toggle collapsed', 'data-toggle': 'collapse', 'data-target': '#navbar', 'aria-expanded': 'false', 'aria-controls': 'navbar' },
@@ -26754,8 +26764,7 @@
 	                            _react2.default.createElement('span', { className: 'icon-bar' }),
 	                            _react2.default.createElement('span', { className: 'icon-bar' }),
 	                            _react2.default.createElement('span', { className: 'icon-bar' })
-	                        ),
-	                        _react2.default.createElement('img', { src: '/img/icon11.png', style: { height: 40, width: 100, align: "middle", marginTop: 5 } })
+	                        )
 	                    ),
 	                    _react2.default.createElement(
 	                        'div',
@@ -26767,8 +26776,8 @@
 	                                'li',
 	                                null,
 	                                _react2.default.createElement(
-	                                    _reactRouterDom.Link,
-	                                    { to: '/about' },
+	                                    'a',
+	                                    { href: '/about' },
 	                                    'About'
 	                                )
 	                            ),
@@ -26776,8 +26785,8 @@
 	                                'li',
 	                                null,
 	                                _react2.default.createElement(
-	                                    _reactRouterDom.Link,
-	                                    { to: '/contact' },
+	                                    'a',
+	                                    { href: '/contact' },
 	                                    'Contact'
 	                                )
 	                            )
@@ -26950,7 +26959,7 @@
 	            return _react2.default.createElement(
 	                'div',
 	                null,
-	                _react2.default.createElement(_TopNavBar2.default, null),
+	                _react2.default.createElement(_TopNavBar2.default, { hasSideNavBar: true }),
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'container-fluid' },
@@ -27875,7 +27884,7 @@
   \***************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/** @license MIT License (c) copyright 2010-2014 original author or authors */
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process) {/** @license MIT License (c) copyright 2010-2014 original author or authors */
 	/** @author Brian Cavalier */
 	/** @author John Hann */
 	

@@ -58,7 +58,7 @@ class Analysis extends Component {
         return (
 
             <div>
-                <TopNavBar/>
+                <TopNavBar hasSideNavBar/>
                 <div className="container-fluid">
                     <div className="row">
 
