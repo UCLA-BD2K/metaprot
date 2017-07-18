@@ -46,7 +46,6 @@ public class General {
             dailyVisitCounts = GoogleAnalytics.getDailyVisitCounts(analytics, profile);
             monthlyVisitCounts = GoogleAnalytics.getMonthlyVisitCounts(analytics, profile);
             countryData = GoogleAnalytics.getCountryData(analytics, profile);
-            System.out.println(results);
         } catch (Exception e) {
             e.printStackTrace();
         }

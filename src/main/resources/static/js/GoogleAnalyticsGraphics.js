@@ -1,4 +1,4 @@
-
+// generate pie chart displaying usage of site's features (dummy data currently)
 function plotUsagePieChart() {
     var pie = new d3pie("pieChart", {
                 "header": {
@@ -103,8 +103,8 @@ function plotUsagePieChart() {
     return pie;
 }
 
+// generate heat map of site usage in various countries
 function plotGeoMap(mapData) {
-
       google.charts.load('current', {
         'packages':['geochart'],
         'mapsApiKey': 'AIzaSyCXkYdibsxSbTe8LZwdB6hZ9eoFiOC0tMU'
@@ -133,12 +133,13 @@ function plotGeoMap(mapData) {
       }
  }
 
- function plotTrafficChart(dailyVisitCounts, monthlyVisitCounts) {
+// generate line chart to display usage trends (daily/monthly visits)
+function plotTrafficChart(dailyVisitCounts, monthlyVisitCounts) {
 
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
 
-      function drawChart() {
+    function drawChart() {
 
         var dataDaily = new google.visualization.DataTable();
         var dataMonthly = new google.visualization.DataTable();
@@ -174,45 +175,43 @@ function plotGeoMap(mapData) {
         lastYear.setMonth(today.getMonth()-13);
 
         var options = {
-          backgroundColor: "#eef7fb",
-          colors: ["#2857ff"],
-          pointSize: 5,
-          //theme: 'maximized',
-          width: '100%',
-          height: '100%',
-          hAxis: {
-            format: "MMM dd",
-            gridlines: {color: 'none'},
-            viewWindowMode: 'pretty',
-            color: 'gray',
-            viewWindow: {
-                max: today,
-                min: lastMonth
-            }
-          },
-          vAxis: {
-            format: 'decimal',
-            color: 'gray',
-            viewWindow: {
-                min: 0
+            backgroundColor: "#eef7fb",
+            colors: ["#2857ff"],
+            pointSize: 5,
+            //theme: 'maximized',
+            width: '100%',
+            height: '100%',
+            hAxis: {
+                format: "MMM dd",
+                gridlines: {color: 'none'},
+                viewWindowMode: 'pretty',
+                color: 'gray',
+                viewWindow: {
+                    max: today,
+                    min: lastMonth
+                }
             },
-            title: 'Pageviews'
-          },
-          legend: "none",
-          explorer: {
-            axis: "horizontal",
-            maxZoomOut: 1,
-            maxZoomIn: 10
-          },
-          chartArea: {
-            width: '78%',
-            height: '78%'
-          }
+            vAxis: {
+                format: 'decimal',
+                color: 'gray',
+                viewWindow: {
+                    min: 0
+                },
+                title: 'Pageviews'
+            },
+            legend: "none",
+            explorer: {
+                axis: "horizontal",
+                maxZoomOut: 1
+            },
+            chartArea: {
+                width: '78%',
+                height: '78%'
+            }
 
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('usage-trends-chart'));
-
         chart.draw(dataDaily, options);
 
         var button = document.getElementById("chart-toggle-view");
@@ -221,23 +220,22 @@ function plotGeoMap(mapData) {
             if (options.hAxis.format === "MMM dd") {
                 options.hAxis.format = "MMM yyyy";
                 options.hAxis.viewWindow.min = lastYear;
-                options.explorer.maxZoomin = 6;
-                chart.draw(dataMonthly, options);
+                var newChart = new google.visualization.LineChart(document.getElementById('usage-trends-chart'));
+                newChart.draw(dataMonthly, options);
                 button.innerHTML = "View daily totals";
                 $("#usage-trends-title").text("Views per Month");
             }
+            // currently viewing monthly data, toggle to daily data
             else {
                 options.hAxis.format = "MMM dd";
                 options.hAxis.viewWindow.min = lastMonth;
-                options.explorer.maxZoomin = 10;
-                chart.draw(dataDaily, options);
+                var newChart = new google.visualization.LineChart(document.getElementById('usage-trends-chart'));
+                newChart.draw(dataDaily, options);
                 button.innerHTML = "View monthly totals";
                 $("#usage-trends-title").text("Views per Day");
             }
 
-
         }
 
-
-      }
- }
+    }
+}

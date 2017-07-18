@@ -17,104 +17,12 @@
     </head>
 
     <body>
-        <!--<div th:include="fragments/header :: header"></div>-->
 
-        <nav class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <img src="/img/icon11.png" height="40" width="100" align="middle" style="margin-top:5px;"/>
-                </div>
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="./about">About</a></li>
-                        <li><a href="./contact">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <div class="container-fluid">
-            <div class="jumbotron">
-                <h1>MetProt</h1>
-                <p class="lead">A Cloud-based Platform to Analyze, Annotate, and Integrate Metabolomics Datasets with Proteomics Information.</p>
-                <div class="col-sm-12 col-md-12 main">
-                    <div class="btn-border">
-                        <p><a class="btn btn-lg btn-default" onclick="window.location.href='/upload'">Start Analysis</a></p>
-                    </div>
-                </div>
-            </div>
-
-           <!-- <div class="row">
-                <div class="col-xs-12 col-md-12 main">
-                    <div class="row placeholders">
-                        <div class="col-xs-12 col-md-6 placeholder">
-                            &lt;!&ndash;<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="305" height="305" class="img-responsive" alt="img2"></img>&ndash;&gt;
-                            <h4>Recent Updates</h4>
-                            <span class="text-muted">Recent news and updates</span>
-                            <div id="list" width="305" height="305">
-                                <ul class="list-group">
-                                    <li class="list-group-item list-group-item-info">User1(2/2/2017): Google Analytics Integrated for tracking site traffic</li>
-                                    <li class="list-group-item list-group-item-info">User1(2/2/2017): Transitioned database from MongoDB to DynamoDB</li>
-                                    <li class="list-group-item list-group-item-info">User1(2/2/2017): RJava Implementated</li>
-                                    <li class="list-group-item list-group-item-info">User1(2/2/2017): Pattern Recognition Module Implemented</li>
-                                    <li class="list-group-item list-group-item-info">User1(2/2/2017): Differential Expression Analysis Module Implemented</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-6 placeholder">
-                            <h4>Feature Use Statistics</h4>
-                            <span class="text-muted">A full pie chart to show usage statistics of various features in MetaProt</span>
-                            &lt;!&ndash;<img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="240" height="240" class="img-responsive" alt="img3"></img>&ndash;&gt;
-                            <div id="pieChart"></div>
-                        </div>
-                        <div class="col-xs-12 col-md-6 placeholder">
-                            &lt;!&ndash;<div id="chart-container"></div>&ndash;&gt;
-                            <h4>Site Usage</h4>
-                            <span class="text-muted"><p th:text='${month}'>Google Analytics Reports</p>
-                                <p>(worldwide usage map shown below):</p></span>
-                            <div style="max-width: 220px; margin: 0 auto;">
-                                <ul style="text-align:left;">
-                                    <li><span style="text-decoration: underline"><em th:text='${pageviews}'>n/a</em></span> pageviews</li>
-                                    <li><span style="text-decoration: underline"><em th:text='${pageviewsPerVisit}'>n/a</em></span> pageviews per visit</li>
-                                    <li><span style="text-decoration: underline"><em th:text='${uniqueVisitors}'>n/a</em></span> unique visitors</li>
-                                    <li><span style="text-decoration: underline"><em th:text='${numCountries}'>n/a</em></span> countries represented.<br /></li>
-                                </ul>
-                            </div>
-                            <div id="regions_div" class="drop-shadow" style="width: 480px; height: auto; margin:20px auto 0 auto;"></div>
-                        </div>
-
-                        <div class="col-xs-12 col-md-6 placeholder">
-                            <h4>Usage Trends</h4>
-                            <span class="text-muted"><p id="chart_title">Views per Day</p></span>
-                            <div id="chart_div" class="drop-shadow" style="width: 480px; height: 360px; margin: 40px auto 20px auto;"></div>
-                            <button id="chart_toggle_view">View monthly totals</button>
-                        </div>
-
-
-
-                    </div>
-
-                </div>
-
-
-            </div>-->
-
-
-            <div id="react"></div>
-
-
-        </div>
+        <div id="react"></div>
 
 
 
 
-        <div th:replace="fragments/footer :: footer"></div>
 
         <!--Store thymeleaf variables globally so React components may access-->
         <script th:inline="javascript">

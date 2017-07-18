@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
-import InfoBlock from './InfoBlock'
+import InfoBlock from './InfoBlock';
+import TopNavBar from './TopNavBar';
+import Footer from './Footer';
+import { Link } from 'react-router-dom';
 
 class Home extends Component {
 
-    // grab thymeleaf variables
+    // grab thymeleaf variables and set up InfoBlocks
     componentWillMount() {
         this.siteUsageDescr = SITE_USAGE_DESCR;
         this.pageViews = PAGE_VIEWS;
@@ -13,40 +16,30 @@ class Home extends Component {
         this.mapData = MAP_DATA;
         this.dailyVisitsCounts = DAILY_VISITS_COUNTS;
         this.monthlyVisitsCounts = MONTHLY_VISITS_COUNTS;
-    }
 
-    // render plots after mounting
-    componentDidMount() {
-        plotUsagePieChart();
-        plotGeoMap(this.mapData);
-        plotTrafficChart(this.dailyVisitsCounts, this.monthlyVisitsCounts);
-    }
-
-
-    render() {
-        var infoblocks = [
-            {
-                title: "Recent Updates",
-                description: "Recent news and updates",
-                postHTML: (
-                        <div id="list" width="305" height="305">
-                            <ul className="list-group">
-                            {
-                                [
-                                    "User1(2/2/2017): Google Analytics Integrated for tracking site traffic",
-                                    "User1(2/2/2017): Transitioned database from MongoDB to DynamoDB",
-                                    "User1(2/2/2017): RJava Implementated",
-                                    "User1(2/2/2017): Pattern Recognition Module Implemented",
-                                    "User1(2/2/2017): Differential Expression Analysis Module Implemented"
-                                ].map((update, i) => {
-                                    return (
-                                        <li className="list-group-item list-group-item-info" key={"update-" + i}> {update} </li>
-                                    )
-                                })
-                            }
-                            </ul>
-                        </div>
-                )
+        this.infoblocks = [
+           {
+               title: "Recent Updates",
+               description: "Recent news and updates",
+               postHTML: (
+                       <div id="list" width="305" height="305">
+                           <ul className="list-group">
+                           {
+                               [
+                                   "User1(2/2/2017): Google Analytics Integrated for tracking site traffic",
+                                   "User1(2/2/2017): Transitioned database from MongoDB to DynamoDB",
+                                   "User1(2/2/2017): RJava Implementated",
+                                   "User1(2/2/2017): Pattern Recognition Module Implemented",
+                                   "User1(2/2/2017): Differential Expression Analysis Module Implemented"
+                               ].map((update, i) => {
+                                   return (
+                                       <li className="list-group-item list-group-item-info" key={"update-" + i}> {update} </li>
+                                   )
+                               })
+                           }
+                           </ul>
+                       </div>
+               )
             },
             {
                 title: "Feature Use Statistics",
@@ -89,18 +82,47 @@ class Home extends Component {
 
         ]
 
-    console.log(infoblocks);
+    }
+
+    // render plots after mounting
+    componentDidMount() {
+        plotUsagePieChart();
+        plotGeoMap(this.mapData);
+        plotTrafficChart(this.dailyVisitsCounts, this.monthlyVisitsCounts);
+    }
+
+
+    render() {
         return (
-            <div className="row">
-                <div className="col-xs-12 col-md-12 main">
-                    <div className="row placeholders">
-                    {
-                         infoblocks.map((infoblock, i) => {
-                            return <InfoBlock key={"infoblock-"+i} data={infoblock} className="col-xs-12 col-md-6 placeholder"/>
-                         })
-                    }
+
+            <div>
+                <TopNavBar/>
+
+                <div className="container-fluid">
+                    <div className="jumbotron">
+                        <h1>MetProt</h1>
+                        <p className="lead">A Cloud-based Platform to Analyze, Annotate, and Integrate Metabolomics Datasets with Proteomics Information.</p>
+                        <div className="col-sm-12 col-md-12 main">
+                            <div className="btn-border">
+                                <a className="btn btn-lg btn-default" href="/upload">Start Analysis</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <div className="row">
+                    <div className="col-xs-12 col-md-12 main">
+                        <div className="row placeholders">
+                        {
+                             this.infoblocks.map((infoblock, i) => {
+                                return <InfoBlock key={"infoblock-"+i} data={infoblock} className="col-xs-12 col-md-6 placeholder"/>
+                             })
+                        }
+                        </div>
+                    </div>
+                </div>
+
+                <Footer />
             </div>
         )
     }

@@ -63,20 +63,27 @@
 	
 	var _Home2 = _interopRequireDefault(_Home);
 	
-	var _InfoBlock = __webpack_require__(/*! ./components/InfoBlock */ 225);
+	var _Analysis = __webpack_require__(/*! ./components/Analysis */ 228);
 	
-	var _InfoBlock2 = _interopRequireDefault(_InfoBlock);
+	var _Analysis2 = _interopRequireDefault(_Analysis);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	// tag::vars[]
-	var client = __webpack_require__(/*! ./client */ 226);
+	var client = __webpack_require__(/*! ./client */ 230);
 	
 	// tag::render[]
 	_reactDom2.default.render(_react2.default.createElement(
 	    _reactRouterDom.BrowserRouter,
 	    null,
-	    _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _Home2.default })
+	    _react2.default.createElement(
+	        _reactRouterDom.Switch,
+	        null,
+	        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default }),
+	        _react2.default.createElement(_reactRouterDom.Route, { path: '/upload', component: _Analysis2.default }),
+	        _react2.default.createElement(_reactRouterDom.Route, { path: '/upload-pass', component: _Analysis2.default }),
+	        _react2.default.createElement(_reactRouterDom.Route, { path: '/analysis', component: _Analysis2.default })
+	    )
 	), document.getElementById('react'));
 	// end::render[]
 
@@ -26396,6 +26403,16 @@
 	
 	var _InfoBlock2 = _interopRequireDefault(_InfoBlock);
 	
+	var _TopNavBar = __webpack_require__(/*! ./TopNavBar */ 226);
+	
+	var _TopNavBar2 = _interopRequireDefault(_TopNavBar);
+	
+	var _Footer = __webpack_require__(/*! ./Footer */ 227);
+	
+	var _Footer2 = _interopRequireDefault(_Footer);
+	
+	var _reactRouterDom = __webpack_require__(/*! react-router-dom */ 184);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26417,7 +26434,7 @@
 	        key: 'componentWillMount',
 	
 	
-	        // grab thymeleaf variables
+	        // grab thymeleaf variables and set up InfoBlocks
 	        value: function componentWillMount() {
 	            this.siteUsageDescr = SITE_USAGE_DESCR;
 	            this.pageViews = PAGE_VIEWS;
@@ -26427,21 +26444,8 @@
 	            this.mapData = MAP_DATA;
 	            this.dailyVisitsCounts = DAILY_VISITS_COUNTS;
 	            this.monthlyVisitsCounts = MONTHLY_VISITS_COUNTS;
-	        }
 	
-	        // render plots after mounting
-	
-	    }, {
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            plotUsagePieChart();
-	            plotGeoMap(this.mapData);
-	            plotTrafficChart(this.dailyVisitsCounts, this.monthlyVisitsCounts);
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            var infoblocks = [{
+	            this.infoblocks = [{
 	                title: "Recent Updates",
 	                description: "Recent news and updates",
 	                postHTML: _react2.default.createElement(
@@ -26552,22 +26556,71 @@
 	                    )
 	                )
 	            }];
+	        }
 	
-	            console.log(infoblocks);
+	        // render plots after mounting
+	
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            plotUsagePieChart();
+	            plotGeoMap(this.mapData);
+	            plotTrafficChart(this.dailyVisitsCounts, this.monthlyVisitsCounts);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
 	            return _react2.default.createElement(
 	                'div',
-	                { className: 'row' },
+	                null,
+	                _react2.default.createElement(_TopNavBar2.default, null),
 	                _react2.default.createElement(
 	                    'div',
-	                    { className: 'col-xs-12 col-md-12 main' },
+	                    { className: 'container-fluid' },
 	                    _react2.default.createElement(
 	                        'div',
-	                        { className: 'row placeholders' },
-	                        infoblocks.map(function (infoblock, i) {
-	                            return _react2.default.createElement(_InfoBlock2.default, { key: "infoblock-" + i, data: infoblock, className: 'col-xs-12 col-md-6 placeholder' });
-	                        })
+	                        { className: 'jumbotron' },
+	                        _react2.default.createElement(
+	                            'h1',
+	                            null,
+	                            'MetProt'
+	                        ),
+	                        _react2.default.createElement(
+	                            'p',
+	                            { className: 'lead' },
+	                            'A Cloud-based Platform to Analyze, Annotate, and Integrate Metabolomics Datasets with Proteomics Information.'
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'col-sm-12 col-md-12 main' },
+	                            _react2.default.createElement(
+	                                'div',
+	                                { className: 'btn-border' },
+	                                _react2.default.createElement(
+	                                    'a',
+	                                    { className: 'btn btn-lg btn-default', href: '/upload' },
+	                                    'Start Analysis'
+	                                )
+	                            )
+	                        )
 	                    )
-	                )
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'row' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'col-xs-12 col-md-12 main' },
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'row placeholders' },
+	                            this.infoblocks.map(function (infoblock, i) {
+	                                return _react2.default.createElement(_InfoBlock2.default, { key: "infoblock-" + i, data: infoblock, className: 'col-xs-12 col-md-6 placeholder' });
+	                            })
+	                        )
+	                    )
+	                ),
+	                _react2.default.createElement(_Footer2.default, null)
 	            );
 	        }
 	    }]);
@@ -26642,6 +26695,401 @@
 
 /***/ }),
 /* 226 */
+/*!***************************************************************!*\
+  !*** ./src/main/resources/static/js/components/TopNavBar.jsx ***!
+  \***************************************************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRouterDom = __webpack_require__(/*! react-router-dom */ 184);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var TopNavBar = function (_Component) {
+	    _inherits(TopNavBar, _Component);
+	
+	    function TopNavBar() {
+	        _classCallCheck(this, TopNavBar);
+	
+	        return _possibleConstructorReturn(this, (TopNavBar.__proto__ || Object.getPrototypeOf(TopNavBar)).apply(this, arguments));
+	    }
+	
+	    _createClass(TopNavBar, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'nav',
+	                { className: 'navbar navbar-inverse navbar-fixed-top' },
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'container-fluid' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'navbar-header' },
+	                        _react2.default.createElement(
+	                            'button',
+	                            { type: 'button', className: 'navbar-toggle collapsed', 'data-toggle': 'collapse', 'data-target': '#navbar', 'aria-expanded': 'false', 'aria-controls': 'navbar' },
+	                            _react2.default.createElement(
+	                                'span',
+	                                { className: 'sr-only' },
+	                                'Toggle navigation'
+	                            ),
+	                            _react2.default.createElement('span', { className: 'icon-bar' }),
+	                            _react2.default.createElement('span', { className: 'icon-bar' }),
+	                            _react2.default.createElement('span', { className: 'icon-bar' })
+	                        ),
+	                        _react2.default.createElement('img', { src: '/img/icon11.png', style: { height: 40, width: 100, align: "middle", marginTop: 5 } })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { id: 'navbar', className: 'navbar-collapse collapse' },
+	                        _react2.default.createElement(
+	                            'ul',
+	                            { className: 'nav navbar-nav navbar-right' },
+	                            _react2.default.createElement(
+	                                'li',
+	                                null,
+	                                _react2.default.createElement(
+	                                    _reactRouterDom.Link,
+	                                    { to: '/about' },
+	                                    'About'
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'li',
+	                                null,
+	                                _react2.default.createElement(
+	                                    _reactRouterDom.Link,
+	                                    { to: '/contact' },
+	                                    'Contact'
+	                                )
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return TopNavBar;
+	}(_react.Component);
+	
+	exports.default = TopNavBar;
+
+/***/ }),
+/* 227 */
+/*!************************************************************!*\
+  !*** ./src/main/resources/static/js/components/Footer.jsx ***!
+  \************************************************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Footer = function (_Component) {
+	    _inherits(Footer, _Component);
+	
+	    function Footer() {
+	        _classCallCheck(this, Footer);
+	
+	        return _possibleConstructorReturn(this, (Footer.__proto__ || Object.getPrototypeOf(Footer)).apply(this, arguments));
+	    }
+	
+	    _createClass(Footer, [{
+	        key: "render",
+	        value: function render() {
+	            return _react2.default.createElement(
+	                "footer",
+	                null,
+	                _react2.default.createElement(
+	                    "div",
+	                    { className: "container text-center" },
+	                    _react2.default.createElement("img", { src: "/img/nih_icon_2.svg", style: { width: 50 } }),
+	                    "   \xA9 2017  BD2K MetProt is supported by the NIH Big Data to Knowledge award U54 GM114833."
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return Footer;
+	}(_react.Component);
+	
+	exports.default = Footer;
+
+/***/ }),
+/* 228 */
+/*!**************************************************************!*\
+  !*** ./src/main/resources/static/js/components/Analysis.jsx ***!
+  \**************************************************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _InfoBlock = __webpack_require__(/*! ./InfoBlock */ 225);
+	
+	var _InfoBlock2 = _interopRequireDefault(_InfoBlock);
+	
+	var _TopNavBar = __webpack_require__(/*! ./TopNavBar */ 226);
+	
+	var _TopNavBar2 = _interopRequireDefault(_TopNavBar);
+	
+	var _SideNavBar = __webpack_require__(/*! ./SideNavBar */ 229);
+	
+	var _SideNavBar2 = _interopRequireDefault(_SideNavBar);
+	
+	var _Footer = __webpack_require__(/*! ./Footer */ 227);
+	
+	var _Footer2 = _interopRequireDefault(_Footer);
+	
+	var _reactRouterDom = __webpack_require__(/*! react-router-dom */ 184);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Analysis = function (_Component) {
+	    _inherits(Analysis, _Component);
+	
+	    function Analysis() {
+	        _classCallCheck(this, Analysis);
+	
+	        return _possibleConstructorReturn(this, (Analysis.__proto__ || Object.getPrototypeOf(Analysis)).apply(this, arguments));
+	    }
+	
+	    _createClass(Analysis, [{
+	        key: 'componentWillMount',
+	
+	
+	        // Set up InfoBlocks
+	        value: function componentWillMount() {
+	            this.infoblocks = [{
+	                preHTML: _react2.default.createElement(
+	                    'a',
+	                    { href: 'metabolite-analysis' },
+	                    _react2.default.createElement('img', { src: '/img/volcano.jpg', className: 'img-responsive img-analysis' })
+	                ),
+	                title: "Differential Expression Analysis",
+	                description: "Analyze time-series metabolite data and generate high quality volcano plots to visualize inherent trends."
+	            }, {
+	                preHTML: _react2.default.createElement(
+	                    'a',
+	                    { href: 'temporal-pattern-recognition' },
+	                    _react2.default.createElement('img', { src: '/img/pattern.jpg', className: 'img-responsive img-analysis' })
+	                ),
+	                title: "Pattern Recognition",
+	                description: "Analyze temporal patterns and visualize clusters based on these trends."
+	            }, {
+	                preHTML: _react2.default.createElement(
+	                    'a',
+	                    { href: 'time-series-viewer' },
+	                    _react2.default.createElement('img', { src: '/img/pattern.jpg', className: 'img-responsive img-analysis' })
+	                ),
+	                title: "Time Series Analysis",
+	                description: "Analyze time series data and visualize trends."
+	            }, {
+	                preHTML: _react2.default.createElement(
+	                    'a',
+	                    { href: '#' },
+	                    _react2.default.createElement('img', { src: '/img/association.jpg', className: 'img-responsive img-analysis' })
+	                ),
+	                title: "Association Study",
+	                description: "To identify the molecule highly associated with designated phenotypic characteristics"
+	            }];
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(_TopNavBar2.default, null),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'container-fluid' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        _react2.default.createElement(_SideNavBar2.default, null),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'col-10 col-offset-1 col-md-8 col-md-offset-2 main' },
+	                            _react2.default.createElement(
+	                                'h2',
+	                                null,
+	                                'Analysis'
+	                            ),
+	                            _react2.default.createElement(
+	                                'div',
+	                                { className: 'placeholders' },
+	                                _react2.default.createElement(
+	                                    'div',
+	                                    { className: 'row' },
+	                                    _react2.default.createElement(_InfoBlock2.default, { data: this.infoblocks[0], className: 'col-12 col-sm-5 col-sm-offset-1 col-lg-4 col-lg-offset-2 placeholder' }),
+	                                    _react2.default.createElement(_InfoBlock2.default, { data: this.infoblocks[1], className: 'col-12 col-sm-5 col-sm-offset-1 col-lg-4 col-lg-offset-2 placeholder' })
+	                                ),
+	                                _react2.default.createElement(
+	                                    'div',
+	                                    { className: 'row' },
+	                                    _react2.default.createElement(_InfoBlock2.default, { data: this.infoblocks[2], className: 'col-12 col-sm-5 col-sm-offset-1 col-lg-4 col-lg-offset-2 placeholder' }),
+	                                    _react2.default.createElement(_InfoBlock2.default, { data: this.infoblocks[3], className: 'col-12 col-sm-5 col-sm-offset-1 col-lg-4 col-lg-offset-2 placeholder' })
+	                                )
+	                            )
+	                        )
+	                    )
+	                ),
+	                _react2.default.createElement(_Footer2.default, null)
+	            );
+	        }
+	    }]);
+	
+	    return Analysis;
+	}(_react.Component);
+	
+	exports.default = Analysis;
+
+/***/ }),
+/* 229 */
+/*!****************************************************************!*\
+  !*** ./src/main/resources/static/js/components/SideNavBar.jsx ***!
+  \****************************************************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRouterDom = __webpack_require__(/*! react-router-dom */ 184);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var tabData = [{ name: "Upload Data", path: "/upload" }, { name: "Preprocessing", path: "/upload-pass" }, { name: "Analysis", path: "/analysis" }, { name: "Annotation", path: "#" }, { name: "Integration", path: "#" }, { name: "Summary", path: "#" }];
+	
+	var Tab = _react2.default.createClass({
+	    displayName: 'Tab',
+	
+	    render: function render() {
+	        return _react2.default.createElement(
+	            'li',
+	            {
+	                onClick: this.props.handleClick,
+	                className: this.props.isActive ? "active" : null },
+	            _react2.default.createElement(
+	                'a',
+	                { href: this.props.data.path },
+	                this.props.data.name
+	            )
+	        );
+	    }
+	});
+	
+	var SideNavBar = function (_Component) {
+	    _inherits(SideNavBar, _Component);
+	
+	    function SideNavBar(props) {
+	        _classCallCheck(this, SideNavBar);
+	
+	        var _this = _possibleConstructorReturn(this, (SideNavBar.__proto__ || Object.getPrototypeOf(SideNavBar)).call(this, props));
+	
+	        _this.state = {
+	            activeTab: tabData[0]
+	        };
+	        _this.handleClick = _this.handleClick.bind(_this);
+	        return _this;
+	    }
+	
+	    _createClass(SideNavBar, [{
+	        key: 'handleClick',
+	        value: function handleClick(tab) {
+	            this.setState({ activeTab: tab });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                { className: 'col-sm-3 col-md-2 sidebar sidebar-left sidebar-animate sidebar-md-show' },
+	                _react2.default.createElement(
+	                    'ul',
+	                    { className: 'nav nav-sidebar' },
+	                    tabData.map(function (tab) {
+	                        return _react2.default.createElement(Tab, { data: tab,
+	                            isActive: this.state.activeTab === tab,
+	                            handleClick: this.handleClick.bind(this, tab) });
+	                    }.bind(this))
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return SideNavBar;
+	}(_react.Component);
+	
+	exports.default = SideNavBar;
+
+/***/ }),
+/* 230 */
 /*!************************************************!*\
   !*** ./src/main/resources/static/js/client.js ***!
   \************************************************/
@@ -26649,22 +27097,22 @@
 
 	'use strict';
 	
-	var rest = __webpack_require__(/*! rest */ 227);
-	var defaultRequest = __webpack_require__(/*! rest/interceptor/defaultRequest */ 255);
-	var mime = __webpack_require__(/*! rest/interceptor/mime */ 257);
-	var uriTemplateInterceptor = __webpack_require__(/*! ./api/uriTemplateInterceptor */ 271);
-	var errorCode = __webpack_require__(/*! rest/interceptor/errorCode */ 272);
-	var baseRegistry = __webpack_require__(/*! rest/mime/registry */ 259);
+	var rest = __webpack_require__(/*! rest */ 231);
+	var defaultRequest = __webpack_require__(/*! rest/interceptor/defaultRequest */ 259);
+	var mime = __webpack_require__(/*! rest/interceptor/mime */ 261);
+	var uriTemplateInterceptor = __webpack_require__(/*! ./api/uriTemplateInterceptor */ 275);
+	var errorCode = __webpack_require__(/*! rest/interceptor/errorCode */ 276);
+	var baseRegistry = __webpack_require__(/*! rest/mime/registry */ 263);
 	
 	var registry = baseRegistry.child();
 	
-	registry.register('text/uri-list', __webpack_require__(/*! ./api/uriListConverter */ 273));
-	registry.register('application/hal+json', __webpack_require__(/*! rest/mime/type/application/hal */ 260));
+	registry.register('text/uri-list', __webpack_require__(/*! ./api/uriListConverter */ 277));
+	registry.register('application/hal+json', __webpack_require__(/*! rest/mime/type/application/hal */ 264));
 	
 	module.exports = rest.wrap(mime, { registry: registry }).wrap(uriTemplateInterceptor).wrap(errorCode).wrap(defaultRequest, { headers: { 'Accept': 'application/hal+json' } });
 
 /***/ }),
-/* 227 */
+/* 231 */
 /*!***************************!*\
   !*** ./~/rest/browser.js ***!
   \***************************/
@@ -26682,8 +27130,8 @@
 	
 		!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
 	
-			var rest = __webpack_require__(/*! ./client/default */ 228),
-			    browser = __webpack_require__(/*! ./client/xhr */ 231);
+			var rest = __webpack_require__(/*! ./client/default */ 232),
+			    browser = __webpack_require__(/*! ./client/xhr */ 235);
 	
 			rest.setPlatformDefaultClient(browser);
 	
@@ -26692,13 +27140,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 228 */
+/* 232 */
 /*!**********************************!*\
   !*** ./~/rest/client/default.js ***!
   \**********************************/
@@ -26776,7 +27224,7 @@
 	
 			var client, target, platformDefault;
 	
-			client = __webpack_require__(/*! ../client */ 229);
+			client = __webpack_require__(/*! ../client */ 233);
 	
 			/**
 			 * Make a request with the default client
@@ -26825,13 +27273,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 229 */
+/* 233 */
 /*!**************************!*\
   !*** ./~/rest/client.js ***!
   \**************************/
@@ -26898,13 +27346,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 230 */
+/* 234 */
 /*!***************************************!*\
   !*** (webpack)/buildin/amd-define.js ***!
   \***************************************/
@@ -26914,7 +27362,7 @@
 
 
 /***/ }),
-/* 231 */
+/* 235 */
 /*!******************************!*\
   !*** ./~/rest/client/xhr.js ***!
   \******************************/
@@ -26934,11 +27382,11 @@
 	
 			var when, UrlBuilder, normalizeHeaderName, responsePromise, client, headerSplitRE;
 	
-			when = __webpack_require__(/*! when */ 232);
-			UrlBuilder = __webpack_require__(/*! ../UrlBuilder */ 251);
-			normalizeHeaderName = __webpack_require__(/*! ../util/normalizeHeaderName */ 253);
-			responsePromise = __webpack_require__(/*! ../util/responsePromise */ 254);
-			client = __webpack_require__(/*! ../client */ 229);
+			when = __webpack_require__(/*! when */ 236);
+			UrlBuilder = __webpack_require__(/*! ../UrlBuilder */ 255);
+			normalizeHeaderName = __webpack_require__(/*! ../util/normalizeHeaderName */ 257);
+			responsePromise = __webpack_require__(/*! ../util/responsePromise */ 258);
+			client = __webpack_require__(/*! ../client */ 233);
 	
 			// according to the spec, the line break is '\r\n', but doesn't hold true in practice
 			headerSplitRE = /[\r|\n]+/;
@@ -27090,14 +27538,14 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230),
+		__webpack_require__(/*! !webpack amd define */ 234),
 		typeof window !== 'undefined' ? window : void 0
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 232 */
+/* 236 */
 /*!************************!*\
   !*** ./~/when/when.js ***!
   \************************/
@@ -27114,24 +27562,24 @@
 	(function(define) { 'use strict';
 	!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
 	
-		var timed = __webpack_require__(/*! ./lib/decorators/timed */ 233);
-		var array = __webpack_require__(/*! ./lib/decorators/array */ 237);
-		var flow = __webpack_require__(/*! ./lib/decorators/flow */ 240);
-		var fold = __webpack_require__(/*! ./lib/decorators/fold */ 241);
-		var inspect = __webpack_require__(/*! ./lib/decorators/inspect */ 242);
-		var generate = __webpack_require__(/*! ./lib/decorators/iterate */ 243);
-		var progress = __webpack_require__(/*! ./lib/decorators/progress */ 244);
-		var withThis = __webpack_require__(/*! ./lib/decorators/with */ 245);
-		var unhandledRejection = __webpack_require__(/*! ./lib/decorators/unhandledRejection */ 246);
-		var TimeoutError = __webpack_require__(/*! ./lib/TimeoutError */ 236);
+		var timed = __webpack_require__(/*! ./lib/decorators/timed */ 237);
+		var array = __webpack_require__(/*! ./lib/decorators/array */ 241);
+		var flow = __webpack_require__(/*! ./lib/decorators/flow */ 244);
+		var fold = __webpack_require__(/*! ./lib/decorators/fold */ 245);
+		var inspect = __webpack_require__(/*! ./lib/decorators/inspect */ 246);
+		var generate = __webpack_require__(/*! ./lib/decorators/iterate */ 247);
+		var progress = __webpack_require__(/*! ./lib/decorators/progress */ 248);
+		var withThis = __webpack_require__(/*! ./lib/decorators/with */ 249);
+		var unhandledRejection = __webpack_require__(/*! ./lib/decorators/unhandledRejection */ 250);
+		var TimeoutError = __webpack_require__(/*! ./lib/TimeoutError */ 240);
 	
 		var Promise = [array, flow, fold, generate, progress,
 			inspect, withThis, timed, unhandledRejection]
 			.reduce(function(Promise, feature) {
 				return feature(Promise);
-			}, __webpack_require__(/*! ./lib/Promise */ 248));
+			}, __webpack_require__(/*! ./lib/Promise */ 252));
 	
-		var apply = __webpack_require__(/*! ./lib/apply */ 239)(Promise);
+		var apply = __webpack_require__(/*! ./lib/apply */ 243)(Promise);
 	
 		// Public API
 	
@@ -27330,11 +27778,11 @@
 	
 		return when;
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	})(__webpack_require__(/*! !webpack amd define */ 230));
+	})(__webpack_require__(/*! !webpack amd define */ 234));
 
 
 /***/ }),
-/* 233 */
+/* 237 */
 /*!****************************************!*\
   !*** ./~/when/lib/decorators/timed.js ***!
   \****************************************/
@@ -27347,8 +27795,8 @@
 	(function(define) { 'use strict';
 	!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
 	
-		var env = __webpack_require__(/*! ../env */ 234);
-		var TimeoutError = __webpack_require__(/*! ../TimeoutError */ 236);
+		var env = __webpack_require__(/*! ../env */ 238);
+		var TimeoutError = __webpack_require__(/*! ../TimeoutError */ 240);
 	
 		function setTimeout(f, ms, x, y) {
 			return env.setTimer(function() {
@@ -27417,17 +27865,17 @@
 		};
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 
 
 /***/ }),
-/* 234 */
+/* 238 */
 /*!***************************!*\
   !*** ./~/when/lib/env.js ***!
   \***************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process) {/** @license MIT License (c) copyright 2010-2014 original author or authors */
+	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/** @license MIT License (c) copyright 2010-2014 original author or authors */
 	/** @author Brian Cavalier */
 	/** @author John Hann */
 	
@@ -27458,7 +27906,7 @@
 	
 		} else if (!capturedSetTimeout) { // vert.x
 			var vertxRequire = require;
-			var vertx = __webpack_require__(/*! vertx */ 235);
+			var vertx = __webpack_require__(/*! vertx */ 239);
 			setTimer = function (f, ms) { return vertx.setTimer(ms, f); };
 			clearTimer = vertx.cancelTimer;
 			asap = vertx.runOnLoop || vertx.runOnContext;
@@ -27499,12 +27947,12 @@
 			};
 		}
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../process/browser.js */ 3)))
 
 /***/ }),
-/* 235 */
+/* 239 */
 /*!***********************!*\
   !*** vertx (ignored) ***!
   \***********************/
@@ -27513,7 +27961,7 @@
 	/* (ignored) */
 
 /***/ }),
-/* 236 */
+/* 240 */
 /*!************************************!*\
   !*** ./~/when/lib/TimeoutError.js ***!
   \************************************/
@@ -27545,10 +27993,10 @@
 	
 		return TimeoutError;
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 
 /***/ }),
-/* 237 */
+/* 241 */
 /*!****************************************!*\
   !*** ./~/when/lib/decorators/array.js ***!
   \****************************************/
@@ -27561,8 +28009,8 @@
 	(function(define) { 'use strict';
 	!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
 	
-		var state = __webpack_require__(/*! ../state */ 238);
-		var applier = __webpack_require__(/*! ../apply */ 239);
+		var state = __webpack_require__(/*! ../state */ 242);
+		var applier = __webpack_require__(/*! ../apply */ 243);
 	
 		return function array(Promise) {
 	
@@ -27852,11 +28300,11 @@
 		};
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 
 
 /***/ }),
-/* 238 */
+/* 242 */
 /*!*****************************!*\
   !*** ./~/when/lib/state.js ***!
   \*****************************/
@@ -27896,11 +28344,11 @@
 		}
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 
 
 /***/ }),
-/* 239 */
+/* 243 */
 /*!*****************************!*\
   !*** ./~/when/lib/apply.js ***!
   \*****************************/
@@ -27958,13 +28406,13 @@
 		}
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 	
 	
 
 
 /***/ }),
-/* 240 */
+/* 244 */
 /*!***************************************!*\
   !*** ./~/when/lib/decorators/flow.js ***!
   \***************************************/
@@ -28129,11 +28577,11 @@
 		}
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 
 
 /***/ }),
-/* 241 */
+/* 245 */
 /*!***************************************!*\
   !*** ./~/when/lib/decorators/fold.js ***!
   \***************************************/
@@ -28165,11 +28613,11 @@
 		};
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 
 
 /***/ }),
-/* 242 */
+/* 246 */
 /*!******************************************!*\
   !*** ./~/when/lib/decorators/inspect.js ***!
   \******************************************/
@@ -28182,7 +28630,7 @@
 	(function(define) { 'use strict';
 	!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
 	
-		var inspect = __webpack_require__(/*! ../state */ 238).inspect;
+		var inspect = __webpack_require__(/*! ../state */ 242).inspect;
 	
 		return function inspection(Promise) {
 	
@@ -28194,11 +28642,11 @@
 		};
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 
 
 /***/ }),
-/* 243 */
+/* 247 */
 /*!******************************************!*\
   !*** ./~/when/lib/decorators/iterate.js ***!
   \******************************************/
@@ -28268,11 +28716,11 @@
 		};
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 
 
 /***/ }),
-/* 244 */
+/* 248 */
 /*!*******************************************!*\
   !*** ./~/when/lib/decorators/progress.js ***!
   \*******************************************/
@@ -28301,11 +28749,11 @@
 		};
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 
 
 /***/ }),
-/* 245 */
+/* 249 */
 /*!***************************************!*\
   !*** ./~/when/lib/decorators/with.js ***!
   \***************************************/
@@ -28347,12 +28795,12 @@
 		};
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 	
 
 
 /***/ }),
-/* 246 */
+/* 250 */
 /*!*****************************************************!*\
   !*** ./~/when/lib/decorators/unhandledRejection.js ***!
   \*****************************************************/
@@ -28365,8 +28813,8 @@
 	(function(define) { 'use strict';
 	!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
 	
-		var setTimer = __webpack_require__(/*! ../env */ 234).setTimer;
-		var format = __webpack_require__(/*! ../format */ 247);
+		var setTimer = __webpack_require__(/*! ../env */ 238).setTimer;
+		var format = __webpack_require__(/*! ../format */ 251);
 	
 		return function unhandledRejection(Promise) {
 	
@@ -28443,11 +28891,11 @@
 		function noop() {}
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 
 
 /***/ }),
-/* 247 */
+/* 251 */
 /*!******************************!*\
   !*** ./~/when/lib/format.js ***!
   \******************************/
@@ -28508,11 +28956,11 @@
 		}
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 
 
 /***/ }),
-/* 248 */
+/* 252 */
 /*!*******************************!*\
   !*** ./~/when/lib/Promise.js ***!
   \*******************************/
@@ -28525,20 +28973,20 @@
 	(function(define) { 'use strict';
 	!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
 	
-		var makePromise = __webpack_require__(/*! ./makePromise */ 249);
-		var Scheduler = __webpack_require__(/*! ./Scheduler */ 250);
-		var async = __webpack_require__(/*! ./env */ 234).asap;
+		var makePromise = __webpack_require__(/*! ./makePromise */ 253);
+		var Scheduler = __webpack_require__(/*! ./Scheduler */ 254);
+		var async = __webpack_require__(/*! ./env */ 238).asap;
 	
 		return makePromise({
 			scheduler: new Scheduler(async)
 		});
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	})(__webpack_require__(/*! !webpack amd define */ 230));
+	})(__webpack_require__(/*! !webpack amd define */ 234));
 
 
 /***/ }),
-/* 249 */
+/* 253 */
 /*!***********************************!*\
   !*** ./~/when/lib/makePromise.js ***!
   \***********************************/
@@ -29498,12 +29946,12 @@
 			return Promise;
 		};
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../process/browser.js */ 3)))
 
 /***/ }),
-/* 250 */
+/* 254 */
 /*!*********************************!*\
   !*** ./~/when/lib/Scheduler.js ***!
   \*********************************/
@@ -29588,11 +30036,11 @@
 		return Scheduler;
 	
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	}(__webpack_require__(/*! !webpack amd define */ 230)));
+	}(__webpack_require__(/*! !webpack amd define */ 234)));
 
 
 /***/ }),
-/* 251 */
+/* 255 */
 /*!******************************!*\
   !*** ./~/rest/UrlBuilder.js ***!
   \******************************/
@@ -29614,7 +30062,7 @@
 	
 			var mixin, origin, urlRE, absoluteUrlRE, fullyQualifiedUrlRE;
 	
-			mixin = __webpack_require__(/*! ./util/mixin */ 252);
+			mixin = __webpack_require__(/*! ./util/mixin */ 256);
 	
 			urlRE = /([a-z][a-z0-9\+\-\.]*:)\/\/([^@]+@)?(([^:\/]+)(:([0-9]+))?)?(\/[^?#]*)?(\?[^#]*)?(#\S*)?/i;
 			absoluteUrlRE = /^([a-z][a-z0-9\-\+\.]*:\/\/|\/)/i;
@@ -29823,14 +30271,14 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230),
+		__webpack_require__(/*! !webpack amd define */ 234),
 		typeof window !== 'undefined' ? window.location : void 0
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 252 */
+/* 256 */
 /*!******************************!*\
   !*** ./~/rest/util/mixin.js ***!
   \******************************/
@@ -29881,13 +30329,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 253 */
+/* 257 */
 /*!********************************************!*\
   !*** ./~/rest/util/normalizeHeaderName.js ***!
   \********************************************/
@@ -29928,13 +30376,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 254 */
+/* 258 */
 /*!****************************************!*\
   !*** ./~/rest/util/responsePromise.js ***!
   \****************************************/
@@ -29952,8 +30400,8 @@
 	
 		!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
 	
-			var when = __webpack_require__(/*! when */ 232),
-				normalizeHeaderName = __webpack_require__(/*! ./normalizeHeaderName */ 253);
+			var when = __webpack_require__(/*! when */ 236),
+				normalizeHeaderName = __webpack_require__(/*! ./normalizeHeaderName */ 257);
 	
 			function property(promise, name) {
 				return promise.then(
@@ -30077,13 +30525,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 255 */
+/* 259 */
 /*!**********************************************!*\
   !*** ./~/rest/interceptor/defaultRequest.js ***!
   \**********************************************/
@@ -30103,8 +30551,8 @@
 	
 			var interceptor, mixinUtil, defaulter;
 	
-			interceptor = __webpack_require__(/*! ../interceptor */ 256);
-			mixinUtil = __webpack_require__(/*! ../util/mixin */ 252);
+			interceptor = __webpack_require__(/*! ../interceptor */ 260);
+			mixinUtil = __webpack_require__(/*! ../util/mixin */ 256);
 	
 			defaulter = (function () {
 	
@@ -30165,13 +30613,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 256 */
+/* 260 */
 /*!*******************************!*\
   !*** ./~/rest/interceptor.js ***!
   \*******************************/
@@ -30191,11 +30639,11 @@
 	
 			var defaultClient, mixin, responsePromise, client, when;
 	
-			defaultClient = __webpack_require__(/*! ./client/default */ 228);
-			mixin = __webpack_require__(/*! ./util/mixin */ 252);
-			responsePromise = __webpack_require__(/*! ./util/responsePromise */ 254);
-			client = __webpack_require__(/*! ./client */ 229);
-			when = __webpack_require__(/*! when */ 232);
+			defaultClient = __webpack_require__(/*! ./client/default */ 232);
+			mixin = __webpack_require__(/*! ./util/mixin */ 256);
+			responsePromise = __webpack_require__(/*! ./util/responsePromise */ 258);
+			client = __webpack_require__(/*! ./client */ 233);
+			when = __webpack_require__(/*! when */ 236);
 	
 			/**
 			 * Interceptors have the ability to intercept the request and/org response
@@ -30339,13 +30787,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 257 */
+/* 261 */
 /*!************************************!*\
   !*** ./~/rest/interceptor/mime.js ***!
   \************************************/
@@ -30365,10 +30813,10 @@
 	
 			var interceptor, mime, registry, noopConverter, when;
 	
-			interceptor = __webpack_require__(/*! ../interceptor */ 256);
-			mime = __webpack_require__(/*! ../mime */ 258);
-			registry = __webpack_require__(/*! ../mime/registry */ 259);
-			when = __webpack_require__(/*! when */ 232);
+			interceptor = __webpack_require__(/*! ../interceptor */ 260);
+			mime = __webpack_require__(/*! ../mime */ 262);
+			registry = __webpack_require__(/*! ../mime/registry */ 263);
+			when = __webpack_require__(/*! when */ 236);
 	
 			noopConverter = {
 				read: function (obj) { return obj; },
@@ -30458,13 +30906,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 258 */
+/* 262 */
 /*!************************!*\
   !*** ./~/rest/mime.js ***!
   \************************/
@@ -30520,13 +30968,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 259 */
+/* 263 */
 /*!*********************************!*\
   !*** ./~/rest/mime/registry.js ***!
   \*********************************/
@@ -30546,8 +30994,8 @@
 	
 			var mime, when, registry;
 	
-			mime = __webpack_require__(/*! ../mime */ 258);
-			when = __webpack_require__(/*! when */ 232);
+			mime = __webpack_require__(/*! ../mime */ 262);
+			when = __webpack_require__(/*! when */ 236);
 	
 			function Registry(mimes) {
 	
@@ -30631,11 +31079,11 @@
 			registry = new Registry({});
 	
 			// include provided serializers
-			registry.register('application/hal', __webpack_require__(/*! ./type/application/hal */ 260));
-			registry.register('application/json', __webpack_require__(/*! ./type/application/json */ 267));
-			registry.register('application/x-www-form-urlencoded', __webpack_require__(/*! ./type/application/x-www-form-urlencoded */ 268));
-			registry.register('multipart/form-data', __webpack_require__(/*! ./type/multipart/form-data */ 269));
-			registry.register('text/plain', __webpack_require__(/*! ./type/text/plain */ 270));
+			registry.register('application/hal', __webpack_require__(/*! ./type/application/hal */ 264));
+			registry.register('application/json', __webpack_require__(/*! ./type/application/json */ 271));
+			registry.register('application/x-www-form-urlencoded', __webpack_require__(/*! ./type/application/x-www-form-urlencoded */ 272));
+			registry.register('multipart/form-data', __webpack_require__(/*! ./type/multipart/form-data */ 273));
+			registry.register('text/plain', __webpack_require__(/*! ./type/text/plain */ 274));
 	
 			registry.register('+json', registry.delegate('application/json'));
 	
@@ -30644,13 +31092,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 260 */
+/* 264 */
 /*!*********************************************!*\
   !*** ./~/rest/mime/type/application/hal.js ***!
   \*********************************************/
@@ -30670,12 +31118,12 @@
 	
 			var pathPrefix, template, find, lazyPromise, responsePromise, when;
 	
-			pathPrefix = __webpack_require__(/*! ../../../interceptor/pathPrefix */ 261);
-			template = __webpack_require__(/*! ../../../interceptor/template */ 262);
-			find = __webpack_require__(/*! ../../../util/find */ 265);
-			lazyPromise = __webpack_require__(/*! ../../../util/lazyPromise */ 266);
-			responsePromise = __webpack_require__(/*! ../../../util/responsePromise */ 254);
-			when = __webpack_require__(/*! when */ 232);
+			pathPrefix = __webpack_require__(/*! ../../../interceptor/pathPrefix */ 265);
+			template = __webpack_require__(/*! ../../../interceptor/template */ 266);
+			find = __webpack_require__(/*! ../../../util/find */ 269);
+			lazyPromise = __webpack_require__(/*! ../../../util/lazyPromise */ 270);
+			responsePromise = __webpack_require__(/*! ../../../util/responsePromise */ 258);
+			when = __webpack_require__(/*! when */ 236);
 	
 			function defineProperty(obj, name, value) {
 				Object.defineProperty(obj, name, {
@@ -30792,13 +31240,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 261 */
+/* 265 */
 /*!******************************************!*\
   !*** ./~/rest/interceptor/pathPrefix.js ***!
   \******************************************/
@@ -30818,8 +31266,8 @@
 	
 			var interceptor, UrlBuilder;
 	
-			interceptor = __webpack_require__(/*! ../interceptor */ 256);
-			UrlBuilder = __webpack_require__(/*! ../UrlBuilder */ 251);
+			interceptor = __webpack_require__(/*! ../interceptor */ 260);
+			UrlBuilder = __webpack_require__(/*! ../UrlBuilder */ 255);
 	
 			function startsWith(str, prefix) {
 				return str.indexOf(prefix) === 0;
@@ -30860,13 +31308,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 262 */
+/* 266 */
 /*!****************************************!*\
   !*** ./~/rest/interceptor/template.js ***!
   \****************************************/
@@ -30886,9 +31334,9 @@
 	
 			var interceptor, uriTemplate, mixin;
 	
-			interceptor = __webpack_require__(/*! ../interceptor */ 256);
-			uriTemplate = __webpack_require__(/*! ../util/uriTemplate */ 263);
-			mixin = __webpack_require__(/*! ../util/mixin */ 252);
+			interceptor = __webpack_require__(/*! ../interceptor */ 260);
+			uriTemplate = __webpack_require__(/*! ../util/uriTemplate */ 267);
+			mixin = __webpack_require__(/*! ../util/mixin */ 256);
 	
 			/**
 			 * Applies request params to the path as a URI Template
@@ -30925,13 +31373,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 263 */
+/* 267 */
 /*!************************************!*\
   !*** ./~/rest/util/uriTemplate.js ***!
   \************************************/
@@ -30953,7 +31401,7 @@
 	
 			var uriEncoder, operations, prefixRE;
 	
-			uriEncoder = __webpack_require__(/*! ./uriEncoder */ 264);
+			uriEncoder = __webpack_require__(/*! ./uriEncoder */ 268);
 	
 			prefixRE = /^([^:]*):([0-9]+)$/;
 			operations = {
@@ -31106,13 +31554,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 264 */
+/* 268 */
 /*!***********************************!*\
   !*** ./~/rest/util/uriEncoder.js ***!
   \***********************************/
@@ -31295,13 +31743,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 265 */
+/* 269 */
 /*!*****************************!*\
   !*** ./~/rest/util/find.js ***!
   \*****************************/
@@ -31345,13 +31793,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 266 */
+/* 270 */
 /*!************************************!*\
   !*** ./~/rest/util/lazyPromise.js ***!
   \************************************/
@@ -31371,7 +31819,7 @@
 	
 			var when;
 	
-			when = __webpack_require__(/*! when */ 232);
+			when = __webpack_require__(/*! when */ 236);
 	
 			/**
 			 * Create a promise whose work is started only when a handler is registered.
@@ -31409,13 +31857,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 267 */
+/* 271 */
 /*!**********************************************!*\
   !*** ./~/rest/mime/type/application/json.js ***!
   \**********************************************/
@@ -31465,13 +31913,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 268 */
+/* 272 */
 /*!***************************************************************!*\
   !*** ./~/rest/mime/type/application/x-www-form-urlencoded.js ***!
   \***************************************************************/
@@ -31564,13 +32012,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 269 */
+/* 273 */
 /*!*************************************************!*\
   !*** ./~/rest/mime/type/multipart/form-data.js ***!
   \*************************************************/
@@ -31646,13 +32094,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 270 */
+/* 274 */
 /*!****************************************!*\
   !*** ./~/rest/mime/type/text/plain.js ***!
   \****************************************/
@@ -31684,13 +32132,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 271 */
+/* 275 */
 /*!********************************************************************!*\
   !*** ./src/main/resources/static/js/api/uriTemplateInterceptor.js ***!
   \********************************************************************/
@@ -31701,7 +32149,7 @@
 	!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
 		'use strict';
 	
-		var interceptor = __webpack_require__(/*! rest/interceptor */ 256);
+		var interceptor = __webpack_require__(/*! rest/interceptor */ 260);
 	
 		return interceptor({
 			request: function request(_request /*, config, meta */) {
@@ -31717,7 +32165,7 @@
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
-/* 272 */
+/* 276 */
 /*!*****************************************!*\
   !*** ./~/rest/interceptor/errorCode.js ***!
   \*****************************************/
@@ -31737,8 +32185,8 @@
 	
 			var interceptor, when;
 	
-			interceptor = __webpack_require__(/*! ../interceptor */ 256);
-			when = __webpack_require__(/*! when */ 232);
+			interceptor = __webpack_require__(/*! ../interceptor */ 260);
+			when = __webpack_require__(/*! when */ 236);
 	
 			/**
 			 * Rejects the response promise based on the status code.
@@ -31767,13 +32215,13 @@
 		}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	
 	}(
-		__webpack_require__(/*! !webpack amd define */ 230)
+		__webpack_require__(/*! !webpack amd define */ 234)
 		// Boilerplate for AMD and Node
 	));
 
 
 /***/ }),
-/* 273 */
+/* 277 */
 /*!**************************************************************!*\
   !*** ./src/main/resources/static/js/api/uriListConverter.js ***!
   \**************************************************************/

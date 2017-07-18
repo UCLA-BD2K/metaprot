@@ -16,7 +16,8 @@
     <body>
 
 
-        <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div id="react"></div>
+      <!--  <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle toggle-left hidden-md hidden-lg" data-toggle="sidebar" data-target=".sidebar-left">
@@ -53,11 +54,11 @@
                         <li><a href="">Summary</a></li>
                     </ul>
                 </div>
-                <!--<div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">-->
+                &lt;!&ndash;<div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">&ndash;&gt;
                 <div class="col-10 col-offset-1 col-md-8 col-md-offset-2 main">
                     <div id="window" style="margin-bottom:15px">
 
-                        <!--<div id="analyze" class="processing-section" data-section-index="3">-->
+                        &lt;!&ndash;<div id="analyze" class="processing-section" data-section-index="3">&ndash;&gt;
 
                         <h2>Analysis</h2>
                         <div class="placeholders">
@@ -114,13 +115,14 @@
 
 
 
-        <div th:include="fragments/footer :: footer"></div>
+        <div th:include="fragments/footer :: footer"></div>-->
 
         <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
         <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
         <script src="js/lib/jquery.js"></script>
         <script src="js/bootstrap-treeview.js"></script>
         <script src="js/sidebar.js"></script>
+        <script src="/built/bundle.js"></script>
         <script src="/js/analytics.js"></script>
         <script type="text/javascript">
             function buildDomTree() {

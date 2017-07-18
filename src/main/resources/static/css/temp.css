@@ -445,3 +445,8 @@ div.container {
     height: 360px;
     margin: 40px auto 20px auto;
 }
+
+.img-analysis {
+    width: 305px;
+    height: auto;
+}
