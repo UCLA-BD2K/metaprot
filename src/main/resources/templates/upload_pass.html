@@ -263,6 +263,7 @@
                     });
                 }
                 var tree = JSON.parse(sessionStorage.getItem("root"));
+                console.log("root", tree);
                 walk(tree, data);
                 return data;
             }

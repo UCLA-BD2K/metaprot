@@ -450,3 +450,17 @@ div.container {
     width: 305px;
     height: auto;
 }
+
+#file-tree {
+    background-color: #E4E8EC;
+    border-radius: 5px;
+    margin-top: 8px;
+}
+.file-tree-item {
+    font: 15px sans-serif;
+    padding: 12px 5px 12px 16px;
+}
+
+.file-tree-item:hover {
+    background-color: #F9FAFB;
+}

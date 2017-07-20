@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 
 var tabData = [
@@ -40,14 +41,20 @@ class SideNavBar extends Component {
         return (
              <div className="col-sm-3 col-md-2 sidebar sidebar-left sidebar-animate sidebar-md-show">
                 <ul className="nav nav-sidebar">
-                    {tabData.map(function(tab){
+                    {tabData.map(function(tab, i){
                         return (
-                            <Tab data={tab}
-                            isActive={this.state.activeTab === tab}
-                            handleClick={this.handleClick.bind(this,tab)} />
+                            <Tab
+                                key={i}
+                                data={tab}
+                                isActive={this.state.activeTab === tab}
+                                handleClick={this.handleClick.bind(this,tab)} />
                         );
                     }.bind(this))}
                 </ul>
+                <div id="token_text" >
+                    <p className="navbar-text">Token number</p>
+                    <p className="navbar-text" id="token_num">{this.props.token}</p>
+                </div>
             </div>
 
         )
@@ -59,7 +66,14 @@ class SideNavBar extends Component {
 
 }
 
-export default SideNavBar
+
+function mapStateToProps(state) {
+    return {
+        token: state.token
+    }
+}
+
+export default connect(mapStateToProps, null)(SideNavBar);
 
 
 
