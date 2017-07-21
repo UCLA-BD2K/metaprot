@@ -7,7 +7,7 @@ import Footer from './Footer';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Form, FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap'
-import { addFileToTree, setToken } from '../actions';
+import { resetTree, addFileToTree, setToken } from '../actions';
 import { validateToken, getTreeData } from '../util/upload';
 
 class Upload extends Component {
@@ -48,18 +48,18 @@ class Upload extends Component {
             if(data == "true") {
                 // cache and set session token
                 sessionStorage.setItem("sessionToken", token);
+                self.props.resetTree();
                 self.props.setToken(token);
 
                 // cache and set filenames
                 getTreeData(token).then( data => {
-                    console.log(data);
                     sessionStorage.setItem("root", JSON.stringify(data));
                     data.forEach(filename => {
                         self.props.addFileToTree(filename);
                     })
                 })
             }
-            else{
+            else {
                 console.log("TOKEN INVALID");
                 //$('#token-num-display').css("opacity", 1);
                 alert("Token invalid, please try again");
@@ -120,10 +120,6 @@ class Upload extends Component {
 
 }
 
-function mapStateToProps(state) {
-    return {
-        token: state.token
-    }
-}
 
-export default connect(mapStateToProps, { addFileToTree, setToken })(Upload);
+
+export default connect(null, { resetTree, addFileToTree, setToken })(Upload);

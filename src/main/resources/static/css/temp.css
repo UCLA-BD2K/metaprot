@@ -457,10 +457,16 @@ div.container {
     margin-top: 8px;
 }
 .file-tree-item {
-    font: 15px sans-serif;
-    padding: 12px 5px 12px 16px;
+    font: 12px sans-serif;
+    padding: 8px 0 4px 0;
 }
 
 .file-tree-item:hover {
     background-color: #F9FAFB;
+}
+
+.file-tree-item p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

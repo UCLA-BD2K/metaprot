@@ -4,8 +4,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Link, Switch} from 'react-router-dom';
 
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
 import Home from './components/Home';
 import Analysis from './components/Analysis';
@@ -17,7 +18,7 @@ import { addFileToTree } from './actions';
 // tag::vars[]
 const client = require('./client');
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 console.log(store.getState());
 store.subscribe(()=> console.log('store', store.getState()));
 

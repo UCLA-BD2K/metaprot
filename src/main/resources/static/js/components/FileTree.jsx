@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import FileTreeItem from './FileTreeItem';
 
 class FileTree extends Component {
 
@@ -12,14 +13,12 @@ class FileTree extends Component {
         console.log(this);
 
         return (
-            <div className="col-sm-3 col-md-3" id="sidebar_right">
-                <div id="file-tree">
+            <div className="col-sm-3" id="sidebar_right">
+                <div id="file-tree" className="col-sm-12 col-lg-10 col-lg-offset-1">
                 {
                     this.props.filenames.map((filename, i) => {
                         return (
-                            <div key={i} className="file-tree-item">
-                                {filename}
-                            </div>
+                            <FileTreeItem key={i} filename={filename}/>
                         )
                     })
                 }

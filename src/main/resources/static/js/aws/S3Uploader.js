@@ -118,8 +118,8 @@
 			);
 		}
 
-		var deleteFile = function(filePath, callback){
-
+		var deleteFile = function(filePath){
+/*
 			initAWSCredentials();
 			var s3 = new AWS.S3();
 			s3.deleteObject(
@@ -134,7 +134,12 @@
 						callback(true);
 					}
 				}
-			);
+			);*/
+
+			initAWSCredentials();
+            var s3 = new AWS.S3();
+            return s3.deleteObject(
+                { Bucket: s3BucketName, Key: filePath }).promise();
 
 		};
 
@@ -244,6 +249,7 @@
 
 		var setInputElement = function(jqInput) {
 			$input = jqInput;
+			console.log($input);
 		};
 
 		return {

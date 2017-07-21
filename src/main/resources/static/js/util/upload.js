@@ -28,8 +28,6 @@ export function fileUploadSubmitHandler($fileInput, cb) {
         }
     }
 
-
-
     function uploadFileToS3(options, token, moreParams) {
         // after retrieving a token, can upload to s3
         var delayCounter = 0;
@@ -70,27 +68,30 @@ export function fileUploadSubmitHandler($fileInput, cb) {
         // formData.append() it.
 
         // notify server of file upload and updates UI to reflect status
-        $.ajax({
-            url: '/analyze/integrity-check',
+        fetch("/analyze/integrity-check", {
             method: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success:function(data) {    // really just prints on screen any response from server
-                var s = data.toString();
-                cb.updateProgress({
-                    progressTextHTML: '<div class="alert alert-success">' + s + '</div>'
-                });
-            },
-            error:function(jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-                cb.updateProgress({
-                    progressTextHTML: '<div class="alert alert-danger">' + jqXHR.responseJSON.message + '</div>'
-                });
+            body: formData
+        })
+        .then( response => {
+            if (response.ok)
+                return response.text();
+            else {
+                return response.json().then( json => {
+                    throw new Error(json.message || response.statusText);
+                })
             }
-        });
+        })
+        .then( success => {
+             cb.updateProgress({
+                progressTextHTML: '<div class="alert alert-success">' + success + '</div>'
+            });
+        })
+        .catch( error => {
+            cb.updateProgress({
+                progressTextHTML: '<div class="alert alert-danger">' + error.message + '</div>'
+            });
+         })
+
     }
 
 
@@ -116,24 +117,16 @@ export function fileUploadSubmitHandler($fileInput, cb) {
          */
         if(sessionStorage.getItem("sessionToken") === null) {
             // get token for s3 upload
-            $.ajax({
-                url: "/analyze/token",
-                method: "GET",
-                success: function (token) {
-                    uploadFileToS3(options, token, moreParams);
-                    sessionStorage.setItem('sessionToken', token);
-                    updateSessionData(token);
-
-                },
-                error: function () {
-                    console.log("Error in retrieving upload token.");
-                }
-            });
+            getToken().then(token => {
+                uploadFileToS3(options, token, moreParams);
+                sessionStorage.setItem('sessionToken', token);
+                updateSessionData();
+            }).catch(()=> console.log("Error in retrieving upload token.") )
         }
         else{
             console.log("session Updating Backend");
             uploadFileToS3(options, sessionStorage.getItem('sessionToken'), moreParams);
-            updateSessionData(sessionStorage.getItem('sessionToken'));
+            updateSessionData();
         }
 
 
@@ -146,9 +139,11 @@ export function fileUploadSubmitHandler($fileInput, cb) {
 
 }
 
-
-
-
+function getToken() {
+    return fetch("/analyze/token", {
+        method: "GET"
+    }).then( response => { return response.text() });
+}
 
 export function validateToken(token) {
 
@@ -173,76 +168,29 @@ export function getTreeData(token) {
     }).then( response => { return response.json() });
 }
 
-function buildDomTree() {
 
-    console.log("buildDomTreeFunction");
-
-    var data = [];
-
-    function walk(nodes, data) {
-        $.each(nodes, function (id, node) {
-            //name
-            if (node["name"]) {
-//                        console.log(node["name"]);
-                var obj = {
-                    id: id,
-                    text: node["name"]
-//                            href: "./contact"
-                };
-                data.push(obj);
-            }
-            //children
-            if (node["children"]) {
-                if (node["children"].length > 0) {
-                    obj.nodes = [];
-                    walk(node["children"], obj.nodes);
-                }
-            }
-        });
-    }
-
-    if(sessionStorage.getItem("sessionToken") !== null) {
-        getTreeData(sessionStorage.getItem("sessionToken")).done(function (data) {
-            sessionStorage.setItem("root", data);
-        });
-    }
-    var tree = JSON.parse(sessionStorage.getItem("root"));
-    walk(tree, data);
-    console.log("data",data);
-    return data;
-}
-
-//passFilenames();
-
-function updateSessionData(token){
+export function updateSessionData(){
 
     var formData = new FormData();
-    console.log(token);
-    console.log(sessionStorage.getItem("root"));
-    formData.append("token", token);
+    formData.append("token", sessionStorage.getItem("sessionToken"));
 
     formData.append("data", sessionStorage.getItem("root"));
-    //formData.append("data", "TEST");
 
-    $.ajax({
-        url: '/analyze/updateSessionData',
+    return fetch("/analyze/updateSessionData", {
         method: "POST",
-        contentType: false,
-        processData: false,
-        data: formData,
-        success:function(data) {    // really just prints on screen any response from server
-            var s = data.toString();
-            console.log(s);
-        },
-        error:function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        }
-    });
+        body: formData
+    }).then( response => { return response.text() });
+
 
 }
 
+function downloadFilesFromS3(fileName, callback){
+    S3Uploader.download("user-input/" + sessionStorage.getItem("sessionToken") + "/" + fileName, callback);
+}
+
+export function deleteFilesFromS3(fileName){
+    return S3Uploader.deleteFile("user-input/" + sessionStorage.getItem("sessionToken") + "/" + fileName);
+}
 
 function passFilenames(){
 
@@ -259,12 +207,7 @@ function passFilenames(){
 
     $('#treeview').treeview(options);
 
-    function downloadFilesFromS3(fileName, callback){
-        S3Uploader.download("user-input/" + sessionStorage.getItem("sessionToken") + "/" + fileName, callback);
-    }
-    function deleteFilesFromS3(fileName, callback){
-        S3Uploader.deleteFile("user-input/" + sessionStorage.getItem("sessionToken") + "/" + fileName, callback);
-    }
+
 
     document.getElementById("treeview").addEventListener("click",function(e) {
         // e.target is our targetted element.
@@ -301,7 +244,7 @@ function passFilenames(){
                                console.log(JSON.stringify(a));
                                sessionStorage.setItem("root", JSON.stringify(a));
                                alert("File deletion successful");
-                               updateSessionData(sessionStorage.getItem("sessionToken"));
+                               updateSessionData();
                                passFilenames();
                                break;
                            }
@@ -346,50 +289,6 @@ function passFilenames(){
 }
 
 
-$(function() {
-
-    var $progressBar = $('.progress-bar');
-    var $fileInput = $('#fileInput');
-    var $tokenInput = $('#inputToken');
-
-    function updateProgressBar(progress) {
-        $progressBar.html(progress + "% complete");
-        $progressBar.css("width", progress+"%");
-    }
-
-
-/*
-    //TODO: Yolanda, this code has to execute on click of the "GO" Button
-    $('#retrieve-file').on("submit", function(e) {
-        e.preventDefault();
-
-        console.log("inputToken", $tokenInput);
-        console.log("inputToken[0].value", $tokenInput[0].value);
-//                console.log("Token Received: ", $inputToken[0].value);
-        var tokenReceived = $tokenInput[0].value; //TODO: Yolanda I need the value from the text field as string here
-
-        validateToken(tokenReceived).done(function(data){
-            if(data == true) {
-                console.log("TOKEN VALIDATED");
-                sessionStorage.setItem("sessionToken", tokenReceived);
-                location.reload();
-            }
-            else{
-                console.log("TOKEN INVALID");
-                $('#token-num-display').css("opacity", 1);
-            }
-        });
-    });
-*/
-
-
-});
-
-myfunction();
-
-function myfunction() {
-    create_table(update_table);
-}
 
 function create_table(callback) {
     d3.text("/css/data.csv", function(data) {
