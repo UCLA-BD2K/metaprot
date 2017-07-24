@@ -14,6 +14,7 @@ import Analysis from './components/Analysis';
 import Upload from './components/Upload';
 import MetaboliteAnalysis from './components/MetaboliteAnalysis';
 import PatternRecogAnalysis from './components/PatternRecogAnalysis';
+import TimeSeriesViewer from './components/TimeSeriesViewer';
 
 import MainLayout from './components/MainLayout';
 
@@ -63,6 +64,7 @@ ReactDOM.render(
                 <Route path="/analysis" render={ ()=> <MainLayout> <Analysis /> </MainLayout> } />
                 <Route path="/metabolite-analysis" render={ ()=> <MainLayout> <MetaboliteAnalysis /> </MainLayout> } />
                 <Route path="/temporal-pattern-recognition" render={ ()=> <MainLayout> <PatternRecogAnalysis /> </MainLayout> } />
+                <Route path="/time-series-viewer" render={ ()=> <MainLayout> <TimeSeriesViewe /> </MainLayout> } />
             </Switch>
 
         </Router>

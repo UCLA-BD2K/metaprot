@@ -89,6 +89,10 @@
 	
 	var _PatternRecogAnalysis2 = _interopRequireDefault(_PatternRecogAnalysis);
 	
+	var _TimeSeriesViewer = __webpack_require__(/*! ./components/TimeSeriesViewer */ 581);
+	
+	var _TimeSeriesViewer2 = _interopRequireDefault(_TimeSeriesViewer);
+	
 	var _MainLayout = __webpack_require__(/*! ./components/MainLayout */ 530);
 	
 	var _MainLayout2 = _interopRequireDefault(_MainLayout);
@@ -182,6 +186,15 @@
 	                        null,
 	                        ' ',
 	                        _react2.default.createElement(_PatternRecogAnalysis2.default, null),
+	                        ' '
+	                    );
+	                } }),
+	            _react2.default.createElement(_reactRouterDom.Route, { path: '/time-series-viewer', render: function render() {
+	                    return _react2.default.createElement(
+	                        _MainLayout2.default,
+	                        null,
+	                        ' ',
+	                        _react2.default.createElement(TimeSeriesViewe, null),
 	                        ' '
 	                    );
 	                } })
@@ -52225,7 +52238,7 @@
   \***************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/** @license MIT License (c) copyright 2010-2014 original author or authors */
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process) {/** @license MIT License (c) copyright 2010-2014 original author or authors */
 	/** @author Brian Cavalier */
 	/** @author John Hann */
 	
@@ -56785,6 +56798,142 @@
 	}
 	
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, { resetTree: _actions.resetTree, addFileToTree: _actions.addFileToTree, setToken: _actions.setToken })(PatternRecogAnalysis);
+
+/***/ }),
+/* 581 */
+/*!**********************************************************************!*\
+  !*** ./src/main/resources/static/js/components/TimeSeriesViewer.jsx ***!
+  \**********************************************************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _FileSelectForm = __webpack_require__(/*! ./FileSelectForm */ 529);
+	
+	var _FileSelectForm2 = _interopRequireDefault(_FileSelectForm);
+	
+	var _reactRouterDom = __webpack_require__(/*! react-router-dom */ 184);
+	
+	var _reactRedux = __webpack_require__(/*! react-redux */ 246);
+	
+	var _reactBootstrap = __webpack_require__(/*! react-bootstrap */ 270);
+	
+	var _actions = __webpack_require__(/*! ../actions */ 525);
+	
+	var _upload = __webpack_require__(/*! ../util/upload */ 524);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var TimeSeriesViewer = function (_Component) {
+	    _inherits(TimeSeriesViewer, _Component);
+	
+	    function TimeSeriesViewer(props) {
+	        _classCallCheck(this, TimeSeriesViewer);
+	
+	        var _this = _possibleConstructorReturn(this, (TimeSeriesViewer.__proto__ || Object.getPrototypeOf(TimeSeriesViewer)).call(this, props));
+	
+	        _this.state = {
+	            filename: "",
+	            progressTextHTML: null
+	        };
+	
+	        _this.handleSubmit = _this.handleSubmit.bind(_this);
+	        _this.handleFile = _this.handleFile.bind(_this);
+	        return _this;
+	    }
+	
+	    _createClass(TimeSeriesViewer, [{
+	        key: 'handleSubmit',
+	        value: function handleSubmit(e) {
+	            var _this2 = this;
+	
+	            e.preventDefault();
+	            var self = this;
+	            self.setState({ progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>' });
+	
+	            // request new token for analysis task
+	            (0, _upload.getToken)()
+	            // execute R scripts on the server
+	            .then(function (token) {
+	                var formData = new FormData();
+	                var s3Key = "user-input/" + _this2.props.token + "/" + _this2.state.filename;
+	                formData.append("objectKey", s3Key);
+	                formData.append("taskToken", token);
+	                return fetch("/analyze/time-series/" + _this2.props.token, {
+	                    method: "POST",
+	                    body: formData
+	                });
+	            })
+	            // process success/failure
+	            .then(function (response) {
+	                if (response.ok) return response.text();else {
+	                    return response.json().then(function (json) {
+	                        throw new Error(json.message || response.statusText);
+	                    });
+	                }
+	            }).then(function (success) {
+	                self.setState({ progressTextHTML: '<div class="alert alert-success">' + success + '</div>' });
+	            }).catch(function (error) {
+	                self.setState({ progressTextHTML: '<div class="alert alert-danger">' + error.message + '</div>' });
+	            });
+	        }
+	    }, {
+	        key: 'handleFile',
+	        value: function handleFile(e) {
+	            var filename = e.target.value;
+	            this.setState({ filename: filename });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    'h2',
+	                    null,
+	                    'Time Series Analysis'
+	                ),
+	                _react2.default.createElement(
+	                    'h3',
+	                    null,
+	                    'Select a .csv file to analyze:'
+	                ),
+	                _react2.default.createElement(_FileSelectForm2.default, {
+	                    handleSubmit: this.handleSubmit,
+	                    handleFile: this.handleFile }),
+	                _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: this.state.progressTextHTML },
+	                    className: 'text-center' })
+	            );
+	        }
+	    }]);
+	
+	    return TimeSeriesViewer;
+	}(_react.Component);
+	
+	function mapStateToProps(state) {
+	    return {
+	        token: state.token
+	    };
+	}
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, null)(TimeSeriesViewer);
 
 /***/ })
 /******/ ]);
