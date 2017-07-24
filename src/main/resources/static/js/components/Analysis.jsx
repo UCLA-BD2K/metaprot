@@ -12,36 +12,36 @@ class Analysis extends Component {
         this.infoblocks = [
             {
                 preHTML: (
-                    <a href="metabolite-analysis">
+                    <Link to="/metabolite-analysis">
                         <img src="/img/volcano.jpg" className="img-responsive img-analysis" />
-                    </a>
+                    </Link>
                 ),
                 title: "Differential Expression Analysis",
                 description: "Analyze time-series metabolite data and generate high quality volcano plots to visualize inherent trends."
             },
             {
                 preHTML: (
-                    <a href="temporal-pattern-recognition">
+                    <Link to="temporal-pattern-recognition">
                         <img src="/img/pattern.jpg" className="img-responsive img-analysis" />
-                    </a>
+                    </Link>
                 ),
                 title: "Pattern Recognition",
                 description: "Analyze temporal patterns and visualize clusters based on these trends."
             },
             {
                 preHTML: (
-                    <a href="time-series-viewer">
+                    <Link to="time-series-viewer">
                         <img src="/img/pattern.jpg" className="img-responsive img-analysis" />
-                    </a>
+                    </Link>
                 ),
                 title: "Time Series Analysis",
                 description: "Analyze time series data and visualize trends."
             },
             {
                 preHTML: (
-                    <a href="#">
+                    <Link to="#">
                         <img src="/img/association.jpg" className="img-responsive img-analysis" />
-                    </a>
+                    </Link>
                 ),
                 title: "Association Study",
                 description: "To identify the molecule highly associated with designated phenotypic characteristics"

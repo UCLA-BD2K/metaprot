@@ -23,7 +23,7 @@ class Upload extends Component {
 
     }
 
-    componentWillMount() {
+   /* componentWillMount() {
         // in case of page refresh, re-load token and sessionData if cached in sessionStorage
         var token = sessionStorage.getItem("sessionToken");
         if (token) {
@@ -31,12 +31,13 @@ class Upload extends Component {
 
             var sessionData = sessionStorage.getItem("root");
             if (sessionData) {
+                this.props.resetTree();
                 JSON.parse(sessionData).forEach(filename => {
                     this.props.addFileToTree(filename)
                 })
             }
         }
-    }
+    }*/
 
     // user retrieving file(s) via token
     handleTokenSubmit(e) {
@@ -47,13 +48,13 @@ class Upload extends Component {
         validateToken(token).then(function(data){
             if(data == "true") {
                 // cache and set session token
-                sessionStorage.setItem("sessionToken", token);
+               // sessionStorage.setItem("sessionToken", token);
                 self.props.resetTree();
                 self.props.setToken(token);
 
                 // cache and set filenames
                 getTreeData(token).then( data => {
-                    sessionStorage.setItem("root", JSON.stringify(data));
+                    //sessionStorage.setItem("root", JSON.stringify(data));
                     data.forEach(filename => {
                         self.props.addFileToTree(filename);
                     })

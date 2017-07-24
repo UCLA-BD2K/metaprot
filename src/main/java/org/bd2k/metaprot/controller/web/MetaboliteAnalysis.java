@@ -37,7 +37,7 @@ public class MetaboliteAnalysis {
 
     @RequestMapping(method = RequestMethod.GET)
     public String getMetaAnalysisIndex() {  // home page
-        return "meta_analysis_index";
+        return "main_app";
     }
 
     @RequestMapping(value = "/results/{token}", method = RequestMethod.GET)

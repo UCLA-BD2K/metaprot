@@ -117,6 +117,7 @@ public class Analyze {
     @RequestMapping(value = "/metabolites/{token}", method = RequestMethod.POST)
     public String analyzeMetabolites(@PathVariable("token") String token,
                                      @RequestParam("objectKey") String key,
+                                     @RequestParam("taskToken") String taskToken,
                                      @RequestParam("pThreshold") double pThreshold,
                                      @RequestParam("fcThreshold") double fcThreshold) {
 
@@ -132,7 +133,7 @@ public class Analyze {
             throw new BadRequestException("Invalid request, please try again later.");
         }
 
-        S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+        S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken);
         int status = s3Status.getStatusCode();
 
         log.info("new status s3: " + s3Status.toString());
@@ -146,12 +147,12 @@ public class Analyze {
 
         // everything is OK on the server end, attempt to analyze the file
         try {
-            String rCommand = "analyze.file('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token
+            String rCommand = "analyze.file('" + LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken
                     + sep + keyArr[keyArr.length-1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep +
-                    token + sep + "data.csv', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "volcano.png', " +
+                    taskToken + sep + "data.csv', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken + sep + "volcano.png', " +
                     pThreshold + ", " + fcThreshold + ")";
 
-            executeRScript(token, keyArr[keyArr.length-1], s3Status.getFileSize(),
+            executeRScript(taskToken, keyArr[keyArr.length-1], s3Status.getFileSize(),
                     METABOLITES_R_SCRIPT_LOC, rCommand);
         } catch (Exception e) {
             // handle exception so that we can return appropriate error messages
@@ -161,10 +162,10 @@ public class Analyze {
 
         // store results to database, TODO any new logic to read in all result files, for now just one, maybe just need to modify the file access function to return a list of lists
         List<List<MetaboliteStat>> totalResults = new ArrayList<>();
-        List<MetaboliteStat> results = new FileAccess().getMetaboliteAnalysisResults(token);
+        List<MetaboliteStat> results = new FileAccess().getMetaboliteAnalysisResults(taskToken);
         totalResults.add(results);
 
-        MetaboliteTask currentMetaboliteTask = new MetaboliteTask(token, new Date(), keyArr[keyArr.length-1],
+        MetaboliteTask currentMetaboliteTask = new MetaboliteTask(taskToken, new Date(), keyArr[keyArr.length-1],
                 s3Status.getFileSize(), pThreshold, fcThreshold, 0);
 
         // save the chunks
@@ -183,13 +184,13 @@ public class Analyze {
         }
 
         // analysis complete and results recorded, safe to delete all temporary files
-        new FileAccess().deleteTemporaryAnalysisFiles(token);
+        new FileAccess().deleteTemporaryAnalysisFiles(taskToken);
 
         // everything went well, success message
         String successMessage = "Your file has been successfully analyzed! Head over to the %s page" +
                 " to see the report.";
 
-        return String.format(successMessage, "<a href='/metabolite-analysis/results/" + token + "'>results</a>");
+        return String.format(successMessage, "<a href='/metabolite-analysis/results/" + taskToken + "'>results</a>");
     }
 
     /**
@@ -207,6 +208,7 @@ public class Analyze {
     @RequestMapping(value = "/pattern/{token}", method = RequestMethod.POST)
     public String analyzePatterns(@PathVariable("token") String token,
                                   @RequestParam("objectKey") String key,
+                                  @RequestParam("taskToken") String taskToken,
                                   @RequestParam("numClusters") int numClusters,
                                   @RequestParam("minMembersPerCluster") int minMembersPerCluster) {
 
@@ -223,7 +225,7 @@ public class Analyze {
         }
 
         // grab uploaded file from S3
-        S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+        S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken);
         int status = s3Status.getStatusCode();
 
         log.info("new status s3: " + s3Status.toString());
@@ -239,10 +241,10 @@ public class Analyze {
 
         // everything is OK on the server end, attempt to analyze the file
         try {
-            String rCommand = "analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep +
-                    keyArr[keyArr.length - 1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv', " +
+            String rCommand = "analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken + sep +
+                    keyArr[keyArr.length - 1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken + sep + "clustered_result.csv', " +
                     numClusters + ", " + minMembersPerCluster + ")";
-            REXP rexp = executeRScript(token, keyArr[keyArr.length-1], s3Status.getFileSize(),
+            REXP rexp = executeRScript(taskToken, keyArr[keyArr.length-1], s3Status.getFileSize(),
                     TEMPORAL_PATTERNS_R_SCRIPT_LOC, rCommand);
             regressionLines = rexp.asDoubleMatrix();
         } catch(Exception e) {
@@ -253,10 +255,10 @@ public class Analyze {
 
 
         // open result file and obtain results of R script analysis
-        List<List<PatternRecogStat>> results = new FileAccess().getPatternRecogResults(token);
+        List<List<PatternRecogStat>> results = new FileAccess().getPatternRecogResults(taskToken);
 
         // create task object and upload task results to DB (as DynamoDB chunks)
-        PatternRecogTask task = new PatternRecogTask(token, new Date(), keyArr[keyArr.length-1], s3Status.getFileSize(),
+        PatternRecogTask task = new PatternRecogTask(taskToken, new Date(), keyArr[keyArr.length-1], s3Status.getFileSize(),
                 numClusters, minMembersPerCluster, 0, regressionLines);
 
         int numChunks = dao.saveTaskResults(task, results);
@@ -281,7 +283,7 @@ public class Analyze {
         String successMessage = "Your file has been successfully analyzed! Head over to the %s page" +
                 " to see the report.";
 
-        return String.format(successMessage, "<a href='/temporal-pattern-recognition/results/" + token + "'>results</a>");
+        return String.format(successMessage, "<a href='/temporal-pattern-recognition/results/" + taskToken + "'>results</a>");
     }
 
     /**
@@ -509,7 +511,8 @@ public class Analyze {
      */
     @RequestMapping(value = "/time-series/{token}", method = RequestMethod.POST)
     public String analyzeTimeSeries(@PathVariable("token") String token,
-                                  @RequestParam("objectKey") String key) {
+                                    @RequestParam("objectKey") String key,
+                                    @RequestParam("taskToken") String taskToken) {
 
         // validation
         String[] keyArr = key.split("/");
@@ -521,7 +524,7 @@ public class Analyze {
             throw new BadRequestException("Invalid request, please try again later.");
         }
 
-        S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+        S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken);
         int status = s3Status.getStatusCode();
 
         // error
@@ -533,12 +536,12 @@ public class Analyze {
 
         // everything is OK on the server end, attempt to analyze the file
         try {
-            String rCommand = "analyze.time.series('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token
+            String rCommand = "analyze.time.series('" + LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken
                     + sep + keyArr[keyArr.length-1] + "', '" +
-                    LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "time_series_concentrations.csv', '" +
-                    LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "time_series_significance.csv')";
+                    LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken + sep + "time_series_concentrations.csv', '" +
+                    LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken + sep + "time_series_significance.csv')";
 
-            executeRScript(token, keyArr[keyArr.length-1], s3Status.getFileSize(),
+            executeRScript(taskToken, keyArr[keyArr.length-1], s3Status.getFileSize(),
                     TIME_SERIES_R_SCRIPT_LOC, rCommand);
         } catch (Exception e) {
             // handle exception so that we can return appropriate error messages
@@ -547,11 +550,11 @@ public class Analyze {
         }
 
         // store results to database
-        List<TimeSeriesValue> values = new FileAccess().getTimeSeriesConcentrations(token);
-        List<TimeSeriesSignificance> significances = new FileAccess().getTimeSeriesSignificances(token);
+        List<TimeSeriesValue> values = new FileAccess().getTimeSeriesConcentrations(taskToken);
+        List<TimeSeriesSignificance> significances = new FileAccess().getTimeSeriesSignificances(taskToken);
         TimeSeriesResults results = new TimeSeriesResults(values, significances);
 
-        TimeSeriesTask currentTask = new TimeSeriesTask(token, new Date(), keyArr[keyArr.length-1],
+        TimeSeriesTask currentTask = new TimeSeriesTask(taskToken, new Date(), keyArr[keyArr.length-1],
                 s3Status.getFileSize(), 0);
 
         // save the chunks
@@ -570,14 +573,14 @@ public class Analyze {
         }
 
         // analysis complete and results recorded, safe to delete all temporary files
-        new FileAccess().deleteTemporaryAnalysisFiles(token);
+        new FileAccess().deleteTemporaryAnalysisFiles(taskToken);
 
 
         // everything went well, success message
         String successMessage = "Your file has been successfully analyzed! Head over to the %s page" +
                 " to see the report.";
 
-        return String.format(successMessage, "<a href='/time-series-viewer/results/" + token + "'>results</a>");
+        return String.format(successMessage, "<a href='/time-series-viewer/results/" + taskToken + "'>results</a>");
 
     }
 

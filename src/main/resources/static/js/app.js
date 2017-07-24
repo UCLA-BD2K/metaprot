@@ -12,6 +12,8 @@ import thunk from 'redux-thunk';
 import Home from './components/Home';
 import Analysis from './components/Analysis';
 import Upload from './components/Upload';
+import MetaboliteAnalysis from './components/MetaboliteAnalysis';
+import PatternRecogAnalysis from './components/PatternRecogAnalysis';
 
 import MainLayout from './components/MainLayout';
 
@@ -20,10 +22,13 @@ import { addFileToTree } from './actions';
 
 // tag::vars[]
 const client = require('./client');
+const storeData = sessionStorage.getItem("store") ? JSON.parse(sessionStorage.getItem("store")) : {};
+const store = createStore(rootReducer, storeData, applyMiddleware(thunk));
+store.subscribe(()=> {
+    console.log('store', store.getState())
+    sessionStorage.setItem("store", JSON.stringify(store.getState()));
+});
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
-console.log(store.getState());
-store.subscribe(()=> console.log('store', store.getState()));
 
 
 const history = createBrowserHistory();
@@ -56,6 +61,8 @@ ReactDOM.render(
                 <Route path="/upload" render={ ()=> <MainLayout> <Upload /> </MainLayout> } />
                 <Route path="/upload-pass" render={ ()=> <MainLayout> <Analysis /> </MainLayout> } />
                 <Route path="/analysis" render={ ()=> <MainLayout> <Analysis /> </MainLayout> } />
+                <Route path="/metabolite-analysis" render={ ()=> <MainLayout> <MetaboliteAnalysis /> </MainLayout> } />
+                <Route path="/temporal-pattern-recognition" render={ ()=> <MainLayout> <PatternRecogAnalysis /> </MainLayout> } />
             </Switch>
 
         </Router>

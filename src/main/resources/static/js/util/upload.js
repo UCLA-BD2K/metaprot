@@ -17,10 +17,10 @@ export function fileUploadSubmitHandler($fileInput, cb) {
     var arr = $fileInput[0].value.split("\\");
     var nameOfFile = arr[arr.length-1];
     console.log("FILENAME: " + nameOfFile);
-    if(!(sessionStorage.getItem("root") === null)){
-        var filenames = JSON.parse(sessionStorage.getItem("root"));
+    var store = sessionStorage.getItem("store") ? JSON.parse(sessionStorage.getItem("store")) : null;
+    if(store){
+        var filenames = store.filenames;
         for(var i = 0; i < filenames.length; i++){
-            console.log(filenames[i]);
             if(filenames[i] == nameOfFile){
                 alert("A file with this name already exists. Please rename and upload.");
                 return;
@@ -42,7 +42,7 @@ export function fileUploadSubmitHandler($fileInput, cb) {
 
                     notifyAllFilesUploaded(token, data.Key);
                         //passFilenames();
-                    cb.setToken(sessionStorage.getItem("sessionToken"));
+                    cb.setToken(token);
                     //make_copy_button(document.getElementById("token_num"));
                 }
             },
@@ -98,14 +98,14 @@ export function fileUploadSubmitHandler($fileInput, cb) {
 
     var afterEachFileRead = function(options) {
         var newFilename = options.name;
-        if (sessionStorage.getItem("root") === null) {
+        /*(if (sessionStorage.getItem("root") === null) {
             sessionStorage.setItem("root", JSON.stringify([newFilename]));
         }
         else{
             var curr = JSON.parse(sessionStorage.getItem("root"));
             curr.push(newFilename);
             sessionStorage.setItem("root", JSON.stringify(curr));
-        }
+        }*/
 
         var moreParams = {
             ContentLength : options.size,
@@ -115,17 +115,21 @@ export function fileUploadSubmitHandler($fileInput, cb) {
          *When the page loads there should be some interface that asks the user if they previously have a token
           * or to generate a new one.
          */
-        if(sessionStorage.getItem("sessionToken") === null) {
+
+        var storeData = sessionStorage.getItem("store");
+        var store = storeData ? JSON.parse(storeData) : null;
+
+        if(!store || !store.token) {
             // get token for s3 upload
             getToken().then(token => {
                 uploadFileToS3(options, token, moreParams);
-                sessionStorage.setItem('sessionToken', token);
+                //sessionStorage.setItem('sessionToken', token);
                 updateSessionData();
             }).catch(()=> console.log("Error in retrieving upload token.") )
         }
         else{
             console.log("session Updating Backend");
-            uploadFileToS3(options, sessionStorage.getItem('sessionToken'), moreParams);
+            uploadFileToS3(options, store.token, moreParams);
             updateSessionData();
         }
 
@@ -139,7 +143,7 @@ export function fileUploadSubmitHandler($fileInput, cb) {
 
 }
 
-function getToken() {
+export function getToken() {
     return fetch("/analyze/token", {
         method: "GET"
     }).then( response => { return response.text() });
@@ -170,11 +174,13 @@ export function getTreeData(token) {
 
 
 export function updateSessionData(){
+    var storeData = sessionStorage.getItem("store");
+    var store = storeData ? JSON.parse(storeData) : {token:"", filenames:[]};
 
     var formData = new FormData();
-    formData.append("token", sessionStorage.getItem("sessionToken"));
+    formData.append("token", store.token);
 
-    formData.append("data", sessionStorage.getItem("root"));
+    formData.append("data", store.filenames);
 
     return fetch("/analyze/updateSessionData", {
         method: "POST",
@@ -189,9 +195,11 @@ function downloadFilesFromS3(fileName, callback){
 }
 
 export function deleteFilesFromS3(fileName){
-    return S3Uploader.deleteFile("user-input/" + sessionStorage.getItem("sessionToken") + "/" + fileName);
+    var storeData = sessionStorage.getItem("store");
+    var store = storeData ? JSON.parse(storeData) : {token: ""};
+    return S3Uploader.deleteFile("user-input/" + store.token + "/" + fileName);
 }
-
+/*
 function passFilenames(){
 
     //file tree
@@ -289,7 +297,7 @@ function passFilenames(){
 }
 
 
-
+*/
 function create_table(callback) {
     d3.text("/css/data.csv", function(data) {
         var parsedCSV = d3.csv.parseRows(data);

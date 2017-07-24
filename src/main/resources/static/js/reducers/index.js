@@ -11,7 +11,6 @@ function filenames (state=[], action) {
         break;
         case DELETE_FILE:
             var filenames = state.filter(filename => filename != action.name);
-            sessionStorage.setItem("root", JSON.stringify(filenames));
             return filenames
         break;
         default:
@@ -23,7 +22,7 @@ function token (state="", action) {
     switch (action.type) {
         case SET_TOKEN:
             console.log("SET_TOKEN")
-            sessionStorage.setItem("sessionToken", action.token);
+            //sessionStorage.setItem("sessionToken", action.token);
             return action.token;
         break;
         default:

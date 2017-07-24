@@ -23,7 +23,7 @@ public class PatternRecognition {
 
     @RequestMapping(method = RequestMethod.GET)
     public String getPatternRecognitionIndex(){
-        return "pattern_recognition_index";
+        return "main_app";
     }
 
     @RequestMapping(value = "/results/{token}", method = RequestMethod.GET)
