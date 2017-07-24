@@ -77,45 +77,29 @@ class Upload extends Component {
 
     render() {
         return (
-
             <div>
-                <TopNavBar hasSideNavBar/>
-                <div className="container-fluid">
-                    <div className="row">
-
-                        <SideNavBar/>
-
-                        <div className="col-sm-6 col-sm-offset-3 col-md-7 col-md-offset-2 main">
-                            <h2>Upload a File</h2>
-                            <FileUploadForm />
+                <h2>Upload a File</h2>
+                <FileUploadForm />
 
 
 
-                            <h2>Retrieve Files</h2>
-                            <div className="well well-lg">
-                                <Form style={{align:"top"}} onSubmit={this.handleTokenSubmit} className="form-inline" id="retrieve-file">
-                                    <FormGroup>
-                                        <ControlLabel htmlFor="inputToken">Token</ControlLabel>
-                                        <FormGroup>
-                                            <FormControl onChange={this.handleTokenInput} className="form-control" id="inputToken" placeholder="token number"/>
+                <h2>Retrieve Files</h2>
+                <div className="well well-lg">
+                    <Form style={{align:"top"}} onSubmit={this.handleTokenSubmit} className="form-inline" id="retrieve-file">
+                        <FormGroup>
+                            <ControlLabel htmlFor="inputToken">Token</ControlLabel>
+                            <FormGroup>
+                                <FormControl onChange={this.handleTokenInput} className="form-control" id="inputToken" placeholder="token number"/>
 
-                                        </FormGroup>
-                                    </FormGroup>
-                                    <FormControl type="submit" value="Go"/>
+                            </FormGroup>
+                        </FormGroup>
+                        <FormControl type="submit" value="Go"/>
 
-                                </Form>
-                            </div>
-                        </div>
-
-                        <FileTree />
-
-
-                    </div>
+                    </Form>
                 </div>
-
-                <Footer />
             </div>
         )
+
     }
 
 }

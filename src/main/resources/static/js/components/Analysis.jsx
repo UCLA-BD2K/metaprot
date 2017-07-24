@@ -58,32 +58,20 @@ class Analysis extends Component {
         return (
 
             <div>
-                <TopNavBar hasSideNavBar/>
-                <div className="container-fluid">
+                <h2>Analysis</h2>
+
+                <div className="placeholders">
                     <div className="row">
-
-                        <SideNavBar />
-
-
-                        <div className="col-10 col-offset-1 col-md-8 col-md-offset-2 main">
-                            <h2>Analysis</h2>
-
-                            <div className="placeholders">
-                                <div className="row">
-                                    <InfoBlock data={this.infoblocks[0]} className="col-12 col-sm-5 col-sm-offset-1 col-lg-4 col-lg-offset-2 placeholder"/>
-                                    <InfoBlock data={this.infoblocks[1]} className="col-12 col-sm-5 col-sm-offset-1 col-lg-4 col-lg-offset-2 placeholder"/>
-                                </div>
-                                <div className="row">
-                                    <InfoBlock data={this.infoblocks[2]} className="col-12 col-sm-5 col-sm-offset-1 col-lg-4 col-lg-offset-2 placeholder"/>
-                                    <InfoBlock data={this.infoblocks[3]} className="col-12 col-sm-5 col-sm-offset-1 col-lg-4 col-lg-offset-2 placeholder"/>
-                                </div>
-                            </div>
-                        </div>
+                        <InfoBlock data={this.infoblocks[0]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-1 placeholder"/>
+                        <InfoBlock data={this.infoblocks[1]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-2 placeholder"/>
+                    </div>
+                    <div className="row">
+                        <InfoBlock data={this.infoblocks[2]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-1 placeholder"/>
+                        <InfoBlock data={this.infoblocks[3]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-2 placeholder"/>
                     </div>
                 </div>
-
-                <Footer />
             </div>
+
         )
     }
 

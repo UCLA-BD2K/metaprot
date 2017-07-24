@@ -105,7 +105,7 @@ public class General {
 
         model.addAttribute("sessionData", "INVALID");
 
-        return "upload";
+        return "main_app";
     }
 
     /**
@@ -135,12 +135,12 @@ public class General {
 
         //model.addAttribute("token", token);     // pass token to view as model variable
 
-        return "upload_pass";
+        return "main_app";
     }
 
     @RequestMapping("/analysis")
     public String getAnalysisPage() {
-        return "analysis";
+        return "main_app";
     }
 
     @RequestMapping("/about")

@@ -59,6 +59,8 @@
 	
 	var _reactRouterDom = __webpack_require__(/*! react-router-dom */ 184);
 	
+	var _history = __webpack_require__(/*! history */ 578);
+	
 	var _redux = __webpack_require__(/*! redux */ 224);
 	
 	var _reactRedux = __webpack_require__(/*! react-redux */ 245);
@@ -79,6 +81,10 @@
 	
 	var _Upload2 = _interopRequireDefault(_Upload);
 	
+	var _MainLayout = __webpack_require__(/*! ./components/MainLayout */ 577);
+	
+	var _MainLayout2 = _interopRequireDefault(_MainLayout);
+	
 	var _reducers = __webpack_require__(/*! ./reducers/ */ 527);
 	
 	var _reducers2 = _interopRequireDefault(_reducers);
@@ -96,20 +102,63 @@
 	    return console.log('store', store.getState());
 	});
 	
+	var history = (0, _history.createBrowserHistory)();
+	var initGA = function initGA(history) {
+	    (function (i, s, o, g, r, a, m) {
+	        i['GoogleAnalyticsObject'] = r;i[r] = i[r] || function () {
+	            (i[r].q = i[r].q || []).push(arguments);
+	        }, i[r].l = 1 * new Date();a = s.createElement(o), m = s.getElementsByTagName(o)[0];a.async = 1;a.src = g;m.parentNode.insertBefore(a, m);
+	    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+	
+	    ga('create', 'UA-60704143-2', 'auto'); // dev
+	    //ga('create', 'UA-60704143-3', 'auto'); // production
+	    ga('send', 'pageview');
+	
+	    history.listen(function (location) {
+	        ga('send', 'pageview', location.pathname);
+	    });
+	};
+	
+	initGA(history);
+	
 	// tag::render[]
 	_reactDom2.default.render(_react2.default.createElement(
 	    _reactRedux.Provider,
 	    { store: store },
 	    _react2.default.createElement(
-	        _reactRouterDom.BrowserRouter,
-	        null,
+	        _reactRouterDom.Router,
+	        { history: history },
 	        _react2.default.createElement(
 	            _reactRouterDom.Switch,
 	            null,
 	            _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default }),
-	            _react2.default.createElement(_reactRouterDom.Route, { path: '/upload', component: _Upload2.default }),
-	            _react2.default.createElement(_reactRouterDom.Route, { path: '/upload-pass', component: _Analysis2.default }),
-	            _react2.default.createElement(_reactRouterDom.Route, { path: '/analysis', component: _Analysis2.default })
+	            _react2.default.createElement(_reactRouterDom.Route, { path: '/upload', render: function render() {
+	                    return _react2.default.createElement(
+	                        _MainLayout2.default,
+	                        null,
+	                        ' ',
+	                        _react2.default.createElement(_Upload2.default, null),
+	                        ' '
+	                    );
+	                } }),
+	            _react2.default.createElement(_reactRouterDom.Route, { path: '/upload-pass', render: function render() {
+	                    return _react2.default.createElement(
+	                        _MainLayout2.default,
+	                        null,
+	                        ' ',
+	                        _react2.default.createElement(_Analysis2.default, null),
+	                        ' '
+	                    );
+	                } }),
+	            _react2.default.createElement(_reactRouterDom.Route, { path: '/analysis', render: function render() {
+	                    return _react2.default.createElement(
+	                        _MainLayout2.default,
+	                        null,
+	                        ' ',
+	                        _react2.default.createElement(_Analysis2.default, null),
+	                        ' '
+	                    );
+	                } })
 	        )
 	    )
 	), document.getElementById('react'));
@@ -29281,42 +29330,27 @@
 	            return _react2.default.createElement(
 	                'div',
 	                null,
-	                _react2.default.createElement(_TopNavBar2.default, { hasSideNavBar: true }),
+	                _react2.default.createElement(
+	                    'h2',
+	                    null,
+	                    'Analysis'
+	                ),
 	                _react2.default.createElement(
 	                    'div',
-	                    { className: 'container-fluid' },
+	                    { className: 'placeholders' },
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'row' },
-	                        _react2.default.createElement(_SideNavBar2.default, null),
-	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'col-10 col-offset-1 col-md-8 col-md-offset-2 main' },
-	                            _react2.default.createElement(
-	                                'h2',
-	                                null,
-	                                'Analysis'
-	                            ),
-	                            _react2.default.createElement(
-	                                'div',
-	                                { className: 'placeholders' },
-	                                _react2.default.createElement(
-	                                    'div',
-	                                    { className: 'row' },
-	                                    _react2.default.createElement(_InfoBlock2.default, { data: this.infoblocks[0], className: 'col-12 col-sm-5 col-sm-offset-1 col-lg-4 col-lg-offset-2 placeholder' }),
-	                                    _react2.default.createElement(_InfoBlock2.default, { data: this.infoblocks[1], className: 'col-12 col-sm-5 col-sm-offset-1 col-lg-4 col-lg-offset-2 placeholder' })
-	                                ),
-	                                _react2.default.createElement(
-	                                    'div',
-	                                    { className: 'row' },
-	                                    _react2.default.createElement(_InfoBlock2.default, { data: this.infoblocks[2], className: 'col-12 col-sm-5 col-sm-offset-1 col-lg-4 col-lg-offset-2 placeholder' }),
-	                                    _react2.default.createElement(_InfoBlock2.default, { data: this.infoblocks[3], className: 'col-12 col-sm-5 col-sm-offset-1 col-lg-4 col-lg-offset-2 placeholder' })
-	                                )
-	                            )
-	                        )
+	                        _react2.default.createElement(_InfoBlock2.default, { data: this.infoblocks[0], className: 'col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-1 placeholder' }),
+	                        _react2.default.createElement(_InfoBlock2.default, { data: this.infoblocks[1], className: 'col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-2 placeholder' })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        _react2.default.createElement(_InfoBlock2.default, { data: this.infoblocks[2], className: 'col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-1 placeholder' }),
+	                        _react2.default.createElement(_InfoBlock2.default, { data: this.infoblocks[3], className: 'col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-2 placeholder' })
 	                    )
-	                ),
-	                _react2.default.createElement(_Footer2.default, null)
+	                )
 	            );
 	        }
 	    }]);
@@ -29359,37 +29393,47 @@
 	
 	var tabData = [{ name: "Upload Data", path: "/upload" }, { name: "Preprocessing", path: "/upload-pass" }, { name: "Analysis", path: "/analysis" }, { name: "Annotation", path: "#" }, { name: "Integration", path: "#" }, { name: "Summary", path: "#" }];
 	
-	var Tab = _react2.default.createClass({
-	    displayName: 'Tab',
+	var Tab = function (_Component) {
+	    _inherits(Tab, _Component);
 	
-	    render: function render() {
-	        return _react2.default.createElement(
-	            'li',
-	            {
-	                onClick: this.props.handleClick,
-	                className: this.props.isActive ? "active" : null },
-	            _react2.default.createElement(
-	                'a',
-	                { href: this.props.data.path },
-	                this.props.data.name
-	            )
-	        );
+	    function Tab() {
+	        _classCallCheck(this, Tab);
+	
+	        return _possibleConstructorReturn(this, (Tab.__proto__ || Object.getPrototypeOf(Tab)).apply(this, arguments));
 	    }
-	});
 	
-	var SideNavBar = function (_Component) {
-	    _inherits(SideNavBar, _Component);
+	    _createClass(Tab, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'li',
+	                { onClick: this.props.handleClick,
+	                    className: this.props.isActive ? "active" : null },
+	                _react2.default.createElement(
+	                    _reactRouterDom.Link,
+	                    { to: this.props.data.path },
+	                    this.props.data.name
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return Tab;
+	}(_react.Component);
+	
+	var SideNavBar = function (_Component2) {
+	    _inherits(SideNavBar, _Component2);
 	
 	    function SideNavBar(props) {
 	        _classCallCheck(this, SideNavBar);
 	
-	        var _this = _possibleConstructorReturn(this, (SideNavBar.__proto__ || Object.getPrototypeOf(SideNavBar)).call(this, props));
+	        var _this2 = _possibleConstructorReturn(this, (SideNavBar.__proto__ || Object.getPrototypeOf(SideNavBar)).call(this, props));
 	
-	        _this.state = {
+	        _this2.state = {
 	            activeTab: tabData[0]
 	        };
-	        _this.handleClick = _this.handleClick.bind(_this);
-	        return _this;
+	        _this2.handleClick = _this2.handleClick.bind(_this2);
+	        return _this2;
 	    }
 	
 	    _createClass(SideNavBar, [{
@@ -29579,56 +29623,40 @@
 	            return _react2.default.createElement(
 	                'div',
 	                null,
-	                _react2.default.createElement(_TopNavBar2.default, { hasSideNavBar: true }),
+	                _react2.default.createElement(
+	                    'h2',
+	                    null,
+	                    'Upload a File'
+	                ),
+	                _react2.default.createElement(_FileUploadForm2.default, null),
+	                _react2.default.createElement(
+	                    'h2',
+	                    null,
+	                    'Retrieve Files'
+	                ),
 	                _react2.default.createElement(
 	                    'div',
-	                    { className: 'container-fluid' },
+	                    { className: 'well well-lg' },
 	                    _react2.default.createElement(
-	                        'div',
-	                        { className: 'row' },
-	                        _react2.default.createElement(_SideNavBar2.default, null),
+	                        _reactBootstrap.Form,
+	                        { style: { align: "top" }, onSubmit: this.handleTokenSubmit, className: 'form-inline', id: 'retrieve-file' },
 	                        _react2.default.createElement(
-	                            'div',
-	                            { className: 'col-sm-6 col-sm-offset-3 col-md-7 col-md-offset-2 main' },
+	                            _reactBootstrap.FormGroup,
+	                            null,
 	                            _react2.default.createElement(
-	                                'h2',
-	                                null,
-	                                'Upload a File'
-	                            ),
-	                            _react2.default.createElement(_FileUploadForm2.default, null),
-	                            _react2.default.createElement(
-	                                'h2',
-	                                null,
-	                                'Retrieve Files'
+	                                _reactBootstrap.ControlLabel,
+	                                { htmlFor: 'inputToken' },
+	                                'Token'
 	                            ),
 	                            _react2.default.createElement(
-	                                'div',
-	                                { className: 'well well-lg' },
-	                                _react2.default.createElement(
-	                                    _reactBootstrap.Form,
-	                                    { style: { align: "top" }, onSubmit: this.handleTokenSubmit, className: 'form-inline', id: 'retrieve-file' },
-	                                    _react2.default.createElement(
-	                                        _reactBootstrap.FormGroup,
-	                                        null,
-	                                        _react2.default.createElement(
-	                                            _reactBootstrap.ControlLabel,
-	                                            { htmlFor: 'inputToken' },
-	                                            'Token'
-	                                        ),
-	                                        _react2.default.createElement(
-	                                            _reactBootstrap.FormGroup,
-	                                            null,
-	                                            _react2.default.createElement(_reactBootstrap.FormControl, { onChange: this.handleTokenInput, className: 'form-control', id: 'inputToken', placeholder: 'token number' })
-	                                        )
-	                                    ),
-	                                    _react2.default.createElement(_reactBootstrap.FormControl, { type: 'submit', value: 'Go' })
-	                                )
+	                                _reactBootstrap.FormGroup,
+	                                null,
+	                                _react2.default.createElement(_reactBootstrap.FormControl, { onChange: this.handleTokenInput, className: 'form-control', id: 'inputToken', placeholder: 'token number' })
 	                            )
 	                        ),
-	                        _react2.default.createElement(_FileTree2.default, null)
+	                        _react2.default.createElement(_reactBootstrap.FormControl, { type: 'submit', value: 'Go' })
 	                    )
-	                ),
-	                _react2.default.createElement(_Footer2.default, null)
+	                )
 	            );
 	        }
 	    }]);
@@ -50727,10 +50755,10 @@
 	
 	            return _react2.default.createElement(
 	                'div',
-	                { className: 'col-sm-3', id: 'sidebar_right' },
+	                { className: 'col-sm-2', id: 'sidebar_right' },
 	                _react2.default.createElement(
 	                    'div',
-	                    { id: 'file-tree', className: 'col-sm-12 col-lg-10 col-lg-offset-1' },
+	                    { id: 'file-tree', className: 'col-sm-12' },
 	                    this.props.filenames.map(function (filename, i) {
 	                        return _react2.default.createElement(_FileTreeItem2.default, { key: i, filename: filename });
 	                    })
@@ -51688,7 +51716,7 @@
   \***************************/
 /***/ (function(module, exports, __webpack_require__) {
 
-	var require;var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/** @license MIT License (c) copyright 2010-2014 original author or authors */
+	var __WEBPACK_AMD_DEFINE_RESULT__;var require;/* WEBPACK VAR INJECTION */(function(process) {/** @license MIT License (c) copyright 2010-2014 original author or authors */
 	/** @author Brian Cavalier */
 	/** @author John Hann */
 	
@@ -56064,6 +56092,165 @@
 			}
 		};
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 576 */,
+/* 577 */
+/*!****************************************************************!*\
+  !*** ./src/main/resources/static/js/components/MainLayout.jsx ***!
+  \****************************************************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRouterDom = __webpack_require__(/*! react-router-dom */ 184);
+	
+	var _TopNavBar = __webpack_require__(/*! ./TopNavBar */ 263);
+	
+	var _TopNavBar2 = _interopRequireDefault(_TopNavBar);
+	
+	var _SideNavBar = __webpack_require__(/*! ./SideNavBar */ 266);
+	
+	var _SideNavBar2 = _interopRequireDefault(_SideNavBar);
+	
+	var _FileUploadForm = __webpack_require__(/*! ./FileUploadForm */ 268);
+	
+	var _FileUploadForm2 = _interopRequireDefault(_FileUploadForm);
+	
+	var _FileTree = __webpack_require__(/*! ./FileTree */ 525);
+	
+	var _FileTree2 = _interopRequireDefault(_FileTree);
+	
+	var _Footer = __webpack_require__(/*! ./Footer */ 264);
+	
+	var _Footer2 = _interopRequireDefault(_Footer);
+	
+	var _reactRedux = __webpack_require__(/*! react-redux */ 245);
+	
+	var _reactBootstrap = __webpack_require__(/*! react-bootstrap */ 269);
+	
+	var _actions = __webpack_require__(/*! ../actions */ 524);
+	
+	var _upload = __webpack_require__(/*! ../util/upload */ 523);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var MainLayout = function (_Component) {
+	    _inherits(MainLayout, _Component);
+	
+	    function MainLayout() {
+	        _classCallCheck(this, MainLayout);
+	
+	        return _possibleConstructorReturn(this, (MainLayout.__proto__ || Object.getPrototypeOf(MainLayout)).apply(this, arguments));
+	    }
+	
+	    _createClass(MainLayout, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(_TopNavBar2.default, { hasSideNavBar: true }),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'container-fluid' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        _react2.default.createElement(_SideNavBar2.default, null),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 main' },
+	                            this.props.children
+	                        ),
+	                        _react2.default.createElement(_FileTree2.default, null)
+	                    )
+	                ),
+	                _react2.default.createElement(_Footer2.default, null)
+	            );
+	        }
+	    }]);
+	
+	    return MainLayout;
+	}(_react.Component);
+	
+	exports.default = MainLayout;
+
+/***/ }),
+/* 578 */
+/*!****************************!*\
+  !*** ./~/history/index.js ***!
+  \****************************/
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	exports.createPath = exports.parsePath = exports.locationsAreEqual = exports.createLocation = exports.createMemoryHistory = exports.createHashHistory = exports.createBrowserHistory = undefined;
+	
+	var _LocationUtils = __webpack_require__(/*! ./LocationUtils */ 191);
+	
+	Object.defineProperty(exports, 'createLocation', {
+	  enumerable: true,
+	  get: function get() {
+	    return _LocationUtils.createLocation;
+	  }
+	});
+	Object.defineProperty(exports, 'locationsAreEqual', {
+	  enumerable: true,
+	  get: function get() {
+	    return _LocationUtils.locationsAreEqual;
+	  }
+	});
+	
+	var _PathUtils = __webpack_require__(/*! ./PathUtils */ 194);
+	
+	Object.defineProperty(exports, 'parsePath', {
+	  enumerable: true,
+	  get: function get() {
+	    return _PathUtils.parsePath;
+	  }
+	});
+	Object.defineProperty(exports, 'createPath', {
+	  enumerable: true,
+	  get: function get() {
+	    return _PathUtils.createPath;
+	  }
+	});
+	
+	var _createBrowserHistory2 = __webpack_require__(/*! ./createBrowserHistory */ 188);
+	
+	var _createBrowserHistory3 = _interopRequireDefault(_createBrowserHistory2);
+	
+	var _createHashHistory2 = __webpack_require__(/*! ./createHashHistory */ 212);
+	
+	var _createHashHistory3 = _interopRequireDefault(_createHashHistory2);
+	
+	var _createMemoryHistory2 = __webpack_require__(/*! ./createMemoryHistory */ 199);
+	
+	var _createMemoryHistory3 = _interopRequireDefault(_createMemoryHistory2);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.createBrowserHistory = _createBrowserHistory3.default;
+	exports.createHashHistory = _createHashHistory3.default;
+	exports.createMemoryHistory = _createMemoryHistory3.default;
 
 /***/ })
 /******/ ]);

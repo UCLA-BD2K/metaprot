@@ -12,17 +12,16 @@ var tabData = [
     {name: "Summary", path: "#" },
 ];
 
-var Tab = React.createClass({
-  render: function() {
-    return (
-      <li
-        onClick={this.props.handleClick}
-        className={this.props.isActive ? "active" : null}>
-        <a href={this.props.data.path}>{this.props.data.name}</a>
-      </li>
-    );
-  }
-});
+class Tab extends Component {
+    render() {
+        return (
+            <li onClick={this.props.handleClick}
+                className={this.props.isActive ? "active" : null}>
+                <Link to={this.props.data.path}>{this.props.data.name}</Link>
+            </li>
+        );
+    }
+}
 
 class SideNavBar extends Component {
     constructor(props) {

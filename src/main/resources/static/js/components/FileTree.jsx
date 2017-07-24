@@ -13,8 +13,8 @@ class FileTree extends Component {
         console.log(this);
 
         return (
-            <div className="col-sm-3" id="sidebar_right">
-                <div id="file-tree" className="col-sm-12 col-lg-10 col-lg-offset-1">
+            <div className="col-sm-2" id="sidebar_right">
+                <div id="file-tree" className="col-sm-12">
                 {
                     this.props.filenames.map((filename, i) => {
                         return (
