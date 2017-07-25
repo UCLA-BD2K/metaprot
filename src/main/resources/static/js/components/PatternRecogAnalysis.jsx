@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import FileSelectForm from './FileSelectForm';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Form, FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap'
-import { resetTree, addFileToTree, setToken } from '../actions';
+import { FormControl, ControlLabel } from 'react-bootstrap'
 import { getToken } from '../util/upload';
 
 class PatternRecogAnalysis extends Component {
@@ -136,4 +135,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, { resetTree, addFileToTree, setToken })(PatternRecogAnalysis);
+export default connect(mapStateToProps, null)(PatternRecogAnalysis);

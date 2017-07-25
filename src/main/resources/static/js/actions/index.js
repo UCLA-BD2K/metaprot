@@ -21,7 +21,7 @@ export function addFileToTree(name) {
     return action;
 }
 
-function removeFileFromTree(name) {
+function _removeFileFromTree(name) {
     const action = {
         type: DELETE_FILE,
         name
@@ -29,15 +29,12 @@ function removeFileFromTree(name) {
     return action;
 }
 
-export function removeFileFromTreeAndUpdateSession(name) {
+export function removeFileFromTree(name) {
 
     return dispatch => {
-        dispatch(removeFileFromTree(name));
+        dispatch(_removeFileFromTree(name));
         deleteFilesFromS3(name)
-            .then(updateSessionData)
-            .catch( err => {
-                console.log("ERROR",err)
-            });
+        updateSessionData();
     }
 }
 

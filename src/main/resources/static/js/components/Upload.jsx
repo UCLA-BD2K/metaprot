@@ -45,20 +45,17 @@ class Upload extends Component {
         var token = this.state.tokenInput;
         var self = this;
 
-        validateToken(token).then(function(data){
-            if(data == "true") {
-                // cache and set session token
-               // sessionStorage.setItem("sessionToken", token);
+        validateToken(token).then( response => {
+            if(response == "true") {
+
                 self.props.resetTree();
                 self.props.setToken(token);
 
-                // cache and set filenames
                 getTreeData(token).then( data => {
-                    //sessionStorage.setItem("root", JSON.stringify(data));
                     data.forEach(filename => {
                         self.props.addFileToTree(filename);
                     })
-                })
+                }).catch(e=>console.log(e))
             }
             else {
                 console.log("TOKEN INVALID");

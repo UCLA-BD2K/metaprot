@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import FileSelectForm from './FileSelectForm';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Form, FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap'
-import { resetTree, addFileToTree, setToken } from '../actions';
 import { getToken } from '../util/upload';
 
 class TimeSeriesViewer extends Component {

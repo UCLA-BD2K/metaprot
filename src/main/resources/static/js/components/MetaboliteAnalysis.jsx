@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import FileSelectForm from './FileSelectForm';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Form, FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap'
-import { resetTree, addFileToTree, setToken } from '../actions';
+import { FormControl, ControlLabel } from 'react-bootstrap'
 import { getToken } from '../util/upload';
 
 class MetaboliteAnalysis extends Component {
@@ -55,7 +54,9 @@ class MetaboliteAnalysis extends Component {
     handleSubmit(e) {
         e.preventDefault();
         var self = this;
+        console.log(this.state);
         self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
+
         // request new token for analysis task
         getToken()
         // execute R scripts on the server
@@ -119,7 +120,6 @@ class MetaboliteAnalysis extends Component {
                 <div dangerouslySetInnerHTML={ { __html: this.state.progressTextHTML } }
                     className="text-center"></div>
 
-
             </div>
         )
 
@@ -134,4 +134,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, { resetTree, addFileToTree, setToken })(MetaboliteAnalysis);
+export default connect(mapStateToProps, null)(MetaboliteAnalysis);

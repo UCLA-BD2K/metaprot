@@ -10,10 +10,14 @@ class FileTree extends Component {
     }
 
     render() {
-        console.log(this);
 
         return (
             <div className="col-sm-2" id="sidebar_right">
+            {
+                // only show if at least one file has been uploaded
+                // (prevent empty colored div from rendering)
+                this.props.filenames.length > 0 ?
+
                 <div id="file-tree" className="col-sm-12">
                 {
                     this.props.filenames.map((filename, i) => {
@@ -23,6 +27,9 @@ class FileTree extends Component {
                     })
                 }
                 </div>
+
+                : null
+            }
             </div>
 
         )

@@ -15,6 +15,7 @@ import Upload from './components/Upload';
 import MetaboliteAnalysis from './components/MetaboliteAnalysis';
 import PatternRecogAnalysis from './components/PatternRecogAnalysis';
 import TimeSeriesViewer from './components/TimeSeriesViewer';
+import ProcessFile from './components/ProcessFile';
 
 import MainLayout from './components/MainLayout';
 
@@ -26,7 +27,7 @@ const client = require('./client');
 const storeData = sessionStorage.getItem("store") ? JSON.parse(sessionStorage.getItem("store")) : {};
 const store = createStore(rootReducer, storeData, applyMiddleware(thunk));
 store.subscribe(()=> {
-    console.log('store', store.getState())
+    console.log("Store", "store updated");
     sessionStorage.setItem("store", JSON.stringify(store.getState()));
 });
 
@@ -60,11 +61,11 @@ ReactDOM.render(
             <Switch>
                 <Route exact path="/" component={Home} />
                 <Route path="/upload" render={ ()=> <MainLayout> <Upload /> </MainLayout> } />
-                <Route path="/upload-pass" render={ ()=> <MainLayout> <Analysis /> </MainLayout> } />
+                <Route path="/upload-pass" render={ ()=> <MainLayout> <ProcessFile /> </MainLayout> } />
                 <Route path="/analysis" render={ ()=> <MainLayout> <Analysis /> </MainLayout> } />
                 <Route path="/metabolite-analysis" render={ ()=> <MainLayout> <MetaboliteAnalysis /> </MainLayout> } />
                 <Route path="/temporal-pattern-recognition" render={ ()=> <MainLayout> <PatternRecogAnalysis /> </MainLayout> } />
-                <Route path="/time-series-viewer" render={ ()=> <MainLayout> <TimeSeriesViewe /> </MainLayout> } />
+                <Route path="/time-series-viewer" render={ ()=> <MainLayout> <TimeSeriesViewer /> </MainLayout> } />
             </Switch>
 
         </Router>

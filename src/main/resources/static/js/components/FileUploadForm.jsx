@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap'
+import { Form, FormControl, ControlLabel, Button } from 'react-bootstrap'
 import { fileUploadSubmitHandler } from '../util/upload'
 import { connect } from 'react-redux';
 import { addFileToTree, setToken } from '../actions';
@@ -11,10 +11,9 @@ class FileUploadForm extends Component {
         this.state = {
             $fileInput: [],  // naming convention retained from previous JQuery implementation
             uploadProgress: 0,
-            progressTextHTML: null
+            progressTextHTML: null,
+            uploading: false
         }
-
-
 
         // bind component methods
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -24,14 +23,13 @@ class FileUploadForm extends Component {
     }
     handleSubmit(e) {
         e.preventDefault();
+        this.setState({ uploading: true });
         var callbacks = {
             updateProgress: this.updateProgress,
             addFileToTree: this.props.addFileToTree,
             setToken: this.props.setToken
         }
         fileUploadSubmitHandler(this.state.$fileInput, callbacks);
-        // e.target equiv to $fileinput
-
     }
 
     updateProgress(state) {
@@ -88,25 +86,32 @@ class FileUploadForm extends Component {
 
                 </div>
 
-                <div id="progress-bar-display" className="transition">
-                    <h5>Upload Progress</h5>
-                    <div className="progress">
-                        <div className="progress-bar"
-                            style={{width: this.state.uploadProgress + "%"}}
-                            role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                            {this.state.uploadProgress}% Complete
+                {
+
+                    this.state.uploading ?
+
+                    <div id="progress-bar-display" className="transition">
+                        <h5>Upload Progress</h5>
+                        <div className="progress">
+                            <div className="progress-bar"
+                                style={{width: this.state.uploadProgress + "%"}}
+                                role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                {this.state.uploadProgress}% Complete
+                            </div>
                         </div>
+                            <div dangerouslySetInnerHTML={ { __html: this.state.progressTextHTML } }
+                                id="progressText" className="text-center"></div>
+                        <br />
                     </div>
-                        <div dangerouslySetInnerHTML={ { __html: this.state.progressTextHTML } }
-                            id="progressText" className="text-center"></div>
-                    <br />
-                </div>
+
+                    : null
+
+                }
             </div>
 
         )
     }
 }
-
 
 function mapStateToProps(state) {
     return {

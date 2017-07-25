@@ -42,7 +42,8 @@ export function fileUploadSubmitHandler($fileInput, cb) {
 
                     notifyAllFilesUploaded(token, data.Key);
                         //passFilenames();
-                    cb.setToken(token);
+
+                    updateSessionData();
                     //make_copy_button(document.getElementById("token_num"));
                 }
             },
@@ -60,6 +61,7 @@ export function fileUploadSubmitHandler($fileInput, cb) {
         cb.updateProgress({
             progressTextHTML: '<h5>Checking integrity...</h5><i class="fa fa-refresh fa-spin fa-3x"></i>'
         });
+
 
         var formData = new FormData();
         formData.append("objectKey", s3Key);
@@ -117,20 +119,20 @@ export function fileUploadSubmitHandler($fileInput, cb) {
          */
 
         var storeData = sessionStorage.getItem("store");
+        console.log("StoreData: ", storeData);
         var store = storeData ? JSON.parse(storeData) : null;
 
         if(!store || !store.token) {
+            console.log("Need new token");
             // get token for s3 upload
             getToken().then(token => {
+                cb.setToken(token);
                 uploadFileToS3(options, token, moreParams);
-                //sessionStorage.setItem('sessionToken', token);
-                updateSessionData();
             }).catch(()=> console.log("Error in retrieving upload token.") )
         }
         else{
             console.log("session Updating Backend");
             uploadFileToS3(options, store.token, moreParams);
-            updateSessionData();
         }
 
 
@@ -167,15 +169,20 @@ export function getTreeData(token) {
     formData.append("token", token);
 
     return fetch("/analyze/getSessionData", {
-        method: "POST",
-        body: formData
-    }).then( response => { return response.json() });
+            method: "POST",
+            body: formData
+        })
+        .then( response => { return response.text() })
+        .then( commaSepList => { return commaSepList.split(",") });
 }
 
 
 export function updateSessionData(){
     var storeData = sessionStorage.getItem("store");
-    var store = storeData ? JSON.parse(storeData) : {token:"", filenames:[]};
+    if (!storeData)
+        return;
+
+    var store = JSON.parse(storeData);
 
     var formData = new FormData();
     formData.append("token", store.token);

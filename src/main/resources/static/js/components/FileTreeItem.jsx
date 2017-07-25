@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import { removeFileFromTreeAndUpdateSession } from '../actions';
+import { removeFileFromTree } from '../actions';
 import { updateSessionData } from '../util/upload';
 
 class FileTreeItem extends Component {
@@ -17,7 +17,7 @@ class FileTreeItem extends Component {
                 </div>
                 <div className="col-sm-2 col-sm-offset-1">
                     <i className="glyphicon glyphicon-trash"
-                        onClick={()=>this.props.removeFileFromTreeAndUpdateSession(this.props.filename)}></i>
+                        onClick={()=>this.props.removeFileFromTree(this.props.filename)}></i>
                 </div>
             </div>
         )
@@ -30,4 +30,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, { removeFileFromTreeAndUpdateSession })(FileTreeItem);
+export default connect(mapStateToProps, { removeFileFromTree })(FileTreeItem);

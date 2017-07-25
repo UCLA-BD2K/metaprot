@@ -14,3 +14,4 @@ target/**
 *.p12
 ebextensions
 node_modules
+built
