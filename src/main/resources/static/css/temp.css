@@ -470,3 +470,14 @@ div.container {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+#token-copy {
+    background: gray;
+    float: right;
+    padding: 4px 16px 0 16px;
+    cursor: pointer
+}
+
+#token-copy:hover {
+    background: slategray;
+}

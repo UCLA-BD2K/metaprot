@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 
 var tabData = [
@@ -51,8 +52,18 @@ class SideNavBar extends Component {
                     }.bind(this))}
                 </ul>
                 <div id="token_text" >
-                    <p className="navbar-text">Token number</p>
+                    <div>
+
+                        <CopyToClipboard text={this.props.token}>
+                            <div id="token-copy">
+                                <p>Copy</p>
+                            </div>
+                        </CopyToClipboard>
+                        <p className="navbar-text">Token number</p>
+                    </div>
+
                     <p className="navbar-text" id="token_num">{this.props.token}</p>
+
                 </div>
             </div>
 
