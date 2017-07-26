@@ -30,8 +30,8 @@ class ProcessFile extends Component {
             <h3>Handle Missing Values</h3>
             <div>
                 <Checkbox>Remove features with too many missing values:</Checkbox>
-                <InputGroup>
-                    <FormControl id="remove-threshold" type="text" value="50" />
+                <InputGroup className="col-xs-4 col-sm-3 col-lg-2">
+                    <FormControl id="remove-threshold" type="text" value="50" bsSize="sm" />
                     <InputGroup.Addon>%</InputGroup.Addon>
                 </InputGroup>
 

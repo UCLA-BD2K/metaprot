@@ -21,7 +21,9 @@ class TopNavBar extends Component {
                         ) : null
 
                     }
-                        <img src="/img/icon11.png" style={{height:40,width:100,align:"middle",marginTop:5}} />
+                        <Link to="/upload">
+                            <img src="/img/icon11.png" id="navbar-logo" />
+                        </Link>
                         <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                             <span className="sr-only">Toggle navigation</span>
                             <span className="icon-bar"></span>

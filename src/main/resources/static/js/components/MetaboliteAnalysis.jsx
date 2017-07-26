@@ -55,6 +55,7 @@ class MetaboliteAnalysis extends Component {
         e.preventDefault();
         var self = this;
         console.log(this.state);
+        return;
         self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
 
         // request new token for analysis task

@@ -83,14 +83,10 @@ class Upload extends Component {
 
                 <h2>Retrieve Files</h2>
                 <div className="well well-lg">
-                    <Form style={{align:"top"}} onSubmit={this.handleTokenSubmit} className="form-inline" id="retrieve-file">
-                        <FormGroup>
+                    <Form inline onSubmit={this.handleTokenSubmit} id="retrieve-file">
                             <ControlLabel htmlFor="inputToken">Token</ControlLabel>
-                            <FormGroup>
-                                <FormControl onChange={this.handleTokenInput} className="form-control" id="inputToken" placeholder="token number"/>
+                            <FormControl onChange={this.handleTokenInput} id="inputToken" placeholder="token number"/>
 
-                            </FormGroup>
-                        </FormGroup>
                         <FormControl type="submit" value="Go"/>
 
                     </Form>

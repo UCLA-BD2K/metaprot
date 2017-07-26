@@ -59,7 +59,7 @@ export function fileUploadSubmitHandler($fileInput, cb) {
     // when all files are uploaded, tell server to check for integrity
     function notifyAllFilesUploaded(token, s3Key) {
         cb.updateProgress({
-            progressTextHTML: '<h5>Checking integrity...</h5><i class="fa fa-refresh fa-spin fa-3x"></i>'
+            progressTextHTML: '<h5>Checking integrity...</h5><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
         });
 
 

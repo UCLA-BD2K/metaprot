@@ -190,7 +190,7 @@ public class Analyze {
         String successMessage = "Your file has been successfully analyzed! Head over to the %s page" +
                 " to see the report.";
 
-        return String.format(successMessage, "<a href='/metabolite-analysis/results/" + taskToken + "'>results</a>");
+        return String.format(successMessage, "<a target='_blank' href='/metabolite-analysis/results/" + taskToken + "'>results</a>");
     }
 
     /**
@@ -283,7 +283,7 @@ public class Analyze {
         String successMessage = "Your file has been successfully analyzed! Head over to the %s page" +
                 " to see the report.";
 
-        return String.format(successMessage, "<a href='/temporal-pattern-recognition/results/" + taskToken + "'>results</a>");
+        return String.format(successMessage, "<a target='_blank' href='/temporal-pattern-recognition/results/" + taskToken + "'>results</a>");
     }
 
     /**
@@ -580,7 +580,7 @@ public class Analyze {
         String successMessage = "Your file has been successfully analyzed! Head over to the %s page" +
                 " to see the report.";
 
-        return String.format(successMessage, "<a href='/time-series-viewer/results/" + taskToken + "'>results</a>");
+        return String.format(successMessage, "<a target='_blank' href='/time-series-viewer/results/" + taskToken + "'>results</a>");
 
     }
 
