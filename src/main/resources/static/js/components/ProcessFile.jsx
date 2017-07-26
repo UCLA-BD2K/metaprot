@@ -27,67 +27,60 @@ class ProcessFile extends Component {
     componentWillMount() {
         this.moreForms = (
         <div>
-            <h2>Handle Missing Values</h2>
-                <div id="handle-missing" className="processing-section block-deco" data-section-index="2">
-                    <div className="section">
-                        <FormGroup>
-                            <Checkbox>Remove features with too many missing values:</Checkbox>
-                            <InputGroup>
-                                <FormControl id="remove-threshold" type="text" value="50" />
-                                <InputGroup.Addon>%</InputGroup.Addon>
-                            </InputGroup>
+            <h3>Handle Missing Values</h3>
+            <div>
+                <Checkbox>Remove features with too many missing values:</Checkbox>
+                <InputGroup>
+                    <FormControl id="remove-threshold" type="text" value="50" />
+                    <InputGroup.Addon>%</InputGroup.Addon>
+                </InputGroup>
 
-                            {' '}
+                <br/>
 
-                            <ControlLabel htmlFor="missingValues">Estimate remaining missing values:</ControlLabel>
-                            <FormControl
-                                id="missingValues"
-                                componentClass="select" className="form-control">
+                <ControlLabel htmlFor="missingValues">Estimate remaining missing values:</ControlLabel>
+                <FormControl
+                    id="missingValues"
+                    componentClass="select" className="form-control">
 
-                                <option value="replace">Replace by a small value (half of the minimum positive value in the original data)</option>
-                                <option value="exclude">Exclude variables with missing values</option>
+                    <option value="replace">Replace by a small value (half of the minimum positive value in the original data)</option>
+                    <option value="exclude">Exclude variables with missing values</option>
 
-                            </FormControl>
-                        </FormGroup>
-                    </div>
-                </div>
-
-
-                <div id="normalization" className="processing-section block-deco" data-section-index="2">
-                    <div className="section">
-                        <div>
-                            <FormGroup onChange={e=>console.log(e.target.value)}>
-                                <h2>Normalization</h2>
-                                <Radio name="norm-by" value="none" defaultChecked>None</Radio>
-                                <Radio name="norm-by" value="sum">Normalization by sum</Radio>
-                                <Radio name="norm-by" value="median">Normalization by median</Radio>
-                                <Radio name="norm-by" value="srs">Norm. by specific reference sample</Radio>
-                                <Radio name="norm-by" value="rf">Norm. by reference feature</Radio>
-                            </FormGroup>
-
-                            {' '}
-
-                            <FormGroup onChange={e=>console.log(e.target.value)}>
-                                <h4>Data transformation:</h4>
-                                <Radio name="trans" value="none" defaultChecked>None</Radio>
-                                <Radio name="trans" value="log-trans">Log transformation</Radio>
-                                <Radio name="trans" value="cube-root-trans">Cube root transformation</Radio>
-                            </FormGroup>
-
-                            {' '}
-
-                            <FormGroup onChange={e=>console.log(e.target.value)}>
-                                <h4>Data scaling:</h4>
-                                <Radio name="scaling" value="none" defaultChecked>None</Radio>
-                                <Radio name="scaling" value="mean-centered">Mean centering</Radio>
-                                <Radio name="scaling" value="pareto">Pareto scaling</Radio>
-
-                            </FormGroup>
-
-                        </div>
-                    </div>
-                </div>
+                </FormControl>
             </div>
+
+            <br/>
+
+            <div onChange={e=>console.log(e.target.value)}>
+                <h3>Normalization</h3>
+                <Radio name="norm-by" value="none" defaultChecked>None</Radio>
+                <Radio name="norm-by" value="sum">Normalization by sum</Radio>
+                <Radio name="norm-by" value="median">Normalization by median</Radio>
+                <Radio name="norm-by" value="srs">Norm. by specific reference sample</Radio>
+                <Radio name="norm-by" value="rf">Norm. by reference feature</Radio>
+            </div>
+
+            <br/>
+
+            <div onChange={e=>console.log(e.target.value)}>
+                <h4>Data transformation:</h4>
+                <Radio name="trans" value="none" defaultChecked>None</Radio>
+                <Radio name="trans" value="log-trans">Log transformation</Radio>
+                <Radio name="trans" value="cube-root-trans">Cube root transformation</Radio>
+            </div>
+
+            <br/>
+
+            <div onChange={e=>console.log(e.target.value)}>
+                <h4>Data scaling:</h4>
+                <Radio name="scaling" value="none" defaultChecked>None</Radio>
+                <Radio name="scaling" value="mean-centered">Mean centering</Radio>
+                <Radio name="scaling" value="pareto">Pareto scaling</Radio>
+
+            </div>
+
+            <br/>
+
+        </div>
         )
 
     }

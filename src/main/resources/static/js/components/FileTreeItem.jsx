@@ -12,10 +12,10 @@ class FileTreeItem extends Component {
     render() {
         return (
             <div className="file-tree-item row">
-                <div className="col-sm-8">
+                <div className="col-sm-9">
                     <p>{this.props.filename}</p>
                 </div>
-                <div className="col-sm-2 col-sm-offset-1">
+                <div className="col-sm-2">
                     <i className="glyphicon glyphicon-trash"
                         onClick={()=>this.props.removeFileFromTree(this.props.filename)}></i>
                 </div>
