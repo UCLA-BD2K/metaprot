@@ -16,12 +16,12 @@ class MainLayout extends Component {
         super(props);
         this.state = {
           isOpen: false,
-          modalContent: null
+          modalData: {}
         };
 
-        this.openModal = (modalContent) => {
+        this.openModal = (modalData) => {
           this.setState({
-            modalContent,
+            modalData,
             isOpen: true
           });
         };
@@ -57,10 +57,10 @@ class MainLayout extends Component {
                     onHide={this.hideModal}
                     dialogClassName="csv-modal">
                     <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
+                        <Modal.Title>{this.state.modalData.title}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        { this.state.modalContent }
+                        { this.state.modalData.content }
                     </Modal.Body>
                     <Modal.Footer>
                         <Button onClick={this.hideModal}>Close</Button>

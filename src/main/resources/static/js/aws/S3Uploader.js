@@ -101,45 +101,18 @@
 
 			initAWSCredentials();
 			var s3 = new AWS.S3();
-			var fileData = "";
-			/*s3.getObject(
-				{ Bucket: s3BucketName, Key: filePath },
-				function (error, data) {
-					if (error != null) {
-						alert("Failed to retrieve an object: " + error);
-					} else {
-						// do something with data.Body
-						//console.log(new TextDecoder("utf-8").decode(data.Body));
-						fileData = ;
-						console.log("loda", fileData);
-						callback(fileData);
-					}
-				}
-			);*/
+
 			return s3.getObject({ Bucket: s3BucketName, Key: filePath }).promise()
 			        .then( data => {
+			            console.log("S3", data);
 			            var fileContent = new TextDecoder("utf-8").decode(data.Body);
 			            return fileContent;
+                    }).catch( err => {
+                        throw new Error(err);
                     });
 		}
 
 		var deleteFile = function(filePath){
-/*
-			initAWSCredentials();
-			var s3 = new AWS.S3();
-			s3.deleteObject(
-				{ Bucket: s3BucketName, Key: filePath },
-				function (error, data) {
-					if (error != null) {
-						console.log("Failed to delete an object: " + error);
-						callback(false);
-					} else {
-						// do something with data.Body
-						console.log("Successfully deleted file");
-						callback(true);
-					}
-				}
-			);*/
 
 			initAWSCredentials();
             var s3 = new AWS.S3();

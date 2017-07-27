@@ -12,32 +12,38 @@ class FileTreeItem extends Component {
 
 
 
-    handleShowFile() {
-//        downloadFileFromS3()
-//            .then(this.props.showModal);
-        this.props.openModal();
+    handleShowFile(e) {
+        e.preventDefault();
+        downloadFileFromS3(this.props.filename)
+            .then(data => {
+                var modalData = {
+                    title: this.props.filename,
+                    content: (<CsvViewer data={data}/>)
+                }
+                this.props.openModal(modalData);
+            })
+            .catch( err => {
+                alert(err);
+                throw new Error(err);
+            });
 
+    }
+
+    handleDeleteFile(e) {
+        e.preventDefault();
+        this.props.removeFileFromTree(this.props.filename);
     }
 
     render() {
         return (
-
-
-
             <div className="file-tree-item row"
-                    onClick={()=> {
-                        downloadFileFromS3(this.props.filename)
-                            .then(data => {
-                                var content = <CsvViewer data={data}/>
-                                this.props.openModal(content);
-                            })
-                        }}>
+                onClick={this.handleShowFile.bind(this)}>
                 <div className="col-sm-9">
                     <p>{this.props.filename}</p>
                 </div>
                 <div className="col-sm-2">
                     <i className="glyphicon glyphicon-trash"
-                        onClick={()=>this.props.removeFileFromTree(this.props.filename)}></i>
+                        onClick={this.handleDeleteFile.bind(this)}></i>
                 </div>
             </div>
         )
