@@ -21,7 +21,9 @@ class FileTree extends Component {
                 {
                     this.props.filenames.map((filename, i) => {
                         return (
-                            <FileTreeItem openModal={this.props.openModal}
+                            <FileTreeItem
+                                openModal={this.props.openModal}
+                                setModalData={this.props.setModalData}
                                 key={i} filename={filename}/>
                         )
                     })

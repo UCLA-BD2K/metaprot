@@ -19,12 +19,15 @@ class MainLayout extends Component {
           modalData: {}
         };
 
-        this.openModal = (modalData) => {
+        this.openModal = () => {
           this.setState({
-            modalData,
             isOpen: true
           });
         };
+
+        this.setModalData = (modalData) => {
+            this.setState({ modalData });
+        }
 
         this.hideModal = () => {
           this.setState({
@@ -46,7 +49,9 @@ class MainLayout extends Component {
                             { this.props.children }
                         </div>
 
-                        <FileTree openModal={this.openModal}/>
+                        <FileTree
+                            openModal={this.openModal}
+                            setModalData={this.setModalData}/>
                     </div>
                 </div>
 

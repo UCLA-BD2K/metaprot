@@ -9,18 +9,27 @@ import CsvViewer from './CsvViewer';
 
 class FileTreeItem extends Component {
 
-
-
-
     handleShowFile(e) {
         e.preventDefault();
+        var modalLoading = {
+            title: this.props.filename,
+            content: (
+                <div className="text-center ">
+                    <i className="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+                </div>
+            )
+        }
+
+        this.props.setModalData(modalLoading);
+        this.props.openModal();
         downloadFileFromS3(this.props.filename)
             .then(data => {
                 var modalData = {
                     title: this.props.filename,
                     content: (<CsvViewer data={data}/>)
                 }
-                this.props.openModal(modalData);
+                this.props.setModalData(modalData);
+                this.props.openModal();
             })
             .catch( err => {
                 alert(err);
