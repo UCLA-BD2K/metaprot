@@ -197,14 +197,18 @@ export function updateSessionData(){
 
 }
 
-function downloadFilesFromS3(fileName, callback){
-    S3Uploader.download("user-input/" + sessionStorage.getItem("sessionToken") + "/" + fileName, callback);
-}
-
-export function deleteFilesFromS3(fileName){
+export function downloadFileFromS3(fileName){
     var storeData = sessionStorage.getItem("store");
     var store = storeData ? JSON.parse(storeData) : {token: ""};
-    return S3Uploader.deleteFile("user-input/" + store.token + "/" + fileName);
+    var path = "user-input/" + store.token + "/" + fileName;
+    return S3Uploader.download(path);
+}
+
+export function deleteFileFromS3(fileName){
+    var storeData = sessionStorage.getItem("store");
+    var store = storeData ? JSON.parse(storeData) : {token: ""};
+    var path = "user-input/" + store.token + "/" + fileName;
+    return S3Uploader.deleteFile(path);
 }
 /*
 function passFilenames(){
@@ -249,7 +253,7 @@ function passFilenames(){
 
         //trash icon to delete file
         if(e.target && e.target.id == "myBtn2") {
-            deleteFilesFromS3(e.target.name, function (status) {
+            deleteFileFromS3(e.target.name, function (status) {
                if(status) {
                    if (!(sessionStorage.getItem("root") === null)) {
                        var a = JSON.parse(sessionStorage.getItem("root"));

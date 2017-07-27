@@ -102,7 +102,7 @@
 			initAWSCredentials();
 			var s3 = new AWS.S3();
 			var fileData = "";
-			s3.getObject(
+			/*s3.getObject(
 				{ Bucket: s3BucketName, Key: filePath },
 				function (error, data) {
 					if (error != null) {
@@ -110,12 +110,17 @@
 					} else {
 						// do something with data.Body
 						//console.log(new TextDecoder("utf-8").decode(data.Body));
-						fileData = new TextDecoder("utf-8").decode(data.Body);
+						fileData = ;
 						console.log("loda", fileData);
 						callback(fileData);
 					}
 				}
-			);
+			);*/
+			return s3.getObject({ Bucket: s3BucketName, Key: filePath }).promise()
+			        .then( data => {
+			            var fileContent = new TextDecoder("utf-8").decode(data.Body);
+			            return fileContent;
+                    });
 		}
 
 		var deleteFile = function(filePath){
@@ -138,8 +143,7 @@
 
 			initAWSCredentials();
             var s3 = new AWS.S3();
-            return s3.deleteObject(
-                { Bucket: s3BucketName, Key: filePath }).promise();
+            return s3.deleteObject({ Bucket: s3BucketName, Key: filePath }).promise();
 
 		};
 

@@ -4,14 +4,13 @@ import FileTreeItem from './FileTreeItem';
 
 class FileTree extends Component {
 
-    constructor(props) {
-        super(props);
 
-    }
 
     render() {
 
         return (
+            <div>
+
             <div className="col-sm-2" id="sidebar_right">
             {
                 // only show if at least one file has been uploaded
@@ -22,7 +21,8 @@ class FileTree extends Component {
                 {
                     this.props.filenames.map((filename, i) => {
                         return (
-                            <FileTreeItem key={i} filename={filename}/>
+                            <FileTreeItem openModal={this.props.openModal}
+                                key={i} filename={filename}/>
                         )
                     })
                 }
@@ -30,6 +30,7 @@ class FileTree extends Component {
 
                 : null
             }
+            </div>
             </div>
 
         )

@@ -1,17 +1,37 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { removeFileFromTree } from '../actions';
-import { updateSessionData } from '../util/upload';
+import { downloadFileFromS3 } from '../util/upload';
+import CsvViewer from './CsvViewer';
+
+
+
 
 class FileTreeItem extends Component {
 
-    handleRemoveFile() {
-        removeFileFromTree(this.props.filename);
+
+
+
+    handleShowFile() {
+//        downloadFileFromS3()
+//            .then(this.props.showModal);
+        this.props.openModal();
 
     }
+
     render() {
         return (
-            <div className="file-tree-item row">
+
+
+
+            <div className="file-tree-item row"
+                    onClick={()=> {
+                        downloadFileFromS3(this.props.filename)
+                            .then(data => {
+                                var content = <CsvViewer data={data}/>
+                                this.props.openModal(content);
+                            })
+                        }}>
                 <div className="col-sm-9">
                     <p>{this.props.filename}</p>
                 </div>

@@ -28,10 +28,10 @@ class ProcessFile extends Component {
         this.moreForms = (
         <div>
             <h3>Handle Missing Values</h3>
-            <div>
-                <Checkbox>Remove features with too many missing values:</Checkbox>
+            <div >
+                <Checkbox onChange={e=>console.log(e.target.value)}>Remove features with too many missing values:</Checkbox>
                 <InputGroup className="col-xs-4 col-sm-3 col-lg-2">
-                    <FormControl id="remove-threshold" type="text" value="50" bsSize="sm" />
+                    <FormControl id="remove-threshold" type="text" defaultValue="50" bsSize="sm" />
                     <InputGroup.Addon>%</InputGroup.Addon>
                 </InputGroup>
 
