@@ -33,6 +33,12 @@ class TopNavBar extends Component {
                     </div>
                     <div id="navbar" className="navbar-collapse collapse">
                         <ul className="nav navbar-nav navbar-right">
+                            <li><Link className="hidden-md hidden-lg" to="/upload">Upload Data</Link></li>
+                            <li><Link className="hidden-md hidden-lg" to="/upload-pass">Preprocessing</Link></li>
+                            <li><Link className="hidden-md hidden-lg" to="/analysis">Analysis</Link></li>
+                            <li><Link className="hidden-md hidden-lg" to="#">Annotation</Link></li>
+                            <li><Link className="hidden-md hidden-lg" to="#">Integration</Link></li>
+                            <li><Link className="hidden-md hidden-lg" to="#">Summary</Link></li>
                             <li><a href="/about">About</a></li>
                             <li><a href="/contact">Contact</a></li>
                         </ul>

@@ -11,7 +11,7 @@ class FileTree extends Component {
         return (
             <div>
 
-            <div className="col-sm-2" id="sidebar_right">
+            <div className="col-sm-4 col-md-2" id="sidebar_right">
             {
                 // only show if at least one file has been uploaded
                 // (prevent empty colored div from rendering)

@@ -39,7 +39,7 @@ class SideNavBar extends Component {
 
     render() {
         return (
-             <div className="col-sm-3 col-md-2 sidebar sidebar-left sidebar-animate sidebar-md-show">
+             <div className="col-sm-2 sidebar sidebar-left sidebar-animate sidebar-md-show">
                 <ul className="nav nav-sidebar">
                     {tabData.map(function(tab, i){
                         return (

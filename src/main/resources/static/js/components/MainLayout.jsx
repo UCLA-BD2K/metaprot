@@ -45,7 +45,7 @@ class MainLayout extends Component {
                     <div className="row">
 
                         <SideNavBar/>
-                        <div className="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 main">
+                        <div className="col-sm-8 col-md-offset-2 main">
                             { this.props.children }
                         </div>
 
