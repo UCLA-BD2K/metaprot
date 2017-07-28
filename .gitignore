@@ -11,3 +11,7 @@ mvnw.cmd
 target/**
 .mvn/**
 .idea/**
+*.p12
+ebextensions
+node_modules
+built

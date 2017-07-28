@@ -1,0 +1,158 @@
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title th:text='${"Results for " + token + " | Metaprot"}'></title>
+    <link href="/css/lib/bootstrap.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/bootstrap-treeview.css" />
+    <link rel="stylesheet" type="text/css" href="/css/temp.css" />
+
+</head>
+<body>
+
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Metaprot</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid results">
+    <div class="row text-center">
+        <div class="col-sm-12">
+            <h2>Metabolite Time Series Analysis Result</h2>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title" th:text='${"Results for task: " + token}'></h2>
+                </div>
+                <div class="">
+
+                    <div class="row" style="padding: 10px 0 30px 0">
+
+                        <div class="col-12 col-lg-8">
+                            <h3>Plots</h3>
+                            <div id="plot">
+                            </div>
+                        </div>
+
+                        <div class="well well-lg col-xs-6 col-xs-offset-3 col-sm-4 col-sm-offset-4 col-lg-3 col-lg-offset-0"
+                            style="margin-top:100px;">
+                            <form id="metabolite-selection" class="form-horizontal" style="padding: 0 10px">
+                                <div class="form-group">
+                                    <label for="metabolite-select" class="control-label">Select a metabolite:</label>
+                                    <select id="metabolite-select" >
+                                    </select>
+                                </div>
+                            </form>
+                            <button class="generate-plot-btn btn btn-default" type="button">
+                                Download SVG for plot
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div th:include="fragments/footer :: footer"></div>
+
+
+<script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="/js/lib/jquery.js"></script>
+<script src="/js/bootstrap-treeview.js"></script>
+<script src="/js/analytics.js"></script>
+<script src="/js/TimeSeriesPlot.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+
+<script type="text/javascript" th:inline="javascript">
+            $(function() {
+
+            // load data from server
+            var results = [[${results}]];
+            var significance_values = [[${significance_values}]];
+            var metabolites = [[${metabolites}]];
+
+            // init drop-down selection for metabolites
+            $("#metabolite-select").select2({
+				  data: metabolites
+		    });
+
+            // generate time series plot
+            var plot = new TimeSeriesPlot(results, significance_values);
+            plot.plot($("#metabolite-select").val());
+
+            /* ------------------------ MISC ---------------------------- */
+
+            // on user selection, generate new plot for selected metabolite
+            $('#metabolite-select').on("change", function() {
+                plot.plot($(this).find(":selected").val());
+            })
+
+            // download svg plot on click
+            $('.generate-plot-btn').on("click", function(e) {
+                e.preventDefault();
+
+                // remove any previously generated download links
+                $('#plot-download-link-' + '0').remove();
+
+                // get the plot, set ui animations
+                var plotContainerId = "plot";
+                var formParent = $(this).parent()[0];
+
+                // create anchor element for download
+                var anchor = document.createElement("a");
+                anchor.id = "plot-download-link-" + '0';
+                anchor.setAttribute("href", plot.getDataUrl());
+                anchor.setAttribute("download", "metaprot-plot-"+ "0" + ".svg");
+                anchor.style.display = "none";
+                anchor.innerText = "Download";
+
+                var div = document.createElement("div");
+                div.appendChild(anchor);
+                div.style.marginTop = "10px";
+                formParent.appendChild(div);
+
+                anchor.click();
+            });
+        }); // end docready
+
+    </script>
+
+</body>
+</html>
+

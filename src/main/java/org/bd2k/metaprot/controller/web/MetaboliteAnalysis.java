@@ -1,10 +1,11 @@
 package org.bd2k.metaprot.controller.web;
 
 import com.amazonaws.util.IOUtils;
+import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.ResourceNotFoundException;
+import org.bd2k.metaprot.model.MetaboliteTask;
 import org.bd2k.metaprot.util.FileAccess;
-import org.bd2k.metaprot.util.RManager;
-import org.rosuda.JRI.REXP;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,53 +29,36 @@ import java.io.InputStream;
 @RequestMapping("/metabolite-analysis")
 public class MetaboliteAnalysis {
 
-    private RManager manager = null;
+    @Autowired
+    private DAOImpl dao;
 
-    private final String LOCAL_DOWNLOAD_PATH = "/ssd2/metaprot";
-
-    // returns a RManager that can be used to execute R scripts and commands
-    private RManager getRManager() {
-        if (manager != null) {
-            return manager;
-        } else {
-            try {
-                manager = RManager.getInstance();
-                return manager;
-            } catch (Exception e) {
-                System.out.println("Exception!");
-                e.printStackTrace();
-            }
-        }
-
-        return null;
-    }
+    @Deprecated
+    private String LOCAL_DOWNLOAD_PATH = "";
 
     @RequestMapping(method = RequestMethod.GET)
     public String getMetaAnalysisIndex() {  // home page
-
-        manager = getRManager();
-        if (manager == null) {
-            System.out.println("null manager");
-            return "error";     // something is wrong with the R engine
-        }
-
-        REXP expression = manager.runRCommand("1+ 10");
-        System.out.println(expression.asDouble());
-        //manager.runRCommand("analyze.file('/Users/allengong/IdeaProjects/JavaTestProject/src/main/resources/R/MetaProt_Sample.csv', '/Users/allengong/IdeaProjects/JavaTestProject/src/main/resources/R/output/2.csv', '/Users/allengong/IdeaProjects/JavaTestProject/src/main/resources/R/output/2.png')");
-
-
-        return "meta_analysis_index";
+        return "main_app";
     }
 
     @RequestMapping(value = "/results/{token}", method = RequestMethod.GET)
     public String getMetaAnalysisResults(Model model, @PathVariable("token") String token) {
 
+        // get task information from database
+        MetaboliteTask currentMetaboliteTask = dao.getMetaboliteTask(token);
+
+        // no longer  needed, but here for demo table
         model.addAttribute("results", new FileAccess().getMetaboliteAnalysisResults(token));
+
+        // data to pass back
+        model.addAttribute("multipleResults", dao.getMetaboliteTaskResults(currentMetaboliteTask));
         model.addAttribute("token", token);
+        model.addAttribute("pThreshold", currentMetaboliteTask.getpValueThreshold());
+        model.addAttribute("fcThreshold", currentMetaboliteTask.getFcThreshold());
 
         return "meta_analysis_results";
     }
 
+    @Deprecated
     @ResponseBody
     @RequestMapping(value="/results/image/{token}/{filename:.+}", method = RequestMethod.GET,
         produces = MediaType.IMAGE_PNG_VALUE)
@@ -82,7 +66,7 @@ public class MetaboliteAnalysis {
                                  @PathVariable("filename") String filename) {
 
         File file =  new File(LOCAL_DOWNLOAD_PATH + "/" + token + "/" + filename);
-        if (file.exists()) {
+        if (file.exists() && filename.endsWith(".png")) {
             try {
                 InputStream is = new FileInputStream(file);
                 return IOUtils.toByteArray(is);

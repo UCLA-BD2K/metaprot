@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Upload file</title>
+
+    <link href="/css/lib/bootstrap.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/bootstrap-treeview.css" />
+    <link rel="stylesheet" type="text/css" href="/css/temp.css" />
+    <link rel="stylesheet" href="/css/sidebar.css" />
+
+    <style>
+        table {
+            border-collapse: collapse;
+            border: 2px black solid;
+            font: 12px sans-serif;
+        }
+
+        td {
+            border: 1px black solid;
+            padding: 5px;
+        }
+    </style>
+
+</head>
+<body>
+
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle toggle-left hidden-md hidden-lg" data-toggle="sidebar" data-target=".sidebar-left">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <img src="/img/icon11.png" height="40" width="100" align="middle" style="margin-top:5px;"/>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="./about">About</a></li>
+                    <li><a href="./contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar sidebar-left sidebar-animate sidebar-md-show">
+                    <ul class="nav nav-sidebar">
+                        <li><a href="../upload">Upload Data</a></li>
+                        <li class="active"><a href="#">Preprocessing<span class="sr-only">(current)</span></a></li>
+                        <li><a href="../analysis">Analysis</a></li>
+                        <li><a href="#">Annotation</a></li>
+                        <li><a href="">Integration</a></li>
+                        <li><a href="">Summary</a></li>
+                    </ul>
+                </div>
+                <!--<div class="col-sm-6 col-sm-offset-3 col-md-8 col-md-offset-2 main">-->
+                <div class="col-sm-6 col-sm-offset-3 col-md-7 col-md-offset-2 main">
+
+                    <h2>Select File</h2>
+                    <div class="block-deco">
+                        <form>
+                            <div class="form-group">
+                                <label>Choose file </label>
+                                <select id= "dropDownDest">
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="window" style="margin-bottom:15px">
+
+                        <h2>Handle Missing Values</h2>
+                        <div id="missing-value-estimation" class="processing-section active block-deco" data-section-index="1">
+                            <div class="section">
+                                <div>
+                                    <form id="mve-form">
+                                        <div class="form-group">
+                                            <h5><input id="remove-threshold-checkbox" type="checkbox" /> Remove features with too many missing values:</h5>
+                                            <input id="remove-threshold" type="text" value="50" /> %
+                                        </div>
+                                        <div class="form-group">
+                                            <h5>Estimate remaining missing values:</h5>
+                                            <select id="estimate-mv">
+                                                <option value="replace">Replace by a small value (half of the minimum positive value in the original data)</option>
+                                                <option value="exclude">Exclude variables with missing values</option>
+                                            </select>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="height:20px;"></div>
+
+                        <h2>Normalization</h2>
+                        <div id="normalization" class="processing-section block-deco" data-section-index="2">
+                            <div class="section">
+                                <div>
+                                    <form id="normalization-form">
+                                        <div class="form-group">
+                                            <h5>Sample normalization:</h5>
+                                            <input id="none" type="radio" value="none" name="norm-by" checked="checked" />
+                                            <label for="none">None</label>
+                                            <br />
+                                            <input id="sum" type="radio" value="sum" name="norm-by" />
+                                            <label for="sum">Normalization by sum</label>
+                                            <br />
+                                            <input id="median" type="radio" value="median" name="norm-by" />
+                                            <label for="median">Normalization by median</label>
+                                            <br />
+                                            <input id="spec-ref-sample" type="radio" value="srs" name="norm-by" />
+                                            <label for="spec-ref-sample">Norm. by specific reference sample</label>
+                                            <br />
+                                            <input id="ref-feature" type="radio" value="rf" name="norm-by" />
+                                            <label for="ref-feature">Norm. by reference feature</label>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <h5>Data transformation:</h5>
+                                            <input id="none-trans" type="radio" value="none" name="trans" checked="checked" />
+                                            <label for="none-trans">None</label>
+                                            <br/>
+
+                                            <input id="log-trans" type="radio" value="log-trans" name="trans" />
+                                            <label for="log-trans">Log transformation</label>
+                                            <br />
+
+                                            <input id="cube-root-trans" type="radio" value="cube-root-trans" name="trans" />
+                                            <label for="cube-root-trans">Cube root transformation</label>
+
+                                        </div>
+
+                                        <div class="form-group">
+                                            <h5>Data scaling:</h5>
+                                            <input id="none-scaling" type="radio" value="none" name="scaling" checked="checked" />
+                                            <label for="none-scaling">None</label>
+                                            <br/>
+
+                                            <input id="mean-centered" type="radio" value="mean-centered" name="scaling" />
+                                            <label for="mean-centered">Mean centering</label>
+                                            <br />
+
+                                            <input id="pareto" type="radio" value="pareto" name="scaling" />
+                                            <label for="pareto">Pareto scaling</label>
+                                        </div>
+
+                                        <input type="submit" value="Process" class="btn btn-default" />
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="height:20px;"></div>
+
+                        <!--<input type="submit" value="Process" class="btn btn-default" />-->
+
+                        <!--<div id="section-navigation" class="text-center">-->
+                            <!--<span class="navigation-tool prev invisible"><i class="fa fa-arrow-left fa-3x"></i></span>-->
+                            <!--<span style="margin: 0 15px"></span>-->
+                            <!--<span class="navigation-tool next"><i class="fa fa-arrow-right fa-3x"></i></span>-->
+                        <!--</div>-->
+                    </div>
+
+                    <div class="footer">
+                        <img src="img/nih_icon_2.svg" width="50"/>
+                        &copy; 2017  BD2K MetProt is supported by the NIH Big Data to Knowledge award U54 GM114833.
+                    </div>
+                </div>
+                <div class="col-sm-3 col-md-3" id="sidebar_right">
+                    <div id="top_part">
+                        <div id="treeview" />
+                    </div>
+                    <div id = "bottom_part"/>
+                </div>
+            </div>
+            <!-- The Modal -->
+            <div id="myModal" class="modal col-sm-5 col-md-6 col-md-offset-1">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <p>File Data</p>
+                    <div id="csvFile"></div>
+                </div>
+            </div>
+        </div>
+
+
+    <!--<div th:include="fragments/footer :: footer"></div>-->
+
+    <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+    <script src="js/lib/jquery.js"></script>
+    <script src="js/bootstrap-treeview.js"></script>
+    <script src="js/sidebar.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="/js/analytics.js"></script>
+    <script type="text/javascript">
+        /*<![CDATA[*/
+        function buildDomTree() {
+
+                var data = [];
+
+                function getTreeData(token) {
+
+                    var formData = new FormData();
+                    formData.append("token", token);
+
+                    return $.ajax({
+                        url: '/analyze/getSessionData',
+                        type: 'POST',
+                        processData: false,
+                        contentType: false,
+                        async: false,
+                        data: formData,
+                        success: function (data) {
+                            console.log(data);
+                        }
+                    });
+                }
+                function walk(nodes, data) {
+                    $.each(nodes, function (id,node) {
+                        //name
+                        if (node["name"])
+                        {
+                            console.log(node["name"]);
+                            var obj = {
+                                id: id,
+                                text: node["name"]
+                            };
+//                            obj.onclick=callJavascriptFunction();
+                            data.push(obj);
+                        }
+                        //children
+                        if(node["children"])
+                        {
+                            if(node["children"].length>0)
+                            {
+                                obj.nodes = [];
+                                walk(node["children"], obj.nodes);
+                            }
+                        }
+                    });
+                }
+                var url = window.location.href;
+                console.log(url);
+                var toks = url.split('/');
+                console.log(toks);
+                if(!(toks[toks.length - 1] == "upload-pass" || toks[toks.length - 1] == "")){
+                    getTreeData(toks[toks.length-1]).done(function(data){
+                        sessionStorage.setItem("root", data);
+                    });
+                }
+                var tree = JSON.parse(sessionStorage.getItem("root"));
+                console.log("root", tree);
+                walk(tree, data);
+                return data;
+            }
+
+
+//        $(function() {
+//                //file tree
+//                var options = {
+////                    backColor: '#cbd2d6',
+////                    onhoverColor: '#cbd2d6',
+//                    showBorder: false,
+//                    highlightSelected: false,
+////                    enableLinks: true,
+//                    data: buildDomTree()
+//                };
+//
+//                $('#treeview').treeview(options);
+//            });
+
+        passFilenames();
+
+        function passFilenames(){
+            console.log("buildDomTree2");
+
+            //file tree
+            var options = {
+                backColor: '#eeeeee',
+//                onhoverColor: '#cbd2d6',
+                highlightSelected: false,
+                showBorder: false,
+//                enableLinks: true,
+                data: buildDomTree()
+            };
+
+            $('#treeview').treeview(options);
+
+            document.getElementById("treeview").addEventListener("click",function(e) {
+
+                console.log('e.target',e.target);
+                if(e.target && e.target.id == "myBtn") {
+                    // Get the modal
+                    var modal = document.getElementById('myModal');
+                    modal.style.display = "block";
+
+                    // Get the <span> element that closes the modal
+                    var span = document.getElementsByClassName("close")[0];
+                    console.log("span", span);
+
+                    // When the user clicks on <span> (x), close the modal
+                    span.onclick = function () {
+                        modal.style.display = "none";
+                    }
+
+                    // When the user clicks anywhere outside of the modal, close it
+                    window.onclick = function (event) {
+                        if (event.target == modal) {
+                            modal.style.display = "none";
+                        }
+                    }
+                }
+
+                if(e.target && e.target.nodeName == "LI") {
+                    var formData = new FormData();
+                    formData.append("fileName", e.target.id);
+                    // notify server of file upload and updates UI to reflect status
+                    $.ajax({
+                        url: '/analyze/getProcessingStats',
+                        method: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success:function(data) {    // really just prints on screen any response from server
+                            var s = data.toString();
+                            console.log(s);
+                            var properties = JSON.parse(s);
+                            var strings = "";
+                            $.each( properties, function( key, value ) {
+                                strings += key + ": " + value + "<br>";
+                            });
+                            document.getElementById("bottom_part").innerHTML = strings;
+                        },
+                        error:function(jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR);
+                            console.log(textStatus);
+                            console.log(errorThrown);
+                            $progressText.html('<div class="alert alert-danger">' + jqXHR.responseJSON.message + '</div>');
+                        }
+                    });
+                }
+
+            });
+        }
+
+        $(function() {
+
+            // form events
+                $('#normalization-form').on("submit", function(e) {
+                    e.preventDefault();
+                    var $progressText = $('#progressText');
+
+                    var fileNameDropdown =  document.getElementById("dropDownDest");
+                    var a = JSON.parse(sessionStorage.getItem("root"));
+                    console.log("a",a);
+                    var rootName = fileNameDropdown.options[fileNameDropdown.selectedIndex].value;
+                    console.log("rootName",rootName);
+                    var toAdd = "PP_" + rootName;
+                    var b = {name: toAdd, children: []};
+                    //var toPush = [{name: options.name, children: []}];
+                    for(var i = 0; i < a.length; i++){
+                        if(a[i]["name"] == fileNameDropdown.options[fileNameDropdown.selectedIndex].value){
+                            a[i]["children"].push(b);
+                            break;
+                        }
+                    }
+                    //a[0]["children"].push(b);
+                    sessionStorage.setItem("root", JSON.stringify(a));
+                    console.log(sessionStorage.getItem("root"));
+                    console.log("process mve");
+                    console.log("process normalization");
+
+                    //Pass selection data to backend to store
+                    var formData = new FormData();
+
+                    console.log(fileNameDropdown.options[fileNameDropdown.selectedIndex].value);
+                    formData.append("sourceFile", fileNameDropdown.options[fileNameDropdown.selectedIndex].value);
+
+                    formData.append("destFile", toAdd);
+
+                    if(document.getElementById("remove-threshold-checkbox").checked){
+                        formData.append("removeThresholdCheckbox", "True");
+                    }
+                    else{
+                        formData.append("removeThresholdCheckbox", "False");
+                    }
+
+                    formData.append("threshPercent", document.getElementById("remove-threshold").value);
+                    var e = document.getElementById("estimate-mv");
+                    var estimationPreference = e.options[e.selectedIndex].value;
+                    //console.log(estimationPreference);
+                    formData.append("estPreference", estimationPreference);
+                    if(document.getElementById("none").checked){
+                        //console.log("Norm-none");
+                        formData.append("Norm", "none");
+                    }
+                    else if(document.getElementById("sum").checked){
+                        //console.log("Norm-sum")
+                        formData.append("Norm", "sum");
+                    }
+                    else if(document.getElementById("median").checked){
+                        //console.log("Norm-median")
+                        formData.append("Norm", "median");
+                    }
+                    else if(document.getElementById("spec-ref-sample").checked){
+                        //console.log("Norm-spec-ref-sample")
+                        formData.append("Norm", "spec-ref-sample");
+                    }
+                    else if(document.getElementById("ref-feature").checked){
+                        //console.log("Norm-ref-feature")
+                        formData.append("Norm", "ref-feature");
+                    }
+
+                    if(document.getElementById("none-trans").checked){
+                        formData.append("Trans", "none");
+                    }
+                    else if(document.getElementById("log-trans").checked){
+                        formData.append("Trans", "log");
+                    }
+                    else if(document.getElementById("cube-root-trans").checked){
+                        formData.append("Trans", "cube-root");
+                    }
+
+                    if(document.getElementById("none-scaling").checked){
+                        formData.append("Scaling", "none");
+                    }
+                    else if(document.getElementById("mean-centered").checked){
+                        formData.append("Scaling", "mean-centered");
+                    }
+                    else if(document.getElementById("pareto").checked){
+                        formData.append("Scaling", "pareto");
+                    }
+
+                    // notify server of file upload and updates UI to reflect status
+                    $.ajax({
+                        url: '/analyze/pre-process',
+                        method: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success:function(data) {    // really just prints on screen any response from server
+                            var s = data.toString();
+                            $progressText.html('<div class="alert alert-success">' + s + '</div>');
+                            $(function() {
+
+                            });
+                        },
+                        error:function(jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR);
+                            console.log(textStatus);
+                            console.log(errorThrown);
+                            $progressText.html('<div class="alert alert-danger">' + jqXHR.responseJSON.message + '</div>');
+                        }
+                    });
+
+                    passFilenames();
+//                    passFilenames(toAdd);
+
+                });
+
+
+            });
+
+        $(document).ready(function()
+        {
+                var tree = JSON.parse(sessionStorage.getItem("root"));
+                console.log("tree",tree);
+                $.each(tree,function(key,value)
+                {
+                    console.log("key",key);
+                    console.log("value",value);
+                    console.log("value",value);
+                    var option = $('<option />').text(value.name);
+                    $("#dropDownDest").append(option);
+                });
+            });
+
+        d3.text("/css/data.csv", function(data) {
+            var parsedCSV = d3.csv.parseRows(data);
+
+            var container = d3.select('#csvFile')
+                .append('table')
+                //            var container = d3.select("body")
+                //                .append("table")
+
+                .selectAll("tr")
+                .data(parsedCSV).enter()
+                .append("tr")
+
+                .selectAll("td")
+                .data(function(d) { return d; }).enter()
+                .append("td")
+                .text(function(d) { return d; });
+        });
+        /*]]>*/
+    </script>
+</body>
+</html>

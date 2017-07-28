@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Page not found | MetProt</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.simplex.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+    <div th:include="fragments/header :: header"></div>
+
+    <div class="container">
+        <div class="jumbotron text-center">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <h1><i class="fa fa-exclamation fa-2x"></i></h1>
+                    <h2>Oops, something went wrong with your request. Head back over to the <a href="/">home page</a>.</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:include="fragments/footer :: footer"></div>
+
+    <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $('i.fa-exclamation').hover(function() {
+            $(this).addClass("fa-spin");
+        }, function() {
+            $(this).removeClass("fa-spin")
+        });
+    </script>
+    <script src="/js/analytics.js"></script>
+</body>
+
+</html>

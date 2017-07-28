@@ -8,25 +8,81 @@ package org.bd2k.metaprot.model;
  */
 public class MetaboliteStat {
 
+    private int index;          // auto-generated (by R) index of the data point
+    private String name;        // name of the metabolite/gene/etc.
     private double pValue;
     private double fdr;
     private double foldChange;
-    private String result;      // insignificant, upregulated, downregulated
+    private String significance;      // insignificant, upregulated, downregulated
 
-    public MetaboliteStat(double pValue, double fdr, double foldChange, String result) {
+    public MetaboliteStat() {}  // required for Jackson databind methods
+
+    public MetaboliteStat(int index, String name, double pValue, double fdr, double foldChange, String significance) {
+        this.index = index;
+        this.name = name;
         this.pValue = pValue;
         this.fdr = fdr;
         this.foldChange = foldChange;
-        this.result = result;
+        this.significance = significance;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public double getpValue() {
+        return pValue;
+    }
+
+    public void setpValue(double pValue) {
+        this.pValue = pValue;
+    }
+
+    public double getFdr() {
+        return fdr;
+    }
+
+    public void setFdr(double fdr) {
+        this.fdr = fdr;
+    }
+
+    public double getFoldChange() {
+        return foldChange;
+    }
+
+    public void setFoldChange(double foldChange) {
+        this.foldChange = foldChange;
+    }
+
+    public String getSignificance() {
+        return significance;
+    }
+
+    public void setSignificance(String result) {
+        this.significance = result;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
         return "MetaboliteStat{" +
-                "pValue=" + pValue +
+                "index=" + index +
+                ", name='" + name + '\'' +
+                ", pValue=" + pValue +
                 ", fdr=" + fdr +
                 ", foldChange=" + foldChange +
-                ", result='" + result + '\'' +
+                ", significance='" + significance + '\'' +
                 '}';
     }
 }

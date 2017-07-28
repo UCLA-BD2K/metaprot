@@ -2,8 +2,114 @@ body, html {
     font-family: 'Arimo', sans-serif;
 }
 
+a, a:hover{
+    color: #02a5de;
+}
+
+a.navbar-brand:hover {
+    color: #02a5de;
+}
+
+.animate-delay-1x {/* default is 1 second */
+    -webkit-transition-duration: 1.5s;
+    -moz-transition-duration: 1.5s;
+    -ms-transition-duration: 1.5s;
+    -o-transition-duration:1.5s;
+    animation-duration: 1.5s;
+}
+
+.animate-delay-2x {
+    -webkit-transition-duration: 2s;
+    -moz-transition-duration: 2s;
+    -ms-transition-duration: 2s;
+    -o-transition-duration: 2s;
+    animation-duration: 2s;
+}
+
+.axis-label {
+    background-color: rgba(211, 211, 211, .4);
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.margin-center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus,
+.navbar-header .navbar-brand:hover, .navbar-default .navbar-nav>li>a:hover {
+    color: #02a5de;
+}
+
+.pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus,
+.pagination>li>a:hover, .pagination>li>a:focus, .pagination>li>a:active{
+    background-color: #02a5de;
+    border-color: #02749c;
+}
+
+.plot-container {
+    width: 615px;
+}
+
+.plot {
+    min-height: 430px;
+    position: relative;
+    background-color: #ffffff;  /* better contrast with data points, as well as for downloading */
+    overflow:hidden;
+}
+
+.progress-bar {
+    background-color: #02a5de;
+}
+
+rect.selection {
+    stroke          : red;
+    stroke-dasharray: 5px;
+    stroke-opacity  : 0.5;
+    fill            : transparent;
+}
+
 .results img {
     width: 100%;
+}
+
+.result-panel .panel-body {
+    max-height: 150px;
+    overflow: scroll;
+}
+
+.result-panel .table>tbody>tr.active,
+.result-panel .table>tbody>tr:hover,
+#sidePanel .table>tbody>tr.data-row.active,
+#sidePanel .table>tbody>tr.data-row.active:hover,
+#metabolite-table-container .table>tbody>tr.data-row.active,
+#metabolite-table-container .table>tbody>tr.data-row.active:hover{
+    background-color: #fcf8e3;
+    color: red;
+    cursor: pointer;
+}
+
+#sidePanel.pattern-recognition table,
+#metabolite-table-container table{
+    display: block;
+    max-height: 250px;
+    overflow: scroll;
+}
+
+svg:not(:root) {
+    overflow:visible;
 }
 
 .transition {
@@ -16,4 +122,66 @@ body, html {
 
 .transparent {
     opacity: 0;
+}
+
+footer {
+    border-top: 1px solid rgba(0,0,0,.125);
+}
+
+
+
+/* in bootstrap v4-alpha */
+.card {
+    position: relative;
+    display: block;
+    margin-bottom: .75rem;
+    background-color: #fff;
+    border-radius: .25rem;
+    border: 1px solid rgba(0,0,0,.125);
+}
+.card-block {
+    padding: 1.25rem;
+}
+a.card-link, a.card-link:visited, a.card-link:hover
+a.card-link:active {
+    text-decoration: none;
+    color: #777777;
+}
+.card-img-top {
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    width: 100%;
+}
+.card-text {
+    margin: 15px 5px;
+}
+
+/*!** mainly used in upload-pass.html **!*/
+/*div.processing-section {*/
+    /*display: none;*/
+    /*min-height: 250px;*/
+/*}*/
+
+/*div.processing-section.active {*/
+    /*display: block;*/
+/*}*/
+
+/*div.processing-section .card:hover {*/
+    /*background-color: #adadad;*/
+    /*cursor: pointer;*/
+    /*color: white;*/
+/*}*/
+
+.invisible {
+    visibility: hidden;
+}
+
+.navigation-tool {
+    cursor: pointer;
+}
+
+h5 {
+    font-weight: bold;
+    font-size:16px;
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>MetProt</title>
+
+        <!--<link rel="stylesheet" type="text/css" href="/css/lib/bootstrap.simplex.min.css" />-->
+        <!--<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />-->
+        <!--<link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" />-->
+        <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" type="text/css"/>-->
+        <!--<link rel="stylesheet" type="text/css" href="/css/site.css" />-->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/css/temp.css" />
+        <!--<link href="nv.d3.min.css" rel="stylesheet"/>-->
+    </head>
+
+    <body>
+
+        <div id="react"></div>
+
+
+
+
+
+        <!--Store thymeleaf variables globally so React components may access-->
+        <script th:inline="javascript">
+            var SITE_USAGE_DESCR = /*[[${siteUsageDescr}]]*/ "Google Analytics Reports:";
+            var PAGE_VIEWS = /*[[${pageviews}]]*/ "n/a";
+            var PAGE_VIEWS_PER_VISIT = /*[[${pageviewsPerVisit}]]*/ "n/a";
+            var UNIQUE_VISITORS = /*[[${uniqueVisitors}]]*/ "n/a";
+            var NUM_COUNTRIES = /*[[${numCountries}]]*/ "n/a";
+            var MAP_DATA = [[${mapData}]];
+            var DAILY_VISITS_COUNTS = [[${dailyVisitCounts}]];
+            var MONTHLY_VISITS_COUNTS = [[${monthlyVisitsCounts}]];
+        </script>
+
+
+        <script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+        <script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js"></script>
+        <script src="/js/analytics.js"></script>
+        <script src="/js/d3pie.min.js"></script>
+
+        <!--Countries heatmap and monthly visitors-->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="/js/GoogleAnalyticsGraphics.js"></script>
+
+        <script src="/built/bundle.js"></script>
+
+
+    </body>
+</html>
+

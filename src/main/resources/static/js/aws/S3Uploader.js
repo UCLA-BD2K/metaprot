@@ -51,7 +51,6 @@
 
 			    // Credentials will be available when this function is called.
 			    console.log("Retreived new temporary credentials.");
-			    console.log(AWS.config.credentials);
 			});
 			
 			credentialsInitialized = true;
@@ -89,12 +88,32 @@
 				}
 			})
 			.on("httpUploadProgress", function(e) {
-				//console.log(e);
-				//console.log("Progress for " + fileName + ": " +e.loaded + "/" + e.total);
 				if (onUploadprogress) {
 					onUploadprogress(e.key, e.loaded, e.total);
 				}
 			});
+
+		};
+
+		function download(filePath, callback){
+
+			initAWSCredentials();
+			var s3 = new AWS.S3();
+
+			return s3.getObject({ Bucket: s3BucketName, Key: filePath }).promise()
+			        .then( data => {
+			            var fileContent = new TextDecoder("utf-8").decode(data.Body);
+			            return fileContent;
+                    }).catch( err => {
+                        throw new Error(err);
+                    });
+		}
+
+		var deleteFile = function(filePath){
+
+			initAWSCredentials();
+            var s3 = new AWS.S3();
+            return s3.deleteObject({ Bucket: s3BucketName, Key: filePath }).promise();
 
 		};
 
@@ -115,7 +134,9 @@
 		};
 
 		return {
-			upload:upload
+			upload:upload,
+			download:download,
+			deleteFile:deleteFile
 		};
 
 	})();
@@ -202,6 +223,7 @@
 
 		var setInputElement = function(jqInput) {
 			$input = jqInput;
+			console.log($input);
 		};
 
 		return {
