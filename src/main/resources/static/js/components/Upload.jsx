@@ -10,6 +10,10 @@ import { Form, FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'r
 import { resetTree, addFileToTree, setToken } from '../actions';
 import { validateToken, getTreeData } from '../util/upload';
 
+/**
+ * Main content for Upload page.
+ * This Component should be passed in as a Child Component for MainLayout
+ */
 class Upload extends Component {
 
     constructor(props) {
@@ -22,22 +26,6 @@ class Upload extends Component {
         this.handleTokenInput = this.handleTokenInput.bind(this);
 
     }
-
-   /* componentWillMount() {
-        // in case of page refresh, re-load token and sessionData if cached in sessionStorage
-        var token = sessionStorage.getItem("sessionToken");
-        if (token) {
-            this.props.setToken(token);
-
-            var sessionData = sessionStorage.getItem("root");
-            if (sessionData) {
-                this.props.resetTree();
-                JSON.parse(sessionData).forEach(filename => {
-                    this.props.addFileToTree(filename)
-                })
-            }
-        }
-    }*/
 
     // user retrieving file(s) via token
     handleTokenSubmit(e) {
@@ -52,14 +40,15 @@ class Upload extends Component {
                 self.props.setToken(token);
 
                 getTreeData(token).then( data => {
-                    data.forEach(filename => {
-                        self.props.addFileToTree(filename);
+                        data.forEach(filename => {
+                            self.props.addFileToTree(filename);
+                        })
                     })
-                }).catch(e=>console.log(e))
+                    .catch( err => {
+                        alert("There was an issue validating the token. Please try again.");
+                    });
             }
             else {
-                console.log("TOKEN INVALID");
-                //$('#token-num-display').css("opacity", 1);
                 alert("Token invalid, please try again");
             }
         });
@@ -68,32 +57,28 @@ class Upload extends Component {
 
     handleTokenInput(e) {
         var tokenInput = e.target.value;
-        this.setState({tokenInput});
+        this.setState({ tokenInput });
     }
-
-
 
     render() {
         return (
             <div>
+
                 <h2>Upload a File</h2>
+
                 <FileUploadForm />
 
-
-
                 <h2>Retrieve Files</h2>
+
                 <div className="well well-lg">
                     <Form inline onSubmit={this.handleTokenSubmit} id="retrieve-file">
-                            <ControlLabel htmlFor="inputToken">Token</ControlLabel>
-                            <FormControl onChange={this.handleTokenInput} id="inputToken" placeholder="token number"/>
-
+                        <ControlLabel htmlFor="inputToken">Token</ControlLabel>
+                        <FormControl onChange={this.handleTokenInput} id="inputToken" placeholder="token number"/>
                         <FormControl type="submit" value="Go"/>
-
                     </Form>
                 </div>
             </div>
         )
-
     }
 
 }

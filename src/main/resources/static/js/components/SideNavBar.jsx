@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
-
+/* Path and Name information for each tab in Side NavBar */
 var tabData = [
     { name: "Upload Data", path: "/upload" },
     { name: "Preprocessing", path: "/upload-pass" },
@@ -25,6 +25,7 @@ class Tab extends Component {
 }
 
 class SideNavBar extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -40,20 +41,25 @@ class SideNavBar extends Component {
     render() {
         return (
              <div className="col-sm-2 sidebar sidebar-left sidebar-animate sidebar-md-show">
+
                 <ul className="nav nav-sidebar">
-                    {tabData.map(function(tab, i){
+                {
+                    /* Generate tabs for Side Navbar */
+                    tabData.map( (tab, i) => {
                         return (
-                            <Tab
-                                key={i}
+                            <Tab key={i}
                                 data={tab}
                                 isActive={this.state.activeTab === tab}
-                                handleClick={this.handleClick.bind(this,tab)} />
+                                handleClick={this.handleClick.bind(this, tab)} />
                         );
-                    }.bind(this))}
+                    }.bind(this))
+                }
                 </ul>
-                <div id="token_text" >
-                    <div>
 
+                { /* Token information at the bottom of the Side NavBar */ }
+                <div id="token_text" >
+
+                    <div>
                         <CopyToClipboard text={this.props.token}>
                             <div id="token-copy">
                                 <p>Copy</p>
@@ -65,14 +71,12 @@ class SideNavBar extends Component {
                     <p className="navbar-text" id="token_num">{this.props.token}</p>
 
                 </div>
+
             </div>
 
         )
 
     }
-
-
-
 
 }
 

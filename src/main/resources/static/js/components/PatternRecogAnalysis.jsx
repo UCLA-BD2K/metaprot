@@ -5,6 +5,10 @@ import { connect } from 'react-redux';
 import { FormControl, ControlLabel } from 'react-bootstrap'
 import { getToken } from '../util/upload';
 
+/**
+ * Main content for Pattern Recognition Analysis page.
+ * This Component should be passed in as a Child Component for MainLayout
+ */
 class PatternRecogAnalysis extends Component {
 
     constructor(props) {
@@ -20,39 +24,38 @@ class PatternRecogAnalysis extends Component {
         this.handleFile = this.handleFile.bind(this);
         this.handleNumClusters = this.handleNumClusters.bind(this);
         this.handleMemPerCluster = this.handleMemPerCluster.bind(this);
-    }
 
-
-
-    componentWillMount() {
+        // Additional form components to pass into FileSelectForm
         this.moreForms = (
-            <div>
-                <ControlLabel htmlFor="numClusters">
-                    Number of desired clusters:
-                </ControlLabel>
-                <FormControl type="text"
-                    className="form-control"
-                    id="numClusters" name="numClusters"
-                    onChange={this.handleNumClusters}
-                    required />
+               <div>
+                   <ControlLabel htmlFor="numClusters">
+                       Number of desired clusters:
+                   </ControlLabel>
+                   <FormControl type="text"
+                       className="form-control"
+                       id="numClusters" name="numClusters"
+                       onChange={this.handleNumClusters}
+                       required />
 
-                <br/>
+                   <br/>
 
-                <ControlLabel htmlFor="memPerCluster">
-                    Enter a fold change threshold:
-                </ControlLabel>
-                <FormControl type="text"
-                    className="form-control"
-                    id="memPerCluster" name="memPerCluster"
-                    onChange={this.handleMemPerCluster}
-                    required />
+                   <ControlLabel htmlFor="memPerCluster">
+                       Enter a fold change threshold:
+                   </ControlLabel>
+                   <FormControl type="text"
+                       className="form-control"
+                       id="memPerCluster" name="memPerCluster"
+                       onChange={this.handleMemPerCluster}
+                       required />
 
-                <br/>
-            </div>
+                   <br/>
+               </div>
         )
 
     }
 
+
+    // handler function to pass to into FileSelectForm
     handleSubmit(e) {
         e.preventDefault();
         var self = this;
@@ -90,6 +93,7 @@ class PatternRecogAnalysis extends Component {
         })
     }
 
+    // handler function to pass to into FileSelectForm
     handleFile(e) {
         var filename = e.target.value;
         this.setState({ filename });

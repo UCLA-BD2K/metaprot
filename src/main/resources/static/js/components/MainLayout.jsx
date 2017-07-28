@@ -1,14 +1,9 @@
 import React, {Component} from 'react';
-import { BrowserRouter, Route, Link, Switch, Redirect} from 'react-router-dom';
 import TopNavBar from './TopNavBar';
 import SideNavBar from './SideNavBar';
-import FileUploadForm from './FileUploadForm';
 import FileTree from './FileTree';
 import Footer from './Footer';
-import { connect } from 'react-redux';
-import { Form, FormGroup, FormControl, ControlLabel, Button, HelpBlock, Modal } from 'react-bootstrap'
-import { resetTree, addFileToTree, setToken } from '../actions';
-import { validateToken, getTreeData } from '../util/upload';
+
 
 class MainLayout extends Component {
 
@@ -19,60 +14,74 @@ class MainLayout extends Component {
           modalData: {}
         };
 
-        this.openModal = () => {
-          this.setState({
+        this.openModal = this.openModal.bind(this);
+        this.setModalData = this.setModalData.bind(this);
+        this.hideModal = this.hideModal.bind(this);
+    }
+
+    openModal() {
+        this.setState({
             isOpen: true
-          });
-        };
+        });
+    }
 
-        this.setModalData = (modalData) => {
-            this.setState({ modalData });
-        }
+    setModalData(modalData) {
+        this.setState({ modalData });
+    }
 
-        this.hideModal = () => {
-          this.setState({
+    hideModal() {
+        this.setState({
             isOpen: false
-          });
-        };
+        })
     }
 
     render() {
         return (
-
             <div>
+
                 <TopNavBar hasSideNavBar/>
+
                 <div className="container-fluid">
                     <div className="row">
 
                         <SideNavBar/>
+
                         <div className="col-sm-8 col-md-offset-2 main">
+
+                            { /* Main content will be placed here */ }
                             { this.props.children }
 
-
                             <Footer />
+
                         </div>
 
                         <FileTree
                             openModal={this.openModal}
                             setModalData={this.setModalData}/>
+
                     </div>
                 </div>
 
-
+                { /* Modal component to contain CSV viewer for uploaded files */ }
                 <Modal
                     show={this.state.isOpen}
                     onHide={this.hideModal}
                     dialogClassName="csv-modal">
+
                     <Modal.Header closeButton>
                         <Modal.Title>{this.state.modalData.title}</Modal.Title>
                     </Modal.Header>
+
                     <Modal.Body>
                         { this.state.modalData.content }
                     </Modal.Body>
+
                     <Modal.Footer>
                         <Button onClick={this.hideModal}>Close</Button>
                     </Modal.Footer>
+
                 </Modal>
+
             </div>
         )
     }

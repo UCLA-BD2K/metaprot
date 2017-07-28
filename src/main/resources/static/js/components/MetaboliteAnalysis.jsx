@@ -5,6 +5,10 @@ import { connect } from 'react-redux';
 import { FormControl, ControlLabel } from 'react-bootstrap'
 import { getToken } from '../util/upload';
 
+/**
+ * Main content for Metabolite Analysis page.
+ * This Component should be passed in as a Child Component for MainLayout
+ */
 class MetaboliteAnalysis extends Component {
 
     constructor(props) {
@@ -20,11 +24,8 @@ class MetaboliteAnalysis extends Component {
         this.handleFile = this.handleFile.bind(this);
         this.handlePThreshold = this.handlePThreshold.bind(this);
         this.handleFcThreshold = this.handleFcThreshold.bind(this);
-    }
 
-
-
-    componentWillMount() {
+        // Additional form components to pass into FileSelectForm
         this.moreForms = (
             <div>
                 <ControlLabel htmlFor="pThreshold">
@@ -48,13 +49,15 @@ class MetaboliteAnalysis extends Component {
                 <br/>
             </div>
         )
-
     }
 
+    // handler function to pass to into FileSelectForm
     handleSubmit(e) {
         e.preventDefault();
+
         var self = this;
         console.log(this.state);
+
         return;
         self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
 
@@ -92,6 +95,7 @@ class MetaboliteAnalysis extends Component {
         })
     }
 
+    // handler function to pass to into FileSelectForm
     handleFile(e) {
         var filename = e.target.value;
         this.setState({ filename });
@@ -106,7 +110,6 @@ class MetaboliteAnalysis extends Component {
         var fcThreshold = Number.parseFloat(e.target.value);
         this.setState({ fcThreshold })
     }
-
 
     render() {
         return (

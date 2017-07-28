@@ -3,7 +3,11 @@ import FileSelectForm from './FileSelectForm';
 import { connect } from 'react-redux';
 import { getToken } from '../util/upload';
 
-class TimeSeriesViewer extends Component {
+/**
+ * Main content for Time Series Analysis page.
+ * This Component should be passed in as a Child Component for MainLayout
+ */
+class TimeSeriesAnalysis extends Component {
 
     constructor(props) {
         super(props);
@@ -15,8 +19,6 @@ class TimeSeriesViewer extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleFile = this.handleFile.bind(this);
     }
-
-
 
     handleSubmit(e) {
         e.preventDefault();
@@ -59,7 +61,6 @@ class TimeSeriesViewer extends Component {
         this.setState({ filename });
     }
 
-
     render() {
         return (
             <div>
@@ -71,7 +72,6 @@ class TimeSeriesViewer extends Component {
 
                 <div dangerouslySetInnerHTML={ { __html: this.state.progressTextHTML } }
                     className="text-center"></div>
-
 
             </div>
         )
@@ -87,4 +87,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, null)(TimeSeriesViewer);
+export default connect(mapStateToProps, null)(TimeSeriesAnalysis);

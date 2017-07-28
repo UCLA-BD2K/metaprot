@@ -5,6 +5,11 @@ import SideNavBar from './SideNavBar';
 import Footer from './Footer';
 import { Link } from 'react-router-dom';
 
+
+/**
+ * Main content for Analysis page.
+ * This Component should be passed in as a Child Component for MainLayout
+ */
 class Analysis extends Component {
 
     // Set up InfoBlocks

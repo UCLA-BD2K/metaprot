@@ -3,6 +3,12 @@ import { Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootst
 import { connect } from 'react-redux';
 import { addFileToTree, setToken } from '../actions';
 
+/**
+ * Expected props:
+ *      handleSubmit - handler function for submitting form
+ *      handleFile - handler function for file selected
+ *      moreForms - Additional HTML and Form components to append to end of this form
+ */
 class FileSelectForm extends Component {
 
     render() {

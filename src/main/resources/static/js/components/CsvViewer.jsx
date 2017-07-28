@@ -1,18 +1,26 @@
 import React, {Component} from 'react';
 
+
+/**
+ * Expected props:
+ *      data - a CSV formatted string, to be displayed in table format
+ */
 class CsvViewer extends Component {
 
     constructor(props) {
         super(props);
-        this.contentId = "csv-viewer-content";
+        this.contentId = "csv-viewer-content";  // div id to mount d3 table
         this.createTable = this.createTable.bind(this);
     }
 
     componentDidMount() {
+        // generate d3 table after component has mounted
         this.createTable();
     }
 
+    /* generate d3 table and mount to div with id specified by this.contentId */
     createTable() {
+        // parse CSV data and convert values from String to numeric values when applicable
         var data = d3.csv.parse(this.props.data, row => {
             var r = {};
                 for (var k in row) {
@@ -44,6 +52,7 @@ class CsvViewer extends Component {
                 })
                .on('click', function (d) {
                    headers.attr('class', 'header');
+                   // upon clicking column header, sort rows by this column
                    if (sortAscending) {
                        rows.sort(function(a, b) {return d3.ascending(b[d], a[d]);  });
                        sortAscending = false;
@@ -78,9 +87,9 @@ class CsvViewer extends Component {
 
 
    render() {
-
         return (
             <div id={this.contentId}>
+                { /* d3 table will be generated here */ }
             </div>
         )
     }
