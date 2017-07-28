@@ -47,6 +47,9 @@ class MainLayout extends Component {
                         <SideNavBar/>
                         <div className="col-sm-8 col-md-offset-2 main">
                             { this.props.children }
+
+
+                            <Footer />
                         </div>
 
                         <FileTree
@@ -55,7 +58,6 @@ class MainLayout extends Component {
                     </div>
                 </div>
 
-                <Footer />
 
                 <Modal
                     show={this.state.isOpen}

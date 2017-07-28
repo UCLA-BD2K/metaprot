@@ -88,8 +88,6 @@
 				}
 			})
 			.on("httpUploadProgress", function(e) {
-				//console.log(e);
-				//console.log("Progress for " + fileName + ": " +e.loaded + "/" + e.total);
 				if (onUploadprogress) {
 					onUploadprogress(e.key, e.loaded, e.total);
 				}
@@ -104,7 +102,6 @@
 
 			return s3.getObject({ Bucket: s3BucketName, Key: filePath }).promise()
 			        .then( data => {
-			            console.log("S3", data);
 			            var fileContent = new TextDecoder("utf-8").decode(data.Body);
 			            return fileContent;
                     }).catch( err => {
