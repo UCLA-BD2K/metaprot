@@ -52,7 +52,7 @@ class SideNavBar extends Component {
                                 isActive={this.state.activeTab === tab}
                                 handleClick={this.handleClick.bind(this, tab)} />
                         );
-                    }.bind(this))
+                    })
                 }
                 </ul>
 
