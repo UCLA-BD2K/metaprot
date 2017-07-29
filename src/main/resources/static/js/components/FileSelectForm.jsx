@@ -23,18 +23,16 @@ class FileSelectForm extends Component {
                     </ControlLabel>
                     <FormControl id="fileFormControl"
                         componentClass="select"
-                        defaultValue="Select an uploaded file..."
                         required onChange={this.props.handleFile}>
-                        <option disabled>Select an uploaded file...</option>
-                        {
-                            this.props.filenames.map( (filename, i) => {
-                                return (
-                                    <option key={i} value={filename}>
-                                        {filename}
-                                    </option>
-                                )
-                            })
-                        }
+                    {
+                        this.props.filenames.map( (filename, i) => {
+                            return (
+                                <option key={i} value={filename}>
+                                    {filename}
+                                </option>
+                            )
+                        })
+                    }
                     </FormControl>
 
                     <br/>
