@@ -43,7 +43,7 @@ class FileSelectForm extends Component {
 
 
                     <FormControl type="submit" value="Submit" />
-                    <FormControl type="reset" value="Reset" />
+
 
                 </Form>
 

@@ -79,7 +79,7 @@ class FileUploadForm extends Component {
                             <br />
 
                             <FormControl type="submit" value="Submit" className="form-control" />
-                            <FormControl type="reset" value="Reset" className="form-control" />
+
 
                         </fieldset>
                     </Form>
