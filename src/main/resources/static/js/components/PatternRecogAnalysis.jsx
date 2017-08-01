@@ -16,7 +16,7 @@ class PatternRecogAnalysis extends Component {
         this.state = {
             numClusters: 0,
             memPerCluster: 0,
-            filename: "",
+            filename: this.props.filenames ? this.props.filenames[0] : "",
             progressTextHTML: null
         }
 
@@ -134,7 +134,8 @@ class PatternRecogAnalysis extends Component {
 
 function mapStateToProps(state) {
     return {
-        token: state.token
+        token: state.token,
+        filenames: state.filenames
     }
 }
 

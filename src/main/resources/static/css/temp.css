@@ -351,11 +351,12 @@ svg:not(:root) {
 /* File tree display of uploaded files */
 
 #file-tree {
-    background-color: #E4E8EC;
-    border-radius: 5px;
     margin-top: 8px;
 }
+
 .file-tree-item {
+    border-radius: 5px;
+    background-color: #E4E8EC;
     font: 12px sans-serif;
     padding: 8px 0 4px 0;
     cursor: pointer;

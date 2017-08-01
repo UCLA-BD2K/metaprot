@@ -210,6 +210,7 @@ export function deleteFileFromS3(fileName){
     var path = "user-input/" + store.token + "/" + fileName;
     return S3Uploader.deleteFile(path);
 }
+
 /*
 function passFilenames(){
 
@@ -225,7 +226,6 @@ function passFilenames(){
     };
 
     $('#treeview').treeview(options);
-
 
 
     document.getElementById("treeview").addEventListener("click",function(e) {

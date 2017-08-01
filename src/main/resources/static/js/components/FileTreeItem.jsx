@@ -33,7 +33,7 @@ class FileTreeItem extends Component {
                 // set modal content with CSV table viewer
                 var modalData = {
                     title: this.props.filename,
-                    content: (<CsvViewer data={data}/>)
+                    content: (<CsvViewer data={data} />)
                 }
                 this.props.setModalData(modalData);
             })
@@ -46,12 +46,13 @@ class FileTreeItem extends Component {
     }
 
     handleDeleteFile(e) {
-        e.preventDefault();
+        e.stopPropagation();
         this.props.removeFileFromTree(this.props.filename);
     }
 
     render() {
         return (
+            <div className="col-sm-10 col-sm-offset-1">
             <div className="file-tree-item row"
                 onClick={this.handleShowFile.bind(this)}>
 
@@ -64,6 +65,7 @@ class FileTreeItem extends Component {
                         onClick={this.handleDeleteFile.bind(this)}></i>
                 </div>
 
+            </div>
             </div>
         )
     }

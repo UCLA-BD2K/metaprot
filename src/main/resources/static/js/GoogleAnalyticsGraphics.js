@@ -211,7 +211,7 @@ function plotTrafficChart(dailyVisitCounts, monthlyVisitCounts) {
 
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('usage-trends-chart'));
+        var chart = new google.visualization.AreaChart(document.getElementById('usage-trends-chart'));
         chart.draw(dataDaily, options);
 
         var button = document.getElementById("chart-toggle-view");
@@ -220,7 +220,7 @@ function plotTrafficChart(dailyVisitCounts, monthlyVisitCounts) {
             if (options.hAxis.format === "MMM dd") {
                 options.hAxis.format = "MMM yyyy";
                 options.hAxis.viewWindow.min = lastYear;
-                var newChart = new google.visualization.LineChart(document.getElementById('usage-trends-chart'));
+                var newChart = new google.visualization.AreaChart(document.getElementById('usage-trends-chart'));
                 newChart.draw(dataMonthly, options);
                 button.innerHTML = "View daily totals";
                 $("#usage-trends-title").text("Views per Month");
@@ -229,7 +229,7 @@ function plotTrafficChart(dailyVisitCounts, monthlyVisitCounts) {
             else {
                 options.hAxis.format = "MMM dd";
                 options.hAxis.viewWindow.min = lastMonth;
-                var newChart = new google.visualization.LineChart(document.getElementById('usage-trends-chart'));
+                var newChart = new google.visualization.AreaChart(document.getElementById('usage-trends-chart'));
                 newChart.draw(dataDaily, options);
                 button.innerHTML = "View monthly totals";
                 $("#usage-trends-title").text("Views per Day");

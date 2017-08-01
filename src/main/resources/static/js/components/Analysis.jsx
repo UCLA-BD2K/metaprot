@@ -36,7 +36,7 @@ class Analysis extends Component {
             {
                 preHTML: (
                     <Link to="time-series-viewer">
-                        <img src="/img/pattern.jpg" className="img-responsive img-analysis" />
+                        <img src="/img/timeseries.jpg" className="img-responsive img-analysis" />
                     </Link>
                 ),
                 title: "Time Series Analysis",

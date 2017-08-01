@@ -24,14 +24,21 @@ class FileUploadForm extends Component {
     handleSubmit(e) {
         e.preventDefault();
         this.setState({ uploading: true });
+
+        // callback helper functions to appropriately set and update Redux store and Component's state
         var callbacks = {
             updateProgress: this.updateProgress,
             addFileToTree: this.props.addFileToTree,
             setToken: this.props.setToken
         }
+        // call helper function to upload file to S3
         fileUploadSubmitHandler(this.state.$fileInput, callbacks);
     }
 
+    /*
+     * callback helper function to pass to fileUploadSubmitHandler
+     * to allow updating Component's progress state.
+     */
     updateProgress(state) {
         this.setState(state);
     }
@@ -87,7 +94,7 @@ class FileUploadForm extends Component {
                 </div>
 
                 {
-
+                    /* Show progress bar while file is being uploaded */
                     this.state.uploading ?
 
                     <div id="progress-bar-display" className="transition">
