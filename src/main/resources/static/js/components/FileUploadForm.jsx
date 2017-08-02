@@ -19,6 +19,7 @@ class FileUploadForm extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.updateProgress = this.updateProgress.bind(this);
         this.handleFile = this.handleFile.bind(this);
+        this.handleChange = this.handleChange.bind(this);
 
     }
     handleSubmit(e) {
@@ -48,13 +49,23 @@ class FileUploadForm extends Component {
         this.setState({$fileInput});
     }
 
+    handleChange(e) {
+        const target = e.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+        console.log(target, name, value);
+
+        this.setState({
+            [name]: value
+        });
+    }
+
     render() {
 
         return (
             <div>
                 <div className="well well-lg">
                     <Form id="csv-upload-form" className="form-horizontal"  onSubmit={this.handleSubmit} >
-                        <fieldset>
 
                             <ControlLabel htmlFor="fileFormControl">
                                 Select file:
@@ -67,7 +78,8 @@ class FileUploadForm extends Component {
                             <ControlLabel htmlFor="xAxisSelector">
                                 What do rows define in the input file?
                             </ControlLabel>
-                            <select id="xAxisSelector" >
+                            <select name="xAxisSelector"
+                                onChange={this.handleChange}>
                                 <option value="Metabolite">Protein/Metabolite</option>
                                 <option value="Time-Series">Time Point Data</option>
                             </select>
@@ -77,7 +89,8 @@ class FileUploadForm extends Component {
                             <ControlLabel htmlFor="yAxisSelector">
                                 What do columns define in the input file?
                             </ControlLabel>
-                            <select id="yAxisSelector">
+                            <select name="yAxisSelector"
+                                onChange={this.handleChange}>
                                 <option value="Time-Series">Time Point Data</option>
                                 <option value="Metabolite">Protein/Metabolite</option>
                             </select>
@@ -85,10 +98,9 @@ class FileUploadForm extends Component {
                             <br />
                             <br />
 
-                            <FormControl type="submit" value="Submit" className="form-control" />
+                            <FormControl type="submit" value="Submit"/>
 
 
-                        </fieldset>
                     </Form>
 
                 </div>

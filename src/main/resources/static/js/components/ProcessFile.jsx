@@ -22,17 +22,19 @@ class ProcessFile extends Component {
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleFile = this.handleFile.bind(this);
-        this.handleNumClusters = this.handleNumClusters.bind(this);
-        this.handleMemPerCluster = this.handleMemPerCluster.bind(this);
+        this.handleChange = this.handleChange.bind(this);
 
         // Additional form components to pass into FileSelectForm
         this.moreForms = (
             <div>
                 <h3>Handle Missing Values</h3>
                 <div >
-                    <Checkbox onChange={e=>console.log(e.target.value)}>Remove features with too many missing values:</Checkbox>
+                    <Checkbox onChange={this.handleChange} name="removeValues">Remove features with too many missing values:</Checkbox>
                     <InputGroup className="col-xs-4 col-sm-3 col-lg-2">
-                        <FormControl id="remove-threshold" type="text" defaultValue="50" bsSize="sm" />
+                        <FormControl onChange={this.handleChange}
+                            name="removeThreshold"
+                            type="text" defaultValue="50" bsSize="sm"
+                            />
                         <InputGroup.Addon>%</InputGroup.Addon>
                     </InputGroup>
 
@@ -40,7 +42,8 @@ class ProcessFile extends Component {
 
                     <ControlLabel htmlFor="missingValues">Estimate remaining missing values:</ControlLabel>
                     <FormControl
-                        id="missingValues"
+                        name="missingValues"
+                        onChange={this.handleChange}
                         componentClass="select" className="form-control">
 
                         <option value="replace">Replace by a small value (half of the minimum positive value in the original data)</option>
@@ -51,31 +54,42 @@ class ProcessFile extends Component {
 
                 <br/>
 
-                <div onChange={e=>console.log(e.target.value)}>
+                <div>
                     <h3>Normalization</h3>
-                    <Radio name="norm-by" value="none" defaultChecked>None</Radio>
-                    <Radio name="norm-by" value="sum">Normalization by sum</Radio>
-                    <Radio name="norm-by" value="median">Normalization by median</Radio>
-                    <Radio name="norm-by" value="srs">Norm. by specific reference sample</Radio>
-                    <Radio name="norm-by" value="rf">Norm. by reference feature</Radio>
+                    <Radio name="norm" value="none"
+                        onClick={this.handleChange} defaultChecked>None</Radio>
+                    <Radio name="norm" value="sum"
+                        onClick={this.handleChange} >Normalization by sum</Radio>
+                    <Radio name="norm" value="median"
+                        onClick={this.handleChange} >Normalization by median</Radio>
+                    <Radio name="norm" value="srs"
+                        onClick={this.handleChange} >Norm. by specific reference sample</Radio>
+                    <Radio name="norm" value="rf"
+                        onClick={this.handleChange}>Norm. by reference feature</Radio>
                 </div>
 
                 <br/>
 
-                <div onChange={e=>console.log(e.target.value)}>
+                <div>
                     <h4>Data transformation:</h4>
-                    <Radio name="trans" value="none" defaultChecked>None</Radio>
-                    <Radio name="trans" value="log-trans">Log transformation</Radio>
-                    <Radio name="trans" value="cube-root-trans">Cube root transformation</Radio>
+                    <Radio name="trans" value="none"
+                        onClick={this.handleChange} defaultChecked>None</Radio>
+                    <Radio name="trans" value="log-trans"
+                        onClick={this.handleChange}>Log transformation</Radio>
+                    <Radio name="trans" value="cube-root-trans"
+                        onClick={this.handleChange}>Cube root transformation</Radio>
                 </div>
 
                 <br/>
 
-                <div onChange={e=>console.log(e.target.value)}>
+                <div>
                     <h4>Data scaling:</h4>
-                    <Radio name="scaling" value="none" defaultChecked>None</Radio>
-                    <Radio name="scaling" value="mean-centered">Mean centering</Radio>
-                    <Radio name="scaling" value="pareto">Pareto scaling</Radio>
+                    <Radio name="scaling" value="none"
+                        onClick={this.handleChange} defaultChecked>None</Radio>
+                    <Radio name="scaling" value="mean-centered"
+                        onClick={this.handleChange}>Mean centering</Radio>
+                    <Radio name="scaling" value="pareto"
+                        onClick={this.handleChange}>Pareto scaling</Radio>
 
                 </div>
 
@@ -90,7 +104,8 @@ class ProcessFile extends Component {
         e.preventDefault();
 
         var self = this;
-
+        console.log(self.state);
+        /*
         self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
         // request new token for analysis task
         getToken()
@@ -123,6 +138,17 @@ class ProcessFile extends Component {
         .catch( error => {
             self.setState({progressTextHTML: '<div class="alert alert-danger">' + error.message + '</div>'});
         })
+        */
+    }
+
+    handleChange(e) {
+        const target = e.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
     }
 
     // handler function to pass to into FileSelectForm
@@ -131,15 +157,7 @@ class ProcessFile extends Component {
         this.setState({ filename });
     }
 
-    handleNumClusters(e) {
-        var numClusters = e.target.value;
-        this.setState({ numClusters })
-    }
 
-    handleMemPerCluster(e) {
-        var memPerCluster = e.target.value;
-        this.setState({ memPerCluster })
-    }
 
 
     render() {
