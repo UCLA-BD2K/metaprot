@@ -17,7 +17,8 @@ import PatternRecogAnalysis from './components/PatternRecogAnalysis';
 import TimeSeriesAnalysis from './components/TimeSeriesAnalysis';
 import ProcessFile from './components/ProcessFile';
 
-import MainLayout from './components/MainLayout';
+import MainLayout from './layouts/MainLayout';
+import SimpleLayout from './layouts/SimpleLayout';
 
 import rootReducer from './reducers/';
 import { addFileToTree } from './actions';
@@ -51,6 +52,18 @@ const initGA = (history) => {
 
 initGA(history);
 
+const renderWithLayout = (layout, component) => {
+    var layoutComponent;
+    switch (layout) {
+        case "main":
+            return () => <MainLayout> { component } </MainLayout>
+            break;
+        case "simple":
+            return () => <SimpleLayout> { component } </SimpleLayout>
+        default:
+            return;
+    }
+}
 
 
 // tag::render[]
@@ -59,13 +72,13 @@ ReactDOM.render(
         <Router history={history}>
 
             <Switch>
-                <Route exact path="/" component={Home} />
-                <Route path="/upload" render={ ()=> <MainLayout> <Upload /> </MainLayout> } />
-                <Route path="/upload-pass" render={ ()=> <MainLayout> <ProcessFile /> </MainLayout> } />
-                <Route path="/analysis" render={ ()=> <MainLayout> <Analysis /> </MainLayout> } />
-                <Route path="/metabolite-analysis" render={ ()=> <MainLayout> <MetaboliteAnalysis /> </MainLayout> } />
-                <Route path="/temporal-pattern-recognition" render={ ()=> <MainLayout> <PatternRecogAnalysis /> </MainLayout> } />
-                <Route path="/time-series-viewer" render={ ()=> <MainLayout> <TimeSeriesAnalysis /> </MainLayout> } />
+                <Route exact path="/" render={ renderWithLayout("simple", <Home />) }/>// render={ renderWithLayout("simple", <Home />) } />
+                <Route path="/upload" render={ renderWithLayout("main", <Upload />) } />
+                <Route path="/upload-pass" render={ renderWithLayout("main", <ProcessFile />) } />
+                <Route path="/analysis" render={ renderWithLayout("main", <Analysis />) } />
+                <Route path="/metabolite-analysis" render={ renderWithLayout("main", <MetaboliteAnalysis />) } />
+                <Route path="/temporal-pattern-recognition" render={ renderWithLayout("main", <PatternRecogAnalysis />) } />
+                <Route path="/time-series-viewer" render={ renderWithLayout("main", <TimeSeriesAnalysis />) } />
             </Switch>
 
         </Router>

@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import TopNavBar from './TopNavBar';
-import SideNavBar from './SideNavBar';
-import FileTree from './FileTree';
-import Footer from './Footer';
+import TopNavBar from '../components/TopNavBar';
+import SideNavBar from '../components/SideNavBar';
+import FileTree from '../components/FileTree';
+import Footer from '../components/Footer';
 class MainLayout extends Component {
 
     constructor(props) {

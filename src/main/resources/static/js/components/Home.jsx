@@ -96,13 +96,12 @@ class Home extends Component {
         return (
 
             <div>
-                <TopNavBar/>
 
                 <div className="container-fluid">
                     <div className="jumbotron">
                         <h1>MetProt</h1>
                         <p className="lead">A Cloud-based Platform to Analyze, Annotate, and Integrate Metabolomics Datasets with Proteomics Information.</p>
-                        <div className="col-sm-12 col-md-12 main">
+                        <div className="col-sm-12 col-md-12">
                             <div className="btn-border">
                                 <a className="btn btn-lg btn-default" href="/upload">Start Analysis</a>
                             </div>
@@ -110,19 +109,15 @@ class Home extends Component {
                     </div>
                 </div>
 
-                <div className="row">
-                    <div className="col-xs-12 col-md-12 main">
-                        <div className="row placeholders">
-                        {
-                             this.infoblocks.map((infoblock, i) => {
-                                return <InfoBlock key={"infoblock-"+i} data={infoblock} className="col-xs-12 col-md-6 placeholder"/>
-                             })
-                        }
-                        </div>
-                    </div>
+                <div className="row placeholders">
+                {
+                     this.infoblocks.map((infoblock, i) => {
+                        return <InfoBlock key={"infoblock-"+i} data={infoblock} className="col-xs-12 col-md-6 placeholder"/>
+                     })
+                }
                 </div>
 
-                <Footer />
+
             </div>
         )
     }
