@@ -146,7 +146,7 @@ export function fileUploadSubmitHandler($fileInput, cb) {
 }
 
 export function getToken() {
-    return fetch("/analyze/token", {
+    return fetch("/util/token", {
         method: "GET"
     }).then( response => { return response.text() });
 }
@@ -156,7 +156,7 @@ export function validateToken(token) {
     var formData = new FormData();
     formData.append("token", token);
 
-    return fetch("/analyze/checkToken", {
+    return fetch("/util/checkToken", {
         method: "POST",
         body: formData
     }).then(response => { return response.text() });
@@ -168,7 +168,7 @@ export function getTreeData(token) {
     var formData = new FormData();
     formData.append("token", token);
 
-    return fetch("/analyze/getSessionData", {
+    return fetch("/util/getSessionData", {
             method: "POST",
             body: formData
         })
@@ -190,9 +190,9 @@ export function updateSessionData(){
     formData.append("data", store.filenames);
 
     return fetch("/analyze/updateSessionData", {
-        method: "POST",
-        body: formData
-    }).then( response => { return response.text() });
+            method: "POST",
+            body: formData
+        }).then( response => { return response.text() });
 
 
 }

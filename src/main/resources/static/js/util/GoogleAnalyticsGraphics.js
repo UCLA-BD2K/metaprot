@@ -1,5 +1,5 @@
 // generate pie chart displaying usage of site's features (dummy data currently)
-function plotUsagePieChart() {
+export function plotUsagePieChart() {
     var pie = new d3pie("pieChart", {
                 "header": {
                     "title": {
@@ -104,7 +104,7 @@ function plotUsagePieChart() {
 }
 
 // generate heat map of site usage in various countries
-function plotGeoMap(mapData) {
+export function plotGeoMap(mapData) {
       google.charts.load('current', {
         'packages':['geochart'],
         'mapsApiKey': 'AIzaSyCXkYdibsxSbTe8LZwdB6hZ9eoFiOC0tMU'
@@ -134,7 +134,7 @@ function plotGeoMap(mapData) {
  }
 
 // generate line chart to display usage trends (daily/monthly visits)
-function plotTrafficChart(dailyVisitCounts, monthlyVisitCounts) {
+export function plotTrafficChart(dailyVisitCounts, monthlyVisitCounts) {
 
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart);

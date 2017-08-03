@@ -4,7 +4,7 @@ package org.bd2k.metaprot.data;
  * Created by Nate Sookwongse on 6/27/17.
  */
 
-        import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -16,10 +16,12 @@ import com.google.api.services.analytics.model.GaData;
 import com.google.api.services.analytics.model.Profiles;
 import com.google.api.services.analytics.model.Webproperties;
 import org.springframework.context.annotation.PropertySource;
-        import org.springframework.util.ResourceUtils;
+import org.springframework.util.ResourceUtils;
 
-        import java.io.File;
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @PropertySource("classpath:application.properties")
@@ -32,18 +34,6 @@ public class GoogleAnalytics {
     private static final String KEY_FILENAME ="secret.p12";
     private static final String SERVICE_ACCOUNT_EMAIL = "metaprot@metaprot-172022.iam.gserviceaccount.com";
 
-    /*
-    public static void main(String[] args) {
-        try {
-            Analytics analytics = initializeAnalytics();
-            String profile = getFirstProfileId(analytics);
-            System.out.println("First Profile Id: "+ profile);
-            printResults(getResults(analytics, profile));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    */
     public static Analytics initializeAnalytics() throws Exception {
         // Initializes an authorized analytics service object.
 
@@ -144,5 +134,49 @@ public class GoogleAnalytics {
             System.out.println("No results found");
         }
     }
+
+    public static GoogleAnalyticsReport getReport() {
+
+        GoogleAnalyticsReport report = new GoogleAnalyticsReport();
+
+        GaData results = null;
+        GaData dailyVisitCounts = null;
+        GaData monthlyVisitCounts = null;
+        GaData countryData = null;
+        int numCountries = 0;
+
+        try {
+            Analytics analytics = initializeAnalytics();
+            String profile = getFirstProfileId(analytics);
+            results = getVisitSummary(analytics, profile);
+            dailyVisitCounts = getDailyVisitCounts(analytics, profile);
+            monthlyVisitCounts = getMonthlyVisitCounts(analytics, profile);
+            countryData = getCountryData(analytics, profile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (results != null) {
+            report.setMonth(new SimpleDateFormat("MMMM yyyy").format(new Date()));
+            report.setPageviews(Integer.parseInt(results.getRows().get(0).get(0)));
+            report.setPageviewsPerVisit(Double.parseDouble(results.getRows().get(0).get(1)));
+            report.setUniqueVisitors(Integer.parseInt(results.getRows().get(0).get(2)));
+        }
+
+        if (countryData != null) {
+            report.setNumCountries(countryData.getRows().size());
+            report.setMapData(countryData.getRows());
+        }
+
+        if (dailyVisitCounts != null) {
+            report.setDailyVisitsData(dailyVisitCounts.getRows());
+        }
+
+        if (monthlyVisitCounts != null) {
+            report.setMonthlyVisitsData(monthlyVisitCounts.getRows());
+        }
+        return report;
+    }
+
 }
 

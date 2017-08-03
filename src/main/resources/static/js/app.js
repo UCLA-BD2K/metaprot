@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import Home from './components/Home';
+import About from './components/About';
 import Analysis from './components/Analysis';
 import Upload from './components/Upload';
 import MetaboliteAnalysis from './components/MetaboliteAnalysis';
@@ -73,6 +74,7 @@ ReactDOM.render(
 
             <Switch>
                 <Route exact path="/" render={ renderWithLayout("simple", <Home />) }/>// render={ renderWithLayout("simple", <Home />) } />
+                <Route path="/about" render={ renderWithLayout("simple", <About />) }/>// render={ renderWithLayout("simple", <Home />) } />
                 <Route path="/upload" render={ renderWithLayout("main", <Upload />) } />
                 <Route path="/upload-pass" render={ renderWithLayout("main", <ProcessFile />) } />
                 <Route path="/analysis" render={ renderWithLayout("main", <Analysis />) } />

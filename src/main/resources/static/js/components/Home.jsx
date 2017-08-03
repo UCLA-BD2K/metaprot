@@ -3,25 +3,58 @@ import InfoBlock from './InfoBlock';
 import TopNavBar from './TopNavBar';
 import Footer from './Footer';
 import { Link } from 'react-router-dom';
+import { plotUsagePieChart, plotGeoMap, plotTrafficChart } from '../util/GoogleAnalyticsGraphics';
 
 class Home extends Component {
 
-    // grab thymeleaf variables and set up InfoBlocks
-    componentWillMount() {
-        this.siteUsageDescr = SITE_USAGE_DESCR;
-        this.pageViews = PAGE_VIEWS;
-        this.pageViewsPerVisit = PAGE_VIEWS_PER_VISIT;
-        this.uniqueVisitors = UNIQUE_VISITORS;
-        this.numCountries = NUM_COUNTRIES;
-        this.mapData = MAP_DATA;
-        this.dailyVisitsCounts = DAILY_VISITS_COUNTS;
-        this.monthlyVisitsCounts = MONTHLY_VISITS_COUNTS;
+    constructor(props) {
+        super(props);
+        this.state = {
+            siteUsageDescr: "",
+            pageviews: 0,
+            pageviewsPerVisit: 0,
+            uniqueVisitors: 0,
+            numCountries: 0,
+            mapData: [[]],
+            dailyVisitsData: [[]],
+            monthlyVisitsData: [[]],
+            loading: true
+        }
 
-        this.infoblocks = [
-           {
-               title: "Recent Updates",
-               description: "Recent news and updates",
-               postHTML: (
+    }
+
+    // render plots after mounting
+    componentDidMount() {
+        plotUsagePieChart();
+
+        var self = this;
+        fetch("/util/googleAnalyticsReport", { method: "GET" })
+        .then( response => { return response.json() })
+        .then( json => {
+            json.loading = false;
+            self.setState( json  );
+        })
+
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.loading == true && this.state.loading == false) {
+            plotGeoMap(this.state.mapData);
+            plotTrafficChart(this.state.dailyVisitsData, this.state.monthlyVisitsData);
+        }
+    }
+
+
+    render() {
+        // set up InfoBlocks
+        var siteUsageDescr = this.state.month ? "As of " + this.state.month
+            + ", Google Analytics reports the following data on MetaProt:" : null;
+        var pageviewsPerVisit = this.state.pageviewsPerVisit.toFixed(2);
+        var infoblocks = [
+            {
+                title: "Recent Updates",
+                description: "Recent news and updates",
+                postHTML: (
                        <div id="list" width="305" height="305">
                            <ul className="list-group">
                            {
@@ -39,7 +72,7 @@ class Home extends Component {
                            }
                            </ul>
                        </div>
-               )
+                )
             },
             {
                 title: "Feature Use Statistics",
@@ -50,7 +83,7 @@ class Home extends Component {
                 title: "Site Usage",
                 description: (
                     <div>
-                        <p>{this.siteUsageDescr}</p>
+                        <p>{siteUsageDescr}</p>
                         <p>(worldwide usage map shown below):</p>
                     </div>
                 ),
@@ -58,10 +91,10 @@ class Home extends Component {
                     <div>
                         <div style={{maxWidth: 220, margin: "0 auto"}}>
                             <ul style={{textAlign: "left"}}>
-                                <li><em>{this.pageViews}</em> pageviews</li>
-                                <li><em>{this.pageViewsPerVisit}</em> pageviews per visit</li>
-                                <li><em>{this.uniqueVisitors}</em> unique visitors</li>
-                                <li><em>{this.numCountries}</em> countries represented</li>
+                                <li><em>{this.state.pageviews}</em> pageviews</li>
+                                <li><em>{pageviewsPerVisit}</em> pageviews per visit</li>
+                                <li><em>{this.state.uniqueVisitors}</em> unique visitors</li>
+                                <li><em>{this.state.numCountries}</em> countries represented</li>
                             </ul>
                         </div>
                         <div id="regions-chart" className="drop-shadow"></div>
@@ -78,21 +111,13 @@ class Home extends Component {
                     </div>
                 )
             }
+        ];
 
+        if (this.state.loading) {
+            infoblocks[2].postHTML = (<div>Loading...</div>)
+            infoblocks[3].postHTML = (<div>Loading...</div>)
+        }
 
-        ]
-
-    }
-
-    // render plots after mounting
-    componentDidMount() {
-        plotUsagePieChart();
-        plotGeoMap(this.mapData);
-        plotTrafficChart(this.dailyVisitsCounts, this.monthlyVisitsCounts);
-    }
-
-
-    render() {
         return (
 
             <div>
@@ -111,7 +136,7 @@ class Home extends Component {
 
                 <div className="row placeholders">
                 {
-                     this.infoblocks.map((infoblock, i) => {
+                     infoblocks.map((infoblock, i) => {
                         return <InfoBlock key={"infoblock-"+i} data={infoblock} className="col-xs-12 col-md-6 placeholder"/>
                      })
                 }

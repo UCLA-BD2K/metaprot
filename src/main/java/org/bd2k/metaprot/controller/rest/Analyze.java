@@ -430,10 +430,6 @@ public class Analyze {
         }
     }
 
-    @RequestMapping(value = "/token", method = RequestMethod.GET)
-    public String getToken() {
-        return UUID.randomUUID().toString();
-    }
 
     @RequestMapping(value= "/pre-process", method = RequestMethod.POST)
     public String updateStatsTable(@RequestParam("sourceFile") String sourceFile,
@@ -477,23 +473,6 @@ public class Analyze {
 
         dao.saveOrUpdateSessionData(new SessionData(token, data, System.currentTimeMillis()));
         return "success";
-    }
-
-    @RequestMapping(value= "/getSessionData", method = RequestMethod.POST)
-    public String getSessionData(@RequestParam("token") String token){
-        SessionData sessionData = dao.getSessionData(token);
-        if (sessionData != null)
-            return sessionData.getData();
-        else
-            return new JSONObject().put("Error", "Token does not exist").toString();
-
-    }
-
-    @RequestMapping(value= "/checkToken", method = RequestMethod.POST)
-    public boolean checkToken(@RequestParam("token") String token){
-        if (dao.getSessionData(token) == null)
-            return false;
-        return true;
     }
 
 
