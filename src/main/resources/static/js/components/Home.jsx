@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import InfoBlock from './InfoBlock';
 import TopNavBar from './TopNavBar';
 import Footer from './Footer';
 import { Link } from 'react-router-dom';
 import { plotUsagePieChart, plotGeoMap, plotTrafficChart } from '../util/GoogleAnalyticsGraphics';
+import { storeGoogleAnalyticsReport } from '../actions';
 
 class Home extends Component {
 
@@ -18,7 +20,7 @@ class Home extends Component {
             mapData: [[]],
             dailyVisitsData: [[]],
             monthlyVisitsData: [[]],
-            loading: true
+            loading: this.props.report === null ? true : false
         }
 
     }
@@ -26,19 +28,25 @@ class Home extends Component {
     // render plots after mounting
     componentDidMount() {
         plotUsagePieChart();
-
-        var self = this;
-        fetch("/util/googleAnalyticsReport", { method: "GET" })
-        .then( response => { return response.json() })
-        .then( json => {
-            json.loading = false;
-            self.setState( json  );
-        })
+        console.log(this.props);
+        if (this.props.report === null) {
+            var self = this;
+            fetch("/util/googleAnalyticsReport", { method: "GET" })
+            .then( response => { return response.json() })
+            .then( json => {
+                this.props.storeGoogleAnalyticsReport(json);
+                json.loading = false;
+                self.setState(json);
+            })
+        }
+        else {
+            this.setState(this.props.report);
+        }
 
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.loading == true && this.state.loading == false) {
+        if (this.state.loading == false) {
             plotGeoMap(this.state.mapData);
             plotTrafficChart(this.state.dailyVisitsData, this.state.monthlyVisitsData);
         }
@@ -128,7 +136,7 @@ class Home extends Component {
                         <p className="lead">A Cloud-based Platform to Analyze, Annotate, and Integrate Metabolomics Datasets with Proteomics Information.</p>
                         <div className="col-sm-12 col-md-12">
                             <div className="btn-border">
-                                <a className="btn btn-lg btn-default" href="/upload">Start Analysis</a>
+                                <Link className="btn btn-lg btn-default" to="/upload">Start Analysis</Link>
                             </div>
                         </div>
                     </div>
@@ -149,4 +157,12 @@ class Home extends Component {
 
 }
 
-export default Home
+
+function mapStateToProps(state) {
+    console.log(state);
+    return {
+        report: state.googleAnalyticsReport
+    }
+}
+
+export default connect(mapStateToProps, { storeGoogleAnalyticsReport })(Home);

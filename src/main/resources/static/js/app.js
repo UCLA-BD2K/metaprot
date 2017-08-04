@@ -71,10 +71,9 @@ const renderWithLayout = (layout, component) => {
 ReactDOM.render(
     <Provider store={store}>
         <Router history={history}>
-
             <Switch>
-                <Route exact path="/" render={ renderWithLayout("simple", <Home />) }/>// render={ renderWithLayout("simple", <Home />) } />
-                <Route path="/about" render={ renderWithLayout("simple", <About />) }/>// render={ renderWithLayout("simple", <Home />) } />
+                <Route exact path="/" render={ renderWithLayout("simple", <Home />) }/>
+                <Route path="/about" render={ renderWithLayout("simple", <About />) }/>
                 <Route path="/upload" render={ renderWithLayout("main", <Upload />) } />
                 <Route path="/upload-pass" render={ renderWithLayout("main", <ProcessFile />) } />
                 <Route path="/analysis" render={ renderWithLayout("main", <Analysis />) } />
