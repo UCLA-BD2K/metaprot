@@ -27,7 +27,7 @@ public class General {
     @RequestMapping("/")
     public String getHomePage(Model model) {
 
-        return "main_app";
+        return "index";
     }
 
     /**
@@ -53,7 +53,7 @@ public class General {
 
         model.addAttribute("sessionData", "INVALID");
 
-        return "main_app";
+        return "index";
     }
 
     /**
@@ -83,22 +83,22 @@ public class General {
 
         //model.addAttribute("token", token);     // pass token to view as model variable
 
-        return "main_app";
+        return "index";
     }
 
     @RequestMapping("/analysis")
     public String getAnalysisPage() {
-        return "main_app";
+        return "index";
     }
 
     @RequestMapping("/about")
     public String getAboutPage() {
-        return "main_app";
+        return "index";
     }
 
     @RequestMapping("/contact")
     public String getContactPage() {
-        return "main_app";
+        return "index";
     }
 
 }

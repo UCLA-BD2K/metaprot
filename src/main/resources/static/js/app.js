@@ -30,7 +30,6 @@ const client = require('./client');
 const storeData = sessionStorage.getItem("store") ? JSON.parse(sessionStorage.getItem("store")) : {};
 const store = createStore(rootReducer, storeData, applyMiddleware(thunk));
 store.subscribe(()=> {
-    console.log("Store", "store updated");
     sessionStorage.setItem("store", JSON.stringify(store.getState()));
 });
 

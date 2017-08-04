@@ -25,7 +25,7 @@ public class TimeSeriesViewer {
 
     @RequestMapping(method = RequestMethod.GET)
     public String getTimeSeriesIndex() {  // home page
-        return "main_app";
+        return "index";
     }
 
     @RequestMapping(value = "/results/{token}", method = RequestMethod.GET)
