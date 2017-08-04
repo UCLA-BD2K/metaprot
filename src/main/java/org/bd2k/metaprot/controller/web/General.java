@@ -98,7 +98,7 @@ public class General {
 
     @RequestMapping("/contact")
     public String getContactPage() {
-        return "contact";
+        return "main_app";
     }
 
 }

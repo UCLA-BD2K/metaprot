@@ -11,7 +11,7 @@ export function storeGoogleAnalyticsReport(report) {
         type: GOOGLE_ANALYTICS_REPORT,
         report
     }
-    
+
     return action;
 }
 
