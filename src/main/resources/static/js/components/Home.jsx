@@ -28,13 +28,15 @@ class Home extends Component {
     // render plots after mounting
     componentDidMount() {
         plotUsagePieChart();
-        console.log(this.props);
+        // if no cached Google Analytics data, make request
         if (this.props.report === null) {
             var self = this;
             fetch("/util/googleAnalyticsReport", { method: "GET" })
             .then( response => { return response.json() })
             .then( json => {
+                // store data in redux
                 this.props.storeGoogleAnalyticsReport(json);
+                // update with retrieved data
                 json.loading = false;
                 self.setState(json);
             })
@@ -45,13 +47,13 @@ class Home extends Component {
 
     }
 
+    // render Google Analytics graphics if data has loaded
     componentDidUpdate(prevProps, prevState) {
         if (this.state.loading == false) {
             plotGeoMap(this.state.mapData);
             plotTrafficChart(this.state.dailyVisitsData, this.state.monthlyVisitsData);
         }
     }
-
 
     render() {
         // set up InfoBlocks
@@ -121,6 +123,7 @@ class Home extends Component {
             }
         ];
 
+        // display "Loading..." temporarily as Google Analytics data is being fetched
         if (this.state.loading) {
             infoblocks[2].postHTML = (<div>Loading...</div>)
             infoblocks[3].postHTML = (<div>Loading...</div>)
@@ -159,7 +162,6 @@ class Home extends Component {
 
 
 function mapStateToProps(state) {
-    console.log(state);
     return {
         report: state.googleAnalyticsReport
     }

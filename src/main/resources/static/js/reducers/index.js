@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import { GOOGLE_ANALYTICS_REPORT, RESET_TREE, UPLOAD_FILE, DELETE_FILE, SET_TOKEN } from '../actions';
 
 function googleAnalyticsReport(state=null, action) {
-    console.log(action.type, action.report);
     switch(action.type) {
         case GOOGLE_ANALYTICS_REPORT:
             return action.report;
@@ -27,7 +26,6 @@ function filenames (state=[], action) {
 }
 
 function token (state="", action) {
-    console.log(action.token)
     switch (action.type) {
         case SET_TOKEN:
             return action.token;

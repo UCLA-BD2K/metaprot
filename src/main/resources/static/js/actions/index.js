@@ -11,7 +11,7 @@ export function storeGoogleAnalyticsReport(report) {
         type: GOOGLE_ANALYTICS_REPORT,
         report
     }
-    console.log("ACTION", action);
+    
     return action;
 }
 
@@ -28,7 +28,7 @@ export function addFileToTree(name) {
         type: UPLOAD_FILE,
         name
     }
-    console.log("ACTION", action);
+
     return action;
 }
 
