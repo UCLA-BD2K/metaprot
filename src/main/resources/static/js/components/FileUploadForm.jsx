@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Form, FormControl, ControlLabel, Button } from 'react-bootstrap'
 import { fileUploadSubmitHandler } from '../util/upload'
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { addFileToTree, setToken } from '../actions';
 
 class FileUploadForm extends Component {
@@ -11,7 +12,7 @@ class FileUploadForm extends Component {
         this.state = {
             $fileInput: [],  // naming convention retained from previous JQuery implementation
             uploadProgress: 0,
-            progressTextHTML: null,
+            progressText: null,
             uploading: false
         }
 
@@ -61,7 +62,6 @@ class FileUploadForm extends Component {
     }
 
     render() {
-
         return (
             <div>
                 <div className="well well-lg">
@@ -118,8 +118,9 @@ class FileUploadForm extends Component {
                                 {this.state.uploadProgress}% Complete
                             </div>
                         </div>
-                            <div dangerouslySetInnerHTML={ { __html: this.state.progressTextHTML } }
-                                id="progressText" className="text-center"></div>
+                            <div id="progressText" className="text-center">
+                                { this.state.progressText }
+                            </div>
                         <br />
                     </div>
 

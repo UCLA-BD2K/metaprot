@@ -4,7 +4,6 @@ import SideNavBar from './SideNavBar';
 import FileUploadForm from './FileUploadForm';
 import FileTree from './FileTree';
 import Footer from './Footer';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Form, FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap'
 import { resetTree, addFileToTree, setToken } from '../actions';

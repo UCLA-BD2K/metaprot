@@ -100,6 +100,7 @@ public class Analyze {
 
     }
 
+
     /**
      * Analyzes an uploaded CSV file for metabolite analysis.
      *
@@ -126,8 +127,8 @@ public class Analyze {
         if (!(key.startsWith("user-input/" + token)) ||
                 pThreshold < 0 ||
                 fcThreshold < 0 ||
-                !(keyArr[keyArr.length-2].equals(token)) ||
-                keyArr.length != 3) {
+                keyArr.length != 3 ||
+                !(keyArr[keyArr.length-2].equals(token))) {
 
             // should return error message
             throw new BadRequestException("Invalid request, please try again later.");
@@ -215,8 +216,8 @@ public class Analyze {
         // validation
         String[] keyArr = key.split("/");
         if (!(key.startsWith("user-input/" + token)) ||
-                !(keyArr[keyArr.length-2].equals(token)) ||
                 keyArr.length != 3 ||
+                !(keyArr[keyArr.length-2].equals(token)) ||
                 numClusters < 1 ||
                 minMembersPerCluster < 1) {
 
@@ -386,8 +387,8 @@ public class Analyze {
         // validation
         String[] keyArr = objectKey.split("/");
         if (!(objectKey.startsWith("user-input/" + token)) ||
-                !(keyArr[keyArr.length-2].equals(token)) ||
-                keyArr.length != 3) {
+                keyArr.length != 3 ||
+                !(keyArr[keyArr.length-2].equals(token))) {
 
             // should return error message
             throw new BadRequestException("Invalid request, please try again later.");
@@ -422,7 +423,7 @@ public class Analyze {
             outString += "Total number of inputs = " + feedBackType.getTotalInputs() + ",\n";
             int percent = (feedBackType.getMissingInputs()*100/feedBackType.getTotalInputs());
             outString += "Total number of missing values = " + feedBackType.getMissingInputs() + "("+ percent + "%)..\n";
-            outString += "Head over to the <a href='/upload-pass'>data pre-processing page</a> to continue.";
+            outString += "Head over to the <Link to='/upload-pass'>data pre-processing page</Link> to continue.";
             return outString;
         } else {
             throw new BadRequestException("There was an issue with your input file: " + feedBackType.getErrorMessage() +
@@ -496,8 +497,8 @@ public class Analyze {
         // validation
         String[] keyArr = key.split("/");
         if (!(key.startsWith("user-input/" + token)) ||
-                !(keyArr[keyArr.length-2].equals(token)) ||
-                keyArr.length != 3) {
+                keyArr.length != 3 ||
+                !(keyArr[keyArr.length-2].equals(token))) {
 
             // should return error message
             throw new BadRequestException("Invalid request, please try again later.");

@@ -2,6 +2,7 @@
 //console.log(sessionStorage.getItem("sessionToken"));
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 // naming convention retained from previous JQuery implementation
 export function fileUploadSubmitHandler($fileInput, cb) {
@@ -58,10 +59,10 @@ export function fileUploadSubmitHandler($fileInput, cb) {
 
     // when all files are uploaded, tell server to check for integrity
     function notifyAllFilesUploaded(token, s3Key) {
-        cb.updateProgress({
-            progressTextHTML: '<h5>Checking integrity...</h5><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'
-        });
 
+        cb.updateProgress({
+            progressText: (<div><h5>Checking integrity...</h5><i className="fa fa-spinner fa-spin fa-3x fa-fw"></i></div>)
+        });
 
         var formData = new FormData();
         formData.append("objectKey", s3Key);
@@ -84,13 +85,14 @@ export function fileUploadSubmitHandler($fileInput, cb) {
             }
         })
         .then( success => {
+             var contentWithLink = convertMessageWithLink(success);
              cb.updateProgress({
-                progressTextHTML: '<div class="alert alert-success">' + success + '</div>'
+                progressText: ( <div className="alert alert-success"> { contentWithLink } </div> )
             });
         })
         .catch( error => {
             cb.updateProgress({
-                progressTextHTML: '<div class="alert alert-danger">' + error.message + '</div>'
+                progressText: (<div className="alert alert-danger"> { error.message } </div>)
             });
          })
 
@@ -137,6 +139,8 @@ export function fileUploadSubmitHandler($fileInput, cb) {
 
 
     };
+
+    cb.updateProgress()
 
     // set up FC and read in files
     FileController.setOnFileRead(afterEachFileRead);
@@ -209,6 +213,27 @@ export function deleteFileFromS3(fileName){
     var store = storeData ? JSON.parse(storeData) : {token: ""};
     var path = "user-input/" + store.token + "/" + fileName;
     return S3Uploader.deleteFile(path);
+}
+
+/**
+ * Given a String msg with "<Link to='path'>text<\Link>" format,
+ * return HTML element using JSX syntax
+ */
+function convertMessageWithLink(msg) {
+
+    var regExp = /<Link to=[\'|\"](.*)[\'|\"]\s*>(.*)<.*>/
+    var match = regExp.exec(msg);
+    if (match === null || match.length != 3)
+        return null;
+    var path = match[1];
+    var text = match[2];
+
+    var linkComponent = ( <Link to={path}>{text}</Link> );
+    // grab msg parts before and after the Link
+    var msgParts = msg.split(match[0]);
+
+    return ( <p>{msgParts[0]} {linkComponent} {msgParts[1]} </p>);
+
 }
 
 /*
