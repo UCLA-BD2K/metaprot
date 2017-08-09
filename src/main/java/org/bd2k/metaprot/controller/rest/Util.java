@@ -3,9 +3,12 @@ package org.bd2k.metaprot.controller.rest;
 import org.bd2k.metaprot.data.GoogleAnalytics;
 import org.bd2k.metaprot.data.GoogleAnalyticsReport;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
+import org.bd2k.metaprot.exception.ServerException;
 import org.bd2k.metaprot.model.SessionData;
+import org.bd2k.metaprot.util.EmailService;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +28,8 @@ public class Util {
     @Autowired
     private DAOImpl dao;
 
+    @Autowired
+    private EmailService emailService;
 
     @RequestMapping(value = "/token", method = RequestMethod.GET)
     public String getToken() {
@@ -53,5 +58,24 @@ public class Util {
         return GoogleAnalytics.getReport();
     }
 
+    @RequestMapping(value = "/email", method = RequestMethod.GET)
+    public String sendEmail() {
+        emailService.sendSimpleMessage("nnsookwon@gmail.com", "test", "lol");
+        return "done";
+    }
+
+    @RequestMapping(value = "/sendFeedback", method = RequestMethod.POST)
+    public String sendFeedback(@RequestParam("email") String fromEmail,
+                               @RequestParam("subject") String subject,
+                               @RequestParam("text") String text) {
+        String content = "From: " + fromEmail + "\n\n" + "Feedback: " + text;
+        try {
+            emailService.sendFeedback(subject, content);
+        } catch (MailException e) {
+            e.printStackTrace();
+            throw new ServerException("An error has occurred. Please try again later.");
+        }
+        return "Thank you for your feedback!";
+    }
 
 }

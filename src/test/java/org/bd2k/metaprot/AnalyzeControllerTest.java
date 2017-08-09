@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
- * Created by davidmeng on 8/7/17.
+ * Created by Nate Sookwongse on 8/7/17.
  */
 
 @RunWith(SpringRunner.class)
@@ -34,6 +34,7 @@ public class AnalyzeControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+
 
     @Before
     public void setup() throws Exception {
