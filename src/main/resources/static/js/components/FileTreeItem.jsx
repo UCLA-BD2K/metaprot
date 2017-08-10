@@ -33,6 +33,8 @@ class FileTreeItem extends Component {
             .then(data => {
                 // set modal content with CSV table viewer
                 var modalData = {
+                title: this.props.filename,
+                className: "csv-modal",
                     content: (<CsvViewer data={data} />)
                 }
                 this.props.setModalData(modalData);

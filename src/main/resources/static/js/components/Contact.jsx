@@ -17,6 +17,7 @@ class Contact extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.disableSubmit = this.disableSubmit.bind(this);
     }
 
     handleChange(e) {
@@ -69,6 +70,10 @@ class Contact extends Component {
         })
     }
 
+    disableSubmit() {
+        return this.state.submitting || this.state.text === "";
+    }
+
     render() {
         return (
             <div className="container-fluid">
@@ -81,17 +86,19 @@ class Contact extends Component {
                         <Form onSubmit={this.handleSubmit} style={{margin:"30px 0 30px 0"}}>
                             <FormGroup>
                                 <ControlLabel>Email address:</ControlLabel>
-                                <FormControl type="email" name="email" onChange={this.handleChange}/>
+                                <FormControl type="email" name="email"
+                                    onChange={this.handleChange} placeholder="(Optional)"/>
                             </FormGroup>
                             <FormGroup>
                                 <ControlLabel>Subject:</ControlLabel>
-                                <FormControl type="text" name="subject" onChange={this.handleChange}/>
+                                <FormControl type="text" name="subject"
+                                    onChange={this.handleChange} placeholder="(Optional)"/>
                             </FormGroup>
                             <FormGroup>
                                 <ControlLabel>Feedback:</ControlLabel>
                                 <FormControl componentClass="textarea" rows="5" name="text" onChange={this.handleChange}/>
                             </FormGroup>
-                            <Button type="submit" disabled={this.state.submitting}>Submit</Button>
+                            <Button type="submit" disabled={this.disableSubmit()}>Submit</Button>
                         </Form>
 
                         <div className="text-center">

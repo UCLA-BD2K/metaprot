@@ -1,6 +1,5 @@
 package org.bd2k.metaprot.util;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -53,6 +52,7 @@ public class Globals {
 
         // load any resources that cannot be autowired (if the variables are static, etc.)
         Resource resource = new ClassPathResource("application.properties");
+
         try {
             Properties props = PropertiesLoaderUtils.loadProperties(resource);
 
@@ -66,6 +66,7 @@ public class Globals {
 
             // get the location of R scripts
             rScriptLocation = (String) props.get("app.r.script.location");
+
 
         } catch (Exception e) {
             e.printStackTrace();

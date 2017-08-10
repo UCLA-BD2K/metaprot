@@ -16,6 +16,7 @@ class ShareToken extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.disableSubmit = this.disableSubmit.bind(this);
     }
 
     handleChange(e) {
@@ -68,6 +69,10 @@ class ShareToken extends Component {
         })
     }
 
+    disableSubmit() {
+        return this.state.submitting || this.state.email === "";
+    }
+
     render() {
         return (
             <div>
@@ -85,7 +90,7 @@ class ShareToken extends Component {
                         <ControlLabel>Recipient's email address:</ControlLabel>
                         <FormControl type="email" name="email" onChange={this.handleChange}/>
                     </FormGroup>
-                    <Button type="submit" disabled={this.state.submitting}>Submit</Button>
+                    <Button type="submit" disabled={this.disableSubmit()}>Submit</Button>
                 </Form>
 
                 <div className="text-center">
