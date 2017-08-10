@@ -81,10 +81,21 @@ public class Util {
 
     @RequestMapping(value = "/shareToken", method = RequestMethod.POST)
     public String shareToken(@RequestParam("email") String toEmail,
+                             @RequestParam("nameFrom") String nameFrom,
+                             @RequestParam("nameTo") String nameTo,
                              @RequestParam("token") String token,
                              HttpServletRequest request) {
+
+        // generate url link for user to click and load token and session data
         String url = request.getRequestURL().toString().replace("util/shareToken", "upload/"+token);
-        String content = "Please click here: " + url;
+
+        // content of email that will be sent
+        String content = String.format(
+                "Hello %s,\n\n" +
+                "You have been sent a MetProt session token from %s. " +
+                "Please click on this link (or copy and paste in your browser) to access this session: %s\n\n" +
+                "MetProt is a cloud-based platform to Analyze, Annotate, and Integrate Metabolomics Datasets with Proteomics Information.",
+                nameTo, nameFrom, url);
 
         try {
             emailService.sendSimpleMessage(toEmail, "MetProt Shared Session Token", content);

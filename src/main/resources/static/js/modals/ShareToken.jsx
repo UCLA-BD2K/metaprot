@@ -9,7 +9,9 @@ class ShareToken extends Component {
         this.state = {
             progressText: null,
             submitting: false,
-            email: ""
+            email: "",
+            nameTo: "",
+            nameFrom: ""
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -26,6 +28,8 @@ class ShareToken extends Component {
         var formData = new FormData();
         formData.append("email", this.state.email);
         formData.append("token", this.props.token);
+        formData.append("nameTo", this.state.nameTo);
+        formData.append("nameFrom", this.state.nameFrom);
 
         var self = this;
 
@@ -70,7 +74,15 @@ class ShareToken extends Component {
                 <h5>Enter your own email to receive a copy of your session token, or enter another's email to share your token.</h5>
                 <Form onSubmit={this.handleSubmit} style={{margin:"30px 0 30px 0"}}>
                     <FormGroup>
-                        <ControlLabel>Email address:</ControlLabel>
+                        <ControlLabel>Sender's name:</ControlLabel>
+                        <FormControl type="text" name="nameFrom" onChange={this.handleChange} placeholder="(Optional)"/>
+                    </FormGroup>
+                    <FormGroup>
+                        <ControlLabel>Recipient's name:</ControlLabel>
+                        <FormControl type="text" name="nameTo" onChange={this.handleChange} placeholder="(Optional)"/>
+                    </FormGroup>
+                    <FormGroup>
+                        <ControlLabel>Recipient's email address:</ControlLabel>
                         <FormControl type="email" name="email" onChange={this.handleChange}/>
                     </FormGroup>
                     <Button type="submit" disabled={this.state.submitting}>Submit</Button>
