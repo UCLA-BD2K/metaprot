@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 /**
@@ -76,6 +77,23 @@ public class Util {
             throw new ServerException("An error has occurred. Please try again later.");
         }
         return "Thank you for your feedback!";
+    }
+
+    @RequestMapping(value = "/shareToken", method = RequestMethod.POST)
+    public String shareToken(@RequestParam("email") String toEmail,
+                             @RequestParam("token") String token,
+                             HttpServletRequest request) {
+        String url = request.getRequestURL().toString().replace("util/shareToken", "upload/"+token);
+        String content = "Please click here: " + url;
+
+        try {
+            emailService.sendSimpleMessage(toEmail, "MetProt Shared Session Token", content);
+        } catch (MailException e) {
+            e.printStackTrace();
+            throw new ServerException("An error has occurred. Please try again later.");
+        }
+        return "Your session token has been successfully sent!";
+
     }
 
 }

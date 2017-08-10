@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import FileSelectForm from './FileSelectForm';
 import { connect } from 'react-redux';
-import { getToken } from '../util/upload';
+import { getToken } from '../util/helper';
 
 /**
  * Main content for Time Series Analysis page.

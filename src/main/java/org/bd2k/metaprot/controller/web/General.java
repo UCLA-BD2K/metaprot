@@ -38,10 +38,8 @@ public class General {
     public String getTokenUploadPage(Model model, @PathVariable("token") String token) {
         System.out.println(token);
 
-        model.addAttribute("token", token);     // pass token to view as model variable
-        model.addAttribute("sessionData", dao.getSessionData(token));
 
-        return "upload";
+        return "index";
     }
 
     /**

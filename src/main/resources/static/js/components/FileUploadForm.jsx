@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Form, FormControl, ControlLabel, Button } from 'react-bootstrap'
-import { fileUploadSubmitHandler } from '../util/upload'
+import { fileUploadSubmitHandler } from '../util/helper'
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { addFileToTree, setToken } from '../actions';

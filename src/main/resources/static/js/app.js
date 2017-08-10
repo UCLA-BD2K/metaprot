@@ -75,7 +75,8 @@ ReactDOM.render(
                 <Route exact path="/" render={ renderWithLayout("simple", <Home />) }/>
                 <Route path="/about" render={ renderWithLayout("simple", <About />) }/>
                 <Route path="/contact" render={ renderWithLayout("simple", <Contact />) }/>
-                <Route path="/upload" render={ renderWithLayout("main", <Upload />) } />
+                <Route exact path="/upload" render={ renderWithLayout("main", <Upload />) } />
+                <Route path="/upload/:token" render={ ({match}) => <MainLayout> <Upload linkedToken={match.params.token}/> </MainLayout>} />
                 <Route path="/upload-pass" render={ renderWithLayout("main", <ProcessFile />) } />
                 <Route path="/analysis" render={ renderWithLayout("main", <Analysis />) } />
                 <Route path="/metabolite-analysis" render={ renderWithLayout("main", <MetaboliteAnalysis />) } />

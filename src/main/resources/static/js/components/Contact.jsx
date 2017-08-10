@@ -11,7 +11,8 @@ class Contact extends Component {
             feedback: "",
             subject: "",
             text: "",
-            progressText: null
+            progressText: null,
+            submitting: false
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -33,13 +34,18 @@ class Contact extends Component {
 
         var self = this;
 
-        self.setState({progressText: (<i className="fa fa-spinner fa-spin fa-3x fa-fw"></i>)})
+        // display loading spinner and lock submit button
+        self.setState({
+            progressText: (<i className="fa fa-spinner fa-spin fa-3x fa-fw"></i>),
+            submitting: true
+        });
 
+        // send POST request to server to submit feedback
         fetch("/util/sendFeedback", {
             method: "POST",
             body: formData
         })
-        // process success/failure
+        // process success/failure and unlock submit button
         .then( response => {
             if (response.ok)
                 return response.text();
@@ -50,10 +56,16 @@ class Contact extends Component {
             }
         })
         .then( success => {
-            self.setState({progressText: (<div className="alert alert-success"> { success } </div>) });
+            self.setState({
+                progressText: (<div className="alert alert-success"> { success } </div>),
+                submitting: false
+            });
         })
         .catch( error => {
-            self.setState({progressText: (<div className="alert alert-danger"> { error.message } </div>) });
+            self.setState({
+                progressText: (<div className="alert alert-danger"> { error.message } </div>),
+                submitting: false
+            });
         })
     }
 
@@ -79,7 +91,7 @@ class Contact extends Component {
                                 <ControlLabel>Feedback:</ControlLabel>
                                 <FormControl componentClass="textarea" rows="5" name="text" onChange={this.handleChange}/>
                             </FormGroup>
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit" disabled={this.state.submitting}>Submit</Button>
                         </Form>
 
                         <div className="text-center">

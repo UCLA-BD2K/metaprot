@@ -7,7 +7,7 @@ import Footer from './Footer';
 import { connect } from 'react-redux';
 import { Form, FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap'
 import { resetTree, addFileToTree, setToken } from '../actions';
-import { validateToken, getTreeData } from '../util/upload';
+import { validateToken, getTreeData } from '../util/helper';
 
 /**
  * Main content for Upload page.
@@ -26,9 +26,16 @@ class Upload extends Component {
 
     }
 
+    componentDidMount() {
+        if (this.props.linkedToken) {
+            this.setState({tokenInput: this.props.linkedToken}, ()=>{this.handleTokenSubmit()})
+        }
+    }
+
     // user retrieving file(s) via token
     handleTokenSubmit(e) {
-        e.preventDefault();
+        if (e)
+            e.preventDefault();
         var token = this.state.tokenInput;
         var self = this;
 

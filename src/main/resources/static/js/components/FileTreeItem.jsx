@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { removeFileFromTree } from '../actions';
-import { downloadFileFromS3 } from '../util/upload';
-import CsvViewer from './CsvViewer';
+import { downloadFileFromS3 } from '../util/helper';
+import CsvViewer from '../modals/CsvViewer';
 
 /**
  * Expected props:
@@ -17,6 +17,7 @@ class FileTreeItem extends Component {
         // open modal and show loading spinner
         var modalLoading = {
             title: this.props.filename,
+            className: "csv-modal",
             content: (
                 <div className="text-center ">
                     <i className="fa fa-spinner fa-spin fa-3x fa-fw"></i>
@@ -32,7 +33,6 @@ class FileTreeItem extends Component {
             .then(data => {
                 // set modal content with CSV table viewer
                 var modalData = {
-                    title: this.props.filename,
                     content: (<CsvViewer data={data} />)
                 }
                 this.props.setModalData(modalData);

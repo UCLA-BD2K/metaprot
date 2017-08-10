@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import ShareToken from '../modals/ShareToken';
 
 /* Path and Name information for each tab in Side NavBar */
 var tabData = [
@@ -32,10 +33,17 @@ class SideNavBar extends Component {
             activeTab: tabData[0]
         }
         this.handleClick = this.handleClick.bind(this);
+        this.openShareTokenModal = this.openShareTokenModal.bind(this);
     }
 
     handleClick(tab) {
         this.setState({activeTab: tab});
+    }
+
+    openShareTokenModal() {
+
+        this.props.setModalData({title: "Share Session Token", className:"", content:(<ShareToken token={this.props.token}/>)});
+        this.props.openModal();
     }
 
     render() {
@@ -60,11 +68,17 @@ class SideNavBar extends Component {
                 <div id="token_text" >
 
                     <div>
+                    {/*
                         <CopyToClipboard text={this.props.token}>
-                            <div id="token-copy">
+                            <div id="token-share">
                                 <p>Copy</p>
                             </div>
                         </CopyToClipboard>
+                     */}
+                        <div id="token-share"
+                            onClick={this.openShareTokenModal}>
+                             <p>Share</p>
+                        </div>
                         <p className="navbar-text">Token number</p>
                     </div>
 

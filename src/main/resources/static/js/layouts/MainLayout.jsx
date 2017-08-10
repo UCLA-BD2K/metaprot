@@ -13,6 +13,7 @@ class MainLayout extends Component {
           modalData: {}
         };
 
+
         this.openModal = this.openModal.bind(this);
         this.setModalData = this.setModalData.bind(this);
         this.hideModal = this.hideModal.bind(this);
@@ -43,7 +44,9 @@ class MainLayout extends Component {
                 <div className="container-fluid">
                     <div className="row">
 
-                        <SideNavBar/>
+                        <SideNavBar
+                            openModal={this.openModal}
+                            setModalData={this.setModalData}/>
 
                         <div className="col-sm-8 col-md-offset-2 main">
 
@@ -65,7 +68,7 @@ class MainLayout extends Component {
                 <Modal
                     show={this.state.isOpen}
                     onHide={this.hideModal}
-                    dialogClassName="csv-modal">
+                    dialogClassName={this.state.modalData.className}>
 
                     <Modal.Header closeButton>
                         <Modal.Title>{this.state.modalData.title}</Modal.Title>
