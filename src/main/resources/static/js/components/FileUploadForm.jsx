@@ -5,6 +5,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { addFileToTree, setToken } from '../actions';
 
+// prevent files larger than limit from being uploaded
+const FILESIZE_LIMIT = 10485760 ; // 10 MB
+
 class FileUploadForm extends Component {
 
     constructor(props) {
@@ -16,6 +19,8 @@ class FileUploadForm extends Component {
             uploading: false
         }
 
+
+
         // bind component methods
         this.handleSubmit = this.handleSubmit.bind(this);
         this.updateProgress = this.updateProgress.bind(this);
@@ -25,6 +30,11 @@ class FileUploadForm extends Component {
     }
     handleSubmit(e) {
         e.preventDefault();
+        var filesize = this.state.$fileInput[0].files[0].size;
+        if (filesize > FILESIZE_LIMIT) {
+            alert("Error: file size exceeds 10 MB limit.");
+            return;
+        }
         this.setState({ uploading: true });
 
         // callback helper functions to appropriately set and update Redux store and Component's state
