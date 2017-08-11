@@ -96,27 +96,27 @@ public class GoogleAnalytics {
         // Query the Core Reporting API for the number of sessions
         // in the past seven days.
         return analytics.data().ga()
-                .get("ga:" + profileId, "2017-06-01", "today", "ga:pageviews,ga:pageviewsPerSession,ga:users")
+                .get("ga:" + profileId, "2017-06-01", "today", "ga:sessions,ga:pageviewsPerSession,ga:users")
                 .execute();
     }
 
-    public static GaData getDailyVisitCounts(Analytics analytics, String profileId) throws IOException {
+    public static GaData getDailySessionCounts(Analytics analytics, String profileId) throws IOException {
         return analytics.data().ga()
-                .get("ga:" + profileId, "2017-07-10", "today", "ga:pageviews")
+                .get("ga:" + profileId, "2017-07-10", "today", "ga:sessions")
                 .setDimensions("ga:year, ga:month, ga:day")
                 .execute();
     }
 
-    public static GaData getMonthlyVisitCounts(Analytics analytics, String profileId) throws IOException {
+    public static GaData getMonthlySessionCounts(Analytics analytics, String profileId) throws IOException {
         return analytics.data().ga()
-                .get("ga:" + profileId, "2017-06-01", "today", "ga:pageviews")
+                .get("ga:" + profileId, "2017-06-01", "today", "ga:sessions")
                 .setDimensions("ga:year, ga:month")
                 .execute();
     }
 
     public static GaData getCountryData(Analytics analytics, String profileId) throws IOException {
         return analytics.data().ga()
-                .get("ga:" + profileId, "2017-07-01", "today", "ga:pageviews")
+                .get("ga:" + profileId, "2017-07-01", "today", "ga:sessions")
                 .setDimensions("ga:country")
                 .execute();
     }
@@ -127,8 +127,8 @@ public class GoogleAnalytics {
         if (results != null && !results.getRows().isEmpty()) {
             System.out.println("View (Profile) Name: "
                     + results.getProfileInfo().getProfileName());
-            System.out.println("Total Pageviews: " + results.getRows().get(0).get(0));
-            System.out.println("Pageviews per visit: " + results.getRows().get(0).get(1));
+            System.out.println("Total Sessions: " + results.getRows().get(0).get(0));
+            System.out.println("Pageviews per sessions: " + results.getRows().get(0).get(1));
             System.out.println("Unique Visitors: " + results.getRows().get(0).get(2));
         } else {
             System.out.println("No results found");
@@ -140,17 +140,16 @@ public class GoogleAnalytics {
         GoogleAnalyticsReport report = new GoogleAnalyticsReport();
 
         GaData results = null;
-        GaData dailyVisitCounts = null;
-        GaData monthlyVisitCounts = null;
+        GaData dailySessionCounts = null;
+        GaData monthlySessionCounts = null;
         GaData countryData = null;
-        int numCountries = 0;
 
         try {
             Analytics analytics = initializeAnalytics();
             String profile = getFirstProfileId(analytics);
             results = getVisitSummary(analytics, profile);
-            dailyVisitCounts = getDailyVisitCounts(analytics, profile);
-            monthlyVisitCounts = getMonthlyVisitCounts(analytics, profile);
+            dailySessionCounts = getDailySessionCounts(analytics, profile);
+            monthlySessionCounts = getMonthlySessionCounts(analytics, profile);
             countryData = getCountryData(analytics, profile);
         } catch (Exception e) {
             e.printStackTrace();
@@ -158,8 +157,8 @@ public class GoogleAnalytics {
 
         if (results != null) {
             report.setMonth(new SimpleDateFormat("MMMM yyyy").format(new Date()));
-            report.setPageviews(Integer.parseInt(results.getRows().get(0).get(0)));
-            report.setPageviewsPerVisit(Double.parseDouble(results.getRows().get(0).get(1)));
+            report.setSessions(Integer.parseInt(results.getRows().get(0).get(0)));
+            report.setPageviewsPerSession(Double.parseDouble(results.getRows().get(0).get(1)));
             report.setUniqueVisitors(Integer.parseInt(results.getRows().get(0).get(2)));
         }
 
@@ -168,12 +167,12 @@ public class GoogleAnalytics {
             report.setMapData(countryData.getRows());
         }
 
-        if (dailyVisitCounts != null) {
-            report.setDailyVisitsData(dailyVisitCounts.getRows());
+        if (dailySessionCounts != null) {
+            report.setDailySessionData(dailySessionCounts.getRows());
         }
 
-        if (monthlyVisitCounts != null) {
-            report.setMonthlyVisitsData(monthlyVisitCounts.getRows());
+        if (monthlySessionCounts != null) {
+            report.setMonthlySessionData(monthlySessionCounts.getRows());
         }
         return report;
     }

@@ -13,13 +13,13 @@ class Home extends Component {
         super(props);
         this.state = {
             siteUsageDescr: "",
-            pageviews: 0,
-            pageviewsPerVisit: 0,
+            sessions: 0,
+            pageviewsPerSession: 0,
             uniqueVisitors: 0,
             numCountries: 0,
             mapData: [[]],
-            dailyVisitsData: [[]],
-            monthlyVisitsData: [[]],
+            dailySessionData: [[]],
+            monthlySessionData: [[]],
             loading: this.props.report === null ? true : false
         }
 
@@ -51,7 +51,7 @@ class Home extends Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.state.loading == false) {
             plotGeoMap(this.state.mapData);
-            plotTrafficChart(this.state.dailyVisitsData, this.state.monthlyVisitsData);
+            plotTrafficChart(this.state.dailySessionData, this.state.monthlySessionData);
         }
     }
 
@@ -59,7 +59,7 @@ class Home extends Component {
         // set up InfoBlocks
         var siteUsageDescr = this.state.month ? "As of " + this.state.month
             + ", Google Analytics reports the following data on MetaProt:" : null;
-        var pageviewsPerVisit = this.state.pageviewsPerVisit.toFixed(2);
+        var pageviewsPerSession = this.state.pageviewsPerSession.toFixed(2);
         var infoblocks = [
             {
                 title: "Recent Updates",
@@ -101,8 +101,8 @@ class Home extends Component {
                     <div>
                         <div style={{maxWidth: 220, margin: "0 auto"}}>
                             <ul style={{textAlign: "left"}}>
-                                <li><em>{this.state.pageviews}</em> pageviews</li>
-                                <li><em>{pageviewsPerVisit}</em> pageviews per visit</li>
+                                <li><em>{this.state.sessions}</em> sessions</li>
+                                <li><em>{pageviewsPerSession}</em> pageviews per session</li>
                                 <li><em>{this.state.uniqueVisitors}</em> unique visitors</li>
                                 <li><em>{this.state.numCountries}</em> countries represented</li>
                             </ul>
@@ -113,7 +113,7 @@ class Home extends Component {
             },
             {
                 title: "Usage Trends",
-                description: (<p id="usage-trends-title">Views per Day</p>),
+                description: (<p id="usage-trends-title">Sessions per Day</p>),
                 postHTML: (
                     <div>
                         <div id="usage-trends-chart" className="drop-shadow"></div>

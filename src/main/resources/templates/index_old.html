@@ -27,8 +27,8 @@
         <!--Store thymeleaf variables globally so React components may access-->
         <script th:inline="javascript">
             var SITE_USAGE_DESCR = /*[[${siteUsageDescr}]]*/ "Google Analytics Reports:";
-            var PAGE_VIEWS = /*[[${pageviews}]]*/ "n/a";
-            var PAGE_VIEWS_PER_VISIT = /*[[${pageviewsPerVisit}]]*/ "n/a";
+            var PAGE_VIEWS = /*[[${sessions}]]*/ "n/a";
+            var PAGE_VIEWS_PER_VISIT = /*[[${pageviewsPerSession}]]*/ "n/a";
             var UNIQUE_VISITORS = /*[[${uniqueVisitors}]]*/ "n/a";
             var NUM_COUNTRIES = /*[[${numCountries}]]*/ "n/a";
             var MAP_DATA = [[${mapData}]];

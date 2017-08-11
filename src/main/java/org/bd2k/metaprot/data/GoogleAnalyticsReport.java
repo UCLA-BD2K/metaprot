@@ -9,23 +9,23 @@ import java.util.List;
 
 public class GoogleAnalyticsReport {
     private String month;
-    private int pageviews;
-    private double pageviewsPerVisit;
+    private int sessions;
+    private double pageviewsPerSession;
     private int uniqueVisitors;
     private int numCountries;
     private List<List<String>> mapData;
-    private List<List<String>> dailyVisitsData;
-    private List<List<String>> monthlyVisitsData;
+    private List<List<String>> dailySessionData;
+    private List<List<String>> monthlySessionData;
 
     GoogleAnalyticsReport() {
         month = null;
-        pageviews = 0;
-        pageviewsPerVisit = 0;
+        sessions = 0;
+        pageviewsPerSession = 0;
         uniqueVisitors = 0;
         numCountries = 0;
         mapData = new ArrayList<>();
-        dailyVisitsData = new ArrayList<>();
-        monthlyVisitsData = new ArrayList<>();
+        dailySessionData = new ArrayList<>();
+        monthlySessionData = new ArrayList<>();
     }
 
     public String getMonth() {
@@ -36,20 +36,20 @@ public class GoogleAnalyticsReport {
         this.month = month;
     }
 
-    public int getPageviews() {
-        return pageviews;
+    public int getSessions() {
+        return sessions;
     }
 
-    public void setPageviews(int pageviews) {
-        this.pageviews = pageviews;
+    public void setSessions(int sessions) {
+        this.sessions = sessions;
     }
 
-    public double getPageviewsPerVisit() {
-        return pageviewsPerVisit;
+    public double getPageviewsPerSession() {
+        return pageviewsPerSession;
     }
 
-    public void setPageviewsPerVisit(double pageviewsPerVisit) {
-        this.pageviewsPerVisit = pageviewsPerVisit;
+    public void setPageviewsPerSession(double pageviewsPerSession) {
+        this.pageviewsPerSession = pageviewsPerSession;
     }
 
     public int getUniqueVisitors() {
@@ -76,19 +76,19 @@ public class GoogleAnalyticsReport {
         this.mapData = mapData;
     }
 
-    public List<List<String>> getDailyVisitsData() {
-        return dailyVisitsData;
+    public List<List<String>> getDailySessionData() {
+        return dailySessionData;
     }
 
-    public void setDailyVisitsData(List<List<String>> dailyVisitsData) {
-        this.dailyVisitsData = dailyVisitsData;
+    public void setDailySessionData(List<List<String>> dailySessionData) {
+        this.dailySessionData = dailySessionData;
     }
 
-    public List<List<String>> getMonthlyVisitsData() {
-        return monthlyVisitsData;
+    public List<List<String>> getMonthlySessionData() {
+        return monthlySessionData;
     }
 
-    public void setMonthlyVisitsData(List<List<String>> monthlyVisitsData) {
-        this.monthlyVisitsData = monthlyVisitsData;
+    public void setMonthlySessionData(List<List<String>> monthlySessionData) {
+        this.monthlySessionData = monthlySessionData;
     }
 }
