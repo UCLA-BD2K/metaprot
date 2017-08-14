@@ -17,7 +17,6 @@ class Contact extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.disableSubmit = this.disableSubmit.bind(this);
     }
 
     handleChange(e) {
@@ -70,10 +69,6 @@ class Contact extends Component {
         })
     }
 
-    disableSubmit() {
-        return this.state.submitting || this.state.text === "";
-    }
-
     render() {
         return (
             <div className="container-fluid">
@@ -96,9 +91,9 @@ class Contact extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <ControlLabel>Feedback:</ControlLabel>
-                                <FormControl componentClass="textarea" rows="5" name="text" onChange={this.handleChange}/>
+                                <FormControl required componentClass="textarea" rows="5" name="text" onChange={this.handleChange}/>
                             </FormGroup>
-                            <Button type="submit" disabled={this.disableSubmit()}>Submit</Button>
+                            <Button type="submit" disabled={this.submitting}>Submit</Button>
                         </Form>
 
                         <div className="text-center">

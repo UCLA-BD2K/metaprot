@@ -41,12 +41,18 @@ class SideNavBar extends Component {
     }
 
     openShareTokenModal() {
-
         this.props.setModalData({title: "Share Session Token", className:"", content:(<ShareToken token={this.props.token}/>)});
         this.props.openModal();
     }
 
     render() {
+        // show Share token button if user has a session token
+        var shareBtn = this.props.token === "" ? null : (
+            <div id="token-share" onClick={this.openShareTokenModal}>
+                <p>Share</p>
+            </div>
+        );
+
         return (
              <div className="col-sm-2 sidebar sidebar-left sidebar-animate sidebar-md-show">
 
@@ -58,7 +64,7 @@ class SideNavBar extends Component {
                             <Tab key={i}
                                 data={tab}
                                 isActive={this.state.activeTab === tab}
-                                handleClick={this.handleClick.bind(this, tab)} />
+                                handleClick={this.handleClick} />
                         );
                     })
                 }
@@ -66,19 +72,8 @@ class SideNavBar extends Component {
 
                 { /* Token information at the bottom of the Side NavBar */ }
                 <div id="token_text" >
-
                     <div>
-                    {/*
-                        <CopyToClipboard text={this.props.token}>
-                            <div id="token-share">
-                                <p>Copy</p>
-                            </div>
-                        </CopyToClipboard>
-                     */}
-                        <div id="token-share"
-                            onClick={this.openShareTokenModal}>
-                             <p>Share</p>
-                        </div>
+                        { shareBtn }
                         <p className="navbar-text">Token number</p>
                     </div>
 
