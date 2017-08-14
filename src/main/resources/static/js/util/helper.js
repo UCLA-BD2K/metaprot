@@ -1,7 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// naming convention retained from previous JQuery implementation
+/**
+ * Handles files being uploaded to S3.
+ * Naming convention $fileInput retained from previous JQuery implementation.
+ */
 export function fileUploadSubmitHandler($fileInput, cb) {
     // upload w/ token
     // number of files to upload, for now, just handle 1
@@ -146,12 +149,19 @@ export function fileUploadSubmitHandler($fileInput, cb) {
 
 }
 
+/**
+ * GET request to REST server to receive a randomized session token
+ */
 export function getToken() {
     return fetch("/util/token", {
         method: "GET"
     }).then( response => { return response.text() });
 }
 
+/**
+ * POST request to REST server to check if token is valid.
+ * Returns a String "true" if token is valid
+ */
 export function validateToken(token) {
 
     var formData = new FormData();
@@ -163,7 +173,12 @@ export function validateToken(token) {
     }).then(response => { return response.text() });
 }
 
-
+/**
+ * POST request to REST server to retrieve filenames
+ * associated with a particular session token in order
+ * to populate the file Tree.
+ * Returns an array of filename Strings.
+ */
 export function getTreeData(token) {
 
     var formData = new FormData();
@@ -174,10 +189,19 @@ export function getTreeData(token) {
             body: formData
         })
         .then( response => { return response.text() })
-        .then( commaSepList => { return commaSepList.split(",") });
+        // response String should be formatted as "File1, File2, File3, ..."
+        .then( commaSepList => {
+            // return an empty array if there are no filenames listed
+            return commaSepList === "" ? [] : commaSepList.split(",");
+        });
 }
 
-
+/**
+ * Retrieve session data saved in session storage and send
+ * a POST request to REST server to update data. (Important so
+ * that filenames are up to date when session tokens are being
+ * shared and accessed).
+ */
 export function updateSessionData(){
     var storeData = sessionStorage.getItem("store");
     if (!storeData)

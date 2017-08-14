@@ -46,6 +46,7 @@ class Upload extends Component {
                 self.props.setToken(token);
 
                 getTreeData(token).then( data => {
+                        console.log(data);
                         data.forEach(filename => {
                             self.props.addFileToTree(filename);
                         })
