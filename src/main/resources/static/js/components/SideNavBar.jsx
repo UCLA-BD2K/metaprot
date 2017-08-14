@@ -32,7 +32,7 @@ class SideNavBar extends Component {
         this.state = {
             activeTab: tabData[0]
         }
-        this.handleClick = this.handleClick.bind(this);
+
         this.openShareTokenModal = this.openShareTokenModal.bind(this);
     }
 
@@ -64,7 +64,7 @@ class SideNavBar extends Component {
                             <Tab key={i}
                                 data={tab}
                                 isActive={this.state.activeTab === tab}
-                                handleClick={this.handleClick} />
+                                handleClick={this.handleClick.bind(this, tab)} />
                         );
                     })
                 }
