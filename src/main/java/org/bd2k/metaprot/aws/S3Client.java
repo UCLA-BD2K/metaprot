@@ -3,10 +3,7 @@ package org.bd2k.metaprot.aws;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-
+import com.amazonaws.services.s3.model.*;
 import org.apache.log4j.Logger;
 import org.bd2k.metaprot.util.Globals;
 import org.springframework.beans.factory.annotation.Value;
@@ -135,6 +132,29 @@ public class S3Client {
         }
 
         return new S3Status(fileName, totalBytesRead, sc);
+    }
+
+    /**
+     * Given a S3 object key copy an object from s3 and use the same key
+     * for the destination, ultimately "resetting" the time expiration for
+     * the file.
+     * @param objectKey s3 object key, e.g. tokenValue/abc.txt
+     * @return a boolean, true if the s3 request was successful, and false otherwise
+     */
+    public boolean resetFileExpiration(String objectKey) {
+
+        try {
+            // Copying object using same key to "reset" time left before expiration
+            CopyObjectRequest copyObjRequest = new CopyObjectRequest(
+                    bucketName, objectKey, bucketName, objectKey)
+                    .withNewObjectMetadata(new ObjectMetadata());
+            s3Client.copyObject(copyObjRequest);
+            return true;
+        } catch (AmazonS3Exception ae) {
+            ae.printStackTrace();
+            return false;
+        }
+
     }
 
     /**

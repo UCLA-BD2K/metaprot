@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import { Form, FormGroup, FormControl, ControlLabel, Button, TextArea } from 'react-bootstrap'
 
-
+/**
+ * Main content for Contact page.
+ * This Component should be passed in as a Child Component for SimpleLayout
+ */
 class Contact extends Component {
 
     constructor(props) {
@@ -43,7 +46,8 @@ class Contact extends Component {
         // send POST request to server to submit feedback
         fetch("/util/sendFeedback", {
             method: "POST",
-            body: formData
+            body: formData,
+            timeout: 10
         })
         // process success/failure and unlock submit button
         .then( response => {

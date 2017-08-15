@@ -4,6 +4,8 @@ import TopNavBar from '../components/TopNavBar';
 import SideNavBar from '../components/SideNavBar';
 import FileTree from '../components/FileTree';
 import Footer from '../components/Footer';
+
+
 class MainLayout extends Component {
 
     constructor(props) {

@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import InfoBlock from './InfoBlock';
 
+/**
+ * Main content for About page.
+ * This Component should be passed in as a Child Component for SimpleLayout
+ */
 class About extends Component {
 
     render() {

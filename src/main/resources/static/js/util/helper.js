@@ -125,12 +125,11 @@ export function fileUploadSubmitHandler($fileInput, cb) {
         var store = storeData ? JSON.parse(storeData) : null;
 
         if(!store || !store.token) {
-            console.log("Need new token");
             // get token for s3 upload
-            getToken().then(token => {
+            getToken().then( token => {
                 cb.setToken(token);
                 uploadFileToS3(options, token, moreParams);
-            }).catch(()=> console.log("Error in retrieving upload token.") )
+            }).catch ( error => alert(error.message) )
         }
         else{
             console.log("session Updating Backend");
@@ -161,7 +160,7 @@ export function getToken() {
             if (response.ok)
                 return response.text()
             else
-                throw new Error("There was an issue retrieving a session token.");
+                throw new Error("There was an issue retrieving a session token. Please try again later.");
         });
 }
 
@@ -243,7 +242,7 @@ export function updateSessionData(){
 
     formData.append("data", store.filenames);
 
-    return fetch("/analyze/updateSessionData", {
+    return fetch("/util/updateSessionData", {
             method: "POST",
             body: formData
         }).then( response => { return response.text() });

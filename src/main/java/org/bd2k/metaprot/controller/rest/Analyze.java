@@ -468,13 +468,6 @@ public class Analyze {
         return  notFoundJSON.toJSONString();
     }
 
-    @RequestMapping(value= "/updateSessionData", method = RequestMethod.POST)
-    public String updateSessionData(@RequestParam("token") String token,
-                                    @RequestParam("data") String data){
-
-        dao.saveOrUpdateSessionData(new SessionData(token, data, System.currentTimeMillis()));
-        return "success";
-    }
 
 
     /**

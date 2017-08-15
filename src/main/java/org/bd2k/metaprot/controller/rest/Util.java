@@ -1,5 +1,6 @@
 package org.bd2k.metaprot.controller.rest;
 
+import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.data.GoogleAnalytics;
 import org.bd2k.metaprot.data.GoogleAnalyticsReport;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
@@ -32,6 +33,9 @@ public class Util {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private S3Client s3Client;
+
     @RequestMapping(value = "/token", method = RequestMethod.GET)
     public String getToken() {
         return UUID.randomUUID().toString();
@@ -47,11 +51,31 @@ public class Util {
     @RequestMapping(value= "/getSessionData", method = RequestMethod.POST)
     public String getSessionData(@RequestParam("token") String token){
         SessionData sessionData = dao.getSessionData(token);
-        if (sessionData != null)
+
+
+        if (sessionData != null) {
+            String[] files = sessionData.getData().split(",");
+            String s3BaseKey = "user-input/" + token + "/";
+            //  If session is being accessed, reset the expiration time for these files on S3
+            for (String file : files) {
+                String s3ObjectKey = s3BaseKey + file;
+                s3Client.resetFileExpiration(s3ObjectKey);
+            }
+
             return sessionData.getData();
+        }
         else
             return new JSONObject().put("Error", "Token does not exist").toString();
 
+    }
+
+    @RequestMapping(value= "/updateSessionData", method = RequestMethod.POST)
+    public String updateSessionData(@RequestParam("token") String token,
+                                    @RequestParam("data") String data){
+
+        dao.saveOrUpdateSessionData(new SessionData(token, data, System.currentTimeMillis()));
+
+        return "success";
     }
 
     @RequestMapping(value= "/googleAnalyticsReport", method = RequestMethod.GET)
@@ -59,11 +83,6 @@ public class Util {
         return GoogleAnalytics.getReport();
     }
 
-    @RequestMapping(value = "/email", method = RequestMethod.GET)
-    public String sendEmail() {
-        emailService.sendSimpleMessage("nnsookwon@gmail.com", "test", "lol");
-        return "done";
-    }
 
     @RequestMapping(value = "/sendFeedback", method = RequestMethod.POST)
     public String sendFeedback(@RequestParam("email") String fromEmail,

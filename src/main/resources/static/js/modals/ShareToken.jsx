@@ -42,7 +42,8 @@ class ShareToken extends Component {
         // send POST request to server to submit feedback
         fetch("/util/shareToken", {
             method: "POST",
-            body: formData
+            body: formData,
+            timeout: 10
         })
         // process success/failure and unlock submit button
         .then( response => {
