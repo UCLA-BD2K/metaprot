@@ -154,13 +154,21 @@ export function fileUploadSubmitHandler($fileInput, cb) {
  */
 export function getToken() {
     return fetch("/util/token", {
-        method: "GET"
-    }).then( response => { return response.text() });
+            method: "GET",
+            timeout: 10
+        })
+        .then( response => {
+            if (response.ok)
+                return response.text()
+            else
+                throw new Error("There was an issue retrieving a session token.");
+        });
 }
 
 /**
  * POST request to REST server to check if token is valid.
- * Returns a String "true" if token is valid
+ * Returns a boolean true if token is valid, and throws an Error
+ * if there was a server response error or if token was not valid.
  */
 export function validateToken(token) {
 
@@ -168,9 +176,24 @@ export function validateToken(token) {
     formData.append("token", token);
 
     return fetch("/util/checkToken", {
-        method: "POST",
-        body: formData
-    }).then(response => { return response.text() });
+            method: "POST",
+            body: formData,
+            timeout: 10
+        })
+        .then(response => {
+            if (response.ok)
+                return response.text();
+            else
+                throw new Error("There was an issue validating your session token. Please try again later.");
+        })
+        // response returns a String "true" if token is valid
+        .then(isValid => {
+            if (isValid === "true")
+                return true;
+            else
+                throw new Error("Token is invalid. Please try again.");
+        });
+
 }
 
 /**
@@ -186,15 +209,21 @@ export function getTreeData(token) {
 
     return fetch("/util/getSessionData", {
             method: "POST",
-            body: formData
+            body: formData,
+            timeout: 10
         })
-        .then( response => { return response.text() })
+        .then( response => {
+            if (response.ok)
+                return response.text()
+            else
+                throw new Error("There was an issue retrieving session information. Please try again later.");
+        })
         // response String should be formatted as "File1, File2, File3, ..."
         .then( commaSepList => {
             // return an empty array if there are no filenames listed
             return commaSepList === "" ? [] : commaSepList.split(",");
         });
-}
+    }
 
 /**
  * Retrieve session data saved in session storage and send

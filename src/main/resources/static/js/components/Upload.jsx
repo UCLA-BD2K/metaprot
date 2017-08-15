@@ -38,29 +38,23 @@ class Upload extends Component {
         if (e)
             e.preventDefault();
         var token = this.state.tokenInput;
+        this.setState({submitting: true});
         var self = this;
-        self.setState({submitting: true});
-        validateToken(token).then( response => {
-            self.setState({submitting: false});
-            if(response == "true") {
 
-                self.props.resetTree();
-                self.props.setToken(token);
-
-                getTreeData(token).then( data => {
-                        console.log(data);
-                        data.forEach(filename => {
-                            self.props.addFileToTree(filename);
-                        })
-                    })
-                    .catch( err => {
-                        alert("There was an issue validating the token. Please try again.");
-                    });
-            }
-            else {
-                alert("Token invalid, please try again");
-            }
-        });
+        validateToken(token).then( valid => {
+            self.props.resetTree();
+            self.props.setToken(token);
+        })
+        .then( ()=> getTreeData(token) )
+        .then( data => {
+            data.forEach(filename => {
+                self.props.addFileToTree(filename);
+            })
+        })
+        // alert any error messages from validating or retrieving session data
+        .catch( error => alert(error.message) )
+        // "always" update state to finished submitting
+        .then( () => self.setState({submitting: false}) );
 
     }
 
