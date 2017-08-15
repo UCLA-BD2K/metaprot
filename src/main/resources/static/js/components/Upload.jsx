@@ -19,7 +19,8 @@ class Upload extends Component {
         super(props);
         this.state = {
             tokenInput: "",
-            tokenWarning: null
+            tokenWarning: null,
+            submitting: false
         }
         this.handleTokenSubmit = this.handleTokenSubmit.bind(this);
         this.handleTokenInput = this.handleTokenInput.bind(this);
@@ -38,8 +39,9 @@ class Upload extends Component {
             e.preventDefault();
         var token = this.state.tokenInput;
         var self = this;
-
+        self.setState({submitting: true});
         validateToken(token).then( response => {
+            self.setState({submitting: false});
             if(response == "true") {
 
                 self.props.resetTree();
@@ -80,8 +82,14 @@ class Upload extends Component {
                 <div className="well well-lg">
                     <Form inline onSubmit={this.handleTokenSubmit} id="retrieve-file">
                         <ControlLabel htmlFor="inputToken">Token</ControlLabel>
-                        <FormControl onChange={this.handleTokenInput} id="inputToken" placeholder="token number"/>
-                        <FormControl type="submit" value="Go"/>
+                        <FormControl required onChange={this.handleTokenInput} id="inputToken" placeholder="token number"/>
+                        <Button bsClass="form-control" disabled={this.state.submitting} type="submit">
+                        {
+                            // show spinner if token has been submitted and is currently verifying
+                            this.state.submitting ?
+                            <i className="fa fa-spinner fa-spin fa-lg fa-fw"/> : <p>Go</p>
+                        }
+                        </Button>
                     </Form>
                 </div>
             </div>
