@@ -12,14 +12,15 @@ class FileTree extends Component {
     render() {
 
         return (
-            <div className="col-sm-4 col-md-2" id="sidebar_right">
+            <div className="row">
             {
-                /* only show if at least one file has been uploaded
+                /*
+                 * only show if at least one file has been uploaded
                  * (prevent empty colored div from rendering)
                  */
                 this.props.filenames.length > 0 ?
 
-                <div id="file-tree" className="row">
+                <div id="file-tree" className="col-sm-10 col-sm-offset-1">
                 {
                     /* For every file associated with this session, generate
                      * a row in the File Tree to allow users to delete and/or view
@@ -39,7 +40,6 @@ class FileTree extends Component {
                 : null
             }
             </div>
-
         )
     }
 }

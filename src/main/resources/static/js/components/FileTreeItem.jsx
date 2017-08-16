@@ -54,20 +54,18 @@ class FileTreeItem extends Component {
 
     render() {
         return (
-            <div className="col-sm-10 col-sm-offset-1">
-                <div className="file-tree-item row"
-                    onClick={this.handleShowFile.bind(this)}>
+            <div className="file-tree-item row"
+                onClick={this.handleShowFile.bind(this)}>
 
-                    <div className="col-sm-9">
-                        <p>{this.props.filename}</p>
-                    </div>
-
-                    <div className="col-sm-2">
-                        <i className="glyphicon glyphicon-trash"
-                            onClick={this.handleDeleteFile.bind(this)}></i>
-                    </div>
-
+                <div className="col-sm-9">
+                    <p>{this.props.filename}</p>
                 </div>
+
+                <div className="col-sm-3">
+                    <i className="glyphicon glyphicon-trash"
+                        onClick={this.handleDeleteFile.bind(this)}></i>
+                </div>
+
             </div>
         )
     }

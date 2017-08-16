@@ -59,9 +59,11 @@ class MainLayout extends Component {
 
                         </div>
 
-                        <FileTree
-                            openModal={this.openModal}
-                            setModalData={this.setModalData}/>
+                        <div className="col-sm-4 col-md-2" id="sidebar_right">
+                            <FileTree
+                                openModal={this.openModal}
+                                setModalData={this.setModalData}/>
+                        </div>
 
                     </div>
                 </div>
