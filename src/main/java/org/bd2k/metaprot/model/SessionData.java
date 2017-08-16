@@ -1,15 +1,9 @@
 package org.bd2k.metaprot.model;
 
-import org.json.simple.JSONObject;
-
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-
+import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 
@@ -20,9 +14,12 @@ import java.util.HashMap;
 
 @DynamoDBTable(tableName = "Metaprot-SessionData")
 public class SessionData {
-    String token;
-    String data;
-    long timestampMillis;
+    private final long EXPIRATION_TIME_SECONDS = 60*60*24*7; // 7 days
+    private String token;
+    private String data;
+    private long timestampMillis;
+    private long timestampSeconds;
+    private long ttl;
 
     public SessionData() {}
 
@@ -30,6 +27,8 @@ public class SessionData {
         this.token = token;
         this.data = data;
         this.timestampMillis = timestampMillis;
+        this.timestampSeconds = timestampMillis/1000L;
+        this.ttl = this.timestampSeconds + EXPIRATION_TIME_SECONDS;
     }
 
     // getters and setters
@@ -52,13 +51,30 @@ public class SessionData {
         this.data = data;
     }
 
-    @DynamoDBAttribute
     public long getTimestampMillis() {
         return this.timestampMillis;
     }
 
     public void setTimestampMillis(long timestampMillis) {
         this.timestampMillis = timestampMillis;
+    }
+
+    @DynamoDBAttribute
+    public long getTimestampSeconds() {
+        return timestampSeconds;
+    }
+
+    public void setTimestampSeconds(long timestampSeconds) {
+        this.timestampSeconds = timestampSeconds;
+    }
+
+    @DynamoDBAttribute
+    public long getTtl() {
+        return ttl;
+    }
+
+    public void setTtl(long ttl) {
+        this.ttl = ttl;
     }
 
     @Override

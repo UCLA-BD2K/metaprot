@@ -54,15 +54,18 @@ public class Util {
 
 
         if (sessionData != null) {
-            String[] files = sessionData.getData().split(",");
+            String data = sessionData.getData();
+            String[] files = data.split(",");
             String s3BaseKey = "user-input/" + token + "/";
             //  If session is being accessed, reset the expiration time for these files on S3
             for (String file : files) {
                 String s3ObjectKey = s3BaseKey + file;
                 s3Client.resetFileExpiration(s3ObjectKey);
             }
+            // Reset expiration time for session data stored in DynamoDB as well
+            updateSessionData(token, data);
 
-            return sessionData.getData();
+            return data;
         }
         else
             return new JSONObject().put("Error", "Token does not exist").toString();
