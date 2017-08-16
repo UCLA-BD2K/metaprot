@@ -355,14 +355,26 @@ svg:not(:root) {
 
 #file-tree {
     margin-top: 8px;
+    border-radius: 5px;
+    background-color: #E4E8EC;
 }
 
 .file-tree-item {
-    border-radius: 5px;
-    background-color: #E4E8EC;
     font: 12px sans-serif;
     padding: 8px 0 4px 0;
     cursor: pointer;
+}
+
+.file-tree-item:first-child {
+    border-radius: 5px 5px 0 0;
+}
+
+.file-tree-item:last-child {
+    border-radius: 0 0 5px 5px;
+}
+
+.file-tree-item:only-child {
+    border-radius: 5px;
 }
 
 .file-tree-item:hover {
