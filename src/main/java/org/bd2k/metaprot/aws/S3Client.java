@@ -145,9 +145,13 @@ public class S3Client {
 
         try {
             // Copying object using same key to "reset" time left before expiration
+            // Maintain read access for users
+            AccessControlList acl = new AccessControlList();
+            acl.grantPermission(GroupGrantee.AuthenticatedUsers, Permission.Read);
             CopyObjectRequest copyObjRequest = new CopyObjectRequest(
                     bucketName, objectKey, bucketName, objectKey)
-                    .withNewObjectMetadata(new ObjectMetadata());
+                    .withNewObjectMetadata(new ObjectMetadata())
+                    .withAccessControlList(acl);
             s3Client.copyObject(copyObjRequest);
             return true;
         } catch (AmazonS3Exception ae) {
