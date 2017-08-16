@@ -254,7 +254,7 @@ export function downloadFileFromS3(fileName){
     var storeData = sessionStorage.getItem("store");
     var store = storeData ? JSON.parse(storeData) : {token: ""};
     var path = "user-input/" + store.token + "/" + fileName;
-    
+
     return S3Uploader.download(path);
 }
 

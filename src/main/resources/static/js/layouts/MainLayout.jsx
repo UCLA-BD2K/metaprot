@@ -18,7 +18,7 @@ class MainLayout extends Component {
 
         this.openModal = this.openModal.bind(this);
         this.setModalData = this.setModalData.bind(this);
-        this.hideModal = this.hideModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
     }
 
     openModal() {
@@ -31,7 +31,7 @@ class MainLayout extends Component {
         this.setState({ modalData });
     }
 
-    hideModal() {
+    closeModal() {
         this.setState({
             isOpen: false
         })
@@ -62,6 +62,7 @@ class MainLayout extends Component {
                         <div className="col-sm-4 col-md-2" id="sidebar_right">
                             <FileTree
                                 openModal={this.openModal}
+                                closeModal={this.closeModal}
                                 setModalData={this.setModalData}/>
                         </div>
 
@@ -71,7 +72,7 @@ class MainLayout extends Component {
                 { /* Modal component to contain CSV viewer for uploaded files */ }
                 <Modal
                     show={this.state.isOpen}
-                    onHide={this.hideModal}
+                    onHide={this.closeModal}
                     dialogClassName={this.state.modalData.className}>
 
                     <Modal.Header closeButton>
@@ -83,7 +84,7 @@ class MainLayout extends Component {
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button onClick={this.hideModal}>Close</Button>
+                        <Button onClick={this.closeModal}>Close</Button>
                     </Modal.Footer>
 
                 </Modal>

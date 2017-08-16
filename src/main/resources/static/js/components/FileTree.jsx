@@ -30,6 +30,7 @@ class FileTree extends Component {
                         return (
                             <FileTreeItem
                                 openModal={this.props.openModal}
+                                closeModal={this.props.closeModal}
                                 setModalData={this.props.setModalData}
                                 key={i} filename={filename}/>
                         )

@@ -14,9 +14,11 @@ class FileTreeItem extends Component {
     handleShowFile(e) {
         e.preventDefault();
 
+        var self = this;
+
         // open modal and show loading spinner
         var modalLoading = {
-            title: this.props.filename,
+            title: self.props.filename,
             className: "csv-modal",
             content: (
                 <div className="text-center ">
@@ -29,20 +31,20 @@ class FileTreeItem extends Component {
         this.props.openModal();
 
         // fetch file from S3
-        downloadFileFromS3(this.props.filename)
+        downloadFileFromS3(self.props.filename)
             .then(data => {
                 // set modal content with CSV table viewer
                 var modalData = {
-                title: this.props.filename,
+                title: self.props.filename,
                 className: "csv-modal",
                     content: (<CsvViewer data={data} />)
                 }
-                this.props.setModalData(modalData);
+                self.props.setModalData(modalData);
             })
-            .catch( err => {
+            .catch( error => {
                 // an error occurred (likely when trying to download from S3)
-                alert(err);
-                throw new Error(err);
+                alert(error.message);
+                self.props.closeModal();
             });
 
     }
