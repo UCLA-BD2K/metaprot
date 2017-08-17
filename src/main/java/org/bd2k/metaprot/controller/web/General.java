@@ -54,21 +54,6 @@ public class General {
         return "index";
     }
 
-    /**
-     * Invoked when an upload + integrity check was successful, and a
-     * corresponding view page needs to be returned for the next steps.
-     * @param token
-     * @return
-     */
-    @RequestMapping("/upload-pass/{token}")
-    public String getUploadPassPage(Model model, @PathVariable("token") String token) {
-        System.out.println(token);
-
-        model.addAttribute("token", token);     // pass token to view as model variable
-        model.addAttribute("sessionData", dao.getSessionData(token));
-
-        return "upload_pass";
-    }
 
     /**
      * Invoked when an upload + integrity check was successful, and a

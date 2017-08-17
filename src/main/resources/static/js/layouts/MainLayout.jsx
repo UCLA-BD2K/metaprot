@@ -4,7 +4,9 @@ import TopNavBar from '../components/TopNavBar';
 import SideNavBar from '../components/SideNavBar';
 import FileTree from '../components/FileTree';
 import Footer from '../components/Footer';
-
+import { connect } from 'react-redux';
+import { addFileToTree } from '../actions';
+import { getSessionData } from '../util/helper';
 
 class MainLayout extends Component {
 
@@ -19,6 +21,14 @@ class MainLayout extends Component {
         this.openModal = this.openModal.bind(this);
         this.setModalData = this.setModalData.bind(this);
         this.closeModal = this.closeModal.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.props.token !== "" && this.props.filenames.length === 0) {
+            getSessionData(this.props.token).then( data => {
+                data.forEach( filename => this.props.addFileToTree(filename));
+            })
+        }
     }
 
     openModal() {
@@ -95,6 +105,11 @@ class MainLayout extends Component {
 
 }
 
+function mapStateToProps(state) {
+    return {
+        token: state.token,
+        filenames: state.filenames
+    }
+}
 
-
-export default MainLayout;
+export default connect(mapStateToProps, { addFileToTree })(MainLayout);

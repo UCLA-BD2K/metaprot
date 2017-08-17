@@ -5,9 +5,7 @@ import org.bd2k.metaprot.data.GoogleAnalytics;
 import org.bd2k.metaprot.data.GoogleAnalyticsReport;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.bd2k.metaprot.exception.ServerException;
-import org.bd2k.metaprot.model.SessionData;
 import org.bd2k.metaprot.util.EmailService;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -43,43 +42,22 @@ public class Util {
 
     @RequestMapping(value= "/checkToken", method = RequestMethod.POST)
     public boolean checkToken(@RequestParam("token") String token){
-        if (dao.getSessionData(token) == null)
-            return false;
-        return true;
+        return s3Client.validToken(token);
     }
 
     @RequestMapping(value= "/getSessionData", method = RequestMethod.POST)
-    public String getSessionData(@RequestParam("token") String token){
-        SessionData sessionData = dao.getSessionData(token);
-
-
-        if (sessionData != null) {
-            String data = sessionData.getData();
-            String[] files = data.split(",");
-            String s3BaseKey = "user-input/" + token + "/";
-            //  If session is being accessed, reset the expiration time for these files on S3
-            for (String file : files) {
-                String s3ObjectKey = s3BaseKey + file;
-                s3Client.resetFileExpiration(s3ObjectKey);
-            }
-            // Reset expiration time for session data stored in DynamoDB as well
-            updateSessionData(token, data);
-
-            return data;
+    public List<String> getSessionData(@RequestParam("token") String token){
+        List<String> files = s3Client.getSessionData(token);
+        String s3BaseKey = S3Client.S3_FILE_PREFIX + token + "/";
+        for (String file : files) {
+            String s3ObjectKey = s3BaseKey + file;
+            s3Client.resetFileExpiration(s3ObjectKey);
         }
-        else
-            return new JSONObject().put("Error", "Token does not exist").toString();
+
+        return files;
 
     }
 
-    @RequestMapping(value= "/updateSessionData", method = RequestMethod.POST)
-    public String updateSessionData(@RequestParam("token") String token,
-                                    @RequestParam("data") String data){
-
-        dao.saveOrUpdateSessionData(new SessionData(token, data, System.currentTimeMillis()));
-
-        return "success";
-    }
 
     @RequestMapping(value= "/googleAnalyticsReport", method = RequestMethod.GET)
     public GoogleAnalyticsReport getGoogleAnalyticsReport(){

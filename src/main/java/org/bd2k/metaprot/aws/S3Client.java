@@ -17,6 +17,8 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides access to AWS S3 resources. Configured as a component to allow
@@ -32,6 +34,8 @@ public class S3Client {
     private static final Logger log = Logger.getLogger(S3Client.class);
 
     private final int BUFFER_SIZE = 1024 * 16;   // 16 bytes
+
+    public static final String S3_FILE_PREFIX = "user-input/";
 
     // for path construction
     //private String root = Globals.getPathRoot();
@@ -158,6 +162,56 @@ public class S3Client {
             ae.printStackTrace();
             return false;
         }
+
+    }
+
+    /**
+     * Given a MetProt session token, check if this token exists in s3
+     *
+     * @param token
+     * @return a boolean, true if the token exists in s3, and false otherwise
+     */
+    public List<String> getSessionData(String token) {
+        String s3BaseKey = S3_FILE_PREFIX + token + "/";
+        ListObjectsRequest listObjectsRequest =
+                new ListObjectsRequest()
+                        .withBucketName(bucketName)
+                        .withPrefix(s3BaseKey);
+
+        List<String> keys = new ArrayList<>();
+
+        ObjectListing objects = s3Client.listObjects(listObjectsRequest);
+        for (;;) {
+            List<S3ObjectSummary> summaries = objects.getObjectSummaries();
+            if (summaries.size() < 1) {
+                break;
+            }
+            for (S3ObjectSummary summary : summaries) {
+                // only return filenames, not prefix
+                keys.add(summary.getKey().replace(s3BaseKey,""));
+            }
+            //summaries.forEach(s -> keys.add(s.getKey()));
+            objects = s3Client.listNextBatchOfObjects(objects);
+        }
+
+        return keys;
+    }
+
+    public boolean validToken(String token) {
+        String s3BaseKey = S3_FILE_PREFIX + token + "/";
+        ListObjectsRequest listObjectsRequest =
+                new ListObjectsRequest()
+                        .withBucketName(bucketName)
+                        .withPrefix(s3BaseKey)
+                        .withMaxKeys(1);
+
+        ObjectListing objects = s3Client.listObjects(listObjectsRequest);
+
+        List<S3ObjectSummary> summaries = objects.getObjectSummaries();
+        if (summaries.size() < 1)
+            return false;
+
+        return true;
 
     }
 

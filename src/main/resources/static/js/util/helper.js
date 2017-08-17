@@ -42,10 +42,7 @@ export function fileUploadSubmitHandler($fileInput, cb) {
                     cb.updateProgress({uploadProgress:100});
 
                     notifyAllFilesUploaded(token, data.Key);
-                        //passFilenames();
 
-                    updateSessionData();
-                    //make_copy_button(document.getElementById("token_num"));
                 }
             },
             function(key, bytesUploaded, bytesTotal) {
@@ -201,7 +198,7 @@ export function validateToken(token) {
  * to populate the file Tree.
  * Returns an array of filename Strings.
  */
-export function getTreeData(token) {
+export function getSessionData(token) {
 
     var formData = new FormData();
     formData.append("token", token);
@@ -213,42 +210,12 @@ export function getTreeData(token) {
         })
         .then( response => {
             if (response.ok)
-                return response.text()
+                return response.json()
             else
                 throw new Error("There was an issue retrieving session information. Please try again later.");
-        })
-        // response String should be formatted as "File1, File2, File3, ..."
-        .then( commaSepList => {
-            // return an empty array if there are no filenames listed
-            return commaSepList === "" ? [] : commaSepList.split(",");
         });
     }
 
-/**
- * Retrieve session data saved in session storage and send
- * a POST request to REST server to update data. (Important so
- * that filenames are up to date when session tokens are being
- * shared and accessed).
- */
-export function updateSessionData(){
-    var storeData = sessionStorage.getItem("store");
-    if (!storeData)
-        return;
-
-    var store = JSON.parse(storeData);
-
-    var formData = new FormData();
-    formData.append("token", store.token);
-
-    formData.append("data", store.filenames);
-
-    return fetch("/util/updateSessionData", {
-            method: "POST",
-            body: formData
-        }).then( response => { return response.text() });
-
-
-}
 
 export function downloadFileFromS3(fileName){
     var storeData = sessionStorage.getItem("store");

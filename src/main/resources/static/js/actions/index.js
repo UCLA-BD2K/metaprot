@@ -4,7 +4,7 @@ export const UPLOAD_FILE = 'UPLOAD_FILE';
 export const DELETE_FILE = 'DELETE_FILE';
 export const SET_TOKEN = 'SET_TOKEN';
 
-import { updateSessionData, deleteFileFromS3 } from '../util/helper';
+import { deleteFileFromS3 } from '../util/helper';
 
 export function storeGoogleAnalyticsReport(report) {
     const action = {
@@ -45,7 +45,6 @@ export function removeFileFromTree(name) {
     return dispatch => {
         dispatch(_removeFileFromTree(name));
         deleteFileFromS3(name)
-        updateSessionData();
     }
 }
 

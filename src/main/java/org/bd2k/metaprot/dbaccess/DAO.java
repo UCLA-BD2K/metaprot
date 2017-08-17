@@ -143,29 +143,4 @@ public interface DAO {
      */
     int saveTaskResults(TimeSeriesTask task, TimeSeriesResults results);
 
-    /* Session Data */
-
-    /**
-     * Given a UUID token, return the associated SessionData.
-     *
-     * @param token the UUID token
-     * @return an initialized SessionData instance, or null if UUID is invalid (DNE in database)
-     */
-    SessionData getSessionData(String token);
-
-    /**
-     * Saves the given SessionData to the database as a new entry.
-     *
-     * @param sessionData the SessionData to save
-     * @return true if the SessionData was added to the database, false otherwise
-     */
-    boolean saveSessionData(SessionData sessionData);
-
-    /**
-     * Saves the given SessionData to the database if it does not exist, or updates it.
-     *
-     * @param sessionData the SessionData to save
-     */
-    void saveOrUpdateSessionData(SessionData sessionData);
-
 }

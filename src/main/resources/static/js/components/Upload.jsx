@@ -7,7 +7,7 @@ import Footer from './Footer';
 import { connect } from 'react-redux';
 import { Form, FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap'
 import { resetTree, addFileToTree, setToken } from '../actions';
-import { validateToken, getTreeData } from '../util/helper';
+import { validateToken, getSessionData } from '../util/helper';
 
 /**
  * Main content for Upload page.
@@ -45,7 +45,7 @@ class Upload extends Component {
             self.props.resetTree();
             self.props.setToken(token);
         })
-        .then( ()=> getTreeData(token) )
+        .then( ()=> getSessionData(token) )
         .then( data => {
             data.forEach(filename => {
                 self.props.addFileToTree(filename);

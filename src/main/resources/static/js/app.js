@@ -23,19 +23,32 @@ import MainLayout from './layouts/MainLayout';
 import SimpleLayout from './layouts/SimpleLayout';
 
 import rootReducer from './reducers/';
-import { addFileToTree } from './actions';
+
 
 // tag::vars[]
 const client = require('./client');
+
+// In case of page refresh, restore store data if saved in sessionStorage
 const storeData = sessionStorage.getItem("store") ? JSON.parse(sessionStorage.getItem("store")) : {};
+
 const store = createStore(rootReducer, storeData, applyMiddleware(thunk));
+
 store.subscribe(()=> {
-    sessionStorage.setItem("store", JSON.stringify(store.getState()));
+    // DON'T save filenames in sessionStorage.
+    // In case of page refresh, make another request so that filenames remain up to date.
+    let storeData = store.getState();
+    let storageData = {
+        token: storeData.token,
+        googleAnalyticsReport: storeData.googleAnalyticsReport
+    };
+    sessionStorage.setItem("store", JSON.stringify(storageData));
 });
 
 
 
 const history = createBrowserHistory();
+
+// initialize Google Analytics Tracking
 const initGA = (history) => {
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -67,7 +80,6 @@ const renderWithLayout = (layout, component) => {
 }
 
 
-// tag::render[]
 ReactDOM.render(
     <Provider store={store}>
         <Router history={history}>
@@ -86,5 +98,4 @@ ReactDOM.render(
 
         </Router>
     </Provider>, document.getElementById('react')
-    )
-// end::render[]
+)
