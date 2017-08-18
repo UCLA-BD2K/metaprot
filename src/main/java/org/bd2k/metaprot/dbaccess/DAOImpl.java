@@ -3,9 +3,8 @@ package org.bd2k.metaprot.dbaccess;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bd2k.metaprot.aws.DynamoDBClient;
-import org.bd2k.metaprot.dbaccess.repository.PatternRecogTaskRepository;
-import org.bd2k.metaprot.dbaccess.repository.SessionDataRepository;
 import org.bd2k.metaprot.dbaccess.repository.MetaboliteTaskRepository;
+import org.bd2k.metaprot.dbaccess.repository.PatternRecogTaskRepository;
 import org.bd2k.metaprot.dbaccess.repository.TimeSeriesTaskRepository;
 import org.bd2k.metaprot.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +29,6 @@ public class DAOImpl implements DAO {
 
     @Autowired
     private TimeSeriesTaskRepository timeSeriesTaskRepository;
-
-    @Autowired
-    private SessionDataRepository sessionDataRepository;
 
     @Autowired
     private DynamoDBClient dynamoDBClient;
@@ -218,28 +214,5 @@ public class DAOImpl implements DAO {
         return numChunks;
     }
 
-
-    /* Session Data */
-
-    @Override
-    public SessionData getSessionData(String token) {
-        return sessionDataRepository.findByToken(token);
-    }
-
-    @Override
-    public boolean saveSessionData(SessionData sessionData) {
-
-        if (getSessionData(sessionData.getToken()) != null) {
-            return false;   // someone is trying to save a task whos UUID already exists!
-        }
-
-        sessionDataRepository.save(sessionData);
-        return true;
-    }
-
-    @Override
-    public void saveOrUpdateSessionData(SessionData sessionData) {
-        sessionDataRepository.save(sessionData);
-    }
 
 }

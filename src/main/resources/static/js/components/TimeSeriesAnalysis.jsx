@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import FileSelectForm from './FileSelectForm';
 import { connect } from 'react-redux';
-import { getToken } from '../util/upload';
+import { getToken } from '../util/helper';
 
 /**
  * Main content for Time Series Analysis page.
@@ -12,7 +12,7 @@ class TimeSeriesAnalysis extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            filename: "",
+            filename: this.props.filenames ? this.props.filenames[0] : "",
             progressTextHTML: null
         }
 
@@ -31,6 +31,7 @@ class TimeSeriesAnalysis extends Component {
         .then( token => {
             var formData = new FormData();
             var s3Key = "user-input/" + this.props.token + "/" + this.state.filename;
+            console.log("s3Key", s3Key);
             formData.append("objectKey", s3Key);
             formData.append("taskToken", token);
             return fetch("/analyze/time-series/" + this.props.token, {
@@ -82,7 +83,8 @@ class TimeSeriesAnalysis extends Component {
 
 function mapStateToProps(state) {
     return {
-        token: state.token
+        token: state.token,
+        filenames: state.filenames
     }
 }
 

@@ -1,8 +1,12 @@
 import React, {Component} from 'react';
 import { Form, FormControl, ControlLabel, Button } from 'react-bootstrap'
-import { fileUploadSubmitHandler } from '../util/upload'
+import { fileUploadSubmitHandler } from '../util/helper'
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { addFileToTree, setToken } from '../actions';
+
+// prevent files larger than limit from being uploaded
+const FILESIZE_LIMIT = 10485760 ; // 10 MB
 
 class FileUploadForm extends Component {
 
@@ -11,27 +15,47 @@ class FileUploadForm extends Component {
         this.state = {
             $fileInput: [],  // naming convention retained from previous JQuery implementation
             uploadProgress: 0,
-            progressTextHTML: null,
+            progressText: null,
             uploading: false
         }
+
+
 
         // bind component methods
         this.handleSubmit = this.handleSubmit.bind(this);
         this.updateProgress = this.updateProgress.bind(this);
         this.handleFile = this.handleFile.bind(this);
+        this.handleChange = this.handleChange.bind(this);
 
     }
     handleSubmit(e) {
         e.preventDefault();
+        var file = this.state.$fileInput[0].files[0];
+        var filename = file.name;
+        var filesize = file.size;
+        if (this.props.filenames.includes(filename)) {
+            alert("Error: A file with this name already exists. Please rename and upload.");
+        }
+        if (filesize > FILESIZE_LIMIT) {
+            alert("Error: file size exceeds 10 MB limit.");
+            return;
+        }
         this.setState({ uploading: true });
+
+        // callback helper functions to appropriately set and update Redux store and Component's state
         var callbacks = {
             updateProgress: this.updateProgress,
             addFileToTree: this.props.addFileToTree,
             setToken: this.props.setToken
         }
+        // call helper function to upload file to S3
         fileUploadSubmitHandler(this.state.$fileInput, callbacks);
     }
 
+    /*
+     * callback helper function to pass to fileUploadSubmitHandler
+     * to allow updating Component's progress state.
+     */
     updateProgress(state) {
         this.setState(state);
     }
@@ -41,13 +65,22 @@ class FileUploadForm extends Component {
         this.setState({$fileInput});
     }
 
-    render() {
+    handleChange(e) {
+        const target = e.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+        console.log(target, name, value);
 
+        this.setState({
+            [name]: value
+        });
+    }
+
+    render() {
         return (
             <div>
                 <div className="well well-lg">
                     <Form id="csv-upload-form" className="form-horizontal"  onSubmit={this.handleSubmit} >
-                        <fieldset>
 
                             <ControlLabel htmlFor="fileFormControl">
                                 Select file:
@@ -60,7 +93,8 @@ class FileUploadForm extends Component {
                             <ControlLabel htmlFor="xAxisSelector">
                                 What do rows define in the input file?
                             </ControlLabel>
-                            <select id="xAxisSelector" >
+                            <select name="xAxisSelector"
+                                onChange={this.handleChange}>
                                 <option value="Metabolite">Protein/Metabolite</option>
                                 <option value="Time-Series">Time Point Data</option>
                             </select>
@@ -70,7 +104,8 @@ class FileUploadForm extends Component {
                             <ControlLabel htmlFor="yAxisSelector">
                                 What do columns define in the input file?
                             </ControlLabel>
-                            <select id="yAxisSelector">
+                            <select name="yAxisSelector"
+                                onChange={this.handleChange}>
                                 <option value="Time-Series">Time Point Data</option>
                                 <option value="Metabolite">Protein/Metabolite</option>
                             </select>
@@ -78,16 +113,15 @@ class FileUploadForm extends Component {
                             <br />
                             <br />
 
-                            <FormControl type="submit" value="Submit" className="form-control" />
-                            <FormControl type="reset" value="Reset" className="form-control" />
+                            <FormControl type="submit" value="Submit"/>
 
-                        </fieldset>
+
                     </Form>
 
                 </div>
 
                 {
-
+                    /* Show progress bar while file is being uploaded */
                     this.state.uploading ?
 
                     <div id="progress-bar-display" className="transition">
@@ -99,8 +133,9 @@ class FileUploadForm extends Component {
                                 {this.state.uploadProgress}% Complete
                             </div>
                         </div>
-                            <div dangerouslySetInnerHTML={ { __html: this.state.progressTextHTML } }
-                                id="progressText" className="text-center"></div>
+                            <div id="progressText" className="text-center">
+                                { this.state.progressText }
+                            </div>
                         <br />
                     </div>
 

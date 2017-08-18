@@ -4,11 +4,10 @@ import SideNavBar from './SideNavBar';
 import FileUploadForm from './FileUploadForm';
 import FileTree from './FileTree';
 import Footer from './Footer';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Form, FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap'
 import { resetTree, addFileToTree, setToken } from '../actions';
-import { validateToken, getTreeData } from '../util/upload';
+import { validateToken, getSessionData } from '../util/helper';
 
 /**
  * Main content for Upload page.
@@ -20,38 +19,42 @@ class Upload extends Component {
         super(props);
         this.state = {
             tokenInput: "",
-            tokenWarning: null
+            tokenWarning: null,
+            submitting: false
         }
         this.handleTokenSubmit = this.handleTokenSubmit.bind(this);
         this.handleTokenInput = this.handleTokenInput.bind(this);
 
     }
 
+    componentDidMount() {
+        if (this.props.linkedToken) {
+            this.setState({tokenInput: this.props.linkedToken}, ()=>{this.handleTokenSubmit()})
+        }
+    }
+
     // user retrieving file(s) via token
     handleTokenSubmit(e) {
-        e.preventDefault();
+        if (e)
+            e.preventDefault();
         var token = this.state.tokenInput;
+        this.setState({submitting: true});
         var self = this;
 
-        validateToken(token).then( response => {
-            if(response == "true") {
-
-                self.props.resetTree();
-                self.props.setToken(token);
-
-                getTreeData(token).then( data => {
-                        data.forEach(filename => {
-                            self.props.addFileToTree(filename);
-                        })
-                    })
-                    .catch( err => {
-                        alert("There was an issue validating the token. Please try again.");
-                    });
-            }
-            else {
-                alert("Token invalid, please try again");
-            }
-        });
+        validateToken(token).then( valid => {
+            self.props.resetTree();
+            self.props.setToken(token);
+        })
+        .then( ()=> getSessionData(token) )
+        .then( data => {
+            data.forEach(filename => {
+                self.props.addFileToTree(filename);
+            })
+        })
+        // alert any error messages from validating or retrieving session data
+        .catch( error => alert(error.message) )
+        // "always" update state to finished submitting
+        .then( () => self.setState({submitting: false}) );
 
     }
 
@@ -73,8 +76,14 @@ class Upload extends Component {
                 <div className="well well-lg">
                     <Form inline onSubmit={this.handleTokenSubmit} id="retrieve-file">
                         <ControlLabel htmlFor="inputToken">Token</ControlLabel>
-                        <FormControl onChange={this.handleTokenInput} id="inputToken" placeholder="token number"/>
-                        <FormControl type="submit" value="Go"/>
+                        <FormControl required onChange={this.handleTokenInput} id="inputToken" placeholder="token number"/>
+                        <Button bsClass="form-control" disabled={this.state.submitting} type="submit">
+                        {
+                            // show spinner if token has been submitted and is currently verifying
+                            this.state.submitting ?
+                            <i className="fa fa-spinner fa-spin fa-lg fa-fw"/> : <p>Go</p>
+                        }
+                        </Button>
                     </Form>
                 </div>
             </div>

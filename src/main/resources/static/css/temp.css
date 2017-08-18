@@ -163,23 +163,26 @@ body {
 }
 
 
-#token-copy {
+#token-share {
     background: gray;
     float: right;
     padding: 4px 16px 0 16px;
     cursor: pointer
 }
 
-#token-copy:hover {
+#token-share:hover {
     background: slategray;
 }
+
+
 
 /*
  * Main content
  */
 
 .main {
-    padding: 20px;
+    padding: 20px 20px 100px 20px;
+    min-height: 90vh;
 }
 @media (min-width: 768px) {
     .main {
@@ -351,14 +354,27 @@ svg:not(:root) {
 /* File tree display of uploaded files */
 
 #file-tree {
-    background-color: #E4E8EC;
-    border-radius: 5px;
     margin-top: 8px;
+    border-radius: 5px;
+    background-color: #E4E8EC;
 }
+
 .file-tree-item {
     font: 12px sans-serif;
     padding: 8px 0 4px 0;
     cursor: pointer;
+}
+
+.file-tree-item:first-child {
+    border-radius: 5px 5px 0 0;
+}
+
+.file-tree-item:last-child {
+    border-radius: 0 0 5px 5px;
+}
+
+.file-tree-item:only-child {
+    border-radius: 5px;
 }
 
 .file-tree-item:hover {
@@ -366,9 +382,7 @@ svg:not(:root) {
 }
 
 .file-tree-item p {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-wrap: break-word;
 }
 
 
@@ -403,12 +417,13 @@ svg:not(:root) {
     overflow: auto;
 }
 
-.footer{
+footer {
+    bottom: 0;
+    height: 60px;
+    width: 100%;
+    left: 0;
     position: absolute;
-    margin-top: 20px;
-    margin-bottom: 10px;
 }
-
 
 svg {
     font: 16px sans-serif;

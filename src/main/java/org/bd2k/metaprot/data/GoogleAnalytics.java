@@ -4,7 +4,7 @@ package org.bd2k.metaprot.data;
  * Created by Nate Sookwongse on 6/27/17.
  */
 
-        import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -16,10 +16,12 @@ import com.google.api.services.analytics.model.GaData;
 import com.google.api.services.analytics.model.Profiles;
 import com.google.api.services.analytics.model.Webproperties;
 import org.springframework.context.annotation.PropertySource;
-        import org.springframework.util.ResourceUtils;
+import org.springframework.util.ResourceUtils;
 
-        import java.io.File;
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @PropertySource("classpath:application.properties")
@@ -32,18 +34,6 @@ public class GoogleAnalytics {
     private static final String KEY_FILENAME ="secret.p12";
     private static final String SERVICE_ACCOUNT_EMAIL = "metaprot@metaprot-172022.iam.gserviceaccount.com";
 
-    /*
-    public static void main(String[] args) {
-        try {
-            Analytics analytics = initializeAnalytics();
-            String profile = getFirstProfileId(analytics);
-            System.out.println("First Profile Id: "+ profile);
-            printResults(getResults(analytics, profile));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    */
     public static Analytics initializeAnalytics() throws Exception {
         // Initializes an authorized analytics service object.
 
@@ -106,27 +96,27 @@ public class GoogleAnalytics {
         // Query the Core Reporting API for the number of sessions
         // in the past seven days.
         return analytics.data().ga()
-                .get("ga:" + profileId, "2017-06-01", "today", "ga:pageviews,ga:pageviewsPerSession,ga:users")
+                .get("ga:" + profileId, "2017-06-01", "today", "ga:sessions,ga:pageviewsPerSession,ga:users")
                 .execute();
     }
 
-    public static GaData getDailyVisitCounts(Analytics analytics, String profileId) throws IOException {
+    public static GaData getDailySessionCounts(Analytics analytics, String profileId) throws IOException {
         return analytics.data().ga()
-                .get("ga:" + profileId, "2017-07-10", "today", "ga:pageviews")
+                .get("ga:" + profileId, "2017-07-10", "today", "ga:sessions")
                 .setDimensions("ga:year, ga:month, ga:day")
                 .execute();
     }
 
-    public static GaData getMonthlyVisitCounts(Analytics analytics, String profileId) throws IOException {
+    public static GaData getMonthlySessionCounts(Analytics analytics, String profileId) throws IOException {
         return analytics.data().ga()
-                .get("ga:" + profileId, "2017-06-01", "today", "ga:pageviews")
+                .get("ga:" + profileId, "2017-06-01", "today", "ga:sessions")
                 .setDimensions("ga:year, ga:month")
                 .execute();
     }
 
     public static GaData getCountryData(Analytics analytics, String profileId) throws IOException {
         return analytics.data().ga()
-                .get("ga:" + profileId, "2017-07-01", "today", "ga:pageviews")
+                .get("ga:" + profileId, "2017-07-01", "today", "ga:sessions")
                 .setDimensions("ga:country")
                 .execute();
     }
@@ -137,12 +127,55 @@ public class GoogleAnalytics {
         if (results != null && !results.getRows().isEmpty()) {
             System.out.println("View (Profile) Name: "
                     + results.getProfileInfo().getProfileName());
-            System.out.println("Total Pageviews: " + results.getRows().get(0).get(0));
-            System.out.println("Pageviews per visit: " + results.getRows().get(0).get(1));
+            System.out.println("Total Sessions: " + results.getRows().get(0).get(0));
+            System.out.println("Pageviews per sessions: " + results.getRows().get(0).get(1));
             System.out.println("Unique Visitors: " + results.getRows().get(0).get(2));
         } else {
             System.out.println("No results found");
         }
     }
+
+    public static GoogleAnalyticsReport getReport() {
+
+        GoogleAnalyticsReport report = new GoogleAnalyticsReport();
+
+        GaData results = null;
+        GaData dailySessionCounts = null;
+        GaData monthlySessionCounts = null;
+        GaData countryData = null;
+
+        try {
+            Analytics analytics = initializeAnalytics();
+            String profile = getFirstProfileId(analytics);
+            results = getVisitSummary(analytics, profile);
+            dailySessionCounts = getDailySessionCounts(analytics, profile);
+            monthlySessionCounts = getMonthlySessionCounts(analytics, profile);
+            countryData = getCountryData(analytics, profile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (results != null) {
+            report.setMonth(new SimpleDateFormat("MMMM yyyy").format(new Date()));
+            report.setSessions(Integer.parseInt(results.getRows().get(0).get(0)));
+            report.setPageviewsPerSession(Double.parseDouble(results.getRows().get(0).get(1)));
+            report.setUniqueVisitors(Integer.parseInt(results.getRows().get(0).get(2)));
+        }
+
+        if (countryData != null) {
+            report.setNumCountries(countryData.getRows().size());
+            report.setMapData(countryData.getRows());
+        }
+
+        if (dailySessionCounts != null) {
+            report.setDailySessionData(dailySessionCounts.getRows());
+        }
+
+        if (monthlySessionCounts != null) {
+            report.setMonthlySessionData(monthlySessionCounts.getRows());
+        }
+        return report;
+    }
+
 }
 

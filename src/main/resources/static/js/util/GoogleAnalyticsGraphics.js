@@ -1,5 +1,5 @@
 // generate pie chart displaying usage of site's features (dummy data currently)
-function plotUsagePieChart() {
+export function plotUsagePieChart() {
     var pie = new d3pie("pieChart", {
                 "header": {
                     "title": {
@@ -104,7 +104,7 @@ function plotUsagePieChart() {
 }
 
 // generate heat map of site usage in various countries
-function plotGeoMap(mapData) {
+export function plotGeoMap(mapData) {
       google.charts.load('current', {
         'packages':['geochart'],
         'mapsApiKey': 'AIzaSyCXkYdibsxSbTe8LZwdB6hZ9eoFiOC0tMU'
@@ -112,7 +112,7 @@ function plotGeoMap(mapData) {
       google.charts.setOnLoadCallback(drawRegionsMap);
 
       function drawRegionsMap() {
-        var arr = [['Country', 'Visits']];
+        var arr = [['Country', 'Sessions']];
         if (mapData) {
             mapData = mapData.map(function(row) {
                 return [row[0],parseInt(row[1],10)];
@@ -133,8 +133,8 @@ function plotGeoMap(mapData) {
       }
  }
 
-// generate line chart to display usage trends (daily/monthly visits)
-function plotTrafficChart(dailyVisitCounts, monthlyVisitCounts) {
+// generate line chart to display usage trends (daily/monthly sessions)
+export function plotTrafficChart(dailySessionCounts, montlySessionCounts) {
 
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -144,26 +144,26 @@ function plotTrafficChart(dailyVisitCounts, monthlyVisitCounts) {
         var dataDaily = new google.visualization.DataTable();
         var dataMonthly = new google.visualization.DataTable();
         dataDaily.addColumn('date', 'Daily');
-        dataDaily.addColumn('number', 'Visits');
+        dataDaily.addColumn('number', 'Sessions');
         dataMonthly.addColumn('date', 'Monthly');
-        dataMonthly.addColumn('number', 'Visits');
+        dataMonthly.addColumn('number', 'Sessions');
 
-        if (dailyVisitCounts) {
+        if (dailySessionCounts) {
             // try implementing map() function for parsing when done using dummy data
-            for (var i = 0; i < dailyVisitCounts.length; i++) {
-                dataDaily.addRow([new Date(dailyVisitCounts[i][0],
-                                            dailyVisitCounts[i][1]-1,
-                                            dailyVisitCounts[i][2]),
-                                        parseInt(dailyVisitCounts[i][3], 10)]);
+            for (var i = 0; i < dailySessionCounts.length; i++) {
+                dataDaily.addRow([new Date(dailySessionCounts[i][0],
+                                            dailySessionCounts[i][1]-1,
+                                            dailySessionCounts[i][2]),
+                                        parseInt(dailySessionCounts[i][3], 10)]);
             }
 
         }
-        if (monthlyVisitCounts) {
+        if (montlySessionCounts) {
         // try implementing map() function for parsing when done using dummy data
-            for (var i = 0; i < monthlyVisitCounts.length; i++) {
-                dataMonthly.addRow([new Date(monthlyVisitCounts[i][0],
-                                            monthlyVisitCounts[i][1]-1, 1),
-                                        parseInt(monthlyVisitCounts[i][2], 10)]);
+            for (var i = 0; i < montlySessionCounts.length; i++) {
+                dataMonthly.addRow([new Date(montlySessionCounts[i][0],
+                                            montlySessionCounts[i][1]-1, 1),
+                                        parseInt(montlySessionCounts[i][2], 10)]);
             }
 
         }
@@ -197,7 +197,7 @@ function plotTrafficChart(dailyVisitCounts, monthlyVisitCounts) {
                 viewWindow: {
                     min: 0
                 },
-                title: 'Pageviews'
+                title: 'Sessions'
             },
             legend: "none",
             explorer: {
@@ -211,7 +211,7 @@ function plotTrafficChart(dailyVisitCounts, monthlyVisitCounts) {
 
         };
 
-        var chart = new google.visualization.LineChart(document.getElementById('usage-trends-chart'));
+        var chart = new google.visualization.AreaChart(document.getElementById('usage-trends-chart'));
         chart.draw(dataDaily, options);
 
         var button = document.getElementById("chart-toggle-view");
@@ -220,19 +220,19 @@ function plotTrafficChart(dailyVisitCounts, monthlyVisitCounts) {
             if (options.hAxis.format === "MMM dd") {
                 options.hAxis.format = "MMM yyyy";
                 options.hAxis.viewWindow.min = lastYear;
-                var newChart = new google.visualization.LineChart(document.getElementById('usage-trends-chart'));
+                var newChart = new google.visualization.AreaChart(document.getElementById('usage-trends-chart'));
                 newChart.draw(dataMonthly, options);
                 button.innerHTML = "View daily totals";
-                $("#usage-trends-title").text("Views per Month");
+                $("#usage-trends-title").text("Sessions per Month");
             }
             // currently viewing monthly data, toggle to daily data
             else {
                 options.hAxis.format = "MMM dd";
                 options.hAxis.viewWindow.min = lastMonth;
-                var newChart = new google.visualization.LineChart(document.getElementById('usage-trends-chart'));
+                var newChart = new google.visualization.AreaChart(document.getElementById('usage-trends-chart'));
                 newChart.draw(dataDaily, options);
                 button.innerHTML = "View monthly totals";
-                $("#usage-trends-title").text("Views per Day");
+                $("#usage-trends-title").text("Sessions per Day");
             }
 
         }

@@ -3,7 +3,7 @@ import FileSelectForm from './FileSelectForm';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormControl, ControlLabel } from 'react-bootstrap'
-import { getToken } from '../util/upload';
+import { getToken } from '../util/helper';
 
 /**
  * Main content for Pattern Recognition Analysis page.
@@ -16,7 +16,7 @@ class PatternRecogAnalysis extends Component {
         this.state = {
             numClusters: 0,
             memPerCluster: 0,
-            filename: "",
+            filename: this.props.filenames ? this.props.filenames[0] : "",
             progressTextHTML: null
         }
 
@@ -134,7 +134,8 @@ class PatternRecogAnalysis extends Component {
 
 function mapStateToProps(state) {
     return {
-        token: state.token
+        token: state.token,
+        filenames: state.filenames
     }
 }
 

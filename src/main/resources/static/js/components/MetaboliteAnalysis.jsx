@@ -3,7 +3,7 @@ import FileSelectForm from './FileSelectForm';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormControl, ControlLabel } from 'react-bootstrap'
-import { getToken } from '../util/upload';
+import { getToken } from '../util/helper';
 
 /**
  * Main content for Metabolite Analysis page.
@@ -16,7 +16,7 @@ class MetaboliteAnalysis extends Component {
         this.state = {
             pThreshold: 0.1,
             fcThreshold: 1.5,
-            filename: "",
+            filename: this.props.filenames[0],
             progressTextHTML: null
         }
 
@@ -56,9 +56,9 @@ class MetaboliteAnalysis extends Component {
         e.preventDefault();
 
         var self = this;
-        console.log(this.state);
+        //console.log(this.state);
 
-        return;
+        //return;
         self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
 
         // request new token for analysis task
@@ -133,7 +133,8 @@ class MetaboliteAnalysis extends Component {
 
 function mapStateToProps(state) {
     return {
-        token: state.token
+        token: state.token,
+        filenames: state.filenames
     }
 }
 

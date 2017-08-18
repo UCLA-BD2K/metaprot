@@ -1,27 +1,70 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import InfoBlock from './InfoBlock';
 import TopNavBar from './TopNavBar';
 import Footer from './Footer';
 import { Link } from 'react-router-dom';
+import { plotUsagePieChart, plotGeoMap, plotTrafficChart } from '../util/GoogleAnalyticsGraphics';
+import { storeGoogleAnalyticsReport } from '../actions';
 
 class Home extends Component {
 
-    // grab thymeleaf variables and set up InfoBlocks
-    componentWillMount() {
-        this.siteUsageDescr = SITE_USAGE_DESCR;
-        this.pageViews = PAGE_VIEWS;
-        this.pageViewsPerVisit = PAGE_VIEWS_PER_VISIT;
-        this.uniqueVisitors = UNIQUE_VISITORS;
-        this.numCountries = NUM_COUNTRIES;
-        this.mapData = MAP_DATA;
-        this.dailyVisitsCounts = DAILY_VISITS_COUNTS;
-        this.monthlyVisitsCounts = MONTHLY_VISITS_COUNTS;
+    constructor(props) {
+        super(props);
+        this.state = {
+            siteUsageDescr: "",
+            sessions: 0,
+            pageviewsPerSession: 0,
+            uniqueVisitors: 0,
+            numCountries: 0,
+            mapData: [[]],
+            dailySessionData: [[]],
+            monthlySessionData: [[]],
+            loading: this.props.report === null ? true : false
+        }
 
-        this.infoblocks = [
-           {
-               title: "Recent Updates",
-               description: "Recent news and updates",
-               postHTML: (
+    }
+
+    // render plots after mounting
+    componentDidMount() {
+        plotUsagePieChart();
+        // if no cached Google Analytics data, make request
+        if (this.props.report === null) {
+            var self = this;
+            fetch("/util/googleAnalyticsReport", { method: "GET" })
+            .then( response => { return response.json() })
+            .then( json => {
+                // store data in redux
+                this.props.storeGoogleAnalyticsReport(json);
+                // update with retrieved data
+                json.loading = false;
+                self.setState(json);
+            })
+        }
+        else {
+            this.setState(this.props.report);
+        }
+
+    }
+
+    // render Google Analytics graphics if data has loaded
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.loading == false) {
+            plotGeoMap(this.state.mapData);
+            plotTrafficChart(this.state.dailySessionData, this.state.monthlySessionData);
+        }
+    }
+
+    render() {
+        // set up InfoBlocks
+        var siteUsageDescr = this.state.month ? "As of " + this.state.month
+            + ", Google Analytics reports the following data on MetaProt:" : null;
+        var pageviewsPerSession = this.state.pageviewsPerSession.toFixed(2);
+        var infoblocks = [
+            {
+                title: "Recent Updates",
+                description: "Recent news and updates",
+                postHTML: (
                        <div id="list" width="305" height="305">
                            <ul className="list-group">
                            {
@@ -39,7 +82,7 @@ class Home extends Component {
                            }
                            </ul>
                        </div>
-               )
+                )
             },
             {
                 title: "Feature Use Statistics",
@@ -50,7 +93,7 @@ class Home extends Component {
                 title: "Site Usage",
                 description: (
                     <div>
-                        <p>{this.siteUsageDescr}</p>
+                        <p>{siteUsageDescr}</p>
                         <p>(worldwide usage map shown below):</p>
                     </div>
                 ),
@@ -58,10 +101,10 @@ class Home extends Component {
                     <div>
                         <div style={{maxWidth: 220, margin: "0 auto"}}>
                             <ul style={{textAlign: "left"}}>
-                                <li><em>{this.pageViews}</em> pageviews</li>
-                                <li><em>{this.pageViewsPerVisit}</em> pageviews per visit</li>
-                                <li><em>{this.uniqueVisitors}</em> unique visitors</li>
-                                <li><em>{this.numCountries}</em> countries represented</li>
+                                <li><em>{this.state.sessions}</em> sessions</li>
+                                <li><em>{pageviewsPerSession}</em> pageviews per session</li>
+                                <li><em>{this.state.uniqueVisitors}</em> unique visitors</li>
+                                <li><em>{this.state.numCountries}</em> countries represented</li>
                             </ul>
                         </div>
                         <div id="regions-chart" className="drop-shadow"></div>
@@ -70,7 +113,7 @@ class Home extends Component {
             },
             {
                 title: "Usage Trends",
-                description: (<p id="usage-trends-title">Views per Day</p>),
+                description: (<p id="usage-trends-title">Sessions per Day</p>),
                 postHTML: (
                     <div>
                         <div id="usage-trends-chart" className="drop-shadow"></div>
@@ -78,55 +121,50 @@ class Home extends Component {
                     </div>
                 )
             }
+        ];
 
+        // display "Loading..." temporarily as Google Analytics data is being fetched
+        if (this.state.loading) {
+            infoblocks[2].postHTML = (<div>Loading...</div>)
+            infoblocks[3].postHTML = (<div>Loading...</div>)
+        }
 
-        ]
-
-    }
-
-    // render plots after mounting
-    componentDidMount() {
-        plotUsagePieChart();
-        plotGeoMap(this.mapData);
-        plotTrafficChart(this.dailyVisitsCounts, this.monthlyVisitsCounts);
-    }
-
-
-    render() {
         return (
 
             <div>
-                <TopNavBar/>
 
                 <div className="container-fluid">
                     <div className="jumbotron">
                         <h1>MetProt</h1>
                         <p className="lead">A Cloud-based Platform to Analyze, Annotate, and Integrate Metabolomics Datasets with Proteomics Information.</p>
-                        <div className="col-sm-12 col-md-12 main">
+                        <div className="col-sm-12 col-md-12">
                             <div className="btn-border">
-                                <a className="btn btn-lg btn-default" href="/upload">Start Analysis</a>
+                                <Link className="btn btn-lg btn-default" to="/upload">Start Analysis</Link>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="row">
-                    <div className="col-xs-12 col-md-12 main">
-                        <div className="row placeholders">
-                        {
-                             this.infoblocks.map((infoblock, i) => {
-                                return <InfoBlock key={"infoblock-"+i} data={infoblock} className="col-xs-12 col-md-6 placeholder"/>
-                             })
-                        }
-                        </div>
-                    </div>
+                <div className="row placeholders">
+                {
+                     infoblocks.map((infoblock, i) => {
+                        return <InfoBlock key={"infoblock-"+i} data={infoblock} className="col-xs-12 col-md-6 placeholder"/>
+                     })
+                }
                 </div>
 
-                <Footer />
+
             </div>
         )
     }
 
 }
 
-export default Home
+
+function mapStateToProps(state) {
+    return {
+        report: state.googleAnalyticsReport
+    }
+}
+
+export default connect(mapStateToProps, { storeGoogleAnalyticsReport })(Home);

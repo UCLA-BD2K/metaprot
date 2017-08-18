@@ -1,9 +1,19 @@
+export const GOOGLE_ANALYTICS_REPORT = 'GOOGLE_ANALYTICS_REPORT';
 export const RESET_TREE = 'RESET_TREE';
 export const UPLOAD_FILE = 'UPLOAD_FILE';
 export const DELETE_FILE = 'DELETE_FILE';
 export const SET_TOKEN = 'SET_TOKEN';
 
-import { updateSessionData, deleteFileFromS3 } from '../util/upload';
+import { deleteFileFromS3 } from '../util/helper';
+
+export function storeGoogleAnalyticsReport(report) {
+    const action = {
+        type: GOOGLE_ANALYTICS_REPORT,
+        report
+    }
+
+    return action;
+}
 
 export function resetTree() {
     const action = {
@@ -18,6 +28,7 @@ export function addFileToTree(name) {
         type: UPLOAD_FILE,
         name
     }
+
     return action;
 }
 
@@ -34,7 +45,6 @@ export function removeFileFromTree(name) {
     return dispatch => {
         dispatch(_removeFileFromTree(name));
         deleteFileFromS3(name)
-        updateSessionData();
     }
 }
 

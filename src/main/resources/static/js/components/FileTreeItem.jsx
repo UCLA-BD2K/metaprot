@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { removeFileFromTree } from '../actions';
-import { downloadFileFromS3 } from '../util/upload';
-import CsvViewer from './CsvViewer';
+import { downloadFileFromS3 } from '../util/helper';
+import CsvViewer from '../modals/CsvViewer';
 
 /**
  * Expected props:
@@ -14,9 +14,12 @@ class FileTreeItem extends Component {
     handleShowFile(e) {
         e.preventDefault();
 
+        var self = this;
+
         // open modal and show loading spinner
         var modalLoading = {
-            title: this.props.filename,
+            title: self.props.filename,
+            className: "csv-modal",
             content: (
                 <div className="text-center ">
                     <i className="fa fa-spinner fa-spin fa-3x fa-fw"></i>
@@ -28,25 +31,26 @@ class FileTreeItem extends Component {
         this.props.openModal();
 
         // fetch file from S3
-        downloadFileFromS3(this.props.filename)
+        downloadFileFromS3(self.props.filename)
             .then(data => {
                 // set modal content with CSV table viewer
                 var modalData = {
-                    title: this.props.filename,
-                    content: (<CsvViewer data={data}/>)
+                title: self.props.filename,
+                className: "csv-modal",
+                    content: (<CsvViewer data={data} />)
                 }
-                this.props.setModalData(modalData);
+                self.props.setModalData(modalData);
             })
-            .catch( err => {
+            .catch( error => {
                 // an error occurred (likely when trying to download from S3)
-                alert(err);
-                throw new Error(err);
+                alert(error.message);
+                self.props.closeModal();
             });
 
     }
 
     handleDeleteFile(e) {
-        e.preventDefault();
+        e.stopPropagation();
         this.props.removeFileFromTree(this.props.filename);
     }
 
@@ -59,7 +63,7 @@ class FileTreeItem extends Component {
                     <p>{this.props.filename}</p>
                 </div>
 
-                <div className="col-sm-2">
+                <div className="col-sm-3">
                     <i className="glyphicon glyphicon-trash"
                         onClick={this.handleDeleteFile.bind(this)}></i>
                 </div>

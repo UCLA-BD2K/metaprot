@@ -1,17 +1,11 @@
 package org.bd2k.metaprot.controller.web;
 
-import com.google.api.services.analytics.Analytics;
-import com.google.api.services.analytics.model.GaData;
-import org.bd2k.metaprot.data.GoogleAnalytics;
 import org.bd2k.metaprot.dbaccess.DAOImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Web controller that handles general URLs.
@@ -33,50 +27,6 @@ public class General {
     @RequestMapping("/")
     public String getHomePage(Model model) {
 
-        GaData results = null;
-        GaData dailyVisitCounts = null;
-        GaData monthlyVisitCounts = null;
-        GaData countryData = null;
-        int numCountries = 0;
-
-        try {
-            Analytics analytics = GoogleAnalytics.initializeAnalytics();
-            String profile = GoogleAnalytics.getFirstProfileId(analytics);
-            results = (GoogleAnalytics.getVisitSummary(analytics, profile));
-            dailyVisitCounts = GoogleAnalytics.getDailyVisitCounts(analytics, profile);
-            monthlyVisitCounts = GoogleAnalytics.getMonthlyVisitCounts(analytics, profile);
-            countryData = GoogleAnalytics.getCountryData(analytics, profile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (results != null) {
-            model.addAttribute("month", "As of " + new SimpleDateFormat("MMMM yyyy").format(new Date()) + ", Google Analytics reports the following data on MetaProt:");
-            model.addAttribute("pageviews", String.format("%s", results.getRows().get(0).get(0)));
-            model.addAttribute("pageviewsPerVisit", String.format("%.02f", Float.valueOf(results.getRows().get(0).get(1))));
-            model.addAttribute("uniqueVisitors", results.getRows().get(0).get(2));
-        } else {
-            model.addAttribute("month", "As of " + new SimpleDateFormat("MMMM yyyy").format(new Date()) + ", Google Analytics reports the following data on MetaProt:");
-            model.addAttribute("pageviews", "n/a");
-            model.addAttribute("pageviewsPerVisit", "n/a");
-            model.addAttribute("uniqueVisitors", "n/a");
-            model.addAttribute("numCountries", "n/a");
-        }
-
-        if (countryData != null) {
-            model.addAttribute("numCountries", countryData.getRows().size());
-            model.addAttribute("mapData", countryData.getRows());
-        }
-
-        if (dailyVisitCounts != null) {
-            model.addAttribute("dailyVisitCounts", dailyVisitCounts.getRows());
-        }
-
-        if (monthlyVisitCounts != null) {
-            model.addAttribute("monthlyVisitsCounts", monthlyVisitCounts.getRows());
-        }
-
-
         return "index";
     }
 
@@ -88,10 +38,8 @@ public class General {
     public String getTokenUploadPage(Model model, @PathVariable("token") String token) {
         System.out.println(token);
 
-        model.addAttribute("token", token);     // pass token to view as model variable
-        model.addAttribute("sessionData", dao.getSessionData(token));
 
-        return "upload";
+        return "index";
     }
 
     /**
@@ -103,24 +51,9 @@ public class General {
 
         model.addAttribute("sessionData", "INVALID");
 
-        return "main_app";
+        return "index";
     }
 
-    /**
-     * Invoked when an upload + integrity check was successful, and a
-     * corresponding view page needs to be returned for the next steps.
-     * @param token
-     * @return
-     */
-    @RequestMapping("/upload-pass/{token}")
-    public String getUploadPassPage(Model model, @PathVariable("token") String token) {
-        System.out.println(token);
-
-        model.addAttribute("token", token);     // pass token to view as model variable
-        model.addAttribute("sessionData", dao.getSessionData(token));
-
-        return "upload_pass";
-    }
 
     /**
      * Invoked when an upload + integrity check was successful, and a
@@ -133,22 +66,22 @@ public class General {
 
         //model.addAttribute("token", token);     // pass token to view as model variable
 
-        return "main_app";
+        return "index";
     }
 
     @RequestMapping("/analysis")
     public String getAnalysisPage() {
-        return "main_app";
+        return "index";
     }
 
     @RequestMapping("/about")
     public String getAboutPage() {
-        return "about";
+        return "index";
     }
 
     @RequestMapping("/contact")
     public String getContactPage() {
-        return "contact";
+        return "index";
     }
 
 }

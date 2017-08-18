@@ -31,9 +31,9 @@ class TopNavBar extends Component {
                     <div className="navbar-header">
 
                         { /* MetProt logo, redirects to homepage upon click */ }
-                        <a href="/">
+                        <Link to="/">
                             <img src="/img/icon11.png" id="navbar-logo" />
-                        </a>
+                        </Link>
 
                         { /* Toggle button to show NavBar items when collapsed on smaller screens */ }
                         <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -64,8 +64,8 @@ class TopNavBar extends Component {
                                 }) : null
                         }
                             { /* show these items regardless of presence of Side Navbar */ }
-                            <li><a href="/about">About</a></li>
-                            <li><a href="/contact">Contact</a></li>
+                            <li><Link to="/about">About</Link></li>
+                            <li><Link to="/contact">Contact</Link></li>
                         </ul>
                     </div>
 

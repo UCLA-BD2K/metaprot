@@ -30,17 +30,17 @@ class Analysis extends Component {
                         <img src="/img/pattern.jpg" className="img-responsive img-analysis" />
                     </Link>
                 ),
-                title: "Pattern Recognition",
+                title: "Clustering",
                 description: "Analyze temporal patterns and visualize clusters based on these trends."
             },
             {
                 preHTML: (
                     <Link to="time-series-viewer">
-                        <img src="/img/pattern.jpg" className="img-responsive img-analysis" />
+                        <img src="/img/timeseries.jpg" className="img-responsive img-analysis" />
                     </Link>
                 ),
-                title: "Time Series Analysis",
-                description: "Analyze time series data and visualize trends."
+                title: "Pattern Recognition",
+                description: "Analyze time-series metabolite data and visualize trends."
             },
             {
                 preHTML: (
