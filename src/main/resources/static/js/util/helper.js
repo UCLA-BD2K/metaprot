@@ -17,7 +17,7 @@ export function fileUploadSubmitHandler($fileInput, cb) {
 
     var arr = $fileInput[0].value.split("\\");
     var nameOfFile = arr[arr.length-1];
-    console.log("FILENAME: " + nameOfFile);
+    /*console.log("FILENAME: " + nameOfFile);
     var store = sessionStorage.getItem("store") ? JSON.parse(sessionStorage.getItem("store")) : null;
     if(store){
         var filenames = store.filenames;
@@ -27,7 +27,7 @@ export function fileUploadSubmitHandler($fileInput, cb) {
                 return;
             }
         }
-    }
+    }*/
 
     function uploadFileToS3(options, token, moreParams) {
         // after retrieving a token, can upload to s3

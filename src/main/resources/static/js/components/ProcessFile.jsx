@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormControl, ControlLabel, FormGroup, Radio, Checkbox, InputGroup} from 'react-bootstrap'
 import { getToken } from '../util/helper';
+import { addFileToTree } from '../actions';
 
 /**
  * Main content for Preprocessing page.
@@ -103,8 +104,30 @@ class ProcessFile extends Component {
     handleSubmit(e) {
         e.preventDefault();
 
+        var s3Key = "user-input/" + this.props.token + "/" + this.state.filename;
+
+        var formData = new FormData();
+        formData.append("objectKey", s3Key);
+        formData.append("token", this.props.token);
         var self = this;
         console.log(self.state);
+
+        fetch("/analyze/clean-dataset", {
+            method: "POST",
+            body: formData
+        })
+        .then( response => {
+            if (response.ok)
+                return response.text();
+            else {
+                return response.json().then(function (json) {
+                    throw new Error(json.message || response.statusText);
+                });
+            }
+        })
+        .then( filename => {
+            this.props.addFileToTree(filename);
+        })
         /*
         self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
         // request new token for analysis task
@@ -188,4 +211,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, null)(ProcessFile);
+export default connect(mapStateToProps, { addFileToTree })(ProcessFile);

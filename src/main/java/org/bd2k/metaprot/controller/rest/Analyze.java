@@ -50,9 +50,11 @@ public class Analyze {
     private final String LOCAL_FILE_DOWNLOAD_PATH = root + "ssd2" + sep + "metaprot";
 
     // "src/main/resources/R/scripts/r_sample_code.R"
+    private final String CLEAN_DATASET_R_SCRIPT_LOC = rScriptLoc + "clean_dataset.R";
     private final String METABOLITES_R_SCRIPT_LOC = rScriptLoc + "r_sample_code.R";
     private final String TEMPORAL_PATTERNS_R_SCRIPT_LOC = rScriptLoc + "scatter_plot_cluster.R";
     private final String TIME_SERIES_R_SCRIPT_LOC = rScriptLoc + "time_series_viewer.R";
+
 
     // handler to perform R related logic
     private RManager manager = null;
@@ -429,6 +431,68 @@ public class Analyze {
             throw new BadRequestException("There was an issue with your input file: " + feedBackType.getErrorMessage() +
                     " - Please resolve this issue(s) and try again.");
         }
+    }
+
+    /**
+     * Checks the integrity of a file located at the specified S3 path (objectKey).
+     * If the file already exists, returns the results of checking the integrity of the
+     * local file.
+     *
+     * @param token
+     * @param objectKey
+     * @return a human-readable message to be displayed to the user
+     */
+    @RequestMapping(value = "/clean-dataset", method = RequestMethod.POST)
+    public String cleanDataset(@RequestParam("token") String token,
+                               @RequestParam("objectKey") String objectKey) {
+
+        // validation
+        String[] keyArr = objectKey.split("/");
+        if (!(objectKey.startsWith("user-input/" + token)) ||
+                keyArr.length != 3 ||
+                !(keyArr[keyArr.length-2].equals(token))) {
+
+            // should return error message
+            throw new BadRequestException("Invalid request, please try again later.");
+        }
+
+
+
+        // grab uploaded file from S3
+        S3Status s3Status = s3Client.pullAndStoreObject(objectKey, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+        int status = s3Status.getStatusCode();
+
+        log.info("new status s3: " + s3Status.toString());
+
+        // check for errors in s3 pull/store
+        if (status == -1) {
+            throw new ServerException("There was an error with your request, please try again later.");
+        } else if (status > 0) {
+            throw new BadRequestException(s3Client.getAWSStatusMessage(status));
+        }
+
+
+        String fileName = keyArr[keyArr.length-1];
+        String inputPath = LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + fileName;
+        String outputName = fileName.replace(".csv", "-CLEAN.csv");
+        String outputPath = LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + outputName;
+
+        // everything is OK on the server end, attempt to analyze the file
+        try {
+
+            String rCommand = "clean.dataset('" + inputPath + "', '" + outputPath + "')";
+            REXP rexp = executeRScript(token, fileName, s3Status.getFileSize(),
+                    CLEAN_DATASET_R_SCRIPT_LOC, rCommand);
+        } catch(Exception e) {
+            // handle exception so that we can return appropriate error messages
+            e.printStackTrace();
+            throw new ServerException("There was an error with our R Engine. Please try again at a later time.");
+        }
+
+        s3Client.uploadToS3(objectKey.replace(".csv", "-CLEAN.csv"), new File(outputPath));
+
+        return outputName;
+
     }
 
 

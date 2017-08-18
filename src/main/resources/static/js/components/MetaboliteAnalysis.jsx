@@ -16,7 +16,7 @@ class MetaboliteAnalysis extends Component {
         this.state = {
             pThreshold: 0.1,
             fcThreshold: 1.5,
-            filename: this.props.filenames ? this.props.filenames[0] : "",
+            filename: this.props.filenames[0],
             progressTextHTML: null
         }
 

@@ -30,7 +30,12 @@ class FileUploadForm extends Component {
     }
     handleSubmit(e) {
         e.preventDefault();
-        var filesize = this.state.$fileInput[0].files[0].size;
+        var file = this.state.$fileInput[0].files[0];
+        var filename = file.name;
+        var filesize = file.size;
+        if (this.props.filenames.includes(filename)) {
+            alert("Error: A file with this name already exists. Please rename and upload.");
+        }
         if (filesize > FILESIZE_LIMIT) {
             alert("Error: file size exceeds 10 MB limit.");
             return;

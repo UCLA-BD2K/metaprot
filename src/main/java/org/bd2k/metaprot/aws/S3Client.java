@@ -65,15 +65,46 @@ public class S3Client {
         s3Client = new AmazonS3Client(credentials);
     }
 
+
+
     /**
-     * Given a S3 object key and a destination write path, pull object from s3
-     * and store locally. This is a blocking call (i.e. NOT ASYNCHRONOUS).
+     * Given a S3 object key and a File, upload File to S3
      * @param objectKey s3 object key, e.g. tokenValue/abc.txt
-     * @param destinationPath where to store the local file, NOT including the file name (which is
-     *                        inferred from the objectKey)
+     * @param file local file to be uploaded to s3
      * @return S3Status instance with status code, -1 means local error, 0 means success, and everything else is an
      * AWS related error. For the latter, use getAWSStatusMessage() to return a human readable message.
      */
+    public S3Status uploadToS3(String objectKey, File file) {
+
+        // get filename from objectKey
+        String[] arr = objectKey.split("/");
+        String fileName = arr[arr.length - 1];
+
+        try {
+            // grant permission to authenticated users
+            AccessControlList acl = new AccessControlList();
+            acl.grantPermission(GroupGrantee.AuthenticatedUsers, Permission.Read);
+
+            s3Client.putObject(new PutObjectRequest(bucketName, objectKey, file)
+                                    .withAccessControlList(acl));
+        } catch (AmazonS3Exception ae) {
+            ae.printStackTrace();
+            return new S3Status(fileName, -1, ae.getStatusCode());
+        }
+
+
+        return new S3Status(fileName, 0, 0);
+    }
+
+        /**
+         * Given a s3 object key and a destination write path, pull object from s3
+         * and store locally. This is a blocking call (i.e. NOT ASYNCHRONOUS).
+         * @param objectKey s3 object key, e.g. tokenValue/abc.txt
+         * @param destinationPath where to store the local file, NOT including the file name (which is
+         *                        inferred from the objectKey)
+         * @return S3Status instance with status code, -1 means local error, 0 means success, and everything else is an
+         * AWS related error. For the latter, use getAWSStatusMessage() to return a human readable message.
+         */
     public S3Status pullAndStoreObject(String objectKey, String destinationPath) {
         S3Object object;
         int sc = 0;         // status code
@@ -139,7 +170,7 @@ public class S3Client {
     }
 
     /**
-     * Given a S3 object key copy an object from s3 and use the same key
+     * Given a s3 object key copy an object from s3 and use the same key
      * for the destination, ultimately "resetting" the time expiration for
      * the file.
      * @param objectKey s3 object key, e.g. tokenValue/abc.txt
