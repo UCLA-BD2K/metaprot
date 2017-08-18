@@ -32,14 +32,14 @@ export function addFileToTree(name) {
     return action;
 }
 
-function _removeFileFromTree(name) {
+export function removeFileFromTree(name) {
     const action = {
         type: DELETE_FILE,
         name
     }
     return action;
 }
-
+/*
 export function removeFileFromTree(name) {
 
     return dispatch => {
@@ -47,7 +47,7 @@ export function removeFileFromTree(name) {
         deleteFileFromS3(name)
     }
 }
-
+*/
 export function setToken(token) {
     const action = {
         type: SET_TOKEN,

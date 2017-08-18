@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { removeFileFromTree } from '../actions';
-import { downloadFileFromS3 } from '../util/helper';
+import { downloadFileFromS3, deleteFileFromS3 } from '../util/helper';
 import CsvViewer from '../modals/CsvViewer';
 
 /**
@@ -51,7 +51,12 @@ class FileTreeItem extends Component {
 
     handleDeleteFile(e) {
         e.stopPropagation();
-        this.props.removeFileFromTree(this.props.filename);
+        deleteFileFromS3(this.props.filename)
+            .then( () => this.props.removeFileFromTree(this.props.filename) )
+            .catch( error => {
+                alert("ERROR: Could not delete file\n\n"
+                    + error.message + "\n\nPlease try again later.");
+            });
     }
 
     render() {

@@ -18,7 +18,9 @@ class ProcessFile extends Component {
             numClusters: 0,
             memPerCluster: 0,
             filename: "",
-            progressTextHTML: null
+            progressTextHTML: null,
+            submitting: false,
+            progressText: null
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -110,7 +112,12 @@ class ProcessFile extends Component {
         formData.append("objectKey", s3Key);
         formData.append("token", this.props.token);
         var self = this;
-        console.log(self.state);
+
+        // display loading spinner and lock submit button
+        self.setState({
+            progressText: (<i className="fa fa-spinner fa-spin fa-3x fa-fw"></i>),
+            submitting: true
+        });
 
         fetch("/analyze/clean-dataset", {
             method: "POST",
@@ -118,50 +125,26 @@ class ProcessFile extends Component {
         })
         .then( response => {
             if (response.ok)
-                return response.text();
+                return response.json();
             else {
-                return response.json().then(function (json) {
+                return response.json().then( json => {
                     throw new Error(json.message || response.statusText);
                 });
             }
         })
-        .then( filename => {
-            this.props.addFileToTree(filename);
-        })
-        /*
-        self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
-        // request new token for analysis task
-        getToken()
-        // execute R scripts on the server
-        .then( token => {
-            var formData = new FormData();
-            var s3Key = "user-FormControl/" + this.props.token + "/" + this.state.filename;
-            formData.append("numClusters", this.state.numClusters);
-            formData.append("minMembersPerCluster", this.state.memPerCluster);
-            formData.append("objectKey", s3Key);
-            formData.append("taskToken", token);
-            return fetch("/analyze/pattern/" + this.props.token, {
-                method: "POST",
-                body: formData
+        .then( json => {
+            self.props.addFileToTree(json.filename);
+            self.setState({
+                progressText: (<div className="alert alert-success"> { json.message } </div>)
             });
         })
-        // process success/failure
-        .then( response => {
-            if (response.ok)
-                return response.text();
-            else {
-                return response.json().then( json => {
-                    throw new Error(json.message || response.statusText);
-                })
-            }
-        })
-        .then( success => {
-            self.setState({progressTextHTML: '<div class="alert alert-success">' + success + '</div>' });
-        })
         .catch( error => {
-            self.setState({progressTextHTML: '<div class="alert alert-danger">' + error.message + '</div>'});
+            self.setState({
+                progressText: (<div className="alert alert-danger"> { error.message } </div>)
+            });
         })
-        */
+        .then( () => self.setState({ submitting: false }));
+
     }
 
     handleChange(e) {
@@ -194,8 +177,9 @@ class ProcessFile extends Component {
                     handleSubmit={this.handleSubmit}
                     handleFile={this.handleFile} />
 
-                <div dangerouslySetInnerHTML={ { __html: this.state.progressTextHTML } }
-                    className="text-center"></div>
+                <div className="text-center">
+                    { this.state.progressText }
+                </div>
 
 
             </div>

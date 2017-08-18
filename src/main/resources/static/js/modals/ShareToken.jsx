@@ -57,16 +57,15 @@ class ShareToken extends Component {
         })
         .then( success => {
             self.setState({
-                progressText: (<div className="alert alert-success"> { success } </div>),
-                submitting: false
+                progressText: (<div className="alert alert-success"> { success } </div>)
             });
         })
         .catch( error => {
             self.setState({
-                progressText: (<div className="alert alert-danger"> { error.message } </div>),
-                submitting: false
+                progressText: (<div className="alert alert-danger"> { error.message } </div>)
             });
         })
+        .then( () => self.setState({ submitting: false }));
     }
 
     render() {

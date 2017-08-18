@@ -20,7 +20,10 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * REST controller that exposes endpoints
@@ -491,7 +494,10 @@ public class Analyze {
 
         s3Client.uploadToS3(objectKey.replace(".csv", "-CLEAN.csv"), new File(outputPath));
 
-        return outputName;
+        JSONObject obj = new JSONObject();
+        obj.put("filename", outputName);
+        obj.put("message", "The dataset has been successfully cleaned and saved as: " + outputName);
+        return obj.toJSONString();
 
     }
 
