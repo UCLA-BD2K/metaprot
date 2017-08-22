@@ -50,8 +50,6 @@ public class Analyze {
     private String sep = Globals.getPathSeparator();
     private String rScriptLoc = Globals.getrScriptLocation();
 
-    // "/ssd2/metaprot"
-    private final String LOCAL_FILE_DOWNLOAD_PATH = root + "ssd2" + sep + "metaprot";
 
     // "src/main/resources/R/scripts/r_sample_code.R"
     private final String CLEAN_DATASET_R_SCRIPT_LOC = rScriptLoc + "clean_dataset.R";
@@ -141,7 +139,7 @@ public class Analyze {
             throw new BadRequestException("Invalid request, please try again later.");
         }
 
-        S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken);
+        S3Status s3Status = s3Client.pullAndStoreObject(key, root + taskToken);
         int status = s3Status.getStatusCode();
 
         log.info("new status s3: " + s3Status.toString());
@@ -155,9 +153,9 @@ public class Analyze {
 
         // everything is OK on the server end, attempt to analyze the file
         try {
-            String rCommand = "analyze.file('" + LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken
-                    + sep + keyArr[keyArr.length-1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep +
-                    taskToken + sep + "data.csv', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken + sep + "volcano.png', " +
+            String rCommand = "analyze.file('" + root + taskToken
+                    + sep + keyArr[keyArr.length-1] + "', '" + root +
+                    taskToken + sep + "data.csv', '" + root + taskToken + sep + "volcano.png', " +
                     pThreshold + ", " + fcThreshold + ")";
 
             executeRScript(taskToken, keyArr[keyArr.length-1], s3Status.getFileSize(),
@@ -233,7 +231,7 @@ public class Analyze {
         }
 
         // grab uploaded file from S3
-        S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken);
+        S3Status s3Status = s3Client.pullAndStoreObject(key, root+ taskToken);
         int status = s3Status.getStatusCode();
 
         log.info("new status s3: " + s3Status.toString());
@@ -249,8 +247,8 @@ public class Analyze {
 
         // everything is OK on the server end, attempt to analyze the file
         try {
-            String rCommand = "analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken + sep +
-                    keyArr[keyArr.length - 1] + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken + sep + "clustered_result.csv', " +
+            String rCommand = "analyze.temporal.patterns('" + root + taskToken + sep +
+                    keyArr[keyArr.length - 1] + "', '" + root + taskToken + sep + "clustered_result.csv', " +
                     numClusters + ", " + minMembersPerCluster + ")";
             REXP rexp = executeRScript(taskToken, keyArr[keyArr.length-1], s3Status.getFileSize(),
                     TEMPORAL_PATTERNS_R_SCRIPT_LOC, rCommand);
@@ -313,8 +311,8 @@ public class Analyze {
                                                                     @RequestParam("minMembersPerCluster") int minMembersPerCluster) {
         // validation
         PatternRecogTask task = dao.getPatternRecogTask(token);
-        File targetDir = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token);
-        File targetFile = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + task.getFilename());
+        File targetDir = new File(root + token);
+        File targetFile = new File(root + token + sep + task.getFilename());
         if (!targetDir.exists() || !targetFile.exists() || task==null || numClusters < 1) {
             throw new BadRequestException("The task no longer exists, please re-upload your data and try again.");
         }
@@ -333,8 +331,8 @@ public class Analyze {
             String absScriptPath = rScript.getAbsolutePath().replace("\\","\\\\");        // affects window env only
 
             manager.runRScript(absScriptPath);          // source the R script
-            REXP rexp = manager.runRCommand("analyze.temporal.patterns('" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep +
-                    task.getFilename() + "', '" + LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + "clustered_result.csv', "
+            REXP rexp = manager.runRCommand("analyze.temporal.patterns('" + root + token + sep +
+                    task.getFilename() + "', '" + root + token + sep + "clustered_result.csv', "
                     + numClusters + ", " + minMembersPerCluster + ")");
 
             regressionLines = rexp.asDoubleMatrix();
@@ -405,9 +403,9 @@ public class Analyze {
 
         // check for the existence of this file
         // if it does not exist, download from s3
-        File f = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + fileName);
+        File f = new File(root + token + sep + fileName);
         if (!f.exists()) {
-            S3Status s3Status = s3Client.pullAndStoreObject(objectKey, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+            S3Status s3Status = s3Client.pullAndStoreObject(objectKey, root + token);
             int status = s3Status.getStatusCode();
 
             // error
@@ -421,7 +419,7 @@ public class Analyze {
         // TODO abineet, this is where you will call the integrity checker on the file
         // which is now located at: LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + fileName
 
-        String pathToFile = LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + fileName;
+        String pathToFile = root + token + sep + fileName;
         IntegrityChecker i = new IntegrityChecker();
         FeedBackType feedBackType =  i.checkIntegrity(pathToFile);
 
@@ -464,7 +462,7 @@ public class Analyze {
 
 
         // grab uploaded file from S3
-        S3Status s3Status = s3Client.pullAndStoreObject(objectKey, LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+        S3Status s3Status = s3Client.pullAndStoreObject(objectKey, root + token);
         int status = s3Status.getStatusCode();
 
         log.info("new status s3: " + s3Status.toString());
@@ -478,9 +476,9 @@ public class Analyze {
 
 
         String fileName = keyArr[keyArr.length-1];
-        String inputPath = LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + fileName;
+        String inputPath = root + token + sep + fileName;
         String outputName = fileName.replace(".csv", "-CLEAN.csv");
-        String outputPath = LOCAL_FILE_DOWNLOAD_PATH + sep + token + sep + outputName;
+        String outputPath = root + token + sep + outputName;
 
         // everything is OK on the server end, attempt to analyze the file
         try {
@@ -569,7 +567,7 @@ public class Analyze {
             throw new BadRequestException("Invalid request, please try again later.");
         }
 
-        S3Status s3Status = s3Client.pullAndStoreObject(key, LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken);
+        S3Status s3Status = s3Client.pullAndStoreObject(key, root + taskToken);
         int status = s3Status.getStatusCode();
 
         // error
@@ -581,10 +579,10 @@ public class Analyze {
 
         // everything is OK on the server end, attempt to analyze the file
         try {
-            String rCommand = "analyze.time.series('" + LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken
+            String rCommand = "analyze.time.series('" + root + taskToken
                     + sep + keyArr[keyArr.length-1] + "', '" +
-                    LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken + sep + "time_series_concentrations.csv', '" +
-                    LOCAL_FILE_DOWNLOAD_PATH + sep + taskToken + sep + "time_series_significance.csv')";
+                    root + taskToken + sep + "time_series_concentrations.csv', '" +
+                    root + taskToken + sep + "time_series_significance.csv')";
 
             executeRScript(taskToken, keyArr[keyArr.length-1], s3Status.getFileSize(),
                     TIME_SERIES_R_SCRIPT_LOC, rCommand);

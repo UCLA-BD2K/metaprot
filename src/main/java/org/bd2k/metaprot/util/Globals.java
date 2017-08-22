@@ -50,6 +50,8 @@ public class Globals {
             pathSeparator = "/";
         }
 
+        pathRoot += "ssd2" + pathSeparator + "metprot" + pathSeparator;
+
         // load any resources that cannot be autowired (if the variables are static, etc.)
         Resource resource = new ClassPathResource("application.properties");
 

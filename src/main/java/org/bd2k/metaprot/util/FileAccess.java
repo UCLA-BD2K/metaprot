@@ -22,9 +22,6 @@ public class FileAccess {
     private String root = Globals.getPathRoot();
     private String sep = Globals.getPathSeparator();
 
-    // "/ssd2/metaprot"
-    private final String LOCAL_FILE_DOWNLOAD_PATH = root + "ssd2" + sep + "metaprot";
-
     /**
      * Returns a list of stats that represent each row in the resultant data.csv file
      * from metabolite analysis.
@@ -34,7 +31,7 @@ public class FileAccess {
      */
     public List<MetaboliteStat> getMetaboliteAnalysisResults(String token) {
 
-        File file = new File(String.format("%s%s%s%sdata.csv", LOCAL_FILE_DOWNLOAD_PATH, sep, token, sep));
+        File file = new File(String.format("%s%s%sdata.csv", root, token, sep));
         List<MetaboliteStat> list = new ArrayList<>();
 
         if (file.exists()) {
@@ -92,7 +89,7 @@ public class FileAccess {
      */
     public List<List<PatternRecogStat>> getPatternRecogResults(String token){
 
-        File file = new File(String.format("%s%s%s%sclustered_result.csv", LOCAL_FILE_DOWNLOAD_PATH, sep, token, sep));
+        File file = new File(String.format("%s%s%sclustered_result.csv", root, token, sep));
 
         List<List<PatternRecogStat>> list = new ArrayList<List<PatternRecogStat>>();
 
@@ -152,7 +149,7 @@ public class FileAccess {
      */
     public List<TimeSeriesValue> getTimeSeriesConcentrations(String token) {
 
-        File file = new File(String.format("%s%s%s%stime_series_concentrations.csv", LOCAL_FILE_DOWNLOAD_PATH, sep, token, sep));
+        File file = new File(String.format("%s%s%stime_series_concentrations.csv", root, token, sep));
         List<TimeSeriesValue> list = new ArrayList<>();
 
         if (file.exists()) {
@@ -204,7 +201,7 @@ public class FileAccess {
      */
     public List<TimeSeriesSignificance> getTimeSeriesSignificances(String token) {
 
-        File file = new File(String.format("%s%s%s%stime_series_significance.csv", LOCAL_FILE_DOWNLOAD_PATH, sep, token, sep));
+        File file = new File(String.format("%s%s%stime_series_significance.csv", root, token, sep));
         List<TimeSeriesSignificance> list = new ArrayList<>();
 
         if (file.exists()) {
@@ -265,7 +262,7 @@ public class FileAccess {
     /**
      * Given a task's token, delete the temporary directory and files used.
      * This is a relatively safe function, as it will only look for directories present
-     * in LOCAL_DOWNLOAD_PATH (e.g. /ssd2/metaprot).
+     * in root (e.g. /ssd2/metprot).
      *
      * UUIDs by definition are difficult to guess, so we can be relatively assured
      * that no user can delete another user's task information before it gets stored
@@ -275,7 +272,7 @@ public class FileAccess {
      */
     public void deleteTemporaryAnalysisFiles(String token) {
 
-        File directoryToDelete = new File(LOCAL_FILE_DOWNLOAD_PATH + sep + token);
+        File directoryToDelete = new File(root + token);
 
         // if the dir is invalid, skip
         if (!directoryToDelete.exists()) {
