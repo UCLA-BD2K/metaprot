@@ -17,6 +17,7 @@ import org.json.simple.JSONObject;
 import org.rosuda.REngine.REXP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -89,7 +90,8 @@ public class Analyze {
 
             // get manager instance and run R commands
             manager = RManager.getInstance(portToUse);
-            File rScript = new File(rFile);
+            //File rScript = new File(rFile);
+            File rScript = new ClassPathResource(rFile).getFile();
             String absScriptPath = rScript.getAbsolutePath().replace("\\","\\\\");        // affects window env only
 
             manager.runRScript(absScriptPath);          // source the R script
