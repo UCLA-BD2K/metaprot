@@ -12,7 +12,6 @@ class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            siteUsageDescr: "",
             sessions: 0,
             pageviewsPerSession: 0,
             uniqueVisitors: 0,
@@ -22,6 +21,8 @@ class Home extends Component {
             monthlySessionData: [[]],
             loading: this.props.report === null ? true : false
         }
+
+        this.renderInfoBlocks = this.renderInfoBlocks.bind(this);
 
     }
 
@@ -55,11 +56,11 @@ class Home extends Component {
         }
     }
 
-    render() {
+    renderInfoBlocks() {
+
         // set up InfoBlocks
-        var siteUsageDescr = this.state.month ? "As of " + this.state.month
-            + ", Google Analytics reports the following data on MetProt:" : null;
         var pageviewsPerSession = this.state.pageviewsPerSession.toFixed(2);
+
         var infoblocks = [
             {
                 title: "Recent Updates",
@@ -86,25 +87,25 @@ class Home extends Component {
             },
             {
                 title: "Feature Use Statistics",
-                description: "A full pie chart to show usage statistics of various features in MetaProt",
+                description: "A full pie chart to show usage statistics of various features in MetProt",
                 postHTML: ( <div id="pieChart"></div> )
             },
             {
                 title: "Site Usage",
                 description: (
                     <div>
-                        <p>{siteUsageDescr}</p>
+                        <p>Google Analytics reports the following data on MetProt:</p>
                         <p>(worldwide usage map shown below):</p>
                     </div>
                 ),
                 postHTML: (
                     <div>
-                        <div style={{maxWidth: 220, margin: "0 auto"}}>
+                        <div style={{maxWidth: "280px", margin: "0 auto"}}>
                             <ul style={{textAlign: "left"}}>
-                                <li><em>{this.state.sessions}</em> sessions</li>
-                                <li><em>{pageviewsPerSession}</em> pageviews per session</li>
-                                <li><em>{this.state.uniqueVisitors}</em> unique visitors</li>
-                                <li><em>{this.state.numCountries}</em> countries represented</li>
+                                <li><em>{ this.state.sessions }</em> sessions</li>
+                                <li><em>{ pageviewsPerSession }</em> pageviews per session</li>
+                                <li><em>{ this.state.uniqueVisitors }</em> unique visitors</li>
+                                <li><em>{ this.state.numCountries }</em> countries represented</li>
                             </ul>
                         </div>
                         <div id="regions-chart" className="drop-shadow"></div>
@@ -130,7 +131,18 @@ class Home extends Component {
         }
 
         return (
+            <div className="row placeholders">
+            {
+                 infoblocks.map((infoblock, i) => {
+                    return <InfoBlock key={i} data={infoblock} className="col-xs-12 col-md-6 placeholder"/>
+                 })
+            }
+            </div>
+        )
+    }
 
+    render() {
+        return (
             <div>
 
                 <div className="container-fluid">
@@ -145,14 +157,7 @@ class Home extends Component {
                     </div>
                 </div>
 
-                <div className="row placeholders">
-                {
-                     infoblocks.map((infoblock, i) => {
-                        return <InfoBlock key={"infoblock-"+i} data={infoblock} className="col-xs-12 col-md-6 placeholder"/>
-                     })
-                }
-                </div>
-
+                { this.renderInfoBlocks() }
 
             </div>
         )

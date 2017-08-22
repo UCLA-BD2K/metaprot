@@ -239,6 +239,9 @@ body {
     border-radius: 5%;
 }
 
+.infoblock-description {
+    margin: 12px 0 12px 0;
+}
 
 .sidebar{
     background-image: none;

@@ -25,9 +25,9 @@ class InfoBlock extends Component {
                 { this.props.data.preHTML }
 
                 <h4>{ this.props.data.title }</h4>
-                <span className="text-muted">
+                <div className="infoblock-description text-muted">
                     { this.props.data.description }
-                </span>
+                </div>
 
                 { this.props.data.postHTML }
 
