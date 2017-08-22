@@ -24,6 +24,8 @@ class MainLayout extends Component {
     }
 
     componentDidMount() {
+        // If Redux store has a valid token but no filenames, the page was likely refreshed.
+        // Grab files associated with session token to display in file tree.
         if (this.props.token !== "" && this.props.filenames.length === 0) {
             getSessionData(this.props.token).then( data => {
                 data.forEach( filename => this.props.addFileToTree(filename));

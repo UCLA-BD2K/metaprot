@@ -26,9 +26,79 @@ class ProcessFile extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleFile = this.handleFile.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.renderMoreForms = this.renderMoreForms.bind(this);
 
-        // Additional form components to pass into FileSelectForm
-        this.moreForms = (
+
+    }
+
+    // handler function to pass to into FileSelectForm
+    handleSubmit(e) {
+        e.preventDefault();
+
+        var s3ObjectKey = "user-input/" + this.props.token + "/" + this.state.filename;
+
+        var formData = new FormData();
+        formData.append("objectKey", s3ObjectKey);
+        formData.append("token", this.props.token);
+
+        // display loading spinner and lock submit button
+        self.setState({
+            progressText: (<i className="fa fa-spinner fa-spin fa-3x fa-fw"></i>),
+            submitting: true
+        });
+
+        var self = this;
+
+        fetch("/analyze/clean-dataset", {
+            method: "POST",
+            body: formData
+        })
+        // process success/failure
+        .then( response => {
+            if (response.ok)
+                return response.json();
+            else {
+                return response.json().then( json => {
+                    throw new Error(json.message || response.statusText);
+                });
+            }
+        })
+        .then( json => {
+            // update file tree to reflect new processed file added to S3
+            self.props.addFileToTree(json.filename);
+
+            self.setState({
+                progressText: (<div className="alert alert-success"> { json.message } </div>)
+            });
+        })
+        .catch( error => {
+            self.setState({
+                progressText: (<div className="alert alert-danger"> { error.message } </div>)
+            });
+        })
+        .then( () => self.setState({ submitting: false }));
+
+    }
+
+    handleChange(e) {
+        const target = e.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
+    }
+
+    // handler function to pass to into FileSelectForm
+    handleFile(e) {
+        var filename = e.target.value;
+        this.setState({ filename });
+    }
+
+    // Additional form components to pass into FileSelectForm
+    renderMoreForms() {
+        return (
             <div>
                 <h3>Handle Missing Values</h3>
                 <div >
@@ -102,67 +172,6 @@ class ProcessFile extends Component {
         )
     }
 
-    // handler function to pass to into FileSelectForm
-    handleSubmit(e) {
-        e.preventDefault();
-
-        var s3Key = "user-input/" + this.props.token + "/" + this.state.filename;
-
-        var formData = new FormData();
-        formData.append("objectKey", s3Key);
-        formData.append("token", this.props.token);
-        var self = this;
-
-        // display loading spinner and lock submit button
-        self.setState({
-            progressText: (<i className="fa fa-spinner fa-spin fa-3x fa-fw"></i>),
-            submitting: true
-        });
-
-        fetch("/analyze/clean-dataset", {
-            method: "POST",
-            body: formData
-        })
-        .then( response => {
-            if (response.ok)
-                return response.json();
-            else {
-                return response.json().then( json => {
-                    throw new Error(json.message || response.statusText);
-                });
-            }
-        })
-        .then( json => {
-            self.props.addFileToTree(json.filename);
-            self.setState({
-                progressText: (<div className="alert alert-success"> { json.message } </div>)
-            });
-        })
-        .catch( error => {
-            self.setState({
-                progressText: (<div className="alert alert-danger"> { error.message } </div>)
-            });
-        })
-        .then( () => self.setState({ submitting: false }));
-
-    }
-
-    handleChange(e) {
-        const target = e.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
-        this.setState({
-            [name]: value
-        });
-    }
-
-    // handler function to pass to into FileSelectForm
-    handleFile(e) {
-        var filename = e.target.value;
-        this.setState({ filename });
-    }
-
 
 
 
@@ -173,7 +182,7 @@ class ProcessFile extends Component {
                 <h3>Select a .csv file to process:</h3>
 
                 <FileSelectForm
-                    moreForms={this.moreForms}
+                    moreForms={this.renderMoreForms()}
                     handleSubmit={this.handleSubmit}
                     handleFile={this.handleFile} />
 

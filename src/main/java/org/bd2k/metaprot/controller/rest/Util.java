@@ -45,10 +45,21 @@ public class Util {
         return s3Client.validToken(token);
     }
 
+    /**
+     * Given a session token, retrieve a list of filenames from S3 that are
+     * associated with this token. The expiration time for these files will
+     * also be reset. For example, if the S3 lifecycle is specified for
+     * automatic deletion after 7 days, then the file(s) will be set to be
+     * deleted 7 days from this most recent request for session data.
+     * @param token
+     * @return a list of String filenames associated with this session token
+     */
     @RequestMapping(value= "/getSessionData", method = RequestMethod.POST)
     public List<String> getSessionData(@RequestParam("token") String token){
         List<String> files = s3Client.getSessionData(token);
         String s3BaseKey = S3Client.S3_FILE_PREFIX + token + "/";
+
+        // Reset file expiration time for each file associated with this session token
         for (String file : files) {
             String s3ObjectKey = s3BaseKey + file;
             s3Client.resetFileExpiration(s3ObjectKey);
@@ -64,11 +75,21 @@ public class Util {
         return GoogleAnalytics.getReport();
     }
 
-
+    /**
+     * Forwards a user's site feedback to MetProt's feedback email.
+     * @param fromEmail optional field in feedback form, specifying user's email
+     * @param subject optional field in feedback form, specifying subject of feedback
+     * @param text main body of feedback
+     * @return a String message indicating the feedback has been sent successfully
+     */
     @RequestMapping(value = "/sendFeedback", method = RequestMethod.POST)
     public String sendFeedback(@RequestParam("email") String fromEmail,
                                @RequestParam("subject") String subject,
                                @RequestParam("text") String text) {
+
+        // Optional fields. Handle blank fields appropriately
+        fromEmail = fromEmail.isEmpty() ? "anon." : fromEmail;
+        subject = subject.isEmpty() ? "N/A" : subject;
         String content = "From: " + fromEmail + "\n\n" + "Feedback: " + text;
         try {
             emailService.sendFeedback(subject, content);
@@ -79,6 +100,18 @@ public class Util {
         return "Thank you for your feedback!";
     }
 
+    /**
+     * Sends an email to share a user's MetProt session token. A user can input
+     * his/her own email to keep a record of the session token and possibly come back
+     * to it later, or someone else's email to share the session token.
+     *
+     * @param toEmail
+     * @param nameFrom
+     * @param nameTo
+     * @param token
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/shareToken", method = RequestMethod.POST)
     public String shareToken(@RequestParam("email") String toEmail,
                              @RequestParam("nameFrom") String nameFrom,

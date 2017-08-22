@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux';
 import { GOOGLE_ANALYTICS_REPORT, RESET_TREE, UPLOAD_FILE, DELETE_FILE, SET_TOKEN } from '../actions';
 
+/* Reducers to help maintain the state of the Redux store */
+
+/* Store Google Analytics Report data in store to prevent multiple requests and persist through page reloads */
 function googleAnalyticsReport(state=null, action) {
     switch(action.type) {
         case GOOGLE_ANALYTICS_REPORT:
@@ -10,6 +13,7 @@ function googleAnalyticsReport(state=null, action) {
     }
 }
 
+/* Store filenames associated with a session token. Filenames do NOT persist through page reloads */
 function filenames (state=[], action) {
     switch (action.type) {
         case RESET_TREE:
@@ -25,6 +29,7 @@ function filenames (state=[], action) {
     }
 }
 
+/* Store user's session token and persist through page reloads */
 function token (state="", action) {
     switch (action.type) {
         case SET_TOKEN:
