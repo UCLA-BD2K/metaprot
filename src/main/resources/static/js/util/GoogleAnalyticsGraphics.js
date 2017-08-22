@@ -123,8 +123,8 @@ export function plotGeoMap(mapData) {
 
         var options = {
           backgroundColor: "#eef7fb",
-          colorAxis: {colors: ['#0000ff', '#DC143C']},
-          datalessRegionColor: '#90EE90'
+          colorAxis: {colors: ['#4062BB', '#FF4242']},
+          datalessRegionColor: '#ACECA1'
         };
 
         var chart = new google.visualization.GeoChart(document.getElementById('regions-chart'));
@@ -176,7 +176,7 @@ export function plotTrafficChart(dailySessionCounts, montlySessionCounts) {
 
         var options = {
             backgroundColor: "#eef7fb",
-            colors: ["#2857ff"],
+            colors: ["#058ED9"],
             pointSize: 5,
             //theme: 'maximized',
             width: '100%',

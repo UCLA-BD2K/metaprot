@@ -16,39 +16,13 @@ class MetaboliteAnalysis extends Component {
         this.state = {
             pThreshold: 0.1,
             fcThreshold: 1.5,
-            filename: this.props.filenames[0],
+            filename: "",
             progressTextHTML: null
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleFile = this.handleFile.bind(this);
-        this.handlePThreshold = this.handlePThreshold.bind(this);
-        this.handleFcThreshold = this.handleFcThreshold.bind(this);
+        this.handleChange = this.handleChange.bind(this);
 
-        // Additional form components to pass into FileSelectForm
-        this.moreForms = (
-            <div>
-                <ControlLabel htmlFor="pThreshold">
-                    Enter a P value threhshold:
-                </ControlLabel>
-                <FormControl type="text"
-                    className="form-control" placeholder="Default: 0.1"
-                    id="pThreshold" name="pThreshold"
-                    onChange={this.handlePThreshold}/>
-
-                <br/>
-
-                <ControlLabel htmlFor="fcThreshold">
-                    Enter a fold change threshold:
-                </ControlLabel>
-                <FormControl type="text"
-                    className="form-control" placeholder="Default: 1.5"
-                    id="fcThreshold" name="fcThreshold"
-                    onChange={this.handleFcThreshold}/>
-
-                <br/>
-            </div>
-        )
     }
 
     // handler function to pass to into FileSelectForm
@@ -56,9 +30,7 @@ class MetaboliteAnalysis extends Component {
         e.preventDefault();
 
         var self = this;
-        //console.log(this.state);
 
-        //return;
         self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
 
         // request new token for analysis task
@@ -72,6 +44,7 @@ class MetaboliteAnalysis extends Component {
             formData.append("fcThreshold", this.state.fcThreshold);
             formData.append("objectKey", s3Key);
             formData.append("taskToken", token);
+
             return fetch("/analyze/metabolites/" + this.props.token, {
                 method: "POST",
                 body: formData
@@ -95,20 +68,37 @@ class MetaboliteAnalysis extends Component {
         })
     }
 
-    // handler function to pass to into FileSelectForm
-    handleFile(e) {
-        var filename = e.target.value;
-        this.setState({ filename });
+    handleChange(e) {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
     }
 
-    handlePThreshold(e) {
-        var pThreshold = Number.parseFloat(e.target.value);
-        this.setState({ pThreshold })
-    }
+    // Additional form components to pass into FileSelectForm
+    renderMoreForms() {
+        return (
+            <div>
+                <ControlLabel htmlFor="pThreshold">
+                    Enter a P value threhshold:
+                </ControlLabel>
+                <FormControl type="text"
+                    className="form-control" placeholder="Default: 0.1"
+                    id="pThreshold" name="pThreshold"
+                    onChange={this.handleChange}/>
 
-    handleFcThreshold(e) {
-        var fcThreshold = Number.parseFloat(e.target.value);
-        this.setState({ fcThreshold })
+                <br/>
+
+                <ControlLabel htmlFor="fcThreshold">
+                    Enter a fold change threshold:
+                </ControlLabel>
+                <FormControl type="text"
+                    className="form-control" placeholder="Default: 1.5"
+                    id="fcThreshold" name="fcThreshold"
+                    onChange={this.handleChange}/>
+
+                <br/>
+            </div>
+        )
     }
 
     render() {
@@ -117,12 +107,13 @@ class MetaboliteAnalysis extends Component {
                 <h2>Metabolite Analysis</h2>
                 <h3>Select a .csv file to analyze:</h3>
                 <FileSelectForm
-                    moreForms={this.moreForms}
+                    moreForms={this.renderMoreForms()}
                     handleSubmit={this.handleSubmit}
-                    handleFile={this.handleFile} />
+                    handleFile={this.handleChange} />
 
                 <div dangerouslySetInnerHTML={ { __html: this.state.progressTextHTML } }
-                    className="text-center"></div>
+                    className="text-center">
+                </div>
 
             </div>
         )

@@ -32,14 +32,14 @@ class Home extends Component {
         if (this.props.report === null) {
             var self = this;
             fetch("/util/googleAnalyticsReport", { method: "GET" })
-            .then( response => { return response.json() })
-            .then( json => {
-                // store data in redux
-                this.props.storeGoogleAnalyticsReport(json);
-                // update with retrieved data
-                json.loading = false;
-                self.setState(json);
-            })
+                .then( response =>  response.json() )
+                .then( json => {
+                    // store data in redux
+                    this.props.storeGoogleAnalyticsReport(json);
+                    // update with retrieved data
+                    json.loading = false;
+                    self.setState(json);
+                })
         }
         else {
             this.setState(this.props.report);
@@ -58,7 +58,7 @@ class Home extends Component {
     render() {
         // set up InfoBlocks
         var siteUsageDescr = this.state.month ? "As of " + this.state.month
-            + ", Google Analytics reports the following data on MetaProt:" : null;
+            + ", Google Analytics reports the following data on MetProt:" : null;
         var pageviewsPerSession = this.state.pageviewsPerSession.toFixed(2);
         var infoblocks = [
             {
