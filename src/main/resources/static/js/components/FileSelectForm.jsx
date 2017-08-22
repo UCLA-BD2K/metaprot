@@ -24,6 +24,7 @@ class FileSelectForm extends Component {
                     <FormControl id="fileFormControl"
                         componentClass="select"
                         defaultValue=""
+                        name="filename"
                         required onChange={this.props.handleFile}>
                         <option value="">Select...</option>
                     {

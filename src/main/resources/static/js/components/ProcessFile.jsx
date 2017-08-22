@@ -42,7 +42,7 @@ class ProcessFile extends Component {
         formData.append("token", this.props.token);
 
         // display loading spinner and lock submit button
-        self.setState({
+        this.setState({
             progressText: (<i className="fa fa-spinner fa-spin fa-3x fa-fw"></i>),
             submitting: true
         });

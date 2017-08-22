@@ -45,6 +45,11 @@ class MetaboliteAnalysis extends Component {
             formData.append("objectKey", s3Key);
             formData.append("taskToken", token);
 
+
+            // Display the values
+            for (var value of formData.values()) {
+               console.log(value);
+            }
             return fetch("/analyze/metabolites/" + this.props.token, {
                 method: "POST",
                 body: formData
