@@ -46,7 +46,7 @@ public class S3ClientTest {
     }
 
     @Test
-    public void testPullAndStoreFile() {
+    public void testPullAndStoreFile_WithValidKey() {
 
         String s3Key = S3_BASE_KEY + TEST_FILE;
         String outputPath = root + "TEST_LOCATION" + sep;
@@ -71,8 +71,15 @@ public class S3ClientTest {
     }
 
     @Test
+    public void testPullAndStoreFile_WithInvalidKey() {
+        S3Status status = s3Client.pullAndStoreObject(S3_BASE_KEY + "FAKE_OBJECT_KEY", "FAKE_PATH");
+        assertEquals("Failure - request for invalid S3 key should return status code 404",
+                status.getStatusCode(), 404);
+    }
+
+    @Test
     public void testValidToken_WithValidToken() {
-        assertTrue("Failure - \"TEST_TOKEN\" should be evaluated as a valid token.",
+        assertTrue("Failure - TEST_TOKEN should be evaluated as a valid token.",
                 s3Client.validToken(TEST_TOKEN));
     }
 
