@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import FileSelectForm from './FileSelectForm';
 import { connect } from 'react-redux';
-import { getToken } from '../util/helper';
+import api from '../util/api';
 
 /**
  * Main content for Time Series Analysis page.
@@ -26,7 +26,7 @@ class TimeSeriesAnalysis extends Component {
         self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
 
         // request new token for analysis task
-        getToken()
+        api.getToken()
         // execute R scripts on the server
         .then( token => {
             var formData = new FormData();

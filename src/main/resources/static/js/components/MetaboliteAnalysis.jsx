@@ -3,7 +3,7 @@ import FileSelectForm from './FileSelectForm';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormControl, ControlLabel } from 'react-bootstrap'
-import { getToken } from '../util/helper';
+import api from '../util/api';
 
 /**
  * Main content for Metabolite Analysis page.
@@ -34,7 +34,7 @@ class MetaboliteAnalysis extends Component {
         self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
 
         // request new token for analysis task
-        getToken()
+        api.getToken()
         // execute R scripts on the server
         .then( token => {
 
@@ -66,6 +66,7 @@ class MetaboliteAnalysis extends Component {
             }
         })
         .then( success => {
+            ga('send', 'pageview', "/api/metabolites");
             self.setState({progressTextHTML: '<div class="alert alert-success">' + success + '</div>' });
         })
         .catch( error => {

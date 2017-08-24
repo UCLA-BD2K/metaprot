@@ -233,6 +233,7 @@ body {
 .placeholder {
     margin-bottom: 20px;
     margin-top: 20px;
+    height: 500px
 }
 .placeholder img {
     display: inline-block;

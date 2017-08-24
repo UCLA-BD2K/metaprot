@@ -75,6 +75,7 @@ public class Util {
         return GoogleAnalytics.getReport();
     }
 
+
     /**
      * Forwards a user's site feedback to MetProt's feedback email.
      * @param fromEmail optional field in feedback form, specifying user's email

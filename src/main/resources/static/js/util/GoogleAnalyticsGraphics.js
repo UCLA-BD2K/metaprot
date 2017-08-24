@@ -1,7 +1,7 @@
 
 
 // generate pie chart displaying usage of site's features (dummy data currently)
-export function plotUsagePieChart() {
+export function plotUsagePieChart(data) {
     var pie = new d3pie("pieChart", {
                 "header": {
                     "title": {
@@ -23,30 +23,20 @@ export function plotUsagePieChart() {
                     "location": "bottom-center"
                 },
                 "size": {
-                    "canvasHeight": 300,
-                    "canvasWidth": 300,
+                    "canvasHeight": 400,
+                    "canvasWidth": 400,
                     "pieOuterRadius": "90%"
                 },
-                "data": {
-                    "sortOrder": "label-desc",
-                    "content": [
-                        {
-                            "label": "Differential Expression Analysis ",
-                            "value": 200,
-                            "color": "#2282c1"
-                        },
-                        {
-                            "label": "Association Study",
-                            "value": 90,
-                            "color": "#7b6688"
-                        },
-                        {
-                            "label": "Pattern Recognition ",
-                            "value": 100,
-                            "color": "#64a61f"
-                        }
-                    ]
-                },
+                "data": function() {
+                    let pieData = {
+                        "sortOrder": "label-desc",
+                        "content": []
+                    }
+                    data.forEach( val => {
+                        pieData.content.push({ "label":val[0], "value": parseInt(val[1])})
+                    })
+                    return pieData;
+                }(),
                 "labels": {
                     "outer": {
                         "format": "none",

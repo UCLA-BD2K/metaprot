@@ -42,7 +42,7 @@ public class GoogleAnalytics {
         // Construct a GoogleCredential object with the service account email
         // and p12 file downloaded from the developer console.
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        System.out.println(KEY_FILENAME);
+
         GoogleCredential credential = new GoogleCredential.Builder()
                 .setTransport(httpTransport)
                 .setJsonFactory(JSON_FACTORY)
@@ -121,6 +121,13 @@ public class GoogleAnalytics {
                 .execute();
     }
 
+    public static GaData getToolUsage(Analytics analytics, String profileId) throws IOException {
+        return analytics.data().ga()
+                .get("ga:" + profileId, "2017-07-01", "today", "ga:pageviews")
+                .setFilters("ga:pagePath=@result")
+                .setDimensions("ga:pagePath")
+                .execute();
+    }
     public static void printResults(GaData results) {
         // Parse the response from the Core Reporting API for
         // the profile name and number of sessions.
@@ -143,6 +150,7 @@ public class GoogleAnalytics {
         GaData dailySessionCounts = null;
         GaData monthlySessionCounts = null;
         GaData countryData = null;
+        GaData toolUsage = null;
 
         try {
             Analytics analytics = initializeAnalytics();
@@ -151,6 +159,7 @@ public class GoogleAnalytics {
             dailySessionCounts = getDailySessionCounts(analytics, profile);
             monthlySessionCounts = getMonthlySessionCounts(analytics, profile);
             countryData = getCountryData(analytics, profile);
+            toolUsage = getToolUsage(analytics, profile);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -174,6 +183,11 @@ public class GoogleAnalytics {
         if (monthlySessionCounts != null) {
             report.setMonthlySessionData(monthlySessionCounts.getRows());
         }
+
+        if (toolUsage != null) {
+            report.setToolUsage(toolUsage.getRows());
+        }
+
         return report;
     }
 

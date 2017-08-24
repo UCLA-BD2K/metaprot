@@ -4,7 +4,6 @@ export const UPLOAD_FILE = 'UPLOAD_FILE';
 export const DELETE_FILE = 'DELETE_FILE';
 export const SET_TOKEN = 'SET_TOKEN';
 
-import { deleteFileFromS3 } from '../util/helper';
 
 export function storeGoogleAnalyticsReport(report) {
     const action = {

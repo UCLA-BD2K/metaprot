@@ -19,6 +19,7 @@ class Home extends Component {
             mapData: [[]],
             dailySessionData: [[]],
             monthlySessionData: [[]],
+            toolUsage: [[]],
             loading: this.props.report === null ? true : false
         }
 
@@ -28,7 +29,6 @@ class Home extends Component {
 
     // render plots after mounting
     componentDidMount() {
-        plotUsagePieChart();
         // if no cached Google Analytics data, make request
         if (this.props.report === null) {
             var self = this;
@@ -51,6 +51,7 @@ class Home extends Component {
     // render Google Analytics graphics if data has loaded
     componentDidUpdate(prevProps, prevState) {
         if (this.state.loading == false) {
+            plotUsagePieChart(this.state.toolUsage);
             plotGeoMap(this.state.mapData);
             plotTrafficChart(this.state.dailySessionData, this.state.monthlySessionData);
         }
@@ -133,7 +134,7 @@ class Home extends Component {
         return (
             <div className="row placeholders">
             {
-                 infoblocks.map((infoblock, i) => {
+                 infoblocks.map( (infoblock, i) => {
                     return <InfoBlock key={i} data={infoblock} className="col-xs-12 col-md-6 placeholder"/>
                  })
             }

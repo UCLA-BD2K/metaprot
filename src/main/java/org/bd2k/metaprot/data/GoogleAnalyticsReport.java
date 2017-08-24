@@ -16,6 +16,7 @@ public class GoogleAnalyticsReport {
     private List<List<String>> mapData;
     private List<List<String>> dailySessionData;
     private List<List<String>> monthlySessionData;
+    private List<List<String>> toolUsage;
 
     GoogleAnalyticsReport() {
         month = null;
@@ -26,6 +27,7 @@ public class GoogleAnalyticsReport {
         mapData = new ArrayList<>();
         dailySessionData = new ArrayList<>();
         monthlySessionData = new ArrayList<>();
+        toolUsage = new ArrayList<>();
     }
 
     public String getMonth() {
@@ -90,5 +92,13 @@ public class GoogleAnalyticsReport {
 
     public void setMonthlySessionData(List<List<String>> monthlySessionData) {
         this.monthlySessionData = monthlySessionData;
+    }
+
+    public List<List<String>> getToolUsage() {
+        return toolUsage;
+    }
+
+    public void setToolUsage(List<List<String>> toolUsage) {
+        this.toolUsage = toolUsage;
     }
 }

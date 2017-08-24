@@ -3,7 +3,7 @@ import FileSelectForm from './FileSelectForm';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormControl, ControlLabel, FormGroup, Radio, Checkbox, InputGroup} from 'react-bootstrap'
-import { getToken } from '../util/helper';
+import api from '../util/api';
 import { addFileToTree } from '../actions';
 
 /**

@@ -3,7 +3,7 @@ import FileSelectForm from './FileSelectForm';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormControl, ControlLabel } from 'react-bootstrap'
-import { getToken } from '../util/helper';
+import api from '../util/api';
 
 /**
  * Main content for Pattern Recognition Analysis page.
@@ -61,7 +61,7 @@ class PatternRecogAnalysis extends Component {
         var self = this;
         self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
         // request new token for analysis task
-        getToken()
+        api.getToken()
         // execute R scripts on the server
         .then( token => {
             var formData = new FormData();
