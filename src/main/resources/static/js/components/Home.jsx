@@ -127,8 +127,9 @@ class Home extends Component {
 
         // display "Loading..." temporarily as Google Analytics data is being fetched
         if (this.state.loading) {
-            infoblocks[2].postHTML = (<div>Loading...</div>)
-            infoblocks[3].postHTML = (<div>Loading...</div>)
+            infoblocks[1].postHTML = (<i style={{marginTop:"40px"}} className="fa fa-spinner fa-spin fa-3x fa-fw"></i>)
+            infoblocks[2].postHTML = (<i style={{marginTop:"40px"}} className="fa fa-spinner fa-spin fa-3x fa-fw"></i>)
+            infoblocks[3].postHTML = (<i style={{marginTop:"40px"}} className="fa fa-spinner fa-spin fa-3x fa-fw"></i>)
         }
 
         return (
