@@ -25,8 +25,6 @@ import SimpleLayout from './layouts/SimpleLayout';
 import rootReducer from './reducers/';
 
 
-// tag::vars[]
-const client = require('./client');
 
 // In case of page refresh, restore store data if saved in sessionStorage
 const storeData = sessionStorage.getItem("store") ? JSON.parse(sessionStorage.getItem("store")) : {};
