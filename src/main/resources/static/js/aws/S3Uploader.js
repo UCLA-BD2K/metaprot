@@ -1,5 +1,5 @@
 // modules
-// conains 2 total, S3Uploader and FileController
+// contains 2 total, S3Uploader and FileController
 
 /**
  * S3 uploader module.
