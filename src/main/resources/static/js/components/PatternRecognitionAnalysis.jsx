@@ -67,7 +67,7 @@ class PatternRecognitionAnalysis extends Component {
     render() {
         return (
             <div>
-                <h2>Time Series Analysis</h2>
+                <h2>Pattern Recognition Analysis</h2>
                 <h3>Select a .csv file to analyze:</h3>
                 <FileSelectForm
                     handleSubmit={this.handleSubmit}
