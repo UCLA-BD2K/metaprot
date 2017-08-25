@@ -1,6 +1,8 @@
+import { S3Uploader, FileController } from '../aws/S3Uploader';
+import { Link } from 'react-router-dom';
+
 import React from 'react';
 import api from './api';
-import { S3Uploader, FileController } from '../aws/S3Uploader';
 
 /**
  * Handles files being uploaded to S3.

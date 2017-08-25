@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { S3Uploader } from '../aws/S3Uploader';
 
 /**
