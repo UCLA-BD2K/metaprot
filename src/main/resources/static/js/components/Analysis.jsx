@@ -24,7 +24,7 @@ class Analysis extends Component {
                 title: "Differential Expression Analysis",
                 description: "Analyze time-series metabolite data and generate high quality volcano plots to visualize inherent trends."
             },
-            {
+            /*{
                 preHTML: (
                     <Link to="temporal-pattern-recognition">
                         <img src="/img/pattern.jpg" className="img-responsive img-analysis" />
@@ -32,10 +32,10 @@ class Analysis extends Component {
                 ),
                 title: "Clustering",
                 description: "Analyze temporal patterns and visualize clusters based on these trends."
-            },
+            },*/
             {
                 preHTML: (
-                    <Link to="time-series-viewer">
+                    <Link to="pattern">
                         <img src="/img/timeseries.jpg" className="img-responsive img-analysis" />
                     </Link>
                 ),
@@ -72,7 +72,7 @@ class Analysis extends Component {
                     </div>
                     <div className="row">
                         <InfoBlock data={this.infoblocks[2]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-1 placeholder"/>
-                        <InfoBlock data={this.infoblocks[3]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-2 placeholder"/>
+                        {/*<InfoBlock data={this.infoblocks[3]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-2 placeholder"/>*/}
                     </div>
                 </div>
             </div>

@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bd2k.metaprot.aws.DynamoDBClient;
 import org.bd2k.metaprot.dbaccess.repository.MetaboliteTaskRepository;
-import org.bd2k.metaprot.dbaccess.repository.PatternRecogTaskRepository;
-import org.bd2k.metaprot.dbaccess.repository.TimeSeriesTaskRepository;
+import org.bd2k.metaprot.dbaccess.repository.PatternRecognitionTaskRepository;
 import org.bd2k.metaprot.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,10 +24,7 @@ public class DAOImpl implements DAO {
     private MetaboliteTaskRepository metaboliteTaskRepository;
 
     @Autowired
-    private PatternRecogTaskRepository PRTaskRepository;
-
-    @Autowired
-    private TimeSeriesTaskRepository timeSeriesTaskRepository;
+    private PatternRecognitionTaskRepository PRTaskRepository;
 
     @Autowired
     private DynamoDBClient dynamoDBClient;
@@ -108,14 +104,14 @@ public class DAOImpl implements DAO {
 
 
     /* Pattern Recognition */
-
+/*
     @Override
-    public PatternRecogTask getPatternRecogTask(String token){
+    public PatternRecogTask_old getPatternRecogTask(String token){
         return PRTaskRepository.findByToken(token);
     }
 
     @Override
-    public boolean saveTask(PatternRecogTask task){
+    public boolean saveTask(PatternRecogTask_old task){
 
         if(getPatternRecogTask(task.getToken()) != null){
             return false;
@@ -126,64 +122,64 @@ public class DAOImpl implements DAO {
     }
 
     @Override
-    public void saveOrUpdateTask(PatternRecogTask task) {
+    public void saveOrUpdateTask(PatternRecogTask_old task) {
         PRTaskRepository.save(task);
     }
 
     @Override
-    public List<List<PatternRecogStat>> getPRTaskResults(PatternRecogTask task) {
+    public List<List<PatternRecogStat_old>> getPRTaskResults(PatternRecogTask_old task) {
 
         if (task.getToken() == null) {
             return null;
         }
 
-        List<List<PatternRecogStat>> results = null;
+        List<List<PatternRecogStat_old>> results = null;
 
         try {
             String resultsAsString = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
                     task.getNumChunks());
 
-            results = mapper.readValue(resultsAsString, new TypeReference<List<List<PatternRecogStat>>>(){});
+            results = mapper.readValue(resultsAsString, new TypeReference<List<List<PatternRecogStat_old>>>(){});
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return results;
+    }*/
+
+    @Override
+    public PatternRecognitionTask getPatternRecognitionTask(String token) {
+        return PRTaskRepository.findByToken(token);
     }
 
     @Override
-    public TimeSeriesTask getTimeSeriesTask(String token) {
-        return timeSeriesTaskRepository.findByToken(token);
-    }
-
-    @Override
-    public boolean saveTask(TimeSeriesTask task) {
-        if (getTimeSeriesTask(task.getToken()) != null) {
+    public boolean saveTask(PatternRecognitionTask task) {
+        if (getPatternRecognitionTask(task.getToken()) != null) {
             return false;
         }
-        timeSeriesTaskRepository.save(task);
+        PRTaskRepository.save(task);
         return true;
     }
 
     @Override
-    public void saveOrUpdateTask(TimeSeriesTask task) {
-        timeSeriesTaskRepository.save(task);
+    public void saveOrUpdateTask(PatternRecognitionTask task) {
+        PRTaskRepository.save(task);
     }
 
     @Override
-    public TimeSeriesResults getTimeSeriesTaskResults(Task task) {
+    public PatternRecognitionResults getPatternRecognitionResults(Task task) {
         if (task.getToken() == null) {
             return null;
         }
 
-        TimeSeriesResults results = null;
+        PatternRecognitionResults results = null;
 
         try {
             String resultsAsString = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
                     task.getNumChunks());
 
-            results = mapper.readValue(resultsAsString, new TypeReference<TimeSeriesResults>(){});
+            results = mapper.readValue(resultsAsString, new TypeReference<PatternRecognitionResults>(){});
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -193,7 +189,7 @@ public class DAOImpl implements DAO {
     }
 
     @Override
-    public int saveTaskResults(TimeSeriesTask task, TimeSeriesResults results) {
+    public int saveTaskResults(PatternRecognitionTask task, PatternRecognitionResults results) {
 
         // quick validation
         if (task.getToken() == null) {

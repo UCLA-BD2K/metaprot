@@ -66,7 +66,8 @@ class MetaboliteAnalysis extends Component {
             }
         })
         .then( success => {
-            ga('send', 'pageview', "/api/metabolites");
+            let pathName = encodeURI("usage/Differential Expression Analysis");
+            ga('send', 'pageview', pathName);
             self.setState({progressTextHTML: '<div class="alert alert-success">' + success + '</div>' });
         })
         .catch( error => {

@@ -130,6 +130,7 @@ describe('>>> SideNavBar --- Mount',()=>{
 })
 
 
+/*
 describe('>>> Upload --- Mount',()=>{
     let wrapper;
     let store;
@@ -138,7 +139,7 @@ describe('>>> Upload --- Mount',()=>{
 
     beforeEach( ()=>{
 
-        store = createStore(rootReducer, {filenames});
+        store = createStore(rootReducer);
         wrapper = mount(
             <Provider store={store}>
                 <Upload />
@@ -159,10 +160,10 @@ describe('>>> Upload --- Mount',()=>{
 
         input.simulate('change', { target: { value: 'TEST_TOKEN' } });
         button.simulate('click')
-        console.log(wrapper.state())    
     })
 
 })
+*/
 
 
 

@@ -1,11 +1,12 @@
 package org.bd2k.metaprot.util;
 
 import org.bd2k.metaprot.model.MetaboliteStat;
-import org.bd2k.metaprot.model.PatternRecogStat;
-import org.bd2k.metaprot.model.TimeSeriesSignificance;
-import org.bd2k.metaprot.model.TimeSeriesValue;
+import org.bd2k.metaprot.model.PatternRecognitionSignificance;
+import org.bd2k.metaprot.model.PatternRecognitionValue;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -82,16 +83,16 @@ public class FileAccess {
         return list;
     }
 
-    /**
+ /*   *//**
      *
      * @param token
      * @return
-     */
-    public List<List<PatternRecogStat>> getPatternRecogResults(String token){
+     *//*
+    public List<List<PatternRecogStat_old>> getPatternRecogResults(String token){
 
         File file = new File(String.format("%s%s%sclustered_result.csv", root, token, sep));
 
-        List<List<PatternRecogStat>> list = new ArrayList<List<PatternRecogStat>>();
+        List<List<PatternRecogStat_old>> list = new ArrayList<List<PatternRecogStat_old>>();
 
         ArrayList<Integer> timePoints = new ArrayList<>();
 
@@ -111,7 +112,7 @@ public class FileAccess {
                     timePoints.add(Integer.parseInt(tokens[i]));
                 }
 
-                ArrayList<PatternRecogStat> cluster = new ArrayList<>();
+                ArrayList<PatternRecogStat_old> cluster = new ArrayList<>();
                 while ((line = br.readLine()) != null) {
                     line = line.replaceAll("\"", "");
                     tokens = line.split(",");
@@ -120,7 +121,7 @@ public class FileAccess {
                         cluster = new ArrayList<>();
                         continue;
                     }
-                    PatternRecogStat temp = new PatternRecogStat(tokens[0]);
+                    PatternRecogStat_old temp = new PatternRecogStat_old(tokens[0]);
                     ArrayList<Double> abundanceRatios = new ArrayList<>();
 
                     for (int i = 1; i < tokens.length; i++) {
@@ -139,18 +140,18 @@ public class FileAccess {
         }
         return list;
     }
-
+*/
     /**
      * Returns a list of stats that represent each row in the resultant
      * time_series_concentrations.csv file from the time series analysis.
      *
      * @param token the token of the task that produced the result files
-     * @return list of TimeSeriesStats
+     * @return list of PatternRecognitionValue
      */
-    public List<TimeSeriesValue> getTimeSeriesConcentrations(String token) {
+    public List<PatternRecognitionValue> getPatternRecognitionConcentrations(String token) {
 
-        File file = new File(String.format("%s%s%stime_series_concentrations.csv", root, token, sep));
-        List<TimeSeriesValue> list = new ArrayList<>();
+        File file = new File(String.format("%s%s%spattern_concentrations.csv", root, token, sep));
+        List<PatternRecognitionValue> list = new ArrayList<>();
 
         if (file.exists()) {
             FileReader fr = null;
@@ -166,7 +167,7 @@ public class FileAccess {
                     line = line.replace("\"", "");
                     lineArr = line.split(",");
 
-                    list.add(new TimeSeriesValue(lineArr[4], lineArr[3],
+                    list.add(new PatternRecognitionValue(lineArr[4], lineArr[3],
                             new ArrayList(Arrays.asList(Arrays.copyOfRange(lineArr, 5, lineArr.length)))));
                 }
 
@@ -197,12 +198,12 @@ public class FileAccess {
      * time_series_concentrations.csv file from the time series analysis.
      *
      * @param token the token of the task that produced the result files
-     * @return list of TimeSeriesSignificances
+     * @return list of PatternRecognitionSignificance
      */
-    public List<TimeSeriesSignificance> getTimeSeriesSignificances(String token) {
+    public List<PatternRecognitionSignificance> getPatternRecognitionSignificance(String token) {
 
-        File file = new File(String.format("%s%s%stime_series_significance.csv", root, token, sep));
-        List<TimeSeriesSignificance> list = new ArrayList<>();
+        File file = new File(String.format("%s%s%spattern_significance.csv", root, token, sep));
+        List<PatternRecognitionSignificance> list = new ArrayList<>();
 
         if (file.exists()) {
             FileReader fr = null;
@@ -233,7 +234,7 @@ public class FileAccess {
                     line = line.replace("\"", "");
                     lineArr = line.split(",");
 
-                    list.add(new TimeSeriesSignificance(lineArr[1],
+                    list.add(new PatternRecognitionSignificance(lineArr[1],
                             new ArrayList(Arrays.asList(Arrays.copyOfRange(lineArr, startIndex, lineArr.length)))));
                 }
 

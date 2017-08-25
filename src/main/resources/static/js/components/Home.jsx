@@ -132,13 +132,18 @@ class Home extends Component {
             infoblocks[3].postHTML = (<i style={{marginTop:"40px"}} className="fa fa-spinner fa-spin fa-3x fa-fw"></i>)
         }
 
+        let classStr = "col-xs-12 col-md-6 placeholder";
+
         return (
             <div className="row placeholders">
-            {
-                 infoblocks.map( (infoblock, i) => {
-                    return <InfoBlock key={i} data={infoblock} className="col-xs-12 col-md-6 placeholder"/>
-                 })
-            }
+                <div className="row">
+                    <InfoBlock data={infoblocks[0]} className={classStr}/>
+                    <InfoBlock data={infoblocks[1]} className={classStr}/>
+                </div>
+                <div className="row">
+                    <InfoBlock data={infoblocks[2]} className={classStr}/>
+                    <InfoBlock data={infoblocks[3]} className={classStr}/>
+                </div>
             </div>
         )
     }

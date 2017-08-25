@@ -3,13 +3,13 @@ package org.bd2k.metaprot.model;
 /**
  * Created by Abineet on 9/6/2016.
  */
-public class PatternRecogDataPoint {
+public class PatternRecogDataPoint_old {
     private int timePoint;
     private double abundanceRatio;
 
-    public PatternRecogDataPoint() {}
+    public PatternRecogDataPoint_old() {}
 
-    public PatternRecogDataPoint(int timePoint, double abundanceRatio) {
+    public PatternRecogDataPoint_old(int timePoint, double abundanceRatio) {
         this.timePoint = timePoint;
         this.abundanceRatio = abundanceRatio;
     }

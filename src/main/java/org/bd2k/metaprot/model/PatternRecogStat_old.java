@@ -6,20 +6,20 @@ import java.util.List;
 /**
  * Created by Abineet on 9/1/2016.
  */
-public class PatternRecogStat {
+public class PatternRecogStat_old {
     private String metaboliteName;
 
-    private List<PatternRecogDataPoint> dataPoints = new ArrayList<PatternRecogDataPoint>();
+    private List<PatternRecogDataPoint_old> dataPoints = new ArrayList<PatternRecogDataPoint_old>();
 
-    public PatternRecogStat() {}
+    public PatternRecogStat_old() {}
 
-    public PatternRecogStat(String metaboliteName) {
+    public PatternRecogStat_old(String metaboliteName) {
         this.metaboliteName = metaboliteName;
     }
 
     public void setData(ArrayList<Integer> timePoints, ArrayList<Double> abundancePoints){
         for(int i = 0; i < timePoints.size(); i++){
-            dataPoints.add(new PatternRecogDataPoint(timePoints.get(i), abundancePoints.get(i)));
+            dataPoints.add(new PatternRecogDataPoint_old(timePoints.get(i), abundancePoints.get(i)));
         }
     }
     public String getMetaboliteName() {
@@ -30,19 +30,19 @@ public class PatternRecogStat {
         this.metaboliteName = metaboliteName;
     }
 
-    public List<PatternRecogDataPoint> getDataPoints() {
+    public List<PatternRecogDataPoint_old> getDataPoints() {
         return dataPoints;
     }
 
     @Override
     public String toString() {
-        return "PatternRecogStat{" +
+        return "PatternRecogStat_old{" +
                 "metaboliteName='" + metaboliteName + '\'' +
                 ", dataPoints=" + dataPoints +
                 '}';
     }
 
-    public void setDataPoints(List<PatternRecogDataPoint> dataPoints) {
+    public void setDataPoints(List<PatternRecogDataPoint_old> dataPoints) {
         this.dataPoints = dataPoints;
     }
 }

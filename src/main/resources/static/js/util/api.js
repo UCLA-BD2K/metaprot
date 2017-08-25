@@ -88,26 +88,6 @@ function deleteFileFromS3(fileName){
     return S3Uploader.deleteFile(path);
 }
 
-/**
- * Given a String msg with "<Link to='path'>text<\Link>" format,
- * return HTML element using JSX syntax
- */
-function convertMessageWithLink(msg) {
-
-    var regExp = /<Link to=[\'|\"](.*)[\'|\"]\s*>(.*)<.*>/
-    var match = regExp.exec(msg);
-    if (match === null || match.length != 3)
-        return null;
-    var path = match[1];
-    var text = match[2];
-
-    var linkComponent = ( <Link to={path}>{text}</Link> );
-    // grab msg parts before and after the Link
-    var msgParts = msg.split(match[0]);
-
-    return ( <p>{msgParts[0]} {linkComponent} {msgParts[1]} </p>);
-
-}
 
 const api = {
     getToken,

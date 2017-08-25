@@ -23,9 +23,9 @@ export function plotUsagePieChart(data) {
                     "location": "bottom-center"
                 },
                 "size": {
-                    "canvasHeight": 400,
-                    "canvasWidth": 400,
-                    "pieOuterRadius": "80%"
+                    "canvasHeight": 325,
+                    "canvasWidth": 325,
+                    "pieOuterRadius": "90%"
                 },
                 "data": function() {
                     let pieData = {

@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import api from '../util/api';
 
 /**
- * Main content for Time Series Analysis page.
+ * Main content for Pattern Recognition page.
  * This Component should be passed in as a Child Component for MainLayout
  */
-class TimeSeriesAnalysis extends Component {
+class PatternRecognitionAnalysis extends Component {
 
     constructor(props) {
         super(props);
@@ -34,7 +34,7 @@ class TimeSeriesAnalysis extends Component {
             console.log("s3Key", s3Key);
             formData.append("objectKey", s3Key);
             formData.append("taskToken", token);
-            return fetch("/analyze/time-series/" + this.props.token, {
+            return fetch("/analyze/pattern/" + this.props.token, {
                 method: "POST",
                 body: formData
             });
@@ -50,6 +50,8 @@ class TimeSeriesAnalysis extends Component {
             }
         })
         .then( success => {
+            let pathName = encodeURI("usage/Pattern Recognition");
+            ga('send', 'pageview', pathName);
             self.setState({progressTextHTML: '<div class="alert alert-success">' + success + '</div>' });
         })
         .catch( error => {
@@ -89,4 +91,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, null)(TimeSeriesAnalysis);
+export default connect(mapStateToProps, null)(PatternRecognitionAnalysis);

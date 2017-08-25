@@ -14,16 +14,16 @@ import java.util.Date;
  * Created by Abineet on 9/1/2016.
  */
 @DynamoDBTable(tableName = "Metaprot-PRTask")
-public class PatternRecogTask extends Task{
+public class PatternRecogTask_old extends Task{
 
     private int numClusters;
     private int minMembersPerCluster;
     private double[][] regressionLines;
 
-    public PatternRecogTask() {}
+    public PatternRecogTask_old() {}
 
-    public PatternRecogTask(String token, Date timeStamp, String filename, long fileSize, int numClusters,
-                            int minMembersPerCluster, int numChunks, double[][] regressionLines) {
+    public PatternRecogTask_old(String token, Date timeStamp, String filename, long fileSize, int numClusters,
+                                int minMembersPerCluster, int numChunks, double[][] regressionLines) {
         super(token, timeStamp, filename, fileSize, numChunks);
         this.numClusters = numClusters;
         this.minMembersPerCluster = minMembersPerCluster;
@@ -66,7 +66,7 @@ public class PatternRecogTask extends Task{
         int start = str.indexOf("{");
         int end = str.indexOf("}");
 
-        return "PatternRecogTask{" + str.substring(start, end) +
+        return "PatternRecogTask_old{" + str.substring(start, end) +
                 ", numClusters=" + numClusters +
                 ", minMembersPerCluster=" + minMembersPerCluster +
                 ", regressionLine=" + Arrays.toString(regressionLines) +

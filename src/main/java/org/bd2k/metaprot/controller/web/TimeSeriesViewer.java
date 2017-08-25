@@ -1,8 +1,8 @@
 package org.bd2k.metaprot.controller.web;
 
 import org.bd2k.metaprot.dbaccess.DAOImpl;
-import org.bd2k.metaprot.model.TimeSeriesResults;
-import org.bd2k.metaprot.model.TimeSeriesTask;
+import org.bd2k.metaprot.model.PatternRecognitionResults;
+import org.bd2k.metaprot.model.PatternRecognitionTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,9 +32,9 @@ public class TimeSeriesViewer {
     public String getTimeSeriesViewer(Model model, @PathVariable("token") String token) {
 
         // grab task given by token passed
-        TimeSeriesTask task = dao.getTimeSeriesTask(token);
+        PatternRecognitionTask task = dao.getPatternRecognitionTask(token);
         // grab results from DB
-        TimeSeriesResults results = dao.getTimeSeriesTaskResults(task);
+        PatternRecognitionResults results = dao.getPatternRecognitionResults(task);
 
         // data to pass back
         model.addAttribute("results", results.getValues());
