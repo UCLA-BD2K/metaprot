@@ -33,7 +33,8 @@ export function plotUsagePieChart(data) {
                         "content": []
                     }
                     data.forEach( val => {
-                        pieData.content.push({ "label":val[0], "value": parseInt(val[1])})
+                        let label = decodeURI(val[0]).replace("/usage/","");
+                        pieData.content.push({ "label":label, "value": parseInt(val[1])});
                     })
                     return pieData;
                 }(),

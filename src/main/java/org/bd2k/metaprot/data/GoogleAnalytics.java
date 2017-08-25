@@ -124,7 +124,7 @@ public class GoogleAnalytics {
     public static GaData getToolUsage(Analytics analytics, String profileId) throws IOException {
         return analytics.data().ga()
                 .get("ga:" + profileId, "2017-07-01", "today", "ga:pageviews")
-                .setFilters("ga:pagePath=@result")
+                .setFilters("ga:pagePath=@usage")
                 .setDimensions("ga:pagePath")
                 .execute();
     }
