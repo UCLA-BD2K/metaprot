@@ -93,6 +93,17 @@ class Home extends Component {
                 )
             },
             {
+                /**
+                 * Google Analytics is used to keep track of tool usage. To tally a count
+                 * for a particular tool usage, send a Google Analytics pageview hit with
+                 * a pathName url of the form: `usage/<Insert name of tool>`. For example:
+                 *
+                 *      let pathName = encodeURI("usage/Differential Expression Analysis");
+                 *      ga('send', 'pageview', pathName);
+                 *
+                 * when called will increase the tool usage count for 'Differential
+                 * Expression Analysis' by one.
+                 */
                 title: "Feature Use Statistics",
                 description: "A full pie chart to show usage statistics of various features in MetProt",
                 postHTML: ( <div id="pieChart"></div> )

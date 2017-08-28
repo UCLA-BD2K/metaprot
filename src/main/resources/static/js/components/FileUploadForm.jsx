@@ -19,8 +19,6 @@ class FileUploadForm extends Component {
             uploading: false
         }
 
-
-
         // bind component methods
         this.handleSubmit = this.handleSubmit.bind(this);
         this.updateProgress = this.updateProgress.bind(this);
@@ -52,7 +50,7 @@ class FileUploadForm extends Component {
         fileUploadSubmitHandler(this.state.$fileInput, callbacks);
     }
 
-    /*
+    /**
      * callback helper function to pass to fileUploadSubmitHandler
      * to allow updating Component's progress state.
      */
