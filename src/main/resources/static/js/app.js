@@ -52,8 +52,8 @@ const initGA = (history) => {
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-    ga('create', 'UA-60704143-2', 'auto');  // dev
-    //ga('create', 'UA-60704143-3', 'auto'); // production
+    //ga('create', 'UA-60704143-2', 'auto');  // dev
+    ga('create', 'UA-60704143-3', 'auto'); // production
     ga('send', 'pageview');
 
     history.listen((location) => {

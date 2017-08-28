@@ -1,4 +1,4 @@
-var TimeSeriesPlot = function(data, sig) {
+var PatternRecognitionPlot = function(data, sig) {
 
     // global variables to hold data received received from server
     var globalData = data;  // concentration values
