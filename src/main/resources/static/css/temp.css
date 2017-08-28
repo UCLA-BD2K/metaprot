@@ -469,7 +469,23 @@ rect.pane {
 
 #csv-viewer-content {
     max-height: 70vh;
-    overflow:scroll;
+    overflow: scroll;
+}
+
+#csv-viewer-content::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+#csv-viewer-content::-webkit-scrollbar {
+    height: 11px;
+}
+#csv-viewer-content::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 2px solid white;
+    background-color: rgba(0, 0, 0, .5);
+}
+#csv-viewer-content::-webkit-scrollbar-track {
+    background-color: #fff;
+    border-radius: 8px;
 }
 
 
