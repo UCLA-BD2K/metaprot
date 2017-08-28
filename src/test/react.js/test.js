@@ -9,6 +9,7 @@ import { createBrowserHistory } from 'history';
 
 import rootReducer from '../../main/resources/static/js/reducers';
 
+import { Home } from '../../main/resources/static/js/components/Home';
 import Upload from '../../main/resources/static/js/components/Upload';
 import SideNavBar from '../../main/resources/static/js/components/SideNavBar';
 import InfoBlock from '../../main/resources/static/js/components/InfoBlock';
@@ -17,7 +18,7 @@ import FileTree from '../../main/resources/static/js/components/FileTree';
 import { addFileToTree, removeFileFromTree, resetTree, setToken } from '../../main/resources/static/js/actions';
 
 
-describe('>>> InfoBlock --- Shallow Render',()=>{
+describe('>>> InfoBlock --- Shallow Render', ()=>{
     let wrapper;
     const preHTML = (<div><p>this is pre-html</p></div>);
     const postHTML = (<div><p>this is post-html</p></div>);
@@ -47,7 +48,7 @@ describe('>>> InfoBlock --- Shallow Render',()=>{
 });
 
 
-describe('>>> FileTree --- Mount',()=>{
+describe('>>> FileTree --- Mount', ()=>{
     let wrapper;
     let store;
 
@@ -99,7 +100,7 @@ describe('>>> FileTree --- Mount',()=>{
 
 });
 
-describe('>>> SideNavBar --- Mount',()=>{
+describe('>>> SideNavBar --- Mount', ()=>{
     let wrapper;
     let store;
 
@@ -128,7 +129,6 @@ describe('>>> SideNavBar --- Mount',()=>{
         expect(wrapper.find("#token-share").exists()).toBe(true);
     })
 })
-
 
 /*
 describe('>>> Upload --- Mount',()=>{

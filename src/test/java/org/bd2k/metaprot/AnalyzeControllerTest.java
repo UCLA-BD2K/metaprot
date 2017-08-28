@@ -1,6 +1,7 @@
 package org.bd2k.metaprot;
 
 import org.bd2k.metaprot.dbaccess.repository.MetaboliteTaskRepository;
+import org.bd2k.metaprot.dbaccess.repository.PatternRecognitionTaskRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +36,8 @@ public class AnalyzeControllerTest {
     // repositories
     @Autowired
     private MetaboliteTaskRepository metaboliteTaskRepository;
+    @Autowired
+    private PatternRecognitionTaskRepository patternRecognitionTaskRepository;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -78,6 +81,40 @@ public class AnalyzeControllerTest {
         assertTrue(metaboliteTaskRepository.exists("TEST_TASK_1"));
         // delete results
         metaboliteTaskRepository.delete("TEST_TASK_1");
+
+
+
+    }
+
+    @Test
+    public void testPatternRecognition() throws Exception {
+
+        // request with fake token and filename
+        this.mockMvc.perform(post("/analyze/pattern/FAKE_TOKEN")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("objectKey", "user-input/FAKE_TOKEN/FAKE_FILENAME")
+        )
+                .andExpect(status().isBadRequest());
+
+        // request with fake token and valid filename
+        this.mockMvc.perform(post("/analyze/pattern/FAKE_TOKEN")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("objectKey", "user-input/FAKE_TOKEN/TEST_R_DATA")
+        )
+                .andExpect(status().isBadRequest());
+
+        // request with valid test token and filename. no errors should occur
+        this.mockMvc.perform(post("/analyze/pattern/" + TEST_TOKEN)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("objectKey", S3_BASE_KEY + "TEST_R_DATA")
+                .param("taskToken", "TEST_TASK_2")
+        )
+                .andExpect(status().isOk());
+
+        // check that results were saved on DynamoDB
+        assertTrue(patternRecognitionTaskRepository.exists("TEST_TASK_2"));
+        // delete results
+        patternRecognitionTaskRepository.delete("TEST_TASK_2");
 
 
 

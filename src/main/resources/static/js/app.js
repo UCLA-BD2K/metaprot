@@ -15,7 +15,6 @@ import Contact from './components/Contact';
 import Analysis from './components/Analysis';
 import Upload from './components/Upload';
 import MetaboliteAnalysis from './components/MetaboliteAnalysis';
-import PatternRecognition_old from './components/PatternRecognition_old';
 import PatternRecognitionAnalysis from './components/PatternRecognitionAnalysis';
 import ProcessFile from './components/ProcessFile';
 
@@ -90,7 +89,6 @@ ReactDOM.render(
                 <Route path="/upload-pass" render={ renderWithLayout("main", <ProcessFile />) } />
                 <Route path="/analysis" render={ renderWithLayout("main", <Analysis />) } />
                 <Route path="/metabolite-analysis" render={ renderWithLayout("main", <MetaboliteAnalysis />) } />
-                <Route path="/temporal-pattern-recognition" render={ renderWithLayout("main", <PatternRecognition_old />) } />
                 <Route path="/pattern" render={ renderWithLayout("main", <PatternRecognitionAnalysis />) } />
             </Switch>
 
