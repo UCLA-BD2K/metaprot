@@ -11,55 +11,62 @@ class Home extends Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
-            sessions: 0,
-            pageviewsPerSession: 0,
-            uniqueVisitors: 0,
-            numCountries: 0,
-            mapData: [[]],
-            dailySessionData: [[]],
-            monthlySessionData: [[]],
-            loading: this.props.report === null ? true : false
+            noReport: this.props.report.sessions === 0 ? true : false
         }
 
+        this.renderGraphics = this.renderGraphics.bind(this);
         this.renderInfoBlocks = this.renderInfoBlocks.bind(this);
 
     }
 
     // render plots after mounting
     componentDidMount() {
-        plotUsagePieChart();
+        this._mounted = true;
+
         // if no cached Google Analytics data, make request
-        if (this.props.report === null) {
-            var self = this;
+        if (this.state.noReport) {
             fetch("/util/googleAnalyticsReport", { method: "GET" })
                 .then( response =>  response.json() )
-                .then( json => {
-                    // store data in redux
-                    this.props.storeGoogleAnalyticsReport(json);
-                    // update with retrieved data
-                    json.loading = false;
-                    self.setState(json);
+                .then( reportJson => {
+                    // cache data in redux
+                    this.props.storeGoogleAnalyticsReport(reportJson);
+
+                    // update Component if still mounted
+                    if (this._mounted) {
+                        this.setState({ noReport: false });
+                    }
                 })
         }
         else {
-            this.setState(this.props.report);
+            this.renderGraphics();
         }
 
     }
 
+    componentWillUnmount() {
+        this._mounted = false;
+    }
+
     // render Google Analytics graphics if data has loaded
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.loading == false) {
-            plotGeoMap(this.state.mapData);
-            plotTrafficChart(this.state.dailySessionData, this.state.monthlySessionData);
-        }
+        if (this.state.noReport == false)
+            this.renderGraphics();
+    }
+
+    renderGraphics() {
+        plotUsagePieChart(this.props.report.toolUsage);
+        plotGeoMap(this.props.report.mapData);
+        plotTrafficChart(this.props.report.dailySessionData,
+            this.props.report.monthlySessionData);
+
     }
 
     renderInfoBlocks() {
 
         // set up InfoBlocks
-        var pageviewsPerSession = this.state.pageviewsPerSession.toFixed(2);
+        var pageviewsPerSession = this.props.report.pageviewsPerSession.toFixed(2);
 
         var infoblocks = [
             {
@@ -102,10 +109,10 @@ class Home extends Component {
                     <div>
                         <div style={{maxWidth: "280px", margin: "0 auto"}}>
                             <ul style={{textAlign: "left"}}>
-                                <li><em>{ this.state.sessions }</em> sessions</li>
+                                <li><em>{ this.props.report.sessions }</em> sessions</li>
                                 <li><em>{ pageviewsPerSession }</em> pageviews per session</li>
-                                <li><em>{ this.state.uniqueVisitors }</em> unique visitors</li>
-                                <li><em>{ this.state.numCountries }</em> countries represented</li>
+                                <li><em>{ this.props.report.uniqueVisitors }</em> unique visitors</li>
+                                <li><em>{ this.props.report.numCountries }</em> countries represented</li>
                             </ul>
                         </div>
                         <div id="regions-chart" className="drop-shadow"></div>
@@ -125,18 +132,24 @@ class Home extends Component {
         ];
 
         // display "Loading..." temporarily as Google Analytics data is being fetched
-        if (this.state.loading) {
-            infoblocks[2].postHTML = (<div>Loading...</div>)
-            infoblocks[3].postHTML = (<div>Loading...</div>)
+        if (this.state.noReport) {
+            infoblocks[1].postHTML = (<i style={{marginTop:"40px"}} className="fa fa-spinner fa-spin fa-3x fa-fw"></i>)
+            infoblocks[2].postHTML = (<i style={{marginTop:"40px"}} className="fa fa-spinner fa-spin fa-3x fa-fw"></i>)
+            infoblocks[3].postHTML = (<i style={{marginTop:"40px"}} className="fa fa-spinner fa-spin fa-3x fa-fw"></i>)
         }
+
+        let classStr = "col-xs-12 col-md-6 placeholder";
 
         return (
             <div className="row placeholders">
-            {
-                 infoblocks.map((infoblock, i) => {
-                    return <InfoBlock key={i} data={infoblock} className="col-xs-12 col-md-6 placeholder"/>
-                 })
-            }
+                <div className="row">
+                    <InfoBlock data={infoblocks[0]} className={classStr}/>
+                    <InfoBlock data={infoblocks[1]} className={classStr}/>
+                </div>
+                <div className="row">
+                    <InfoBlock data={infoblocks[2]} className={classStr}/>
+                    <InfoBlock data={infoblocks[3]} className={classStr}/>
+                </div>
             </div>
         )
     }
@@ -173,3 +186,6 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, { storeGoogleAnalyticsReport })(Home);
+
+// for testing
+export { Home }

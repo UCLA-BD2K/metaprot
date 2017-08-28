@@ -65,38 +65,48 @@ public interface DAO {
 
 
     /* Pattern Recognition */
+/*
 
-    /**
+    */
+/**
      * Retrieves a pattern recognition task given the associated token.
      *
      * @param token the uuid
-     * @return an initialized PatternRecogTask, or null if the token is invalid
-     */
-    PatternRecogTask getPatternRecogTask(String token);
+     * @return an initialized PatternRecogTask_old, or null if the token is invalid
+     *//*
 
-    /**
+    PatternRecogTask_old getPatternRecogTask(String token);
+
+    */
+/**
      * Saces the given task to the database as a new entry.
      *
      * @param task the task to save
      * @return true if the task was added to the database, false otherwise
-     */
-    boolean saveTask(PatternRecogTask task);
+     *//*
 
-    /**
+    boolean saveTask(PatternRecogTask_old task);
+
+    */
+/**
      * Saves the given task to the database if it does not exist, or updates it.
      *
      * @param task the task to save
-     */
-    void saveOrUpdateTask(PatternRecogTask task);
+     *//*
 
-    /**
+    void saveOrUpdateTask(PatternRecogTask_old task);
+
+    */
+/**
      * Retrieves the results of the task, with return type matching that of
      * saveTaskResults() for this task type.
      *
      * @param task the task that the results are for
      * @return results in the same form that they were inputted in saveTaskResults()
-     */
-    List<List<PatternRecogStat>> getPRTaskResults(PatternRecogTask task);
+     *//*
+
+    List<List<PatternRecogStat_old>> getPRTaskResults(PatternRecogTask_old task);
+*/
 
     /* Time Series */
 
@@ -104,9 +114,9 @@ public interface DAO {
      * Retrieves a pattern recognition task given the associated token.
      *
      * @param token the uuid
-     * @return an initialized PatternRecogTask, or null if the token is invalid
+     * @return an initialized PatternRecogTask_old, or null if the token is invalid
      */
-    TimeSeriesTask getTimeSeriesTask(String token);
+    PatternRecognitionTask getPatternRecognitionTask(String token);
 
     /**
      * Saces the given task to the database as a new entry.
@@ -114,14 +124,14 @@ public interface DAO {
      * @param task the task to save
      * @return true if the task was added to the database, false otherwise
      */
-    boolean saveTask(TimeSeriesTask task);
+    boolean saveTask(PatternRecognitionTask task);
 
     /**
      * Saves the given task to the database if it does not exist, or updates it.
      *
      * @param task the task to save
      */
-    void saveOrUpdateTask(TimeSeriesTask task);
+    void saveOrUpdateTask(PatternRecognitionTask task);
 
     /**
      * Retrieves the results of the task, with return type matching that of
@@ -130,17 +140,17 @@ public interface DAO {
      * @param task the task that the results are for
      * @return results in the same form that they were inputted in saveTaskResults()
      */
-    TimeSeriesResults getTimeSeriesTaskResults(Task task);
+    PatternRecognitionResults getPatternRecognitionResults(Task task);
 
     /**
-     * Saves the results of the TimeSeriesTask to the database. Internally,
+     * Saves the results of the PatternRecognitionTask to the database. Internally,
      * chunking is used so this method returns the number of chunks
      * required to store the results.
      *
-     * @param task the TimeSeriesTask, with (at the very least) token defined
-     * @param results the results of the TimeSeriesTask
+     * @param task the PatternRecognitionTask, with (at the very least) token defined
+     * @param results the results of the PatternRecognitionTask
      * @return number of chunks used to store the results, or -1 if error; use as needed
      */
-    int saveTaskResults(TimeSeriesTask task, TimeSeriesResults results);
+    int saveTaskResults(PatternRecognitionTask task, PatternRecognitionResults results);
 
 }

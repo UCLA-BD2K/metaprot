@@ -1,4 +1,4 @@
-  analyze.time.series <- function(input, outputData, outputSig) {
+  analyze.patterns <- function(input, outputData, outputSig) {
   
   #rm(list = ls(all = TRUE)); # remove all variables
   

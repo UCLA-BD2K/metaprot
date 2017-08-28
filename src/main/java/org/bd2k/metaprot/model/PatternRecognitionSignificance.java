@@ -7,14 +7,14 @@ import java.util.ArrayList;
 /**
  * Created by Nate Sookwongse on 7/7/17.
  */
-public class TimeSeriesSignificance {
+public class PatternRecognitionSignificance {
     String metaboliteName;
     ArrayList<String> significanceValues;
 
-    public TimeSeriesSignificance() {
+    public PatternRecognitionSignificance() {
     }
 
-    public TimeSeriesSignificance(String metaboliteName, ArrayList<String> significanceValues) {
+    public PatternRecognitionSignificance(String metaboliteName, ArrayList<String> significanceValues) {
         this.metaboliteName = metaboliteName;
         this.significanceValues = significanceValues;
     }
@@ -37,7 +37,7 @@ public class TimeSeriesSignificance {
 
     @Override
     public String toString() {
-        return "TimeSeriesSignificance{" +
+        return "PatternRecognitionSignificance{" +
                 "metaboliteName='" + metaboliteName + "'" +
                 ", significanceValues=" + significanceValues +
                 '}';

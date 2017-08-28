@@ -15,8 +15,7 @@ import Contact from './components/Contact';
 import Analysis from './components/Analysis';
 import Upload from './components/Upload';
 import MetaboliteAnalysis from './components/MetaboliteAnalysis';
-import PatternRecogAnalysis from './components/PatternRecogAnalysis';
-import TimeSeriesAnalysis from './components/TimeSeriesAnalysis';
+import PatternRecognitionAnalysis from './components/PatternRecognitionAnalysis';
 import ProcessFile from './components/ProcessFile';
 
 import MainLayout from './layouts/MainLayout';
@@ -25,8 +24,6 @@ import SimpleLayout from './layouts/SimpleLayout';
 import rootReducer from './reducers/';
 
 
-// tag::vars[]
-const client = require('./client');
 
 // In case of page refresh, restore store data if saved in sessionStorage
 const storeData = sessionStorage.getItem("store") ? JSON.parse(sessionStorage.getItem("store")) : {};
@@ -55,8 +52,8 @@ const initGA = (history) => {
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-    //ga('create', 'UA-60704143-2', 'auto');  // dev
-    ga('create', 'UA-60704143-3', 'auto'); // production
+    ga('create', 'UA-60704143-2', 'auto');  // dev
+    //ga('create', 'UA-60704143-3', 'auto'); // production
     ga('send', 'pageview');
 
     history.listen((location) => {
@@ -92,8 +89,7 @@ ReactDOM.render(
                 <Route path="/upload-pass" render={ renderWithLayout("main", <ProcessFile />) } />
                 <Route path="/analysis" render={ renderWithLayout("main", <Analysis />) } />
                 <Route path="/metabolite-analysis" render={ renderWithLayout("main", <MetaboliteAnalysis />) } />
-                <Route path="/temporal-pattern-recognition" render={ renderWithLayout("main", <PatternRecogAnalysis />) } />
-                <Route path="/time-series-viewer" render={ renderWithLayout("main", <TimeSeriesAnalysis />) } />
+                <Route path="/pattern" render={ renderWithLayout("main", <PatternRecognitionAnalysis />) } />
             </Switch>
 
         </Router>

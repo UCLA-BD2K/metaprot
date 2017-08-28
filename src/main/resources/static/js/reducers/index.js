@@ -3,14 +3,28 @@ import { GOOGLE_ANALYTICS_REPORT, RESET_TREE, UPLOAD_FILE, DELETE_FILE, SET_TOKE
 
 /* Reducers to help maintain the state of the Redux store */
 
+
+
 /* Store Google Analytics Report data in store to prevent multiple requests and persist through page reloads */
-function googleAnalyticsReport(state=null, action) {
+function googleAnalyticsReport(state=defaultReport, action) {
     switch(action.type) {
         case GOOGLE_ANALYTICS_REPORT:
             return action.report;
         default:
             return state;
     }
+}
+
+/* default Google Analytics Report */
+const defaultReport = {
+    sessions: 0,
+    pageviewsPerSession: 0,
+    uniqueVisitors: 0,
+    numCountries: 0,
+    mapData: [[]],
+    dailySessionData: [[]],
+    monthlySessionData: [[]],
+    toolUsage: [[]],
 }
 
 /* Store filenames associated with a session token. Filenames do NOT persist through page reloads */

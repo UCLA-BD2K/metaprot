@@ -8,19 +8,19 @@ import java.util.Set;
 /**
  * Created by Nate Sookwongse on 7/11/17.
  */
-public class TimeSeriesResults {
+public class PatternRecognitionResults {
 
-    private List<TimeSeriesValue> values;
-    private List<TimeSeriesSignificance> significances;
+    private List<PatternRecognitionValue> values;
+    private List<PatternRecognitionSignificance> significances;
     private Set<String> metabolites;
 
-    public TimeSeriesResults() {
+    public PatternRecognitionResults() {
         values = new ArrayList<>();
         significances = new ArrayList<>();
         metabolites = new HashSet<>();
     }
 
-    public TimeSeriesResults(List<TimeSeriesValue> values, List<TimeSeriesSignificance> significances) {
+    public PatternRecognitionResults(List<PatternRecognitionValue> values, List<PatternRecognitionSignificance> significances) {
         this.values = values;
         this.significances = significances;
         metabolites = new HashSet<>();
@@ -29,19 +29,19 @@ public class TimeSeriesResults {
         }
     }
 
-    public List<TimeSeriesValue> getValues() {
+    public List<PatternRecognitionValue> getValues() {
         return values;
     }
 
-    public void setValues(List<TimeSeriesValue> values) {
+    public void setValues(List<PatternRecognitionValue> values) {
         this.values = values;
     }
 
-    public List<TimeSeriesSignificance> getSignificances() {
+    public List<PatternRecognitionSignificance> getSignificances() {
         return significances;
     }
 
-    public void setSignificances(List<TimeSeriesSignificance> significances) {
+    public void setSignificances(List<PatternRecognitionSignificance> significances) {
         this.significances = significances;
     }
 
@@ -55,7 +55,7 @@ public class TimeSeriesResults {
 
     @Override
     public String toString() {
-        return "TimeSeriesResults{" +
+        return "PatternRecognitionResults{" +
                 "values=" + values +
                 ", significances=" + significances +
                 ", metabolites=" + metabolites +

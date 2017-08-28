@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { removeFileFromTree } from '../actions';
-import { downloadFileFromS3, deleteFileFromS3 } from '../util/helper';
+import api from '../util/api';
 import CsvViewer from '../modals/CsvViewer';
 
 /**
@@ -31,7 +31,7 @@ class FileTreeItem extends Component {
         this.props.openModal();
 
         // fetch file from S3
-        downloadFileFromS3(self.props.filename)
+        api.downloadFileFromS3(self.props.filename)
             .then(data => {
                 // set modal content with CSV table viewer
                 var modalData = {
@@ -51,10 +51,10 @@ class FileTreeItem extends Component {
 
     handleDeleteFile(e) {
         e.stopPropagation();
-        deleteFileFromS3(this.props.filename)
+        api.deleteFileFromS3(this.props.filename)
             .then( () => this.props.removeFileFromTree(this.props.filename) )
             .catch( error => {
-                alert("ERROR: Could not delete file\n\n"
+                alert("ERROR: Could not delete file.\n\n"
                     + error.message + "\n\nPlease try again later.");
             });
     }

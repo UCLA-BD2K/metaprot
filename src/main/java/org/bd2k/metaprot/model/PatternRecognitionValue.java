@@ -6,18 +6,18 @@ import java.util.ArrayList;
  * Created by Nate Sookwongse on 7/6/17.
  */
 
-public class TimeSeriesValue {
+public class PatternRecognitionValue {
     String metaboliteName;
     String strain;
     ArrayList<String> values;
 
-    public TimeSeriesValue() {
+    public PatternRecognitionValue() {
         metaboliteName = "";
         strain = "";
         values = new ArrayList<>();
     }
 
-    public TimeSeriesValue(String metaboliteName, String strain, ArrayList<String> values) {
+    public PatternRecognitionValue(String metaboliteName, String strain, ArrayList<String> values) {
         this.metaboliteName = metaboliteName;
         this.strain = strain;
         this.values = values;
@@ -50,7 +50,7 @@ public class TimeSeriesValue {
 
     @Override
     public String toString() {
-        return "TimeSeriesValue{" +
+        return "PatternRecognitionValue{" +
                 "metaboliteName='" + metaboliteName + "'" +
                 ", strain='" + strain + "'" +
                 ", values=" + values +
