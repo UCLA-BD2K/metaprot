@@ -73,7 +73,7 @@ class Home extends Component {
                 title: "Recent Updates",
                 description: "Recent news and updates",
                 postHTML: (
-                       <div id="list" width="305" height="305">
+                       <div id="homepage-updates">
                            <ul className="list-group">
                            {
                                [

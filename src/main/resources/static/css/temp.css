@@ -216,6 +216,11 @@ body {
     height: auto;
 }
 
+#homepage-updates {
+    max-width: 450px;
+    margin: 0 auto;
+}
+
 
 /*
  * Placeholder dashboard ideas
