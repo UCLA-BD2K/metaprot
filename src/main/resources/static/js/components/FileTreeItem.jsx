@@ -14,10 +14,10 @@ class FileTreeItem extends Component {
     handleShowFile(e) {
         e.preventDefault();
 
-        var self = this;
+        const self = this;
 
         // open modal and show loading spinner
-        var modalLoading = {
+        const modalLoading = {
             title: self.props.filename,
             className: "csv-modal",
             content: (
@@ -34,7 +34,7 @@ class FileTreeItem extends Component {
         api.downloadFileFromS3(self.props.filename)
             .then(data => {
                 // set modal content with CSV table viewer
-                var modalData = {
+                const modalData = {
                     title: self.props.filename,
                     className: "csv-modal",
                     content: (<CsvViewer data={data} />)

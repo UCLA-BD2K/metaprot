@@ -14,20 +14,26 @@ import java.util.Date;
 @DynamoDBTable(tableName = "Metaprot-Task")
 public class Task {
 
+    public static final String DEA = "DEA";
+    public static final String PATTERN = "PATTERN";
+    public static final String RESULT_VALIDATION = "RESULT_VALDIATION";
+
     private String token;
     private long fileSize;
     private Date timestamp;
     private String filename;
     private int numChunks;
+    private String type;
 
     public Task() {}
 
-    public Task(String token, Date timestamp, String filename, long fileSize, int numChunks) {
+    public Task(String token, Date timestamp, String filename, long fileSize, int numChunks, String type) {
         this.token = token;
         this.timestamp = timestamp;
         this.filename = filename;
         this.fileSize = fileSize;
         this.numChunks = numChunks;
+        this.type = type;
     }
 
     // getters and setters
@@ -77,20 +83,24 @@ public class Task {
         this.numChunks = numChunks;
     }
 
+    @DynamoDBAttribute
+    public String getType() {
+        return type;
+    }
 
+    public void setType(String type) {
+        this.type = type;
+    }
 
     @Override
     public String toString() {
-
-        long secondsSinceEpoch = System.currentTimeMillis() / 1000L;
-        long ttl = secondsSinceEpoch + 604800;
         return "Task{" +
                 "token='" + token + '\'' +
+                ", fileSize=" + fileSize +
                 ", timestamp=" + timestamp +
                 ", filename='" + filename + '\'' +
-                ", fileSize=" + fileSize +
                 ", numChunks=" + numChunks +
-                ", ttl=" + ttl +
+                ", type='" + type + '\'' +
                 '}';
     }
 

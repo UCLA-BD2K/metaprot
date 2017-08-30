@@ -50,6 +50,15 @@ class Analysis extends Component {
                 ),
                 title: "Association Study",
                 description: "To identify the molecule highly associated with designated phenotypic characteristics"
+            },
+            {
+                preHTML: (
+                    <Link to="result-validation">
+                        <img src="/img/association.jpg" className="img-responsive img-analysis" />
+                    </Link>
+                ),
+                title: "Result Validation",
+                description: "To identify the molecule highly associated with designated phenotypic characteristics"
             }
 
 
@@ -72,7 +81,7 @@ class Analysis extends Component {
                     </div>
                     <div className="row">
                         <InfoBlock data={this.infoblocks[2]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-1 placeholder"/>
-                        {/*<InfoBlock data={this.infoblocks[3]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-2 placeholder"/>*/}
+                        <InfoBlock data={this.infoblocks[3]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-2 placeholder"/>}
                     </div>
                 </div>
             </div>

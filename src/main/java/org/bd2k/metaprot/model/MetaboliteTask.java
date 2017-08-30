@@ -22,7 +22,7 @@ public class MetaboliteTask extends Task{
 
     public MetaboliteTask(String token, Date timestamp, String filename, long fileSize,
                           double pValueThreshold, double fcThreshold, int numChunks) {
-        super(token, timestamp, filename, fileSize, numChunks);
+        super(token, timestamp, filename, fileSize, numChunks, Task.DEA);
         this.pValueThreshold = pValueThreshold;
         this.fcThreshold = fcThreshold;
     }

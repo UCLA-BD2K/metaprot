@@ -29,7 +29,7 @@ class MetaboliteAnalysis extends Component {
     handleSubmit(e) {
         e.preventDefault();
 
-        var self = this;
+        const self = this;
 
         self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
 
@@ -45,11 +45,6 @@ class MetaboliteAnalysis extends Component {
             formData.append("objectKey", s3Key);
             formData.append("taskToken", token);
 
-
-            // Display the values
-            for (var value of formData.values()) {
-               console.log(value);
-            }
             return fetch("/analyze/metabolites/" + this.props.token, {
                 method: "POST",
                 body: formData
@@ -66,6 +61,7 @@ class MetaboliteAnalysis extends Component {
             }
         })
         .then( success => {
+            // send pageview hit to Google Analytics to keep track of tool usage
             let pathName = encodeURI("usage/Differential Expression Analysis");
             ga('send', 'pageview', pathName);
             self.setState({progressTextHTML: '<div class="alert alert-success">' + success + '</div>' });

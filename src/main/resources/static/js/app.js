@@ -17,6 +17,7 @@ import Upload from './components/Upload';
 import MetaboliteAnalysis from './components/MetaboliteAnalysis';
 import PatternRecognitionAnalysis from './components/PatternRecognitionAnalysis';
 import ProcessFile from './components/ProcessFile';
+import ResultValidation from './components/ResultValidation';
 
 import MainLayout from './layouts/MainLayout';
 import SimpleLayout from './layouts/SimpleLayout';
@@ -90,6 +91,7 @@ ReactDOM.render(
                 <Route path="/analysis" render={ renderWithLayout("main", <Analysis />) } />
                 <Route path="/metabolite-analysis" render={ renderWithLayout("main", <MetaboliteAnalysis />) } />
                 <Route path="/pattern" render={ renderWithLayout("main", <PatternRecognitionAnalysis />) } />
+                <Route path="/result-validation" render={ renderWithLayout("main", <ResultValidation />) } />
             </Switch>
 
         </Router>

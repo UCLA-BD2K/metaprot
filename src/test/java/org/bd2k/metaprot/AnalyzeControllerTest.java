@@ -1,7 +1,7 @@
 package org.bd2k.metaprot;
 
 import org.bd2k.metaprot.dbaccess.repository.MetaboliteTaskRepository;
-import org.bd2k.metaprot.dbaccess.repository.PatternRecognitionTaskRepository;
+import org.bd2k.metaprot.dbaccess.repository.TaskRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +35,7 @@ public class AnalyzeControllerTest {
     @Autowired
     private MetaboliteTaskRepository metaboliteTaskRepository;
     @Autowired
-    private PatternRecognitionTaskRepository patternRecognitionTaskRepository;
+    private TaskRepository taskRepository;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -110,9 +110,9 @@ public class AnalyzeControllerTest {
                 .andExpect(status().isOk());
 
         // check that results were saved on DynamoDB
-        assertTrue(patternRecognitionTaskRepository.exists("TEST_TASK_2"));
+        assertTrue(taskRepository.exists("TEST_TASK_2"));
         // delete results
-        patternRecognitionTaskRepository.delete("TEST_TASK_2");
+        taskRepository.delete("TEST_TASK_2");
 
 
 

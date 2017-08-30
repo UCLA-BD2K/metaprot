@@ -83,64 +83,6 @@ public class FileAccess {
         return list;
     }
 
- /*   *//**
-     *
-     * @param token
-     * @return
-     *//*
-    public List<List<PatternRecogStat_old>> getPatternRecogResults(String token){
-
-        File file = new File(String.format("%s%s%sclustered_result.csv", root, token, sep));
-
-        List<List<PatternRecogStat_old>> list = new ArrayList<List<PatternRecogStat_old>>();
-
-        ArrayList<Integer> timePoints = new ArrayList<>();
-
-        if(file.exists()) {
-            FileReader fr = null;
-            BufferedReader br = null;
-
-            try {
-                fr = new FileReader(file);
-                br = new BufferedReader(fr);
-
-                String line = br.readLine();
-                line = line.replaceAll("\"", "");
-                String[] tokens = line.split(",");
-
-                for (int i = 1; i < tokens.length; i++) {
-                    timePoints.add(Integer.parseInt(tokens[i]));
-                }
-
-                ArrayList<PatternRecogStat_old> cluster = new ArrayList<>();
-                while ((line = br.readLine()) != null) {
-                    line = line.replaceAll("\"", "");
-                    tokens = line.split(",");
-                    if (tokens[tokens.length - 1].equals("NA")) {
-                        list.add(cluster);
-                        cluster = new ArrayList<>();
-                        continue;
-                    }
-                    PatternRecogStat_old temp = new PatternRecogStat_old(tokens[0]);
-                    ArrayList<Double> abundanceRatios = new ArrayList<>();
-
-                    for (int i = 1; i < tokens.length; i++) {
-                        abundanceRatios.add(Double.parseDouble(tokens[i]));
-                    }
-
-                    temp.setData(timePoints, abundanceRatios);
-                    cluster.add(temp);
-                }
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return list;
-    }
-*/
     /**
      * Returns a list of stats that represent each row in the resultant
      * time_series_concentrations.csv file from the time series analysis.

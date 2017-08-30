@@ -28,9 +28,9 @@ class FileUploadForm extends Component {
     }
     handleSubmit(e) {
         e.preventDefault();
-        var file = this.state.$fileInput[0].files[0];
-        var filename = file.name;
-        var filesize = file.size;
+        const file = this.state.$fileInput[0].files[0];
+        const filename = file.name;
+        const filesize = file.size;
         if (this.props.filenames.includes(filename)) {
             alert("Error: A file with this name already exists. Please rename and upload.");
         }
@@ -41,7 +41,7 @@ class FileUploadForm extends Component {
         this.setState({ uploading: true });
 
         // callback helper functions to appropriately set and update Redux store and Component's state
-        var callbacks = {
+        const callbacks = {
             updateProgress: this.updateProgress,
             addFileToTree: this.props.addFileToTree,
             setToken: this.props.setToken
@@ -59,7 +59,7 @@ class FileUploadForm extends Component {
     }
 
     handleFile(e) {
-        var $fileInput = [e.target];
+        const $fileInput = [e.target];
         this.setState({$fileInput});
     }
 
@@ -67,7 +67,6 @@ class FileUploadForm extends Component {
         const target = e.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-        console.log(target, name, value);
 
         this.setState({
             [name]: value
