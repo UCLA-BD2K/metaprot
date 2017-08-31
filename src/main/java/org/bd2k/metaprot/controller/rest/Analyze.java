@@ -1,7 +1,5 @@
 package org.bd2k.metaprot.controller.rest;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.aws.S3Status;
@@ -23,7 +21,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -497,10 +494,12 @@ public class Analyze {
         String filename = keyArr[keyArr.length-1];
         String inputFile = root + taskToken + sep + filename;
         String outputPlot = root + taskToken + sep + "static3Dplot.png";
+        String outputData = root + taskToken + sep + "dynamic3Ddata.csv";
 
         // everything is OK on the server end, attempt to analyze the file
         try {
-            String rCommand = String.format("analyze.result.validation('%s', '%s')", inputFile, outputPlot);
+            String rCommand = String.format("analyze.result.validation('%s', '%s', '%s')",
+                    inputFile, outputPlot, outputData);
 
             executeRScript(taskToken, keyArr[keyArr.length-1], s3Status.getFileSize(),
                     RESULT_VALIDATION_R_SCRIPT_LOC, rCommand);
@@ -514,15 +513,12 @@ public class Analyze {
         int numChunks = 0;
         // store results to database
         try {
-            byte[] binaryData = IOUtils.toByteArray(new FileInputStream(outputPlot));
-            byte[] encodeBase64 = Base64.encodeBase64(binaryData);
-            String base64Encoded = new String(encodeBase64, "UTF-8");
-            System.out.println(base64Encoded);
+            ResultValidationResults results = new FileAccess().getResultValidationResults(taskToken);
             currentTask = new Task(taskToken, new Date(), filename,
                     s3Status.getFileSize(), 0, Task.RESULT_VALIDATION);
 
             // save the chunks
-            numChunks = dao.saveTaskResults(currentTask, base64Encoded);
+            numChunks = dao.saveTaskResults(currentTask, results);
 
             if (numChunks < 0) {
                 throw new IOException("Unable to save task results in database");

@@ -1,11 +1,12 @@
 package org.bd2k.metaprot.util;
 
-import org.bd2k.metaprot.model.MetaboliteStat;
-import org.bd2k.metaprot.model.PatternRecognitionSignificance;
-import org.bd2k.metaprot.model.PatternRecognitionValue;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+import org.bd2k.metaprot.model.*;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -200,6 +201,73 @@ public class FileAccess {
 
 
         return list;
+    }
+
+    public ResultValidationResults getResultValidationResults(String token) {
+
+        String pathToPlot = root + token + sep + "static3Dplot.png";
+        String pathToData = root + token + sep + "dynamic3Ddata.csv";
+
+        File plotFile = new File(pathToPlot);
+        File dataFile = new File(pathToData);
+
+        String base64EncodedStaticPlot = "";
+        List<ResultValidationValue> list = new ArrayList<>();
+
+
+        if (plotFile.exists() && dataFile.exists()) {
+            FileReader fr = null;   // for parsing CSV file
+            BufferedReader br = null;   // for parsing CSV file
+
+            try {
+                // encode data for static 3d plot image
+                byte[] binaryData = IOUtils.toByteArray(new FileInputStream(plotFile));
+                byte[] encodeBase64 = Base64.encodeBase64(binaryData);
+                base64EncodedStaticPlot = new String(encodeBase64, "UTF-8");
+
+                // parse CSV data
+                fr = new FileReader(dataFile);
+                br = new BufferedReader(fr);
+
+                String line;
+                String[] lineArr;
+
+                br.readLine(); // skip header line
+
+                while((line = br.readLine()) != null) {
+                    System.out.println(line);
+                    line = line.replace("\"", "");
+                    lineArr = line.split(",");
+
+                    list.add(new ResultValidationValue(
+                                Double.parseDouble(lineArr[1]),
+                                Double.parseDouble(lineArr[2]),
+                                Double.parseDouble(lineArr[3]),
+                                lineArr[4]
+                            )
+                    );
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fr != null) {
+                        fr.close();
+                    }
+
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        System.out.println(list);
+        ResultValidationResults results = new ResultValidationResults(base64EncodedStaticPlot, list);
+        return results;
     }
 
     /**

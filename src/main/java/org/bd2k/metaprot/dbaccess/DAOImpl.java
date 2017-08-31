@@ -154,17 +154,17 @@ public class DAOImpl implements DAO {
     /* Result Validation */
 
     @Override
-    public String getResultValidationResults(Task task) {
+    public ResultValidationResults getResultValidationResults(Task task) {
         if (!task.getType().equals(Task.RESULT_VALIDATION) || task.getToken() == null) {
             return null;
         }
 
-        String results = null;
+        ResultValidationResults results = null;
 
         try {
             String dbEntry = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
                     task.getNumChunks());
-            results = mapper.readValue(dbEntry, new TypeReference<String>(){});
+            results = mapper.readValue(dbEntry, new TypeReference<ResultValidationResults>(){});
 
         } catch (Exception e) {
             e.printStackTrace();

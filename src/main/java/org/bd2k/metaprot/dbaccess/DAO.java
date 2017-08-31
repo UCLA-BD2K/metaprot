@@ -110,7 +110,7 @@ public interface DAO {
      * @param task the task that the results are for
      * @return results in the same form that they were inputted in saveTaskResults()
      */
-    String getResultValidationResults(Task task);
+    ResultValidationResults getResultValidationResults(Task task);
 
 
 }

@@ -1,6 +1,7 @@
 package org.bd2k.metaprot.controller.web;
 
 import org.bd2k.metaprot.dbaccess.DAOImpl;
+import org.bd2k.metaprot.model.ResultValidationResults;
 import org.bd2k.metaprot.model.Task;
 import org.bd2k.metaprot.util.Globals;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,10 @@ public class ResultValidation {
         Task task = dao.getTask(token);
 
         try {
-            String base64Encoded = dao.getResultValidationResults(task);
-
-            model.addAttribute("plot", "data:image/jpeg;base64, " + base64Encoded);
+            ResultValidationResults results = dao.getResultValidationResults(task);
+            System.out.println(results);
+            model.addAttribute("plot", "data:image/jpeg;base64, " + results.getBase64EncodedStaticPlot());
+            model.addAttribute("results", results.getValues());
         } catch (Exception e) {
             e.printStackTrace();
         }
