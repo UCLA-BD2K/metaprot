@@ -40,14 +40,10 @@ public class ResultValidation {
         // get task information from database
         Task task = dao.getTask(token);
 
-        try {
-            ResultValidationResults results = dao.getResultValidationResults(task);
-            System.out.println(results);
-            model.addAttribute("plot", "data:image/jpeg;base64, " + results.getBase64EncodedStaticPlot());
-            model.addAttribute("results", results.getValues());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ResultValidationResults results = dao.getResultValidationResults(task);
+        model.addAttribute("plot", "data:image/jpeg;base64, " + results.getBase64EncodedStaticPlot());
+        model.addAttribute("results", results.getValues());
+
 
         return "result_validation_results";
     }

@@ -1,4 +1,4 @@
-// Create a 3d scatter plot within d3 selection parent.
+// Create a 3d scatter plot within d3 selection parent. Adapted from example at http://bl.ocks.org/hlvoorhees/5986172
 function scatterPlot3d( parent, data )
 {
   const x3d = parent
@@ -11,7 +11,7 @@ function scatterPlot3d( parent, data )
 
   scene.append("orthoviewpoint")
        .attr( "centerOfRotation", [5, 5, 5])
-       .attr( "fieldOfView", [-5, -5, 12, 12])
+       .attr( "fieldOfView", [-5, -5, 15, 15])
        .attr( "orientation", [-0.5, 1, 0.2, 1.12*Math.PI/4])
        .attr( "position", [0,3,0])
 
@@ -19,6 +19,7 @@ function scatterPlot3d( parent, data )
   const axisRange = [0, 10];
   const scales = [];
   const axisKeys = ["x", "y", "z"]
+  const axisLabels = ["PC1", "PC3", "PC2"];	// to be consistent with the static plot
 
   // Helper functions for initializeAxis() and drawAxis()
   function axisName( name, axisIndex ) {
@@ -69,10 +70,13 @@ function scatterPlot3d( parent, data )
          // along the x axis instead and rotate it (above).
         .attr("lineSegments", "0 0," + scaleMax + " 0")
 
+    let axisLabelScaleFactor = 1.1;
+    if (axisIndex===2)
+        axisLabelScaleFactor = 1.2; // z-axis label placed further away to be seen
    // axis labels
    const newAxisLabel = scene.append("transform")
        .attr("class", axisName("AxisLabel", axisIndex))
-       .attr("translation", constVecWithAxisValue( 0, scaleMin + 1.1 * (scaleMax-scaleMin), axisIndex ))
+       .attr("translation", constVecWithAxisValue( 0, scaleMin + axisLabelScaleFactor * (scaleMax-scaleMin), axisIndex ))
 
    const newAxisLabelShape = newAxisLabel
      .append("billboard")
@@ -86,7 +90,7 @@ function scatterPlot3d( parent, data )
      .append("text")
        .attr("class", axisName("AxisLabelText", axisIndex))
        .attr("solid", "true")
-       .attr("string", key)
+       .attr("string", axisLabels[axisIndex])
     .append("fontstyle")
        .attr("size", labelFontSize)
        .attr("family", "SANS")
@@ -140,34 +144,76 @@ function scatterPlot3d( parent, data )
       .attr("string", scale.tickFormat(10))
     tickLabels.exit().remove();
 
-    // base grid lines
-    if (axisIndex==0 || axisIndex==2) {
 
-      const gridLines = scene.selectAll( "."+axisName("GridLine", axisIndex))
-         .data(scale.ticks( numTicks ));
-      gridLines.exit().remove();
-
-      const newGridLines = gridLines.enter()
-        .append("transform")
-          .attr("class", axisName("GridLine", axisIndex))
-          .attr("rotation", axisIndex==0 ? [0,1,0, -Math.PI/2] : [0,0,0,0])
-        .append("shape")
-
-      newGridLines.append("appearance")
-        .append("material")
-          .attr("emissiveColor", "gray")
-      newGridLines.append("polyline2d");
-
-      gridLines.selectAll("shape polyline2d")
-        .attr("lineSegments", "0 0, " + axisRange[1] + " 0")
-
-      gridLines
-         .attr("translation", axisIndex==0
-            ? function(d) { return scale(d) + " 0 0"; }
-            : function(d) { return "0 0 " + scale(d); }
-          )
-    }
   }
+
+  function drawBaseGridLines() {
+        const numTicks = 8;
+
+        const axisPairs = [
+            [0, 2],
+            [0, 1],
+            [1, 2]
+        ]
+
+        const rotationFcns = [
+            (axisIndex) => axisIndex == 0 ? [0,1,0,-Math.PI/2] : [0,0,0,0],
+            (axisIndex) => axisIndex == 0 ? [0,0,-1,-Math.PI/2] : [0,0,0,0],
+            (axisIndex) => axisIndex == 1 ? [0,-1,0,Math.PI/2] : [0,0,1,Math.PI/2]
+        ]
+
+        const translationFcns = [
+            (axisIndex, scale) => {
+                if (axisIndex == 0)
+                    return d => scale(d) + " 0 0";
+                else
+                    return d => "0 0 " + scale(d);
+            },
+            (axisIndex, scale) => {
+                if (axisIndex == 0)
+                    return d => scale(d) + " 0 0";
+                else
+                    return d => "0 " + scale(d) + " 0";
+            },
+            (axisIndex, scale) => {
+                if (axisIndex == 1)
+                    return d => "0 " + scale(d) + " 0";
+                else
+                    return d => "0 0 " + scale(d);
+            },
+        ]
+
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 2; j++) {
+                const axisIndex = axisPairs[i][j];
+                const scale = scales[axisIndex];
+                // base grid lines
+                const gridLines = scene.selectAll( "."+axisName("GridLine", axisIndex) + i + j)
+                 .data(scale.ticks( numTicks ));
+                gridLines.exit().remove();
+
+                const newGridLines = gridLines.enter()
+                .append("transform")
+                  .attr("class", axisName("GridLine", axisIndex) + i + j)
+                  .attr("rotation", rotationFcns[i](axisIndex))
+                .append("shape")
+
+                newGridLines.append("appearance")
+                .append("material")
+                  .attr("emissiveColor", "gray")
+                newGridLines.append("polyline2d");
+
+                gridLines.selectAll("shape polyline2d")
+                .attr("lineSegments", "0 0, " + axisRange[1] + " 0")
+
+                gridLines
+                 .attr("translation", translationFcns[i](axisIndex, scale))
+
+            }
+        }
+
+  }
+
 
   // Update the data points (spheres) and stems.
   function plotData() {
@@ -230,6 +276,7 @@ function scatterPlot3d( parent, data )
 
 
   initializePlot();
+  drawBaseGridLines();
   plotData();
 
 }

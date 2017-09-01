@@ -116,7 +116,7 @@ export function plotGeoMap(mapData) {
 
         var options = {
           backgroundColor: "#eef7fb",
-          colorAxis: {colors: ['#4062BB', '#FF4242']},
+          colorAxis: {colors: ['#FF4242']},
           datalessRegionColor: '#ACECA1'
         };
 

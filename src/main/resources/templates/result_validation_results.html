@@ -33,7 +33,7 @@
                 <div id="result-validation-plot">
                     <img th:src="${plot}" alt="img" id="static-plot"/>
                     <div id="dynamic-plot"></div>
-                    <button id="toggle-plot-view">Show dynamic plot</button>
+                    <button id="toggle-plot-view" style="margin-top:20px">Show dynamic plot</button>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
     // load data from server
     const results = [[${results}]];
 
-    d3.select('#dynamic-plot').style('width', "600px").style('height', "600px")
+    d3.select('#dynamic-plot').style('width', "500px").style('height', "500px")
     scatterPlot3d( d3.select('#dynamic-plot'), results);
 
     const staticPlot = $("#static-plot");

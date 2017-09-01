@@ -235,7 +235,6 @@ public class FileAccess {
                 br.readLine(); // skip header line
 
                 while((line = br.readLine()) != null) {
-                    System.out.println(line);
                     line = line.replace("\"", "");
                     lineArr = line.split(",");
 
@@ -265,7 +264,6 @@ public class FileAccess {
             }
 
         }
-        System.out.println(list);
         ResultValidationResults results = new ResultValidationResults(base64EncodedStaticPlot, list);
         return results;
     }
