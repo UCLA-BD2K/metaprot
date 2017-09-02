@@ -55,11 +55,12 @@ analyze.result.validation <- function(input, outputPlot, outputData) {
   
   write.csv(plot_data, outputData);
 }
-# 
+
+###Testing
 # ml_hl_ptm = read_csv("/Users/davidmeng/Downloads/metprot-test/half-life.csv")
 # 
-# quant_dta = 
-#   ml_hl_ptm %>% 
+# quant_dta =
+#   ml_hl_ptm %>%
 #   select(`AAELIAN(0.984)SLATAGDGLIELR_2`:`YVTLIYTNYEN(0.984)GK_2`)
 # 
 # # perfor pca
@@ -67,7 +68,7 @@ analyze.result.validation <- function(input, outputPlot, outputData) {
 # #png(outputPlot, width = 800, height = 800)
 # # 3D plot
 # with(pca_dta$l1, {
-#   s3d <- scatterplot3d(RS1, 
+#   s3d <- scatterplot3d(RS1,
 #                        RS2,
 #                        RS3,        # x y and z axis
 #                        color=ml_hl_ptm$color_code, pch=19,        # circle color indicates no. of cylinders
@@ -81,8 +82,8 @@ analyze.result.validation <- function(input, outputPlot, outputData) {
 #                        xlab="PC 1",
 #                        ylab="PC 2",
 #                        zlab="PC 3")
-#   
-#   s3d.coords <- s3d$xyz.convert(RS1, 
+# 
+#   s3d.coords <- s3d$xyz.convert(RS1,
 #                                 RS2,
 #                                 RS3)
 #   text(s3d.coords$x, s3d.coords$y,     # x and y coordinates

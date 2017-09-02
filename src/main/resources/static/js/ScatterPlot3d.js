@@ -19,7 +19,7 @@ function scatterPlot3d( parent, data )
   const axisRange = [0, 10];
   const scales = [];
   const axisKeys = ["x", "y", "z"]
-  const axisLabels = ["PC1", "PC3", "PC2"];	// to be consistent with the static plot
+  const axisLabels = ["PC2", "PC3", "PC1"];	// to be consistent with the static plot
 
   // Helper functions for initializeAxis() and drawAxis()
   function axisName( name, axisIndex ) {
@@ -278,5 +278,7 @@ function scatterPlot3d( parent, data )
   initializePlot();
   drawBaseGridLines();
   plotData();
+
+
 
 }

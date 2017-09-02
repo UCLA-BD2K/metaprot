@@ -238,10 +238,14 @@ public class FileAccess {
                     line = line.replace("\"", "");
                     lineArr = line.split(",");
 
+
+                    // dynamic 3d plot has y-axis as the vertical axis.
+                    // static plot has PC1 z-axis, PC3 y-axis, PC2 x-axis.
+                    // return datapoints in this format to be consistent with static plot.
                     list.add(new ResultValidationValue(
-                                Double.parseDouble(lineArr[1]),
                                 Double.parseDouble(lineArr[2]),
                                 Double.parseDouble(lineArr[3]),
+                                Double.parseDouble(lineArr[1]),
                                 lineArr[4]
                             )
                     );

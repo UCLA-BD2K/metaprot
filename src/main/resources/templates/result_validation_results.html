@@ -33,7 +33,13 @@
                 <div id="result-validation-plot">
                     <img th:src="${plot}" alt="img" id="static-plot"/>
                     <div id="dynamic-plot"></div>
-                    <button id="toggle-plot-view" style="margin-top:20px">Show dynamic plot</button>
+
+                    <div class="button-block">
+                        <button id="toggle-plot-view" class="btn btn-default">Show dynamic plot</button>
+                        <br/>
+                        <button class="generate-plot-btn btn btn-default" type="button">Download plot as image</button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -57,6 +63,7 @@
 
     // load data from server
     const results = [[${results}]];
+    const staticPlot64 = [[${plot}]];
 
     d3.select('#dynamic-plot').style('width', "500px").style('height', "500px")
     scatterPlot3d( d3.select('#dynamic-plot'), results);
@@ -78,6 +85,40 @@
             staticPlot.show();
             button.text("Show dynamic plot");
         }
+    });
+
+    // download plot on click
+    $('.generate-plot-btn').on("click", function(e) {
+        e.preventDefault();
+
+        // remove any previously generated download links
+        $('#plot-download-link').remove();
+
+        // get the plot, set ui animations
+        var plotContainerId = "plot";
+        var formParent = $(this).parent()[0];
+
+        // create anchor element for download
+        var anchor = document.createElement("a");
+        anchor.id = "plot-download-link";
+        anchor.style.display = "none";
+        anchor.innerText = "Download";
+
+        if (button.text() === "Show dynamic plot") {
+            anchor.setAttribute("href",staticPlot64);
+            anchor.setAttribute("download", "metprot-plot-"+ "0" + ".jpg");
+        }
+        else {
+            anchor.setAttribute("href",$(".x3dom-canvas")[0].toDataURL() );
+            anchor.setAttribute("download", "metprot-plot-"+ "0" + ".png");
+        }
+
+        var div = document.createElement("div");
+        div.appendChild(anchor);
+        div.style.marginTop = "10px";
+        formParent.appendChild(div);
+
+        anchor.click();
     });
 
 </script>
