@@ -250,6 +250,25 @@ function scatterPlot3d( parent, data )
         .attr("translation", function(row) {
           return x(row[axisKeys[0]]) + " " + y(row[axisKeys[1]]) + " " + z(row[axisKeys[2]])})
 
+
+
+
+      const dataLabels = datapoints.append("billboard")
+         .attr("axisOfRotation", "0 0 0")
+      .append("shape")
+      .call(makeSolid)
+
+    dataLabels.append("text")
+      .attr("string", d => d.strain)
+      .attr("solid", "true")
+    .append("fontstyle")
+        .attr("size", 3.5)
+        .attr("family", "SANS")
+        .attr("justify", "END MIDDLE" )
+        .attr("padding", 10)
+
+
+
     // Draw a stem from the x-z plane to each sphere at elevation y.
     // This convention was chosen to be consistent with x3d primitive ElevationGrid.
     const stems = scene.selectAll(".stem").data( rows );

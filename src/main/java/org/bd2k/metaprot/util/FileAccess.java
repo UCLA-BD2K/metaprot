@@ -237,7 +237,7 @@ public class FileAccess {
                 while((line = br.readLine()) != null) {
                     line = line.replace("\"", "");
                     lineArr = line.split(",");
-
+                    System.out.println(line);
 
                     // dynamic 3d plot has y-axis as the vertical axis.
                     // static plot has PC1 z-axis, PC3 y-axis, PC2 x-axis.
@@ -246,7 +246,8 @@ public class FileAccess {
                                 Double.parseDouble(lineArr[2]),
                                 Double.parseDouble(lineArr[3]),
                                 Double.parseDouble(lineArr[1]),
-                                lineArr[4]
+                                lineArr[4],
+                                lineArr[5]
                             )
                     );
                 }

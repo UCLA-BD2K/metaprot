@@ -8,19 +8,22 @@ public class ResultValidationValue {
     private double y;
     private double z;
     private String treatment;
+    private String strain;
 
     public ResultValidationValue() {
         this.x = 0;
         this.y = 0;
         this.z = 0;
         this.treatment = "";
+        this.strain = "";
     }
 
-    public ResultValidationValue(double x, double y, double z, String treatment) {
+    public ResultValidationValue(double x, double y, double z, String treatment, String strain) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.treatment = treatment;
+        this.strain = strain;
     }
 
     public double getX() {
@@ -53,6 +56,14 @@ public class ResultValidationValue {
 
     public void setTreatment(String treatment) {
         this.treatment = treatment;
+    }
+
+    public String getStrain() {
+        return strain;
+    }
+
+    public void setStrain(String strain) {
+        this.strain = strain;
     }
 
     @Override

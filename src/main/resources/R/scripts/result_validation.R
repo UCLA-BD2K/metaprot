@@ -52,7 +52,8 @@ analyze.result.validation <- function(input, outputPlot, outputData) {
   # dynamic 3d plot
   plot_data <- pca_dta$l1;
   plot_data$treatment <- ml_hl_ptm$treatment
-  
+  plot_data$strain <- ml_hl_ptm$strain
+
   write.csv(plot_data, outputData);
 }
 
