@@ -1,9 +1,10 @@
 # rm(list = ls(all = T)); # remove all variables to start over
 
 # import pkgs
+library(tidyverse);
 library(ade4); # pkgs for PCA
 library(scatterplot3d) # library(plotly) # pkgs for 3d plots
-library(plotly) # dynamic 3d plot
+#library(plotly) # dynamic 3d plot
 library(readr)
 # read a data
 

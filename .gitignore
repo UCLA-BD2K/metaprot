@@ -12,6 +12,7 @@ target/**
 .mvn/**
 .idea/**
 *.p12
+*.pem
 ebextensions
 node_modules
 built

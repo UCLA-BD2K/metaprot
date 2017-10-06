@@ -63,7 +63,7 @@ function scatterPlot3d( parent, data )
     newAxisLine
       .append("appearance")
       .append("material")
-        .attr("emissiveColor", "lightgray")
+        .attr("emissiveColor", "black")
     newAxisLine
       .append("polyline2d")
          // Line drawn along y axis does not render in Firefox, so draw one
@@ -200,7 +200,7 @@ function scatterPlot3d( parent, data )
 
                 newGridLines.append("appearance")
                 .append("material")
-                  .attr("emissiveColor", "gray")
+                  .attr("emissiveColor", "black")
                 newGridLines.append("polyline2d");
 
                 gridLines.selectAll("shape polyline2d")
@@ -281,7 +281,7 @@ function scatterPlot3d( parent, data )
     newStems
       .append("appearance")
       .append("material")
-        .attr("emissiveColor", "gray")
+        .attr("emissiveColor", "black")
     newStems
       .append("polyline2d")
         .attr("lineSegments", function(row) { return "0 1, 0 0"; })

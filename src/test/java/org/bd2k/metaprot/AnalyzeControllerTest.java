@@ -14,8 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.bd2k.metaprot.TestConstants.S3_BASE_KEY;
-import static org.bd2k.metaprot.TestConstants.TEST_TOKEN;
+import static org.bd2k.metaprot.TestUtil.S3_BASE_KEY;
+import static org.bd2k.metaprot.TestUtil.TEST_TOKEN;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,11 +40,13 @@ public class AnalyzeControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    @Autowired
+    private TestUtil testUtil;
 
     @Before
     public void setup() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
-
+        testUtil.setupTestFiles();
      }
 
     @Test

@@ -81,7 +81,7 @@ class Analysis extends Component {
                     </div>
                     <div className="row">
                         <InfoBlock data={this.infoblocks[2]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-1 placeholder"/>
-                        <InfoBlock data={this.infoblocks[3]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-2 placeholder"/>}
+                        <InfoBlock data={this.infoblocks[3]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-2 placeholder"/>
                     </div>
                 </div>
             </div>

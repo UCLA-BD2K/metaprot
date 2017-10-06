@@ -209,7 +209,7 @@ public class S3Client {
                         .withBucketName(bucketName)
                         .withPrefix(s3BaseKey);
 
-        List<String> keys = new ArrayList<>();
+        List<String> filenames = new ArrayList<>();
 
         ObjectListing objects = s3Client.listObjects(listObjectsRequest);
         for (;;) {
@@ -219,13 +219,15 @@ public class S3Client {
             }
             for (S3ObjectSummary summary : summaries) {
                 // only return filenames, not prefix
-                keys.add(summary.getKey().replace(s3BaseKey,""));
+                String filename = summary.getKey().replace(s3BaseKey,"");
+                if (!filename.isEmpty())
+                    filenames.add(filename);
             }
             //summaries.forEach(s -> keys.add(s.getKey()));
             objects = s3Client.listNextBatchOfObjects(objects);
         }
 
-        return keys;
+        return filenames;
     }
 
     public boolean validToken(String token) {
