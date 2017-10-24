@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import FileSelectForm from './FileSelectForm';
+import FileSelectForm from '../components/FileSelectForm';
 import { connect } from 'react-redux';
 import api from '../util/api';
 

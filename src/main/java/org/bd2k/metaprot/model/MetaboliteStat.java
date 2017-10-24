@@ -7,7 +7,6 @@ package org.bd2k.metaprot.model;
  * Created by allengong on 8/15/16.
  */
 public class MetaboliteStat {
-
     private int index;          // auto-generated (by R) index of the data point
     private String name;        // name of the metabolite/gene/etc.
     private double pValue;

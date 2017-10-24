@@ -273,6 +273,54 @@ public class FileAccess {
         return results;
     }
 
+    public IntegrationToolResults getIntegrationToolResults(String token) {
+
+        String pathToData = root + token + sep + "integration-tool.csv";
+
+        File dataFile = new File(pathToData);
+        IntegrationToolResults results = new IntegrationToolResults();
+
+
+        if (dataFile.exists()) {
+            FileReader fr = null;   // for parsing CSV file
+            BufferedReader br = null;   // for parsing CSV file
+
+            try {
+
+                // parse CSV data
+                fr = new FileReader(dataFile);
+                br = new BufferedReader(fr);
+
+                String line;
+
+
+                br.readLine(); // skip header line
+
+                while((line = br.readLine()) != null) {
+                    line = line.replace("\"", "");
+                    results.parseCSVLine(line);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fr != null) {
+                        fr.close();
+                    }
+
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return results;
+    }
+
     /**
      * Given a task's token, delete the temporary directory and files used.
      * This is a relatively safe function, as it will only look for directories present

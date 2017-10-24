@@ -17,6 +17,7 @@ public class Task {
     public static final String DEA = "DEA";
     public static final String PATTERN = "PATTERN";
     public static final String RESULT_VALIDATION = "RESULT_VALDIATION";
+    public static final String INTEGRATION_TOOL = "INTEGRATION_TOOL";
 
     private String token;
     private long fileSize;

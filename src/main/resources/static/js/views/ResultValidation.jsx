@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import FileSelectForm from './FileSelectForm';
+import FileSelectForm from '../components/FileSelectForm';
 import { connect } from 'react-redux';
 import api from '../util/api';
 
@@ -12,7 +12,7 @@ class ResultValidation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            filename: this.props.filenames ? this.props.filenames[0] : "",
+            filename: "",
             progressTextHTML: null
         }
 
@@ -86,8 +86,7 @@ class ResultValidation extends Component {
 
 function mapStateToProps(state) {
     return {
-        token: state.token,
-        filenames: state.filenames
+        token: state.token
     }
 }
 

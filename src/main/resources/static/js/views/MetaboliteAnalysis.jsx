@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import FileSelectForm from './FileSelectForm';
+import FileSelectForm from '../components/FileSelectForm';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormControl, ControlLabel } from 'react-bootstrap'
@@ -127,8 +127,7 @@ class MetaboliteAnalysis extends Component {
 
 function mapStateToProps(state) {
     return {
-        token: state.token,
-        filenames: state.filenames
+        token: state.token
     }
 }
 

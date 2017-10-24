@@ -74,6 +74,11 @@ public class General {
         return "index";
     }
 
+    @RequestMapping("/integration")
+    public String getIntegrationPage() {
+        return "index";
+    }
+
     @RequestMapping("/about")
     public String getAboutPage() {
         return "index";

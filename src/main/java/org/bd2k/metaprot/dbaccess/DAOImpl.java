@@ -172,4 +172,27 @@ public class DAOImpl implements DAO {
 
         return results;
     }
+
+
+    /* Integration Tool */
+
+    @Override
+    public IntegrationToolResults getIntegrationToolResults(Task task) {
+        if (!task.getType().equals(Task.INTEGRATION_TOOL) || task.getToken() == null) {
+            return null;
+        }
+
+        IntegrationToolResults results = null;
+
+        try {
+            String dbEntry = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
+                    task.getNumChunks());
+            results = mapper.readValue(dbEntry, new TypeReference<IntegrationToolResults>(){});
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
 }

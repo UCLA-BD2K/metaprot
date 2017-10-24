@@ -18,7 +18,7 @@ class TopNavBar extends Component {
             { name: "Preprocessing", path: "/upload-pass" },
             { name: "Analysis", path: "/analysis" },
             { name: "Annotation", path: "#" },
-            { name: "Integration", path: "#" },
+            { name: "Integration", path: "/integration" },
             { name: "Summary", path: "#" },
         ];
     }

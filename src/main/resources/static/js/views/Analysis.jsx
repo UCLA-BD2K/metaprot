@@ -1,8 +1,5 @@
 import React, {Component} from 'react';
-import InfoBlock from './InfoBlock';
-import TopNavBar from './TopNavBar';
-import SideNavBar from './SideNavBar';
-import Footer from './Footer';
+import InfoBlock from '../components/InfoBlock';
 import { Link } from 'react-router-dom';
 
 
