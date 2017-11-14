@@ -1,7 +1,6 @@
 package org.bd2k.metaprot.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 /**
  * Created by Nate Sookwongse on 10/13/17.
@@ -115,37 +114,22 @@ class DataRow {
 
 public class IntegrationToolResults {
     private ArrayList<DataRow> tableRows;
-    private HashSet<Node> nodes;
+    private ArrayList<Node> nodes;
     private ArrayList<Edge> edges;
 
     public IntegrationToolResults() {
         this.tableRows = new ArrayList<>();
-        this.nodes = new HashSet<>();
+        this.nodes = new ArrayList<>();
         this.edges = new ArrayList<>();
     }
 
-    public IntegrationToolResults(ArrayList<DataRow> tableRows, HashSet<Node> nodes, ArrayList<Edge> edges) {
+    public IntegrationToolResults(ArrayList<DataRow> tableRows, ArrayList<Node> nodes, ArrayList<Edge> edges) {
         this.tableRows = tableRows;
         this.nodes = nodes;
         this.edges = edges;
     }
 
-    public void parseCSVLine(String csv) {
-        String[] arr = csv.split(",");
-        System.out.println(csv);
-        tableRows.add(new DataRow(
-                arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7]
-        ));
-        nodes.add(new Node(arr[0]));
-        nodes.add(new Node(arr[1]));
 
-        edges.add(new Edge(
-                arr[0] + "-" + arr[1],
-                arr[0],
-                arr[1],
-                Math.pow(Double.parseDouble(arr[7])+1,3)
-        ));
-    }
 
     public ArrayList<DataRow> getTableRows() {
         return tableRows;
@@ -155,11 +139,11 @@ public class IntegrationToolResults {
         this.tableRows = tableRows;
     }
 
-    public HashSet<Node> getNodes() {
+    public ArrayList<Node> getNodes() {
         return nodes;
     }
 
-    public void setNodes(HashSet<Node> nodes) {
+    public void setNodes(ArrayList<Node> nodes) {
         this.nodes = nodes;
     }
 

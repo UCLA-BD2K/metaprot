@@ -187,6 +187,7 @@ public class DAOImpl implements DAO {
         try {
             String dbEntry = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
                     task.getNumChunks());
+            System.out.println(dbEntry);
             results = mapper.readValue(dbEntry, new TypeReference<IntegrationToolResults>(){});
 
         } catch (Exception e) {

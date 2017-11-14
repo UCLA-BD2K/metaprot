@@ -75,8 +75,15 @@
     console.log(nodeSet);
     console.log(edgeSet);
 
+    let degreeArr = nodeSet.map( node => { return node.degree } );
+    let max = Math.max(...degreeArr);
+    console.log(max);
+
     const nodes = nodeSet.map( nodeData => { return { data: nodeData } });
     const edges = edgeSet.map( edgeData => { return { data: edgeData } });
+
+    if (max > 200)
+
     console.log(nodes);
     console.log(edges);
      var cy = cytoscape({
@@ -93,8 +100,8 @@
                             'text-outline-width': 2,
                             'text-outline-color': '#888',
                             'background-color': 'blue',
-                            'width': '50px',
-                            'height': '50px',
+                            'width': 'mapData(degree, 0, 20, 50, 300)',
+                            'height': 'mapData(degree, 0, 20, 50, 300)',
                             'selection-box-color': 'black',
                             'selection-box-border-color': 'black',
                             'selection-box-border-width': 1
@@ -115,17 +122,37 @@
                 elements: {
                     nodes: nodes,
                     edges: edges
-                },
+                },/*
+
+
                 layout: {
                     name: 'cose',
-                    idealEdgeLength: 10,
+                    idealEdgeLength: 100,
                     nodeOverlap: 10,
                     refresh: 20,
                     fit: true,
                     padding: 5,
                     randomize: false,
-                    componentSpacing: 10,
-                    nodeRepulsion: 4000,
+                    componentSpacing: 1,
+                    nodeRepulsion: 4000000,
+                    edgeElasticity: 100,
+                    nestingFactor: 5,
+                    gravity: 100,
+                    numIter: 1000,
+                    initialTemp: 50,
+                    coolingFactor: 0.95,
+                    minTemp: 1.0
+                },*/
+                  layout: {
+                    name: 'cose',
+                    idealEdgeLength: 100,
+                    nodeOverlap: 20,
+                    refresh: 20,
+                    fit: true,
+                    padding: 30,
+                    randomize: false,
+                    componentSpacing: 100,
+                    nodeRepulsion: 400000,
                     edgeElasticity: 100,
                     nestingFactor: 5,
                     gravity: 80,
@@ -133,7 +160,7 @@
                     initialTemp: 200,
                     coolingFactor: 0.95,
                     minTemp: 1.0
-                },
+                  },
                 wheelSensitivity: 0.5
         });
         cy.on('select','node', function() {

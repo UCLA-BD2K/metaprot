@@ -275,10 +275,13 @@ public class FileAccess {
 
     public IntegrationToolResults getIntegrationToolResults(String token) {
 
-        String pathToData = root + token + sep + "integration-tool.csv";
+        //String pathToData = root + token + sep + "integration-tool.csv";
+        String pathToData = root + token + sep + "integration-tool.tab";
 
         File dataFile = new File(pathToData);
-        IntegrationToolResults results = new IntegrationToolResults();
+
+        IntegrationToolResultBuilder builder = new IntegrationToolResultBuilder();
+
 
 
         if (dataFile.exists()) {
@@ -298,7 +301,8 @@ public class FileAccess {
 
                 while((line = br.readLine()) != null) {
                     line = line.replace("\"", "");
-                    results.parseCSVLine(line);
+                    //results.parseCSVLine(line);
+                    builder.parseTabLine(line);
                 }
 
             } catch (Exception e) {
@@ -318,7 +322,7 @@ public class FileAccess {
             }
 
         }
-        return results;
+        return builder.build();
     }
 
     /**

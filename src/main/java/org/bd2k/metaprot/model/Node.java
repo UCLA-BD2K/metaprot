@@ -5,13 +5,16 @@ package org.bd2k.metaprot.model;
  */
 public class Node {
     private String id;
+    private int degree;
 
     public Node() {
         this.id = "";
+        this.degree = 0;
     }
 
-    public Node(String id) {
+    public Node(String id, int degree) {
         this.id = id;
+        this.degree = degree;
     }
 
     public String getId() {
@@ -20,6 +23,18 @@ public class Node {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getDegree() {
+        return degree;
+    }
+
+    public void setDegree(int degree) {
+        this.degree = degree;
+    }
+
+    public void addDegree() {
+        this.degree++;
     }
 
     @Override
