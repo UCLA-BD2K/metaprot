@@ -108,7 +108,7 @@ public class IntegrationToolResultBuilder {
     }
 
     public IntegrationToolResults build() {
-        return new IntegrationToolResults(tableRows, (ArrayList<Node>)nodes.values(), edges);
+        return new IntegrationToolResults(tableRows, new ArrayList<>(nodes.values()), edges);
     }
 
     @Override
