@@ -237,7 +237,6 @@ public class FileAccess {
                 while((line = br.readLine()) != null) {
                     line = line.replace("\"", "");
                     lineArr = line.split(",");
-                    System.out.println(line);
 
                     // dynamic 3d plot has y-axis as the vertical axis.
                     // static plot has PC1 z-axis, PC3 y-axis, PC2 x-axis.
@@ -275,8 +274,8 @@ public class FileAccess {
 
     public IntegrationToolResults getIntegrationToolResults(String token) {
 
-        String pathToData = root + token + sep + "integration-tool.csv";
-        //String pathToData = root + token + sep + "integration-tool.tab";
+        //String pathToData = root + token + sep + "integration-tool.csv";
+        String pathToData = root + token + sep + "integration-tool.tab";
 
         File dataFile = new File(pathToData);
 
@@ -301,8 +300,8 @@ public class FileAccess {
 
                 while((line = br.readLine()) != null) {
                     line = line.replace("\"", "");
-                    builder.parseCSVLine(line);
-                    //builder.parseTabLine(line);
+                    //builder.parseCSVLine(line);
+                    builder.parseTabLine(line);
                 }
 
             } catch (Exception e) {

@@ -62,4 +62,32 @@ public class Edge {
                 ", width:" + width +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Edge edge = (Edge) o;
+
+        String _source = source == null ? "" : source;
+        String o_source = edge.source == null ? "" : edge.source;
+        String _target = target == null ? "" : target;
+        String o_target = edge.target == null ? "" : edge.target;
+
+        return _source.equals(o_source) && _target.equals(o_target);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (source != null ? source.hashCode() : 0);
+        result = 31 * result + (target != null ? target.hashCode() : 0);
+        temp = Double.doubleToLongBits(width);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }
