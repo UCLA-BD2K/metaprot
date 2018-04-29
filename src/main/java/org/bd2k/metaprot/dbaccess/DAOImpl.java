@@ -200,6 +200,29 @@ public class DAOImpl implements DAO {
     /* DTW Cluster Tool */
 
     @Override
+    public String getElbowPlotResults(Task task) {
+        if (!task.getType().equals(Task.DTW_ELBOW) || task.getToken() == null) {
+            return null;
+        }
+
+        String results = null;
+
+        try {
+            String dbEntry = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
+                    task.getNumChunks());
+            System.out.println(dbEntry);
+            results = mapper.readValue(dbEntry, new TypeReference<String>(){});
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
+    /* DTW Cluster Tool */
+
+    @Override
     public DTWClusterResults getDTWClusterResults(Task task) {
         if (!task.getType().equals(Task.DTW_CLUSTER) || task.getToken() == null) {
             return null;
