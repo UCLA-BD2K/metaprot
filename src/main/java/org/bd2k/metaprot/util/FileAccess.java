@@ -237,7 +237,6 @@ public class FileAccess {
                 while((line = br.readLine()) != null) {
                     line = line.replace("\"", "");
                     lineArr = line.split(",");
-                    System.out.println(line);
 
                     // dynamic 3d plot has y-axis as the vertical axis.
                     // static plot has PC1 z-axis, PC3 y-axis, PC2 x-axis.
@@ -273,10 +272,11 @@ public class FileAccess {
         return results;
     }
 
-    public IntegrationToolResults getIntegrationToolResults(String token) {
 
-        //String pathToData = root + token + sep + "integration-tool.csv";
-        String pathToData = root + token + sep + "integration-tool.tab";
+    public IntegrationToolResults getIntegrationToolResults(String token, String filename) {
+
+        String pathToData = root + token + sep + filename;
+        //String pathToData = root + token + sep + "integration-tool.tab";
 
         File dataFile = new File(pathToData);
 
@@ -301,8 +301,9 @@ public class FileAccess {
 
                 while((line = br.readLine()) != null) {
                     line = line.replace("\"", "");
-                    //results.parseCSVLine(line);
-                    builder.parseTabLine(line);
+
+                    builder.parseCSVLine(line);
+                    //builder.parseTabLine(line);
                 }
 
             } catch (Exception e) {
@@ -425,6 +426,7 @@ public class FileAccess {
         DTWClusterResults results = new DTWClusterResults(base64EncodedStaticPlot, list);
         return results;
     }
+
 
     /**
      * Given a task's token, delete the temporary directory and files used.

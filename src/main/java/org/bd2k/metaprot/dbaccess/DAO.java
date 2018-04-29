@@ -123,7 +123,6 @@ public interface DAO {
      * @return results in the same form that they were inputted in saveTaskResults()
      */
      IntegrationToolResults getIntegrationToolResults(Task task);
-
     /* DTW Cluster - Elbow Plot */
 
     /**
@@ -136,7 +135,6 @@ public interface DAO {
     String getElbowPlotResults(Task task);
 
     DTWClusterResults getDTWClusterResults(Task task);
-
 
 
 }

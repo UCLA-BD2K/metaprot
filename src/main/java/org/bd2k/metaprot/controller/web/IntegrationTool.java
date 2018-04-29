@@ -41,7 +41,7 @@ public class IntegrationTool {
         // get task information from database
         Task task = dao.getTask(token);
         IntegrationToolResults results = dao.getIntegrationToolResults(task);
-        System.out.println(results.getTableRows());
+
         model.addAttribute("tableRows", results.getTableRows());
         model.addAttribute("nodes", results.getNodes());
         model.addAttribute("edges", results.getEdges());

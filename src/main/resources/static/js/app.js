@@ -22,6 +22,7 @@ import Integration from './views/Integration';
 import IntegrationTool from './views/IntegrationTool';
 import DynamicTimeWarping from './views/DynamicTimeWarping';
 
+
 import MainLayout from './layouts/MainLayout';
 import SimpleLayout from './layouts/SimpleLayout';
 

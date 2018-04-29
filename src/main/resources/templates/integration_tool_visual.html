@@ -15,7 +15,8 @@
     <link rel="stylesheet" type="text/css" href="/css/temp.css" />
     <style>
         #cy {
-            height: 500px;
+            height: 400px;
+            width: 100%;
         }
     </style>
 </head>
@@ -24,15 +25,43 @@
 <div th:include="fragments/header :: header"></div>
 
 <div class="container-fluid results">
-    <div >
+    <div>
             <h2 class="text-center">Integration Tool Result</h2>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h2 class="panel-title text-center" th:text='${"Results for task: " + token}'></h2>
                 </div>
+
+                <div class="text-right" style="padding: 20px">
+
+                    <form>
+                        <div class="text-left" style="display:inline-block">
+
+                            <label for="select" class="control-label">Search:</label>
+                            <select style="width:200px" id="select" >
+                            </select>
+                        </div>
+                    </form>
+
+                    <div style="display:inline-block; margin-top:20x">
+
+                        <button onclick="reset()" style="margin: 10px">Reset zoom</button>
+                        <button onclick="download()" style="margin: 10px">Download</button>
+                        <a id="download_img" download="metprot-integration-plot.jpg"></a>
+                    </div>
+
+                </div>
+
+
                 <div id="cy">
                 </div>
+
+
+
+
             </div>
+
+
     </div>
 </div>
 
@@ -44,6 +73,8 @@
 <script src="https://cdn.datatables.net/buttons/1.1.0/js/dataTables.buttons.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.1.0/js/buttons.html5.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
 <script src="/js/lib/cytoscape.min.js"></script>
 
@@ -70,128 +101,142 @@
   /*]]>*/
 </script>
 <script th:inline="javascript">
+
+
     const nodeSet = [[${nodes}]];
     const edgeSet = [[${edges}]];
-    console.log(nodeSet);
-    console.log(edgeSet);
 
     let degreeArr = nodeSet.map( node => { return node.degree } );
-    let max = Math.max(...degreeArr);
-    console.log(max);
+
+    nodeSet.forEach( node => {
+        node.color = node.leftCol ? "blue" : "gray";
+    });
 
     const nodes = nodeSet.map( nodeData => { return { data: nodeData } });
     const edges = edgeSet.map( edgeData => { return { data: edgeData } });
 
-    if (max > 200)
 
-    console.log(nodes);
-    console.log(edges);
+    // init drop-down selection for metabolites
+    $("#select").select2({
+          data: nodeSet.map( x => x.id )
+    });
+
+
+    // on user selection, highlight node
+    $('#select').on("change", function() {
+        const id = $(this).find(":selected").val();
+        var n = cy.getElementById(id);
+
+        cy.batch(function(){
+            cy.nodes().unselect();
+
+            n.select();
+        });
+    })
+
+    let layout_params = {
+        name: 'cose',
+        idealEdgeLength: 100,
+        nodeOverlap: 20,
+        refresh: 20,
+        fit: true,
+        padding: 30,
+        randomize: false,
+        componentSpacing: 100,
+        nodeRepulsion: 400000,
+        edgeElasticity: 100,
+        nestingFactor: 5,
+        gravity: 80,
+        numIter: 1000,
+        initialTemp: 200,
+        coolingFactor: 0.95,
+        minTemp: 1.0
+      }
      var cy = cytoscape({
-                container: document.getElementById('cy'),
-                boxSelectionEnabled: true,
-                style: [
-                    {
-                        selector: 'node',
-                        css: {
-                            'content': 'data(id)',
-                            'text-valign': 'center',
-                            'text-halign': 'center',
-                            'color': 'white',
-                            'text-outline-width': 2,
-                            'text-outline-color': '#888',
-                            'background-color': 'blue',
-                            'width': 'mapData(degree, 0, 20, 50, 300)',
-                            'height': 'mapData(degree, 0, 20, 50, 300)',
-                            'selection-box-color': 'black',
-                            'selection-box-border-color': 'black',
-                            'selection-box-border-width': 1
-                        },
-                        selectable: true
-                    },
-                    {
-                        selector: 'edge',
-                        css: {
-                            //'target-arrow-shape': 'triangle',
-                            'line-color': '#9dbaea',
-                            //'target-arrow-color': '9dbaea',
-                            'width': "data(width)"
-                        },
-                        selectable:false
-                    }
-                ],
-                elements: {
-                    nodes: nodes,
-                    edges: edges
-                },/*
-
-
-                layout: {
-                    name: 'cose',
-                    idealEdgeLength: 100,
-                    nodeOverlap: 10,
-                    refresh: 20,
-                    fit: true,
-                    padding: 5,
-                    randomize: false,
-                    componentSpacing: 1,
-                    nodeRepulsion: 4000000,
-                    edgeElasticity: 100,
-                    nestingFactor: 5,
-                    gravity: 100,
-                    numIter: 1000,
-                    initialTemp: 50,
-                    coolingFactor: 0.95,
-                    minTemp: 1.0
-                },*/
-                  layout: {
-                    name: 'cose',
-                    idealEdgeLength: 100,
-                    nodeOverlap: 20,
-                    refresh: 20,
-                    fit: true,
-                    padding: 30,
-                    randomize: false,
-                    componentSpacing: 100,
-                    nodeRepulsion: 400000,
-                    edgeElasticity: 100,
-                    nestingFactor: 5,
-                    gravity: 80,
-                    numIter: 1000,
-                    initialTemp: 200,
-                    coolingFactor: 0.95,
-                    minTemp: 1.0
-                  },
-                wheelSensitivity: 0.5
-        });
-        cy.on('select','node', function() {
-            var nodes = this;
-            try {
-                if(this.hasClass("CalledByAnother")) {
-                    this.css("background-color", "yellow");
-                } else {
-                    this.css("background-color", "yellow");
-                    this.connectedEdges().css("line-color", "yellow");
-                    this.neighborhood().forEach(function (node) {
-                        node.addClass("CalledByAnother");
-                        node.json({selected: true});
-                    });
-                }
-            } catch(e) {
-                console.log("Error modifying node/edges");
+        container: document.getElementById('cy'),
+        boxSelectionEnabled: true,
+        style: [
+            {
+                selector: 'node',
+                css: {
+                    'content': 'data(id)',
+                    'text-valign': 'center',
+                    'text-halign': 'center',
+                    'color': 'white',
+                    'text-outline-width': 'mapData(degree, 0, 20, 3, 7)',
+                    'text-outline-color': '#888',
+                    'background-color': 'data(color)',
+                    'font-size': 'mapData(degree, 0, 20, 12, 50)',
+                    'width': 'mapData(degree, 0, 20, 50, 300)',
+                    'height': 'mapData(degree, 0, 20, 50, 300)',
+                    'selection-box-color': 'black',
+                    'selection-box-border-color': 'black',
+                    'selection-box-border-width': 1
+                },
+                selectable: true
+            },
+            {
+                selector: 'edge',
+                css: {
+                    //'target-arrow-shape': 'triangle',
+                    'line-color': '#9dbaea',
+                    //'target-arrow-color': '9dbaea',
+                    'width': "data(width)"
+                },
+                selectable:false
             }
-        });
-        cy.on('unselect','node', function() {
-            var nodes = this;
-            try {
-                this.removeClass("CalledByAnother");
-                this.connectedEdges().css("line-color", "#9dbaea");
-                this.css("background-color", "blue");
+        ],
+        elements: {
+            nodes: nodes,
+            edges: edges
+        },
+          layout: layout_params,
+        wheelSensitivity: 0.5
+    });
 
-            } catch(e) {
-                console.log("Error modifying node/edges");
+    cy.on('select','node', function() {
+        var nodes = this;
+        try {
+            if(this.hasClass("CalledByAnother")) {
+                this.css("background-color", "yellow");
+            } else {
+                this.css("background-color", "red");
+                this.connectedEdges().css("line-color", "yellow");
+                this.neighborhood().forEach(function (node) {
+                    node.addClass("CalledByAnother");
+                    node.json({selected: true});
+                });
             }
-        });
+        } catch(e) {
+            console.log("Error modifying node/edges");
+        }
+    });
+    cy.on('unselect','node', function() {
+        var nodes = this;
+        try {
+            this.removeClass("CalledByAnother");
+            this.connectedEdges().css("line-color", "#9dbaea");
+            this.css("background-color", this.data("color"));
 
+        } catch(e) {
+            console.log("Error modifying node/edges");
+        }
+    });
+
+    function reset() {
+        cy.fit();
+    }
+
+    function download() {
+
+        var anchor = document.getElementById("download_img");
+
+        anchor.setAttribute("href", cy.jpg());
+
+        anchor.click();
+
+
+    }
 
 
 
