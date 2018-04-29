@@ -1,7 +1,6 @@
 library(tidyverse)
 library(stringr)
 library(ggplot2)
-library(dtw)
 library(dtwclust)
 
 #data_path = "C:/Users/Pengqi/Desktop/BD2K/dtw/mouse_tidy.rdata";
@@ -10,7 +9,7 @@ library(dtwclust)
 elbow_plot <- function(data_path, lower, upper, output_path){
   load(data_path)
   missing_type = c("< LOD", "no peak", "NA");
-  concentration_tbl = 
+  concentration_tbl =
     quant_tbl %>% 
     select(-c(1:5)) %>% # change concentrations to numerical values
     sapply(parse_double, na = missing_type) %>%
