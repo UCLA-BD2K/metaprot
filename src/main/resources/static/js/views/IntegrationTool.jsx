@@ -34,7 +34,7 @@ class IntegrationTool extends Component {
             var s3Key = "user-input/" + this.props.token + "/" + this.state.filename1;
 
             formData.append("objectKey", s3Key);
-            formData.append("taskToken", "TEST");
+            formData.append("taskToken", token);
             return fetch("/analyze/integration-tool/" + this.props.token, {
                 method: "POST",
                 body: formData

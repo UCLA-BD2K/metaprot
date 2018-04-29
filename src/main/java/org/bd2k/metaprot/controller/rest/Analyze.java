@@ -574,7 +574,6 @@ public class Analyze {
             // should return error message
             throw new BadRequestException("Invalid request, please try again later.");
         }
-
         S3Status s3Status = s3Client.pullAndStoreObject(key, root + taskToken);
         int status = s3Status.getStatusCode();
 
@@ -591,7 +590,7 @@ public class Analyze {
         int numChunks = 0;
         // store results to database
         try {
-            IntegrationToolResults results = new FileAccess().getIntegrationToolResults(taskToken);
+            IntegrationToolResults results = new FileAccess().getIntegrationToolResults(taskToken, keyArr[keyArr.length-1]);
             currentTask = new Task(taskToken, new Date(), filename,
                     s3Status.getFileSize(), 0, Task.INTEGRATION_TOOL);
 
@@ -619,7 +618,7 @@ public class Analyze {
         dao.saveOrUpdateTask(currentTask);
 
         // analysis complete and results recorded, safe to delete all temporary files
-       // new FileAccess().deleteTemporaryAnalysisFiles(taskToken);
+        new FileAccess().deleteTemporaryAnalysisFiles(taskToken);
 
         // everything went well, success message
         String successMessage = "Your file has been successfully analyzed!<br/>%s<br/>%s";
