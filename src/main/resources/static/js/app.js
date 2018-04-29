@@ -9,14 +9,18 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
-import Home from './components/Home';
-import About from './components/About';
-import Contact from './components/Contact';
-import Analysis from './components/Analysis';
-import Upload from './components/Upload';
-import MetaboliteAnalysis from './components/MetaboliteAnalysis';
-import PatternRecognitionAnalysis from './components/PatternRecognitionAnalysis';
-import ProcessFile from './components/ProcessFile';
+import Home from './views/Home';
+import About from './views/About';
+import Contact from './views/Contact';
+import Upload from './views/Upload';
+import Analysis from './views/Analysis';
+import MetaboliteAnalysis from './views/MetaboliteAnalysis';
+import PatternRecognitionAnalysis from './views/PatternRecognitionAnalysis';
+import ProcessFile from './views/ProcessFile';
+import ResultValidation from './views/ResultValidation';
+import Integration from './views/Integration';
+import IntegrationTool from './views/IntegrationTool';
+import DynamicTimeWarping from './views/DynamicTimeWarping';
 
 import MainLayout from './layouts/MainLayout';
 import SimpleLayout from './layouts/SimpleLayout';
@@ -52,8 +56,8 @@ const initGA = (history) => {
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-    //ga('create', 'UA-60704143-2', 'auto');  // dev
-    ga('create', 'UA-60704143-3', 'auto'); // production
+    ga('create', 'UA-60704143-2', 'auto');  // dev
+    //ga('create', 'UA-60704143-3', 'auto'); // production
     ga('send', 'pageview');
 
     history.listen((location) => {
@@ -90,6 +94,10 @@ ReactDOM.render(
                 <Route path="/analysis" render={ renderWithLayout("main", <Analysis />) } />
                 <Route path="/metabolite-analysis" render={ renderWithLayout("main", <MetaboliteAnalysis />) } />
                 <Route path="/pattern" render={ renderWithLayout("main", <PatternRecognitionAnalysis />) } />
+                <Route path="/result-validation" render={ renderWithLayout("main", <ResultValidation />) } />
+                <Route path="/integration" render={ renderWithLayout("main", <Integration />) } />
+                <Route path="/integration-tool" render={ renderWithLayout("main", <IntegrationTool />) } />
+                <Route path="/dtw-cluster" render={ renderWithLayout("main", <DynamicTimeWarping />) } />
             </Switch>
 
         </Router>

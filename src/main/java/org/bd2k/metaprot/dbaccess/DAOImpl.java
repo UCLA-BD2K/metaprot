@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bd2k.metaprot.aws.DynamoDBClient;
 import org.bd2k.metaprot.dbaccess.repository.MetaboliteTaskRepository;
-import org.bd2k.metaprot.dbaccess.repository.PatternRecognitionTaskRepository;
+import org.bd2k.metaprot.dbaccess.repository.TaskRepository;
 import org.bd2k.metaprot.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class DAOImpl implements DAO {
     private MetaboliteTaskRepository metaboliteTaskRepository;
 
     @Autowired
-    private PatternRecognitionTaskRepository PRTaskRepository;
+    private TaskRepository taskRepository;
 
     @Autowired
     private DynamoDBClient dynamoDBClient;
@@ -34,6 +34,51 @@ public class DAOImpl implements DAO {
     private ObjectMapper mapper = new ObjectMapper();
 
     public DAOImpl() {}
+
+
+    /* General */
+
+    @Override
+    public int saveTaskResults(Task task, Object results) {
+
+        // quick validation
+        if (task.getToken() == null) {
+            return -1;
+        }
+
+        // upload results to DynamoDB as chunks
+        int numChunks;
+        try {
+            numChunks = dynamoDBClient.uploadAsChunks(TASK_CHUNK_TABLENAME,
+                    task.getToken(), mapper.writeValueAsString(results));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;              // return -1, let caller handle error
+        }
+
+        // upload successful, return number of chunks used
+        return numChunks;
+    }
+
+
+    @Override
+    public Task getTask(String token) {
+        return taskRepository.findByToken(token);
+    }
+
+    @Override
+    public boolean saveTask(Task task) {
+        if (getTask(task.getToken()) != null) {
+            return false;
+        }
+        taskRepository.save(task);
+        return true;
+    }
+
+    @Override
+    public void saveOrUpdateTask(Task task) {
+        taskRepository.save(task);
+    }
 
 
     /* Metabolite Analysis */
@@ -80,96 +125,13 @@ public class DAOImpl implements DAO {
         return results;
     }
 
-    @Override
-    public <T> int saveTaskResults(Task task, List<List<T>> results) {
-
-        // quick validation
-        if (task.getToken() == null) {
-            return -1;
-        }
-
-        // upload results to DynamoDB as chunks
-        int numChunks;
-        try {
-            numChunks = dynamoDBClient.uploadAsChunks(TASK_CHUNK_TABLENAME,
-                    task.getToken(), mapper.writeValueAsString(results));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;              // return -1, let caller handle error
-        }
-
-        // upload successful, return number of chunks used
-        return numChunks;
-    }
-
 
     /* Pattern Recognition */
-/*
-    @Override
-    public PatternRecogTask_old getPatternRecogTask(String token){
-        return PRTaskRepository.findByToken(token);
-    }
 
-    @Override
-    public boolean saveTask(PatternRecogTask_old task){
-
-        if(getPatternRecogTask(task.getToken()) != null){
-            return false;
-        }
-
-        PRTaskRepository.save(task);
-        return true;
-    }
-
-    @Override
-    public void saveOrUpdateTask(PatternRecogTask_old task) {
-        PRTaskRepository.save(task);
-    }
-
-    @Override
-    public List<List<PatternRecogStat_old>> getPRTaskResults(PatternRecogTask_old task) {
-
-        if (task.getToken() == null) {
-            return null;
-        }
-
-        List<List<PatternRecogStat_old>> results = null;
-
-        try {
-            String resultsAsString = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
-                    task.getNumChunks());
-
-            results = mapper.readValue(resultsAsString, new TypeReference<List<List<PatternRecogStat_old>>>(){});
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return results;
-    }*/
-
-    @Override
-    public PatternRecognitionTask getPatternRecognitionTask(String token) {
-        return PRTaskRepository.findByToken(token);
-    }
-
-    @Override
-    public boolean saveTask(PatternRecognitionTask task) {
-        if (getPatternRecognitionTask(task.getToken()) != null) {
-            return false;
-        }
-        PRTaskRepository.save(task);
-        return true;
-    }
-
-    @Override
-    public void saveOrUpdateTask(PatternRecognitionTask task) {
-        PRTaskRepository.save(task);
-    }
 
     @Override
     public PatternRecognitionResults getPatternRecognitionResults(Task task) {
-        if (task.getToken() == null) {
+        if (!task.getType().equals(Task.PATTERN) || task.getToken() == null) {
             return null;
         }
 
@@ -188,27 +150,91 @@ public class DAOImpl implements DAO {
         return results;
     }
 
-    @Override
-    public int saveTaskResults(PatternRecognitionTask task, PatternRecognitionResults results) {
 
-        // quick validation
-        if (task.getToken() == null) {
-            return -1;
+    /* Result Validation */
+
+    @Override
+    public ResultValidationResults getResultValidationResults(Task task) {
+        if (!task.getType().equals(Task.RESULT_VALIDATION) || task.getToken() == null) {
+            return null;
         }
 
-        // upload results to DynamoDB as chunks
-        int numChunks;
+        ResultValidationResults results = null;
+
         try {
-            numChunks = dynamoDBClient.uploadAsChunks(TASK_CHUNK_TABLENAME,
-                    task.getToken(), mapper.writeValueAsString(results));
+            String dbEntry = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
+                    task.getNumChunks());
+            results = mapper.readValue(dbEntry, new TypeReference<ResultValidationResults>(){});
+
         } catch (Exception e) {
             e.printStackTrace();
-            return -1;              // return -1, let caller handle error
         }
 
-        // upload successful, return number of chunks used
-        return numChunks;
+        return results;
     }
 
+
+    /* Integration Tool */
+
+    @Override
+    public IntegrationToolResults getIntegrationToolResults(Task task) {
+        if (!task.getType().equals(Task.INTEGRATION_TOOL) || task.getToken() == null) {
+            return null;
+        }
+
+        IntegrationToolResults results = null;
+
+        try {
+            String dbEntry = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
+                    task.getNumChunks());
+            System.out.println(dbEntry);
+            results = mapper.readValue(dbEntry, new TypeReference<IntegrationToolResults>(){});
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
+    /* DTW Cluster - Elbow Plot */
+
+    @Override
+    public String getElbowPlotResults(Task task) {
+        if (!task.getType().equals(Task.DTW_ELBOW) || task.getToken() == null) {
+            return null;
+        }
+
+        String results = null;
+
+        try {
+            String dbEntry = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
+                    task.getNumChunks());
+            results = mapper.readValue(dbEntry, new TypeReference<String>(){});
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
+    public DTWClusterResults getDTWClusterResults(Task task){
+        if (!task.getType().equals(Task.DTW_CLUSTER) || task.getToken() == null) {
+            return null;
+        }
+
+        DTWClusterResults results = null;
+
+        try {
+            String dbEntry = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
+                    task.getNumChunks());
+            results = mapper.readValue(dbEntry, new TypeReference<DTWClusterResults>(){});
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
 
 }

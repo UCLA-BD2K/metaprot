@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import InfoBlock from './InfoBlock';
-import TopNavBar from './TopNavBar';
-import Footer from './Footer';
+import InfoBlock from '../components/InfoBlock';
 import { Link } from 'react-router-dom';
 import { plotUsagePieChart, plotGeoMap, plotTrafficChart } from '../util/GoogleAnalyticsGraphics';
 import { storeGoogleAnalyticsReport } from '../actions';
@@ -73,7 +71,7 @@ class Home extends Component {
                 title: "Recent Updates",
                 description: "Recent news and updates",
                 postHTML: (
-                       <div id="list" width="305" height="305">
+                       <div id="homepage-updates">
                            <ul className="list-group">
                            {
                                [

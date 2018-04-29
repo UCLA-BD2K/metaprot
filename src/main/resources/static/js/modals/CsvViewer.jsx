@@ -9,6 +9,10 @@ class CsvViewer extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            numRows: 0,
+            numCols: 0
+        }
         this.contentId = "csv-viewer-content";  // div id to mount d3 table
         this.createTable = this.createTable.bind(this);
     }
@@ -21,7 +25,7 @@ class CsvViewer extends Component {
     /* generate d3 table and mount to div with id specified by this.contentId */
     createTable() {
         // parse CSV data and convert values from String to numeric values when applicable
-        var data = d3.csv.parse(this.props.data, row => {
+        const data = d3.csv.parse(this.props.data, row => {
             var r = {};
                 for (var k in row) {
                     r[k] = +row[k];
@@ -32,17 +36,22 @@ class CsvViewer extends Component {
             return r;
         });
 
-        var sortAscending = true;
-        var table = d3.select("#" + this.contentId)
+        const numRows = data.length;
+        const numCols = Object.keys(data[0]).length;
+
+        this.setState({numRows, numCols});
+
+        let sortAscending = true;
+        const table = d3.select("#" + this.contentId)
                     .append("div").attr("class", "container")
                     .append("table").attr("class", "display nowrap table table-hover table-bordered table-striped")
                                     .attr("id", "example")
                                     .attr("cellspacing", "0")
                                     .attr("width", "100%");
 
-        var titles = d3.keys(data[0]);
+        const titles = d3.keys(data[0]);
 
-        var headers = table.append('thead').append('tr')
+        const headers = table.append('thead').append('tr')
                .selectAll('th')
                .data(titles).enter()
                .append('th')
@@ -65,7 +74,7 @@ class CsvViewer extends Component {
                    }
                });
 
-        var rows = table.append('tbody').selectAll('tr')
+        const rows = table.append('tbody').selectAll('tr')
                .data(data).enter()
                .append('tr');
         rows.selectAll('td')
@@ -88,8 +97,13 @@ class CsvViewer extends Component {
 
    render() {
         return (
-            <div id={this.contentId}>
-                { /* d3 table will be generated here */ }
+            <div>
+                <p className="text-muted">
+                    Rows: {this.state.numRows}, Columns: {this.state.numCols}
+                </p>
+                <div id={this.contentId}>
+                    { /* d3 table will be generated here */ }
+                </div>
             </div>
         )
     }

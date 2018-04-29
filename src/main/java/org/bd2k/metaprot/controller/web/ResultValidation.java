@@ -1,8 +1,9 @@
 package org.bd2k.metaprot.controller.web;
 
 import org.bd2k.metaprot.dbaccess.DAOImpl;
-import org.bd2k.metaprot.model.PatternRecognitionResults;
+import org.bd2k.metaprot.model.ResultValidationResults;
 import org.bd2k.metaprot.model.Task;
+import org.bd2k.metaprot.util.Globals;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,34 +15,37 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Web controller for all Pattern Recognition Analysis related
  * presentation logic.
  *
- * Created by Nate Sookwongse on 7/6/17.
+ * Created by Nate Sookwongse on 8/29/17.
  */
 @Controller
-@RequestMapping("/pattern")
-public class PatternRecognition {
+@RequestMapping("/result-validation")
+public class ResultValidation {
 
     @Autowired
     private DAOImpl dao;
 
+
+    // for path construction
+    private String root = Globals.getPathRoot();
+    private String sep = Globals.getPathSeparator();
+
     @RequestMapping(method = RequestMethod.GET)
-    public String getPatternRecognitionIndex() {  // home page
+    public String getResultValidationIndex() {  // home page
         return "index";
     }
 
     @RequestMapping(value = "/results/{token}", method = RequestMethod.GET)
-    public String getPatternRecognitionResults(Model model, @PathVariable("token") String token) {
+    public String getResultValidationResults(Model model, @PathVariable("token") String token) {
 
-        // grab task given by token passed
+        // get task information from database
         Task task = dao.getTask(token);
-        // grab results from DB
-        PatternRecognitionResults results = dao.getPatternRecognitionResults(task);
 
-        // data to pass back
+        ResultValidationResults results = dao.getResultValidationResults(task);
+        model.addAttribute("plot", "data:image/jpeg;base64, " + results.getBase64EncodedStaticPlot());
         model.addAttribute("results", results.getValues());
-        model.addAttribute("metabolites", results.getMetabolites());
-        model.addAttribute("significance_values", results.getSignificances());
 
-        return "pattern_recognition_results";
+
+        return "result_validation_results";
     }
 
 }

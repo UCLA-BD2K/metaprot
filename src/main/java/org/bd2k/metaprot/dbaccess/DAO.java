@@ -16,6 +16,44 @@ import java.util.List;
  */
 public interface DAO {
 
+
+    /* General */
+
+    /**
+     * Saves the results of the metaboliteTask to the database. Internally,
+     * chunking is used so this method returns the number of chunks
+     * required to store the results.
+     *
+     * @param task the Task, with (at the very least) token defined
+     * @param results the results of the Task
+     * @return number of chunks used to store the results, or -1 if error; use as needed
+     */
+    int saveTaskResults(Task task, Object results);
+
+    /**
+     * Retrieves a task given the associated token.
+     *
+     * @param token the uuid
+     * @return an initialized Task, or null if the token is invalid
+     */
+    Task getTask(String token);
+
+    /**
+     * Saves the given task to the database as a new entry.
+     *
+     * @param task the task to save
+     * @return true if the task was added to the database, false otherwise
+     */
+    boolean saveTask(Task task);
+
+    /**
+     * Saves the given task to the database if it does not exist, or updates it.
+     *
+     * @param task the task to save
+     */
+    void saveOrUpdateTask(Task task);
+
+
     /* Metabolite Analysis */
 
     /**
@@ -41,8 +79,6 @@ public interface DAO {
      */
     void saveOrUpdateTask(MetaboliteTask metaboliteTask);
 
-
-
     /**
      * Retrieves the results of the metaboliteTask, with return type matching that of
      * saveTaskResults() for this metaboliteTask type.
@@ -52,86 +88,8 @@ public interface DAO {
      */
     List<List<MetaboliteStat>> getMetaboliteTaskResults(MetaboliteTask metaboliteTask);
 
-    /**
-     * Saves the results of the metaboliteTask to the database. Internally,
-     * chunking is used so this method returns the number of chunks
-     * required to store the results.
-     *
-     * @param task the Task, with (at the very least) token defined
-     * @param results the results of the Task
-     * @return number of chunks used to store the results, or -1 if error; use as needed
-     */
-    <T> int saveTaskResults(Task task, List<List<T>> results);
-
 
     /* Pattern Recognition */
-/*
-
-    */
-/**
-     * Retrieves a pattern recognition task given the associated token.
-     *
-     * @param token the uuid
-     * @return an initialized PatternRecogTask_old, or null if the token is invalid
-     *//*
-
-    PatternRecogTask_old getPatternRecogTask(String token);
-
-    */
-/**
-     * Saces the given task to the database as a new entry.
-     *
-     * @param task the task to save
-     * @return true if the task was added to the database, false otherwise
-     *//*
-
-    boolean saveTask(PatternRecogTask_old task);
-
-    */
-/**
-     * Saves the given task to the database if it does not exist, or updates it.
-     *
-     * @param task the task to save
-     *//*
-
-    void saveOrUpdateTask(PatternRecogTask_old task);
-
-    */
-/**
-     * Retrieves the results of the task, with return type matching that of
-     * saveTaskResults() for this task type.
-     *
-     * @param task the task that the results are for
-     * @return results in the same form that they were inputted in saveTaskResults()
-     *//*
-
-    List<List<PatternRecogStat_old>> getPRTaskResults(PatternRecogTask_old task);
-*/
-
-    /* Time Series */
-
-    /**
-     * Retrieves a pattern recognition task given the associated token.
-     *
-     * @param token the uuid
-     * @return an initialized PatternRecogTask_old, or null if the token is invalid
-     */
-    PatternRecognitionTask getPatternRecognitionTask(String token);
-
-    /**
-     * Saces the given task to the database as a new entry.
-     *
-     * @param task the task to save
-     * @return true if the task was added to the database, false otherwise
-     */
-    boolean saveTask(PatternRecognitionTask task);
-
-    /**
-     * Saves the given task to the database if it does not exist, or updates it.
-     *
-     * @param task the task to save
-     */
-    void saveOrUpdateTask(PatternRecognitionTask task);
 
     /**
      * Retrieves the results of the task, with return type matching that of
@@ -142,15 +100,43 @@ public interface DAO {
      */
     PatternRecognitionResults getPatternRecognitionResults(Task task);
 
+
+    /* Result Validation */
+
     /**
-     * Saves the results of the PatternRecognitionTask to the database. Internally,
-     * chunking is used so this method returns the number of chunks
-     * required to store the results.
+     * Retrieves the results of the task, with return type matching that of
+     * saveTaskResults() for this task type.
      *
-     * @param task the PatternRecognitionTask, with (at the very least) token defined
-     * @param results the results of the PatternRecognitionTask
-     * @return number of chunks used to store the results, or -1 if error; use as needed
+     * @param task the task that the results are for
+     * @return results in the same form that they were inputted in saveTaskResults()
      */
-    int saveTaskResults(PatternRecognitionTask task, PatternRecognitionResults results);
+    ResultValidationResults getResultValidationResults(Task task);
+
+
+    /* Integration Tool */
+
+    /**
+     * Retrieves the results of the task, with return type matching that of
+     * saveTaskResults() for this task type.
+     *
+     * @param task the task that the results are for
+     * @return results in the same form that they were inputted in saveTaskResults()
+     */
+     IntegrationToolResults getIntegrationToolResults(Task task);
+
+    /* DTW Cluster - Elbow Plot */
+
+    /**
+     * Retrieves the results of the task, with return type matching that of
+     * saveTaskResults() for this task type.
+     *
+     * @param task the task that the results are for
+     * @return results in the same form that they were inputted in saveTaskResults()
+     */
+    String getElbowPlotResults(Task task);
+
+    DTWClusterResults getDTWClusterResults(Task task);
+
+
 
 }

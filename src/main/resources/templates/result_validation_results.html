@@ -1,0 +1,128 @@
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title th:text='${"Results for " + token + " | MetProt"}'></title>
+    <link href="/css/lib/bootstrap.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/temp.css" />
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="http://x3dom.org/x3dom/dist/x3dom-full.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://www.x3dom.org/download/dev/x3dom.css"/>
+
+</head>
+<body>
+
+
+
+<div th:include="fragments/header :: header"></div>
+
+<div class="container-fluid results">
+    <div class="row text-center">
+        <div class="col-sm-12">
+            <h2>Result Validation</h2>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title" th:text='${"Results for task: " + token}'></h2>
+                </div>
+
+                <div id="result-validation-plot">
+                    <img th:src="${plot}" alt="img" id="static-plot"/>
+                    <div id="dynamic-plot"></div>
+
+                    <div class="button-block">
+                        <button id="toggle-plot-view" class="btn btn-default">Show dynamic plot</button>
+                        <br/>
+                        <button class="generate-plot-btn btn btn-default" type="button">Download plot as image</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div th:include="fragments/footer :: footer"></div>
+
+
+<script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+
+<script src="/js/lib/jquery.js"></script>
+
+<script type="text/javascript" src="/js/ScatterPlot3d.js"></script>
+<script type="text/javascript" th:inline="javascript">
+
+
+    // load data from server
+    const results = [[${results}]];
+    const staticPlot64 = [[${plot}]];
+
+    d3.select('#dynamic-plot').style('width', "500px").style('height', "500px")
+    scatterPlot3d( d3.select('#dynamic-plot'), results);
+
+    const staticPlot = $("#static-plot");
+    const dynamicPlot = $("#dynamic-plot");
+
+    dynamicPlot.hide();
+
+    const button = $("#toggle-plot-view");
+    button.click( () => {
+        if (button.text() === "Show dynamic plot") {
+            staticPlot.hide();
+            dynamicPlot.show();
+            button.text("Show static plot");
+        }
+        else {
+            dynamicPlot.hide();
+            staticPlot.show();
+            button.text("Show dynamic plot");
+        }
+    });
+
+    // download plot on click
+    $('.generate-plot-btn').on("click", function(e) {
+        e.preventDefault();
+
+        // remove any previously generated download links
+        $('#plot-download-link').remove();
+
+        // get the plot, set ui animations
+        var plotContainerId = "plot";
+        var formParent = $(this).parent()[0];
+
+        // create anchor element for download
+        var anchor = document.createElement("a");
+        anchor.id = "plot-download-link";
+        anchor.style.display = "none";
+        anchor.innerText = "Download";
+
+        if (button.text() === "Show dynamic plot") {
+            anchor.setAttribute("href",staticPlot64);
+            anchor.setAttribute("download", "metprot-plot-"+ "0" + ".jpg");
+        }
+        else {
+            anchor.setAttribute("href",$(".x3dom-canvas")[0].toDataURL() );
+            anchor.setAttribute("download", "metprot-plot-"+ "0" + ".png");
+        }
+
+        var div = document.createElement("div");
+        div.appendChild(anchor);
+        div.style.marginTop = "10px";
+        formParent.appendChild(div);
+
+        anchor.click();
+    });
+
+</script>
+
+</body>
+</html>
+

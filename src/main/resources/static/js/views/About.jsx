@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import InfoBlock from './InfoBlock';
+import InfoBlock from '../components/InfoBlock';
 
 /**
  * Main content for About page.

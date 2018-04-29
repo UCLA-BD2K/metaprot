@@ -1,0 +1,203 @@
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title th:text='${"Results for task:" + token + " | MetProt"}'></title>
+    <link href="/css/lib/bootstrap.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/bootstrap-treeview.css" />
+    <link rel="stylesheet" type="text/css" href="/css/temp.css" />
+    <style>
+        #cy {
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+
+<div th:include="fragments/header :: header"></div>
+
+<div class="container-fluid results">
+    <div >
+            <h2 class="text-center">Integration Tool Result</h2>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title text-center" th:text='${"Results for task: " + token}'></h2>
+                </div>
+                <div id="cy">
+                </div>
+            </div>
+    </div>
+</div>
+
+<div th:include="fragments/footer :: footer"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.10/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.1.0/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.1.0/js/buttons.html5.min.js"></script>
+
+<script src="/js/lib/cytoscape.min.js"></script>
+
+
+<script type="text/javascript">
+/*<![CDATA[*/
+    $(document).ready(function() {
+        $('#diseaseTable').DataTable( {
+            dom: "<'row'<'col-sm-12'B>> + <'row'<'text-left col-sm-6'l><'col-sm-6'f>>rtipB",
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: 'Export table as Excel Format(*.xls) | '
+                },
+                {
+                    extend: 'csvHtml5',
+                    text: 'Comma separated (#.csv)'
+                }
+            ]
+        });
+        $(".dt-buttons a").removeClass("dt-button");
+        $(".dt-buttons a").css('cursor', 'pointer');
+    } );
+  /*]]>*/
+</script>
+<script th:inline="javascript">
+    const nodeSet = [[${nodes}]];
+    const edgeSet = [[${edges}]];
+    console.log(nodeSet);
+    console.log(edgeSet);
+
+    let degreeArr = nodeSet.map( node => { return node.degree } );
+    let max = Math.max(...degreeArr);
+    console.log(max);
+
+    const nodes = nodeSet.map( nodeData => { return { data: nodeData } });
+    const edges = edgeSet.map( edgeData => { return { data: edgeData } });
+
+    if (max > 200)
+
+    console.log(nodes);
+    console.log(edges);
+     var cy = cytoscape({
+                container: document.getElementById('cy'),
+                boxSelectionEnabled: true,
+                style: [
+                    {
+                        selector: 'node',
+                        css: {
+                            'content': 'data(id)',
+                            'text-valign': 'center',
+                            'text-halign': 'center',
+                            'color': 'white',
+                            'text-outline-width': 2,
+                            'text-outline-color': '#888',
+                            'background-color': 'blue',
+                            'width': 'mapData(degree, 0, 20, 50, 300)',
+                            'height': 'mapData(degree, 0, 20, 50, 300)',
+                            'selection-box-color': 'black',
+                            'selection-box-border-color': 'black',
+                            'selection-box-border-width': 1
+                        },
+                        selectable: true
+                    },
+                    {
+                        selector: 'edge',
+                        css: {
+                            //'target-arrow-shape': 'triangle',
+                            'line-color': '#9dbaea',
+                            //'target-arrow-color': '9dbaea',
+                            'width': "data(width)"
+                        },
+                        selectable:false
+                    }
+                ],
+                elements: {
+                    nodes: nodes,
+                    edges: edges
+                },/*
+
+
+                layout: {
+                    name: 'cose',
+                    idealEdgeLength: 100,
+                    nodeOverlap: 10,
+                    refresh: 20,
+                    fit: true,
+                    padding: 5,
+                    randomize: false,
+                    componentSpacing: 1,
+                    nodeRepulsion: 4000000,
+                    edgeElasticity: 100,
+                    nestingFactor: 5,
+                    gravity: 100,
+                    numIter: 1000,
+                    initialTemp: 50,
+                    coolingFactor: 0.95,
+                    minTemp: 1.0
+                },*/
+                  layout: {
+                    name: 'cose',
+                    idealEdgeLength: 100,
+                    nodeOverlap: 20,
+                    refresh: 20,
+                    fit: true,
+                    padding: 30,
+                    randomize: false,
+                    componentSpacing: 100,
+                    nodeRepulsion: 400000,
+                    edgeElasticity: 100,
+                    nestingFactor: 5,
+                    gravity: 80,
+                    numIter: 1000,
+                    initialTemp: 200,
+                    coolingFactor: 0.95,
+                    minTemp: 1.0
+                  },
+                wheelSensitivity: 0.5
+        });
+        cy.on('select','node', function() {
+            var nodes = this;
+            try {
+                if(this.hasClass("CalledByAnother")) {
+                    this.css("background-color", "yellow");
+                } else {
+                    this.css("background-color", "yellow");
+                    this.connectedEdges().css("line-color", "yellow");
+                    this.neighborhood().forEach(function (node) {
+                        node.addClass("CalledByAnother");
+                        node.json({selected: true});
+                    });
+                }
+            } catch(e) {
+                console.log("Error modifying node/edges");
+            }
+        });
+        cy.on('unselect','node', function() {
+            var nodes = this;
+            try {
+                this.removeClass("CalledByAnother");
+                this.connectedEdges().css("line-color", "#9dbaea");
+                this.css("background-color", "blue");
+
+            } catch(e) {
+                console.log("Error modifying node/edges");
+            }
+        });
+
+
+
+
+</script>
+
+</body>
+</html>
+
+

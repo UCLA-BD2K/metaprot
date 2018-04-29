@@ -1,0 +1,171 @@
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title th:text='${"Results for " + token + " | MetProt"}'></title>
+    <link href="/css/lib/bootstrap.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/temp.css" />
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="http://x3dom.org/x3dom/dist/x3dom-full.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://www.x3dom.org/download/dev/x3dom.css"/>
+
+</head>
+<body>
+
+
+
+<div th:include="fragments/header :: header"></div>
+
+<div class="container-fluid results">
+    <div class="row text-center">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+
+                <div id="elbow-plot">
+                    <img th:src="${plot}" alt="img" id="plot"/>
+
+                    <button class="generate-plot-btn btn btn-default" type="button">Download plot as image</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="well well-lg col-xs-6 col-xs-offset-3">
+        <form id="cluster-selection" onsubmit="return handleSubmit()">
+
+                <label for="numCluster" class="control-label">Enter number of clusters:</label>
+                <input type="text" id="numCluster" />
+
+
+            <input type="submit"/>
+        </form>
+
+
+
+    </div>
+
+    <div id="progressText" class="text-center" style="clear:both"></div>
+
+</div>
+
+
+
+
+<div th:include="fragments/footer :: footer"></div>
+
+
+<script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+
+<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"/>
+<script src="/js/lib/jquery.js"></script>
+
+<script type="text/javascript" src="/js/ScatterPlot3d.js"></script>
+<script type="text/javascript" th:inline="javascript">
+
+
+    // load data from server
+    const staticPlot64 = [[${plot}]];
+    const token = [[${token}]];
+    const filename = [[${filename}]];
+
+    const $progressBar = $('.progress-bar');
+
+    function updateProgressBar(progress) {
+        $progressBar.html(progress + "% complete");
+        $progressBar.css("width", progress+"%");
+    }
+
+
+
+
+
+    const staticPlot = $("#static-plot");
+
+    // download plot on click
+    $('.generate-plot-btn').on("click", function(e) {
+        e.preventDefault();
+
+        // remove any previously generated download links
+        $('#plot-download-link').remove();
+
+        // get the plot, set ui animations
+        var plotContainerId = "plot";
+        var formParent = $(this).parent()[0];
+
+        // create anchor element for download
+        var anchor = document.createElement("a");
+        anchor.id = "plot-download-link";
+        anchor.style.display = "none";
+        anchor.innerText = "Download";
+
+        anchor.setAttribute("href",staticPlot64);
+        anchor.setAttribute("download", "metprot-plot-"+ "0" + ".jpg");
+
+
+        var div = document.createElement("div");
+        div.appendChild(anchor);
+        div.style.marginTop = "10px";
+        formParent.appendChild(div);
+
+        anchor.click();
+    });
+
+    function handleSubmit() {
+        const $progressText = $('#progressText');
+        $progressText.html('<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>');
+        fetch("/util/token", {
+            method: "GET",
+            timeout: 10
+        })
+        .then( response => {
+            if (response.ok)
+                return response.text()
+            else
+                throw new Error("There was an issue retrieving a session token. Please try again later.");
+        })
+        // execute R scripts on the server
+        .then( taskToken => {
+            var formData = new FormData();
+            var s3Key = "user-input/" + token + "/" + filename;
+            formData.append("objectKey", s3Key);
+            formData.append("taskToken", taskToken);
+            formData.append("numCluster", document.getElementById("numCluster").value);
+
+            return fetch("/analyze/dtw-cluster/" + token, {
+                method: "POST",
+                body: formData
+            });
+        })
+        // process success/failure
+        .then( response => {
+            if (response.ok)
+                return response.text();
+            else {
+                return response.json().then( json => {
+                    throw new Error(json.message || response.statusText);
+                })
+            }
+        })
+        .then( success => {
+            console.log("success: "+ success);
+            $progressText.html('<div class="alert alert-success">' + success + '</div>');
+        })
+        .catch( error => {
+            console.log("error: " + error);
+             $progressText.html('<div class="alert alert-danger">' + error.message + '</div>');
+        })
+        return false
+
+    }
+
+</script>
+
+</body>
+</html>
+

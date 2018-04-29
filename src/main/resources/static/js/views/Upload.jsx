@@ -1,9 +1,5 @@
 import React, {Component} from 'react';
-import TopNavBar from './TopNavBar';
-import SideNavBar from './SideNavBar';
-import FileUploadForm from './FileUploadForm';
-import FileTree from './FileTree';
-import Footer from './Footer';
+import FileUploadForm from '../components/FileUploadForm';
 import { connect } from 'react-redux';
 import { Form, FormGroup, FormControl, ControlLabel, Button, HelpBlock } from 'react-bootstrap'
 import { resetTree, addFileToTree, setToken } from '../actions';

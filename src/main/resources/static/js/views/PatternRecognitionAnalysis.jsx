@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import FileSelectForm from './FileSelectForm';
+import FileSelectForm from '../components/FileSelectForm';
 import { connect } from 'react-redux';
 import api from '../util/api';
 
@@ -23,7 +23,7 @@ class PatternRecognitionAnalysis extends Component {
     handleSubmit(e) {
         e.preventDefault();
         var self = this;
-        self.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
+        this.setState({progressTextHTML: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>'})
 
         // request new token for analysis task
         api.getToken()
@@ -50,6 +50,7 @@ class PatternRecognitionAnalysis extends Component {
             }
         })
         .then( success => {
+            // send pageview hit to Google Analytics to keep track of tool usage
             let pathName = encodeURI("usage/Pattern Recognition");
             ga('send', 'pageview', pathName);
             self.setState({progressTextHTML: '<div class="alert alert-success">' + success + '</div>' });
@@ -60,7 +61,7 @@ class PatternRecognitionAnalysis extends Component {
     }
 
     handleFile(e) {
-        var filename = e.target.value;
+        const filename = e.target.value;
         this.setState({ filename });
     }
 

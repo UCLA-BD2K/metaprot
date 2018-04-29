@@ -1,11 +1,12 @@
 package org.bd2k.metaprot.util;
 
-import org.bd2k.metaprot.model.MetaboliteStat;
-import org.bd2k.metaprot.model.PatternRecognitionSignificance;
-import org.bd2k.metaprot.model.PatternRecognitionValue;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+import org.bd2k.metaprot.model.*;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,64 +84,6 @@ public class FileAccess {
         return list;
     }
 
- /*   *//**
-     *
-     * @param token
-     * @return
-     *//*
-    public List<List<PatternRecogStat_old>> getPatternRecogResults(String token){
-
-        File file = new File(String.format("%s%s%sclustered_result.csv", root, token, sep));
-
-        List<List<PatternRecogStat_old>> list = new ArrayList<List<PatternRecogStat_old>>();
-
-        ArrayList<Integer> timePoints = new ArrayList<>();
-
-        if(file.exists()) {
-            FileReader fr = null;
-            BufferedReader br = null;
-
-            try {
-                fr = new FileReader(file);
-                br = new BufferedReader(fr);
-
-                String line = br.readLine();
-                line = line.replaceAll("\"", "");
-                String[] tokens = line.split(",");
-
-                for (int i = 1; i < tokens.length; i++) {
-                    timePoints.add(Integer.parseInt(tokens[i]));
-                }
-
-                ArrayList<PatternRecogStat_old> cluster = new ArrayList<>();
-                while ((line = br.readLine()) != null) {
-                    line = line.replaceAll("\"", "");
-                    tokens = line.split(",");
-                    if (tokens[tokens.length - 1].equals("NA")) {
-                        list.add(cluster);
-                        cluster = new ArrayList<>();
-                        continue;
-                    }
-                    PatternRecogStat_old temp = new PatternRecogStat_old(tokens[0]);
-                    ArrayList<Double> abundanceRatios = new ArrayList<>();
-
-                    for (int i = 1; i < tokens.length; i++) {
-                        abundanceRatios.add(Double.parseDouble(tokens[i]));
-                    }
-
-                    temp.setData(timePoints, abundanceRatios);
-                    cluster.add(temp);
-                }
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return list;
-    }
-*/
     /**
      * Returns a list of stats that represent each row in the resultant
      * time_series_concentrations.csv file from the time series analysis.
@@ -258,6 +201,229 @@ public class FileAccess {
 
 
         return list;
+    }
+
+    public ResultValidationResults getResultValidationResults(String token) {
+
+        String pathToPlot = root + token + sep + "static3Dplot.png";
+        String pathToData = root + token + sep + "dynamic3Ddata.csv";
+
+        File plotFile = new File(pathToPlot);
+        File dataFile = new File(pathToData);
+
+        String base64EncodedStaticPlot = "";
+        List<ResultValidationValue> list = new ArrayList<>();
+
+
+        if (plotFile.exists() && dataFile.exists()) {
+            FileReader fr = null;   // for parsing CSV file
+            BufferedReader br = null;   // for parsing CSV file
+
+            try {
+                // encode data for static 3d plot image
+                byte[] binaryData = IOUtils.toByteArray(new FileInputStream(plotFile));
+                byte[] encodeBase64 = Base64.encodeBase64(binaryData);
+                base64EncodedStaticPlot = new String(encodeBase64, "UTF-8");
+
+                // parse CSV data
+                fr = new FileReader(dataFile);
+                br = new BufferedReader(fr);
+
+                String line;
+                String[] lineArr;
+
+                br.readLine(); // skip header line
+
+                while((line = br.readLine()) != null) {
+                    line = line.replace("\"", "");
+                    lineArr = line.split(",");
+                    System.out.println(line);
+
+                    // dynamic 3d plot has y-axis as the vertical axis.
+                    // static plot has PC1 z-axis, PC3 y-axis, PC2 x-axis.
+                    // return datapoints in this format to be consistent with static plot.
+                    list.add(new ResultValidationValue(
+                                Double.parseDouble(lineArr[2]),
+                                Double.parseDouble(lineArr[3]),
+                                Double.parseDouble(lineArr[1]),
+                                lineArr[4],
+                                lineArr[5]
+                            )
+                    );
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fr != null) {
+                        fr.close();
+                    }
+
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        ResultValidationResults results = new ResultValidationResults(base64EncodedStaticPlot, list);
+        return results;
+    }
+
+    public IntegrationToolResults getIntegrationToolResults(String token) {
+
+        //String pathToData = root + token + sep + "integration-tool.csv";
+        String pathToData = root + token + sep + "integration-tool.tab";
+
+        File dataFile = new File(pathToData);
+
+        IntegrationToolResultBuilder builder = new IntegrationToolResultBuilder();
+
+
+
+        if (dataFile.exists()) {
+            FileReader fr = null;   // for parsing CSV file
+            BufferedReader br = null;   // for parsing CSV file
+
+            try {
+
+                // parse CSV data
+                fr = new FileReader(dataFile);
+                br = new BufferedReader(fr);
+
+                String line;
+
+
+                br.readLine(); // skip header line
+
+                while((line = br.readLine()) != null) {
+                    line = line.replace("\"", "");
+                    //results.parseCSVLine(line);
+                    builder.parseTabLine(line);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fr != null) {
+                        fr.close();
+                    }
+
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return builder.build();
+    }
+
+    public String getElbowPlotResults(String token) {
+
+        String pathToPlot = root + token + sep + "elbow_plot.jpg";
+
+        File plotFile = new File(pathToPlot);
+
+        String base64EncodedStaticPlot = "";
+
+
+        if (plotFile.exists()) {
+            FileReader fr = null;   // for parsing CSV file
+            BufferedReader br = null;   // for parsing CSV file
+
+            try {
+                // encode data for static 3d plot image
+                byte[] binaryData = IOUtils.toByteArray(new FileInputStream(plotFile));
+                byte[] encodeBase64 = Base64.encodeBase64(binaryData);
+                base64EncodedStaticPlot = new String(encodeBase64, "UTF-8");
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fr != null) {
+                        fr.close();
+                    }
+
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return base64EncodedStaticPlot;
+    }
+
+    public DTWClusterResults getDTWClusterResults(String token) {
+
+        String pathToPlot = root + token + sep + "dtw_plot.jpg";
+        String pathToData = root + token + sep + "groups.txt";
+
+        File plotFile = new File(pathToPlot);
+        File dataFile = new File(pathToData);
+
+        String base64EncodedStaticPlot = "";
+        List<List<String>> list = new ArrayList<>();
+
+
+        if (plotFile.exists() && dataFile.exists()) {
+            FileReader fr = null;   // for parsing CSV file
+            BufferedReader br = null;   // for parsing CSV file
+
+            try {
+                // encode data for static 3d plot image
+                byte[] binaryData = IOUtils.toByteArray(new FileInputStream(plotFile));
+                byte[] encodeBase64 = Base64.encodeBase64(binaryData);
+                base64EncodedStaticPlot = new String(encodeBase64, "UTF-8");
+
+                // parse CSV data
+                fr = new FileReader(dataFile);
+                br = new BufferedReader(fr);
+
+                String line;
+                String[] lineArr;
+
+
+                while((line = br.readLine()) != null) {
+                    lineArr = line.split(",");
+                    System.out.println(line);
+
+                    // dynamic 3d plot has y-axis as the vertical axis.
+                    // static plot has PC1 z-axis, PC3 y-axis, PC2 x-axis.
+                    // return datapoints in this format to be consistent with static plot.
+                    list.add(Arrays.asList(lineArr));
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fr != null) {
+                        fr.close();
+                    }
+
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        DTWClusterResults results = new DTWClusterResults(base64EncodedStaticPlot, list);
+        return results;
     }
 
     /**

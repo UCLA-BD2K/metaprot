@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.bd2k.metaprot.aws.S3Client;
 import org.bd2k.metaprot.aws.S3Status;
 import org.bd2k.metaprot.util.Globals;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.bd2k.metaprot.TestConstants.S3_BASE_KEY;
-import static org.bd2k.metaprot.TestConstants.TEST_TOKEN;
+import static org.bd2k.metaprot.TestUtil.S3_BASE_KEY;
+import static org.bd2k.metaprot.TestUtil.TEST_TOKEN;
 import static org.junit.Assert.*;
 
 
@@ -37,7 +38,16 @@ public class S3ClientTest {
     @Autowired
     private S3Client s3Client;
 
+    @Autowired
+    private TestUtil testUtil;
+
     private String TEST_FILE = "TEST_DEA_FILE";
+
+    @Before
+    public void setup() {
+        testUtil.setupTestFiles();
+    }
+
     @Test
     public void testResetFileExpiration() {
         String s3Key = S3_BASE_KEY + TEST_FILE;

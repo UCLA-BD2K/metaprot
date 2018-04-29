@@ -1,7 +1,7 @@
 package org.bd2k.metaprot;
 
 import org.bd2k.metaprot.dbaccess.repository.MetaboliteTaskRepository;
-import org.bd2k.metaprot.dbaccess.repository.PatternRecognitionTaskRepository;
+import org.bd2k.metaprot.dbaccess.repository.TaskRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.bd2k.metaprot.TestConstants.S3_BASE_KEY;
-import static org.bd2k.metaprot.TestConstants.TEST_TOKEN;
+import static org.bd2k.metaprot.TestUtil.S3_BASE_KEY;
+import static org.bd2k.metaprot.TestUtil.TEST_TOKEN;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,16 +35,18 @@ public class AnalyzeControllerTest {
     @Autowired
     private MetaboliteTaskRepository metaboliteTaskRepository;
     @Autowired
-    private PatternRecognitionTaskRepository patternRecognitionTaskRepository;
+    private TaskRepository taskRepository;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    @Autowired
+    private TestUtil testUtil;
 
     @Before
     public void setup() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
-
+        testUtil.setupTestFiles();
      }
 
     @Test
@@ -110,9 +112,9 @@ public class AnalyzeControllerTest {
                 .andExpect(status().isOk());
 
         // check that results were saved on DynamoDB
-        assertTrue(patternRecognitionTaskRepository.exists("TEST_TASK_2"));
+        assertTrue(taskRepository.exists("TEST_TASK_2"));
         // delete results
-        patternRecognitionTaskRepository.delete("TEST_TASK_2");
+        taskRepository.delete("TEST_TASK_2");
 
 
 

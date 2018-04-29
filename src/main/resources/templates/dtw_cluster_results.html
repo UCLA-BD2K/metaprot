@@ -1,0 +1,222 @@
+
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title th:text='${"Results for " + token + " | MetProt"}'></title>
+    <link href="/css/lib/bootstrap.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/temp.css" />
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="http://x3dom.org/x3dom/dist/x3dom-full.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://www.x3dom.org/download/dev/x3dom.css"/>
+
+</head>
+<body>
+
+
+
+<div th:include="fragments/header :: header" class="center"></div>
+
+<div class="container-fluid results center">
+    <div class="row text-center center">
+        <div class="col-sm-12 center">
+            <div class="panel panel-default center">
+
+                <div id="dtw-plot">
+                    <img th:src="${plot}" alt="img" id="plot" class="center"/>
+
+                    <button class="generate-plot-btn btn btn-default" type="button">Download plot as image</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="well well-lg col-xs-6 col-xs-offset-3">
+        <div id="cluster_members"/>
+        <button class="download-as-csv-btn" type="button">Download clusters as csv</button>
+    </div>
+</div>
+
+
+
+
+<div th:include="fragments/footer :: footer"></div>
+
+
+<script type="text/javascript" src="/js/lib/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="/js/lib/bootstrap.min.js"></script>
+
+<script src="/js/lib/jquery.js"></script>
+
+<script type="text/javascript" src="/js/ScatterPlot3d.js"></script>
+<script type="text/javascript" th:inline="javascript">
+ /*<![CDATA[*/
+
+    // load data from server
+    const staticPlot64 = [[${plot}]];
+    const data = [[${clusters}]];
+    console.log(data);
+
+    const $progressBar = $('.progress-bar');
+
+    function updateProgressBar(progress) {
+        $progressBar.html(progress + "% complete");
+        $progressBar.css("width", progress+"%");
+    }
+
+     $(function(){
+        const $cluster_members = $('#cluster_members');
+        let html_str = "<p>";
+
+        for (let i = 0; i < data.length; i++) {
+            html_str += "<b>Cluster " + (i+1) + "</b>" + "<br/>";
+
+            for (let j = 0; j < data[i].length; j++) {
+                if (j < data[i].length - 1){
+                    html_str += data[i][j] + ", ";
+                } else {
+                    html_str += data[i][j];
+                }
+            }
+            html_str += "<br/><br/>";
+        }
+        html_str += "</p>";
+        $cluster_members.html(html_str);
+
+     })
+
+    $('.download-as-csv-btn').on("click", function(e) {
+        e.preventDefault();
+        $('#clusters-download-link').remove();
+
+        let csvContent = "";
+        for (let i = 0; i < data.length; i++) {
+            csvContent += "Cluster ";
+            csvContent += (i+1).toString();
+            if (i < data.length - 1){
+                csvContent += ",";
+            } else {
+                csvContent += "\n";
+            }
+        }
+        var clusterLengths = [];
+        for (let i = 0; i < data.length; i++) {
+            clusterLengths.push(data[i].length);
+        }
+        var maxLength = Math.max(...clusterLengths);
+        for (let i = 0; i < maxLength; i++) {
+            for (let j = 0; j < data.length; j++) {
+                if (i < data[j].length) {
+                    csvContent += data[j][i];
+                }
+                if (j < data.length - 1){
+                    csvContent += ",";
+                } else {
+                    csvContent += "\n";
+                }
+            }
+        }
+        csvContent = "data:text/csv;charset=utf-8," + csvContent;
+
+        var textContainerId = "clusters";
+        var formParent = $(this).parent()[0];
+
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "my_data.csv");
+
+        link.click();
+    });
+
+    const staticPlot = $("#static-plot");
+
+    // download plot on click
+    $('.generate-plot-btn').on("click", function(e) {
+        e.preventDefault();
+
+        // remove any previously generated download links
+        $('#plot-download-link').remove();
+
+        // get the plot, set ui animations
+        var plotContainerId = "plot";
+        var formParent = $(this).parent()[0];
+
+        // create anchor element for download
+        var anchor = document.createElement("a");
+        anchor.id = "plot-download-link";
+        anchor.style.display = "none";
+        anchor.innerText = "Download";
+
+        anchor.setAttribute("href",staticPlot64);
+        anchor.setAttribute("download", "metprot-plot-"+ "0" + ".jpg");
+
+
+        var div = document.createElement("div");
+        div.appendChild(anchor);
+        div.style.marginTop = "10px";
+        formParent.appendChild(div);
+
+        anchor.click();
+    });
+
+    function handleSubmit() {
+        const $progressText = $('#progressText');
+        $progressText.html('<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>');
+        fetch("/util/token", {
+            method: "GET",
+            timeout: 10
+        })
+        .then( response => {
+            if (response.ok)
+                return response.text()
+            else
+                throw new Error("There was an issue retrieving a session token. Please try again later.");
+        })
+        // execute R scripts on the server
+        .then( taskToken => {
+            var formData = new FormData();
+            var s3Key = "user-input/" + token + "/" + filename;
+            formData.append("objectKey", s3Key);
+            formData.append("taskToken", taskToken);
+            formData.append("numCluster", document.getElementById("numCluster").value);
+
+            return fetch("/analyze/dtw-cluster/" + token, {
+                method: "POST",
+                body: formData
+            });
+        })
+        // process success/failure
+        .then( response => {
+            if (response.ok)
+                return response.text();
+            else {
+                return response.json().then( json => {
+                    throw new Error(json.message || response.statusText);
+                })
+            }
+        })
+        .then( success => {
+            console.log("success: "+ success);
+            $progressText.html('<div class="alert alert-success">' + success + '</div>');
+        })
+        .catch( error => {
+            console.log("error: " + error);
+             $progressText.html('<div class="alert alert-danger">' + error.message + '</div>');
+        })
+        return false
+
+    }
+        /*]]>*/
+
+</script>
+
+</body>
+</html>
+
