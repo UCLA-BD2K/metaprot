@@ -123,6 +123,18 @@ public interface DAO {
      * @return results in the same form that they were inputted in saveTaskResults()
      */
      IntegrationToolResults getIntegrationToolResults(Task task);
+    /* DTW Cluster - Elbow Plot */
+
+    /**
+     * Retrieves the results of the task, with return type matching that of
+     * saveTaskResults() for this task type.
+     *
+     * @param task the task that the results are for
+     * @return results in the same form that they were inputted in saveTaskResults()
+     */
+    String getElbowPlotResults(Task task);
+
+    DTWClusterResults getDTWClusterResults(Task task);
 
 
 }

@@ -20,6 +20,8 @@ import ProcessFile from './views/ProcessFile';
 import ResultValidation from './views/ResultValidation';
 import Integration from './views/Integration';
 import IntegrationTool from './views/IntegrationTool';
+import DynamicTimeWarping from './views/DynamicTimeWarping';
+
 
 import MainLayout from './layouts/MainLayout';
 import SimpleLayout from './layouts/SimpleLayout';
@@ -96,6 +98,7 @@ ReactDOM.render(
                 <Route path="/result-validation" render={ renderWithLayout("main", <ResultValidation />) } />
                 <Route path="/integration" render={ renderWithLayout("main", <Integration />) } />
                 <Route path="/integration-tool" render={ renderWithLayout("main", <IntegrationTool />) } />
+                <Route path="/dtw-cluster" render={ renderWithLayout("main", <DynamicTimeWarping />) } />
             </Switch>
 
         </Router>

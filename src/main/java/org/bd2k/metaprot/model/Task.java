@@ -18,8 +18,11 @@ public class Task {
     public static final String PATTERN = "PATTERN";
     public static final String RESULT_VALIDATION = "RESULT_VALDIATION";
     public static final String INTEGRATION_TOOL = "INTEGRATION_TOOL";
+    public static final String DTW_ELBOW = "DTW_ELBOW";
+    public static final String DTW_CLUSTER = "DTW_CLUSTER";
 
     private String token;
+    private String sessionToken;
     private long fileSize;
     private Date timestamp;
     private String filename;
@@ -28,8 +31,9 @@ public class Task {
 
     public Task() {}
 
-    public Task(String token, Date timestamp, String filename, long fileSize, int numChunks, String type) {
+    public Task(String token, String sessionToken, Date timestamp, String filename, long fileSize, int numChunks, String type) {
         this.token = token;
+        this.sessionToken = sessionToken;
         this.timestamp = timestamp;
         this.filename = filename;
         this.fileSize = fileSize;
@@ -47,6 +51,16 @@ public class Task {
     public void setToken(String token) {
         this.token = token;
     }
+
+    @DynamoDBAttribute
+    public String getSessionToken() {
+        return sessionToken;
+    }
+
+    public void setSessionToken(String token) {
+        this.sessionToken = token;
+    }
+
 
     @DynamoDBAttribute
     public Date getTimestamp() {

@@ -196,4 +196,27 @@ public class DAOImpl implements DAO {
 
         return results;
     }
+
+    /* DTW Cluster Tool */
+
+    @Override
+    public DTWClusterResults getDTWClusterResults(Task task) {
+        if (!task.getType().equals(Task.DTW_CLUSTER) || task.getToken() == null) {
+            return null;
+        }
+
+        DTWClusterResults results = null;
+
+        try {
+            String dbEntry = dynamoDBClient.getChunksAsWhole(TASK_CHUNK_TABLENAME, task.getToken(),
+                    task.getNumChunks());
+            System.out.println(dbEntry);
+            results = mapper.readValue(dbEntry, new TypeReference<DTWClusterResults>(){});
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
 }

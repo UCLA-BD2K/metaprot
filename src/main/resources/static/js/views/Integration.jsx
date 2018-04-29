@@ -23,6 +23,15 @@ class Integration extends Component {
                 ),
                 title: "Integration Tool",
                 description: "Analyze and observe protein and metabolite interaction."
+            },
+            {
+                preHTML: (
+                    <Link to="/dtw-cluster">
+                        <img src="/img/dtw2.jpg" className="img-responsive img-analysis" />
+                    </Link>
+                ),
+                title: "Dynamic Time Warping Cluster",
+                description: "Cluster metabolites based on values at different timepoints."
             }
 
         ]
@@ -40,7 +49,7 @@ class Integration extends Component {
                 <div className="placeholders">
                     <div className="row">
                         <InfoBlock data={this.infoblocks[0]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-1 placeholder"/>
-
+                        <InfoBlock data={this.infoblocks[1]} className="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-2 placeholder"/>
                     </div>
                 </div>
             </div>

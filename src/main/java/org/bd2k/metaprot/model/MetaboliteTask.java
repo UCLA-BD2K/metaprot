@@ -20,9 +20,9 @@ public class MetaboliteTask extends Task{
 
     public MetaboliteTask() {}
 
-    public MetaboliteTask(String token, Date timestamp, String filename, long fileSize,
+    public MetaboliteTask(String token, String sessionToken, Date timestamp, String filename, long fileSize,
                           double pValueThreshold, double fcThreshold, int numChunks) {
-        super(token, timestamp, filename, fileSize, numChunks, Task.DEA);
+        super(token, sessionToken, timestamp, filename, fileSize, numChunks, Task.DEA);
         this.pValueThreshold = pValueThreshold;
         this.fcThreshold = fcThreshold;
     }
