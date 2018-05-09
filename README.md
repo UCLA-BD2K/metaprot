@@ -60,3 +60,10 @@ In the future it would be nice to either: create a standard deploy
 command in Maven, or have a bash script that handles uploading and
 re-deploying new versions of the application. We want this so that we
 can avoid re-running all of the setup scripts we configure in .ebextensions.
+
+
+## Using MetProt
+Here are the features provided by MetProt and how to use them. Before performing any kinds of analysis, you must first upload a dataset in either '.csv' or '.rdata' format.
+
+### Dynamic Time Warping
+After you have uploaded your dataset, you can perform dynamic time warping clustering to the metabolites. In order to choose the right amount of clusters k, you must first choose a range [a, b] that includes k.  Set a as the minimum amount of clusters and b as the maximum amount of clusters and press submit. After pressing submit, MetProt will run the dynamic time warping algorithm on the dataset for each number of clusters from a to b, and create a link to a new page that displays the plot of sum-of-squares within clusters against the number of clusters.  This way, you can use the 'elbow method' to determine the correct number of clusters to use.  After you have determined to optimal number of clusters to use, enter the number in the blank field and click `Submit`, which will create a link that brings you to another page that displays the results of clustering. This page will display plots of the different clusters and the different metabolites in each cluster.
